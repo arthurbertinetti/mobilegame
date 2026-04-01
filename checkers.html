@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Dames</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a0a0a;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(26,10,10,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(192,57,43,0.15);border:2px solid #c0392b;border-radius:10px;color:#c0392b;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#status{color:#ffd93d;font-size:1rem;font-weight:bold;text-align:center;flex:1}
+canvas{display:block;margin-top:4px}
+#overlay{position:fixed;inset:0;background:rgba(26,10,10,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#c0392b;margin-bottom:10px}
+#overlay p{color:#e6a07c;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:1.6rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(192,57,43,0.15);border:2px solid #c0392b;border-radius:12px;color:#c0392b;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#e6a07c;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="status">Ton tour</span>
+    <div style="width:40px"></div>
+</div>
+<canvas id="c"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">♟️ Jeu de Dames</h2>
+    <p id="ovMsg">Joue contre l'IA !<br>Touche un pion puis sa destination.<br>Les prises sont obligatoires.</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var statusEl=document.getElementById('status');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var SIZE=8,CELL;
+var board,selected,validMoves,turn,running;
+// 0=empty, 1=player, 2=ai, 3=player king, 4=ai king
+
+function resize(){
+    var W=window.innerWidth,H=window.innerHeight-56;
+    CELL=Math.floor(Math.min(W,H)/SIZE);
+    canvas.width=canvas.height=CELL*SIZE;
+}
+
+function startGame(){
+    resize();board=[];
+    for(var r=0;r<SIZE;r++){board[r]=[];for(var c=0;c<SIZE;c++){
+        if((r+c)%2===1){
+            if(r<3)board[r][c]=2;else if(r>4)board[r][c]=1;else board[r][c]=0;
+        }else board[r][c]=0;
+    }}
+    selected=null;validMoves=[];turn=1;running=true;
+    overlay.classList.add('hidden');statusEl.textContent='Ton tour';draw();
+}
+
+function isPlayer(v){return v===1||v===3;}
+function isAI(v){return v===2||v===4;}
+function isKing(v){return v===3||v===4;}
+function owner(v){return isPlayer(v)?1:isAI(v)?2:0;}
+
+function getCaptures(r,c,b){
+    var p=b[r][c],caps=[];
+    var dirs=[];
+    if(isKing(p)){dirs=[[-1,-1],[-1,1],[1,-1],[1,1]];}
+    else if(isPlayer(p)){dirs=[[-1,-1],[-1,1]];}
+    else{dirs=[[1,-1],[1,1]];}
+    var opp=isPlayer(p)?2:1;
+    for(var d=0;d<dirs.length;d++){
+        var mr=r+dirs[d][0],mc=c+dirs[d][1];
+        var jr=r+dirs[d][0]*2,jc=c+dirs[d][1]*2;
+        if(jr>=0&&jr<SIZE&&jc>=0&&jc<SIZE&&owner(b[mr][mc])===opp&&b[jr][jc]===0){
+            caps.push({r:jr,c:jc,mr:mr,mc:mc});
+        }
+    }
+    return caps;
+}
+
+function getMoves(r,c,b){
+    var p=b[r][c],moves=[];
+    // Check if captures available for any piece first
+    var forceCapture=false;
+    var me=owner(p);
+    for(var rr=0;rr<SIZE;rr++)for(var cc=0;cc<SIZE;cc++){
+        if(owner(b[rr][cc])===me&&getCaptures(rr,cc,b).length>0)forceCapture=true;
+    }
+    var caps=getCaptures(r,c,b);
+    if(forceCapture)return caps.map(function(x){return{r:x.r,c:x.c,capture:{r:x.mr,c:x.mc}};});
+    if(caps.length>0)return caps.map(function(x){return{r:x.r,c:x.c,capture:{r:x.mr,c:x.mc}};});
+    // Normal moves
+    var dirs=isKing(p)?[[-1,-1],[-1,1],[1,-1],[1,1]]:isPlayer(p)?[[-1,-1],[-1,1]]:[[1,-1],[1,1]];
+    for(var d=0;d<dirs.length;d++){
+        var nr=r+dirs[d][0],nc=c+dirs[d][1];
+        if(nr>=0&&nr<SIZE&&nc>=0&&nc<SIZE&&b[nr][nc]===0)moves.push({r:nr,c:nc,capture:null});
+    }
+    return moves;
+}
+
+function makeMove(r,c,move){
+    board[move.r][move.c]=board[r][c];board[r][c]=0;
+    if(move.capture)board[move.capture.r][move.capture.c]=0;
+    // King promotion
+    if(board[move.r][move.c]===1&&move.r===0)board[move.r][move.c]=3;
+    if(board[move.r][move.c]===2&&move.r===SIZE-1)board[move.r][move.c]=4;
+    // Multi-capture
+    if(move.capture){
+        var further=getCaptures(move.r,move.c,board);
+        if(further.length>0)return{chain:true,r:move.r,c:move.c};
+    }
+    return{chain:false};
+}
+
+function getAllMoves(who,b){
+    var moves=[];
+    var forceCapture=false;
+    for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){
+        if(owner(b[r][c])===who&&getCaptures(r,c,b).length>0)forceCapture=true;
+    }
+    for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){
+        if(owner(b[r][c])!==who)continue;
+        var m=getMoves(r,c,b);
+        for(var i=0;i<m.length;i++){
+            if(forceCapture&&!m[i].capture)continue;
+            moves.push({fr:r,fc:c,tr:m[i].r,tc:m[i].c,capture:m[i].capture});
+        }
+    }
+    return moves;
+}
+
+function evalBoard(){
+    var sc=0;
+    for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){
+        if(board[r][c]===1)sc-=10;if(board[r][c]===3)sc-=20;
+        if(board[r][c]===2)sc+=10;if(board[r][c]===4)sc+=20;
+        // Positional
+        if(board[r][c]===2)sc+=r;if(board[r][c]===1)sc-=(SIZE-1-r);
+    }
+    return sc;
+}
+
+function aiMinMax(depth,alpha,beta,max){
+    var who=max?2:1;
+    var moves=getAllMoves(who,board);
+    if(moves.length===0)return max?-5000:5000;
+    if(depth===0)return evalBoard();
+    if(max){
+        var best=-Infinity;
+        for(var i=0;i<moves.length;i++){
+            var m=moves[i],saved=copyBoard();
+            board[m.tr][m.tc]=board[m.fr][m.fc];board[m.fr][m.fc]=0;
+            if(m.capture)board[m.capture.r][m.capture.c]=0;
+            if(board[m.tr][m.tc]===2&&m.tr===SIZE-1)board[m.tr][m.tc]=4;
+            best=Math.max(best,aiMinMax(depth-1,alpha,beta,false));
+            restoreBoard(saved);alpha=Math.max(alpha,best);if(alpha>=beta)break;
+        }
+        return best;
+    }else{
+        var best=Infinity;
+        for(var i=0;i<moves.length;i++){
+            var m=moves[i],saved=copyBoard();
+            board[m.tr][m.tc]=board[m.fr][m.fc];board[m.fr][m.fc]=0;
+            if(m.capture)board[m.capture.r][m.capture.c]=0;
+            if(board[m.tr][m.tc]===1&&m.tr===0)board[m.tr][m.tc]=3;
+            best=Math.min(best,aiMinMax(depth-1,alpha,beta,true));
+            restoreBoard(saved);beta=Math.min(beta,best);if(alpha>=beta)break;
+        }
+        return best;
+    }
+}
+
+function copyBoard(){var b=[];for(var r=0;r<SIZE;r++){b[r]=[];for(var c=0;c<SIZE;c++)b[r][c]=board[r][c];}return b;}
+function restoreBoard(b){for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++)board[r][c]=b[r][c];}
+
+function aiTurn(){
+    statusEl.textContent='IA réfléchit...';
+    setTimeout(function(){
+        var moves=getAllMoves(2,board);
+        if(moves.length===0){endGame(true);return;}
+        var bestS=-Infinity,bestM=moves[0];
+        for(var i=0;i<moves.length;i++){
+            var saved=copyBoard();
+            board[moves[i].tr][moves[i].tc]=board[moves[i].fr][moves[i].fc];board[moves[i].fr][moves[i].fc]=0;
+            if(moves[i].capture)board[moves[i].capture.r][moves[i].capture.c]=0;
+            if(board[moves[i].tr][moves[i].tc]===2&&moves[i].tr===SIZE-1)board[moves[i].tr][moves[i].tc]=4;
+            var s=aiMinMax(4,-Infinity,Infinity,false);
+            restoreBoard(saved);if(s>bestS){bestS=s;bestM=moves[i];}
+        }
+        var res=makeMove(bestM.fr,bestM.fc,{r:bestM.tr,c:bestM.tc,capture:bestM.capture});
+        draw();
+        if(res.chain){
+            setTimeout(function doChain(){
+                var caps=getCaptures(res.r,res.c,board);
+                if(caps.length===0){checkEnd();turn=1;statusEl.textContent='Ton tour';return;}
+                var pick=caps[Math.floor(Math.random()*caps.length)];
+                var r2=makeMove(res.r,res.c,{r:pick.r,c:pick.c,capture:{r:pick.mr,c:pick.mc}});
+                draw();
+                if(r2.chain){res=r2;setTimeout(doChain,300);}
+                else{checkEnd();turn=1;statusEl.textContent='Ton tour';}
+            },300);
+        } else {checkEnd();turn=1;statusEl.textContent='Ton tour';}
+    },200);
+}
+
+function checkEnd(){
+    if(getAllMoves(1,board).length===0){endGame(false);return;}
+    if(getAllMoves(2,board).length===0){endGame(true);return;}
+    var p1=0,p2=0;
+    for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){if(isPlayer(board[r][c]))p1++;if(isAI(board[r][c]))p2++;}
+    if(p1===0)endGame(false);if(p2===0)endGame(true);
+}
+
+function endGame(won){
+    running=false;
+    ovTitle.textContent=won?'♟️ Victoire !':'♟️ Défaite...';
+    ovMsg.textContent=won?'Tu as battu l\'IA !':'L\'IA t\'a battu.';
+    ovScore.textContent=won?'1000 pts':'';
+    ovBtn.textContent='Rejouer';
+    setTimeout(function(){overlay.classList.remove('hidden');},400);
+    if(won){var n=Leaderboard.promptName();if(n)Leaderboard.add('checkers',1000,n);}
+}
+
+function draw(){
+    ctx.fillStyle='#1a0a0a';ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){
+        var x=c*CELL,y=r*CELL;
+        ctx.fillStyle=(r+c)%2===0?'#f5deb3':'#8B4513';
+        ctx.fillRect(x,y,CELL,CELL);
+        if(selected&&selected.r===r&&selected.c===c){ctx.fillStyle='rgba(255,255,0,0.3)';ctx.fillRect(x,y,CELL,CELL);}
+        var v=board[r][c];if(v===0)continue;
+        ctx.fillStyle=isPlayer(v)?'#e74c3c':'#333';
+        ctx.shadowColor=isPlayer(v)?'#e74c3c':'#555';ctx.shadowBlur=6;
+        ctx.beginPath();ctx.arc(x+CELL/2,y+CELL/2,CELL*0.38,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+        if(isKing(v)){
+            ctx.fillStyle='#ffd93d';ctx.font='bold '+Math.floor(CELL*0.35)+'px sans-serif';ctx.textAlign='center';
+            ctx.fillText('♛',x+CELL/2,y+CELL/2+CELL*0.12);
+        }
+    }
+    // Valid moves highlights
+    for(var i=0;i<validMoves.length;i++){
+        var m=validMoves[i];
+        ctx.fillStyle='rgba(0,255,0,0.25)';ctx.beginPath();ctx.arc(m.r*CELL+CELL/2,m.r_*0+0,0,0,0);
+        ctx.fillRect(m.c*CELL+CELL*0.2,m.r*CELL+CELL*0.2,CELL*0.6,CELL*0.6);
+    }
+}
+
+canvas.addEventListener('touchstart',function(e){e.preventDefault();
+    if(!running||turn!==1)return;
+    var rect=canvas.getBoundingClientRect();
+    var c=Math.floor((e.touches[0].clientX-rect.left)/CELL);
+    var r=Math.floor((e.touches[0].clientY-rect.top)/CELL);
+    if(r<0||r>=SIZE||c<0||c>=SIZE)return;
+    // Check if clicking a valid move
+    for(var i=0;i<validMoves.length;i++){
+        if(validMoves[i].r===r&&validMoves[i].c===c){
+            var res=makeMove(selected.r,selected.c,validMoves[i]);
+            selected=null;validMoves=[];draw();
+            if(res.chain){
+                selected={r:res.r,c:res.c};
+                validMoves=getCaptures(res.r,res.c,board).map(function(x){return{r:x.r,c:x.c,capture:{r:x.mr,c:x.mc}};});
+                draw();
+                if(validMoves.length===0){selected=null;turn=2;aiTurn();}
+            } else {turn=2;aiTurn();}
+            return;
+        }
+    }
+    // Select piece
+    if(isPlayer(board[r][c])){
+        selected={r:r,c:c};
+        validMoves=getMoves(r,c,board);
+        draw();
+    }
+},{passive:false});
+
+canvas.addEventListener('click',function(e){
+    if(!running||turn!==1)return;
+    var rect=canvas.getBoundingClientRect();
+    var c=Math.floor((e.clientX-rect.left)/CELL);
+    var r=Math.floor((e.clientY-rect.top)/CELL);
+    if(r<0||r>=SIZE||c<0||c>=SIZE)return;
+    for(var i=0;i<validMoves.length;i++){
+        if(validMoves[i].r===r&&validMoves[i].c===c){
+            var res=makeMove(selected.r,selected.c,validMoves[i]);
+            selected=null;validMoves=[];draw();
+            if(res.chain){
+                selected={r:res.r,c:res.c};
+                validMoves=getCaptures(res.r,res.c,board).map(function(x){return{r:x.r,c:x.c,capture:{r:x.mr,c:x.mc}};});
+                draw();if(validMoves.length===0){selected=null;turn=2;aiTurn();}
+            }else{turn=2;aiTurn();}
+            return;
+        }
+    }
+    if(isPlayer(board[r][c])){selected={r:r,c:c};validMoves=getMoves(r,c,board);draw();}
+});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(board)draw();});
+resize();
+</script>
+</body>
+</html>

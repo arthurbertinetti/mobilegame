@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Classement</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0e1a; color: #eee;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100dvh; padding: 10px 0 30px;
+            -webkit-user-select: none; user-select: none;
+        }
+        .back { color: #ff6b81; text-decoration: none; font-size: 1.3rem;
+            align-self: flex-start; padding: 10px 16px; }
+        h1 {
+            font-size: 2rem; margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffd93d, #ff6b81);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 2px 10px rgba(255,217,61,.3));
+        }
+        .game-section {
+            width: 92%; max-width: 400px; margin-bottom: 22px;
+        }
+        .game-section h2 {
+            font-size: 1.15rem; margin-bottom: 8px; padding-left: 4px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .game-section h2 .icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+        }
+        .board {
+            background: linear-gradient(145deg, #14203a, #0d1829);
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 14px; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,.4);
+        }
+        .row {
+            display: flex; align-items: center; padding: 10px 14px;
+            border-bottom: 1px solid rgba(255,255,255,.04);
+        }
+        .row:last-child { border-bottom: none; }
+        .rank {
+            width: 30px; font-weight: bold; font-size: 1.1rem; text-align: center;
+            flex-shrink: 0;
+        }
+        .rank.gold   { color: #ffd93d; }
+        .rank.silver { color: #c0c0c0; }
+        .rank.bronze { color: #cd7f32; }
+        .name { flex: 1; margin-left: 10px; font-size: .95rem; }
+        .pts { font-weight: bold; color: #ff6b81; font-size: .95rem; }
+        .empty { padding: 16px; text-align: center; color: #555; font-size: .9rem; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">← Menu</a>
+    <h1>🏆 Classement</h1>
+    <div id="boards"></div>
+
+<script src="leaderboard.js"></script>
+<script>
+const games = [
+    { id: 'snake',     name: 'Snake',         emoji: '🐍', gradient: 'linear-gradient(135deg,#27ae60,#1e8449)' },
+    { id: 'breakout',  name: 'Casse-Briques', emoji: '🧱', gradient: 'linear-gradient(135deg,#e94560,#c0392b)' },
+    { id: 'asteroids', name: 'Asteroids',     emoji: '☄️', gradient: 'linear-gradient(135deg,#3498db,#2471a3)' },
+    { id: 'cardodge',  name: 'Road Racer',    emoji: '🚗', gradient: 'linear-gradient(135deg,#f39c12,#d68910)' },
+    { id: 'solitaire', name: 'Solitaire',    emoji: '🃏', gradient: 'linear-gradient(135deg,#1a5276,#154360)' },
+    { id: 'blackjack', name: 'Blackjack',    emoji: '🂡', gradient: 'linear-gradient(135deg,#0a5e2a,#074a20)' },
+    { id: 'spaceinvaders', name: 'Space Invaders', emoji: '👾', gradient: 'linear-gradient(135deg,#222,#111)' },
+    { id: 'mastermind', name: 'Mastermind',   emoji: '🧠', gradient: 'linear-gradient(135deg,#8e44ad,#6c3483)' },
+    { id: 'tetris',    name: 'Tetris',       emoji: '🧩', gradient: 'linear-gradient(135deg,#00b894,#00cec9)' },
+    { id: 'minesweeper', name: 'Démineur',   emoji: '💣', gradient: 'linear-gradient(135deg,#636e72,#2d3436)' },
+    { id: 'retrohighway', name: 'Retro Highway', emoji: '🏍️', gradient: 'linear-gradient(135deg,#e17055,#d63031)' },
+    { id: 'motodge',   name: 'Moto Dodge CBR650R', emoji: '🏎️', gradient: 'linear-gradient(135deg,#c0392b,#e74c3c)' },
+    { id: 'maze',      name: 'Maze Speedrunner',   emoji: '🏁', gradient: 'linear-gradient(135deg,#00cec9,#0984e3)' },
+    { id: 'candycrush', name: 'Candy Crush',        emoji: '🍬', gradient: 'linear-gradient(135deg,#e91e63,#9b59b6)' },
+    { id: 'bubbleshooter', name: 'Bubble Shooter',  emoji: '🫧', gradient: 'linear-gradient(135deg,#74b9ff,#a29bfe)' },
+    { id: 'poolclub',   name: 'Pool Club',          emoji: '🎱', gradient: 'linear-gradient(135deg,#27ae60,#1a5e2a)' },
+    { id: 'neonwar',    name: 'Neon War',           emoji: '💥', gradient: 'linear-gradient(135deg,#00ff88,#0a0a1e)' },
+    { id: 'crossyroad', name: 'Crossy Road',        emoji: '🐔', gradient: 'linear-gradient(135deg,#ffd93d,#f39c12)' },
+    { id: 'connect4',   name: 'Puissance 4',        emoji: '🔴', gradient: 'linear-gradient(135deg,#e74c3c,#ffd93d)' },
+    { id: 'battleship', name: 'Bataille Navale',    emoji: '🚢', gradient: 'linear-gradient(135deg,#3498db,#2c3e50)' },
+    { id: 'checkers',   name: 'Jeu de Dames',       emoji: '♟️', gradient: 'linear-gradient(135deg,#c0392b,#8B4513)' },
+    { id: 'chess',      name: 'Échecs',             emoji: '♟', gradient: 'linear-gradient(135deg,#9b59b6,#1a1a2e)' },
+    { id: 'fruitninja', name: 'Fruit Ninja',        emoji: '🍉', gradient: 'linear-gradient(135deg,#e74c3c,#27ae60)' },
+    { id: 'sudoku',     name: 'Sudoku',             emoji: '🔢', gradient: 'linear-gradient(135deg,#3498db,#2980b9)' },
+    { id: 'zuma',       name: 'Zuma',               emoji: '🐸', gradient: 'linear-gradient(135deg,#2ecc71,#0a1a0a)' },
+    { id: 'mahjong',    name: 'Mahjong',            emoji: '🀄', gradient: 'linear-gradient(135deg,#e74c3c,#1a0a2e)' },
+    { id: 'onelinedraw', name: 'One Line Draw',     emoji: '✏️', gradient: 'linear-gradient(135deg,#ff6b81,#74b9ff)' },
+    { id: 'watercolorsort', name: 'Water Color Sort', emoji: '🧪', gradient: 'linear-gradient(135deg,#00bcd4,#0097a7)' },
+    { id: 'tictactoe',  name: 'Tic Tac Toe',        emoji: '❌', gradient: 'linear-gradient(135deg,#e74c3c,#3498db)' },
+    { id: 'nutsandbolts', name: 'Nuts And Bolts',    emoji: '🔩', gradient: 'linear-gradient(135deg,#f39c12,#7f8c8d)' },
+    { id: 'farmvalley',  name: 'Farm Valley',        emoji: '🌾', gradient: 'linear-gradient(135deg,#4CAF50,#8BC34A)' },
+    { id: 'sonic',        name: 'Sonic Runner',        emoji: '🦔', gradient: 'linear-gradient(135deg,#2196F3,#1565C0)' },
+    { id: 'pacman',       name: 'Pac-Man',             emoji: '👾', gradient: 'linear-gradient(135deg,#ffd93d,#f39c12)' },
+    { id: 'bomberman',    name: 'Bomberman',           emoji: '💣', gradient: 'linear-gradient(135deg,#e74c3c,#f39c12)' },
+];
+
+const container = document.getElementById('boards');
+
+games.forEach(g => {
+    const lb = Leaderboard.get(g.id);
+    const section = document.createElement('div');
+    section.className = 'game-section';
+
+    let html = `<h2><span class="icon" style="background:${g.gradient}">${g.emoji}</span>${g.name}</h2>`;
+    html += '<div class="board">';
+
+    if (lb.length === 0) {
+        html += '<div class="empty">Aucun score enregistré</div>';
+    } else {
+        lb.forEach((entry, i) => {
+            const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+            const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}`;
+            html += `<div class="row">
+                <div class="rank ${rankClass}">${medal}</div>
+                <div class="name">${escapeHtml(entry.name)}</div>
+                <div class="pts">${entry.score} pts</div>
+            </div>`;
+        });
+    }
+
+    html += '</div>';
+    section.innerHTML = html;
+    container.appendChild(section);
+});
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+</script>
+</body>
+</html>

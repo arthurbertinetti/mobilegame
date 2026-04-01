@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Bubble Shooter</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e1a;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,14,26,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(116,185,255,0.15);border:2px solid #74b9ff;border-radius:10px;color:#74b9ff;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#score-disp{color:#ffd93d;font-size:1.2rem;font-weight:bold}
+#level-disp{color:#74b9ff;font-size:1rem;font-weight:bold}
+canvas{display:block}
+#overlay{position:fixed;inset:0;background:rgba(10,14,26,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#74b9ff;margin-bottom:10px}
+#overlay p{color:#a29bfe;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(116,185,255,0.15);border:2px solid #74b9ff;border-radius:12px;color:#74b9ff;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#a29bfe;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="score-disp">0 pts</span>
+    <span id="level-disp">Niveau 1</span>
+</div>
+<canvas id="c"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">🫧 Bubble Shooter</h2>
+    <p id="ovMsg">Vise et tire pour regrouper 3+ bulles de même couleur !<br>Touche l'écran pour viser et tirer.</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var scoreEl=document.getElementById('score-disp'),levelEl=document.getElementById('level-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var W,H,RAD,COLS,ROWS,grid,shooter,nextColor,score,level,running,animId;
+var flying=null,particles=[];
+var COLORS=['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#e91e63'];
+var TOP_BAR=52;
+
+function resize(){
+    W=window.innerWidth;H=window.innerHeight-TOP_BAR;
+    canvas.width=W;canvas.height=H;
+    RAD=Math.floor(W/16);
+    COLS=Math.floor(W/(RAD*2));
+}
+
+function bubbleX(r,c){return c*RAD*2+RAD+(r%2===1?RAD:0);}
+function bubbleY(r){return r*RAD*1.73+RAD;}
+
+function initGrid(){
+    grid=[];
+    var startRows=5+Math.floor(level/3);
+    for(var r=0;r<20;r++){
+        grid[r]=[];
+        var cols=r%2===1?COLS-1:COLS;
+        for(var c=0;c<cols;c++){
+            grid[r][c]=r<startRows?Math.floor(Math.random()*Math.min(4+Math.floor(level/2),COLORS.length)):-1;
+        }
+    }
+}
+
+function startGame(){
+    resize();score=0;level=1;running=true;flying=null;particles=[];
+    initGrid();
+    shooter={x:W/2,aimX:W/2,aimY:0};
+    nextColor=randColor();
+    overlay.classList.add('hidden');
+    updateHUD();
+    if(animId)cancelAnimationFrame(animId);
+    loop();
+}
+
+function randColor(){
+    var active=[];
+    for(var r=0;r<grid.length;r++)for(var c=0;c<(grid[r]?grid[r].length:0);c++)
+        if(grid[r][c]>=0&&active.indexOf(grid[r][c])===-1)active.push(grid[r][c]);
+    return active.length>0?active[Math.floor(Math.random()*active.length)]:Math.floor(Math.random()*COLORS.length);
+}
+
+function updateHUD(){scoreEl.textContent=score+' pts';levelEl.textContent='Niveau '+level;}
+
+function shoot(targetX,targetY){
+    if(flying||!running)return;
+    var ox=W/2,oy=H-RAD*2;
+    var dx=targetX-ox,dy=targetY-oy;
+    if(dy>-30)dy=-30;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    var speed=12;
+    flying={x:ox,y:oy,vx:dx/dist*speed,vy:dy/dist*speed,color:nextColor};
+    nextColor=randColor();
+}
+
+function getNeighbors(r,c){
+    var nb=[];
+    var even=r%2===0;
+    nb.push({r:r,c:c-1},{r:r,c:c+1});
+    nb.push({r:r-1,c:even?c-1:c},{r:r-1,c:even?c:c+1});
+    nb.push({r:r+1,c:even?c-1:c},{r:r+1,c:even?c:c+1});
+    return nb.filter(function(n){return n.r>=0&&n.r<grid.length&&n.c>=0&&n.c<(n.r%2===1?COLS-1:COLS);});
+}
+
+function findCluster(r,c,color){
+    var visited={},cluster=[];
+    var stack=[{r:r,c:c}];
+    while(stack.length>0){
+        var cur=stack.pop();var key=cur.r+','+cur.c;
+        if(visited[key])continue;visited[key]=true;
+        if(grid[cur.r]&&grid[cur.r][cur.c]===color){
+            cluster.push(cur);
+            var nb=getNeighbors(cur.r,cur.c);
+            for(var i=0;i<nb.length;i++)stack.push(nb[i]);
+        }
+    }
+    return cluster;
+}
+
+function findFloating(){
+    var connected={};
+    var stack=[];
+    for(var c=0;c<COLS;c++){if(grid[0]&&grid[0][c]>=0){stack.push({r:0,c:c});}}
+    while(stack.length>0){
+        var cur=stack.pop();var key=cur.r+','+cur.c;
+        if(connected[key])continue;connected[key]=true;
+        var nb=getNeighbors(cur.r,cur.c);
+        for(var i=0;i<nb.length;i++){
+            if(grid[nb[i].r]&&grid[nb[i].r][nb[i].c]>=0&&!connected[nb[i].r+','+nb[i].c])
+                stack.push(nb[i]);
+        }
+    }
+    var floating=[];
+    for(var r=0;r<grid.length;r++)for(var c=0;c<(grid[r]?grid[r].length:0);c++){
+        if(grid[r][c]>=0&&!connected[r+','+c])floating.push({r:r,c:c});
+    }
+    return floating;
+}
+
+function snapBubble(){
+    var bx=flying.x,by=flying.y;
+    var bestR=0,bestC=0,bestD=Infinity;
+    for(var r=0;r<grid.length;r++){
+        var cols=r%2===1?COLS-1:COLS;
+        for(var c=0;c<cols;c++){
+            if(grid[r][c]>=0)continue;
+            var gx=bubbleX(r,c),gy=bubbleY(r);
+            var d=Math.sqrt((bx-gx)*(bx-gx)+(by-gy)*(by-gy));
+            if(d<bestD){bestD=d;bestR=r;bestC=c;}
+        }
+    }
+    grid[bestR][bestC]=flying.color;
+    var cluster=findCluster(bestR,bestC,flying.color);
+    var popped=0;
+    if(cluster.length>=3){
+        for(var i=0;i<cluster.length;i++){
+            spawnParts(bubbleX(cluster[i].r,cluster[i].c),bubbleY(cluster[i].r),COLORS[grid[cluster[i].r][cluster[i].c]]);
+            grid[cluster[i].r][cluster[i].c]=-1;
+        }
+        popped+=cluster.length;
+    }
+    var floating=findFloating();
+    for(var i=0;i<floating.length;i++){
+        spawnParts(bubbleX(floating[i].r,floating[i].c),bubbleY(floating[i].r),COLORS[grid[floating[i].r][floating[i].c]]);
+        grid[floating[i].r][floating[i].c]=-1;
+    }
+    popped+=floating.length;
+    score+=popped*15;
+    flying=null;
+    updateHUD();
+    checkWinLose();
+}
+
+function checkWinLose(){
+    var any=false;
+    for(var r=0;r<grid.length;r++)for(var c=0;c<(grid[r]?grid[r].length:0);c++)
+        if(grid[r][c]>=0){any=true;if(bubbleY(r)>H-RAD*4){gameOver();return;}}
+    if(!any){level++;initGrid();updateHUD();}
+}
+
+function gameOver(){
+    running=false;
+    ovTitle.textContent='🫧 Game Over !';
+    ovMsg.textContent='Niveau '+level+' atteint';
+    ovScore.textContent=score+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    if(score>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('bubbleshooter',score,n);}
+}
+
+function spawnParts(x,y,col){
+    for(var i=0;i<6;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:18,color:col,size:3+Math.random()*3});
+}
+
+function update(){
+    if(flying){
+        flying.x+=flying.vx;flying.y+=flying.vy;
+        if(flying.x<RAD||flying.x>W-RAD)flying.vx*=-1;
+        if(flying.y<RAD){snapBubble();return;}
+        for(var r=0;r<grid.length;r++){
+            var cols=r%2===1?COLS-1:COLS;
+            for(var c=0;c<cols;c++){
+                if(grid[r][c]<0)continue;
+                var gx=bubbleX(r,c),gy=bubbleY(r);
+                var dx=flying.x-gx,dy=flying.y-gy;
+                if(Math.sqrt(dx*dx+dy*dy)<RAD*1.8){snapBubble();return;}
+            }
+        }
+    }
+    for(var i=particles.length-1;i>=0;i--){
+        var p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.2;
+        if(--p.life<=0)particles.splice(i,1);
+    }
+}
+
+function draw(){
+    ctx.fillStyle='#0a0e1a';ctx.fillRect(0,0,W,H);
+    // Grid bubbles
+    for(var r=0;r<grid.length;r++){
+        var cols=r%2===1?COLS-1:COLS;
+        for(var c=0;c<cols;c++){
+            if(grid[r][c]<0)continue;
+            var x=bubbleX(r,c),y=bubbleY(r);
+            ctx.fillStyle=COLORS[grid[r][c]];
+            ctx.shadowColor=COLORS[grid[r][c]];ctx.shadowBlur=6;
+            ctx.beginPath();ctx.arc(x,y,RAD-1,0,Math.PI*2);ctx.fill();
+            ctx.shadowBlur=0;
+            ctx.fillStyle='rgba(255,255,255,0.25)';
+            ctx.beginPath();ctx.arc(x-RAD*0.25,y-RAD*0.25,RAD*0.22,0,Math.PI*2);ctx.fill();
+        }
+    }
+    // Flying bubble
+    if(flying){
+        ctx.fillStyle=COLORS[flying.color];
+        ctx.shadowColor=COLORS[flying.color];ctx.shadowBlur=10;
+        ctx.beginPath();ctx.arc(flying.x,flying.y,RAD-1,0,Math.PI*2);ctx.fill();
+        ctx.shadowBlur=0;
+    }
+    // Shooter
+    ctx.fillStyle=COLORS[nextColor];
+    ctx.shadowColor=COLORS[nextColor];ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(W/2,H-RAD*1.2,RAD,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.beginPath();ctx.arc(W/2-RAD*0.2,H-RAD*1.2-RAD*0.2,RAD*0.25,0,Math.PI*2);ctx.fill();
+    // Aim line with wall bounces
+    var asx=W/2,asy=H-RAD*2;
+    var adx=shooter.aimX-asx,ady=shooter.aimY-asy;
+    var alen=Math.sqrt(adx*adx+ady*ady);
+    if(alen>1&&ady<-5){
+        var avx=adx/alen,avy=ady/alen;
+        ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=2;ctx.setLineDash([6,4]);
+        ctx.beginPath();ctx.moveTo(asx,asy);
+        var lx=asx,ly=asy,maxD=H*1.5,dd=0;
+        while(dd<maxD&&ly>0){
+            var nx=lx+avx*4,ny=ly+avy*4;
+            if(nx<RAD){nx=2*RAD-nx;avx=-avx;}
+            else if(nx>W-RAD){nx=2*(W-RAD)-nx;avx=-avx;}
+            ctx.lineTo(nx,ny);lx=nx;ly=ny;dd+=4;
+        }
+        ctx.stroke();ctx.setLineDash([]);
+        ctx.fillStyle='rgba(255,255,255,0.4)';
+        ctx.beginPath();ctx.arc(lx,ly,5,0,Math.PI*2);ctx.fill();
+    }
+    // Particles
+    for(var i=0;i<particles.length;i++){
+        var p=particles[i];ctx.globalAlpha=p.life/18;ctx.fillStyle=p.color;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+}
+
+function loop(){
+    if(!running)return;
+    update();draw();animId=requestAnimationFrame(loop);
+}
+
+canvas.addEventListener('touchstart',function(e){e.preventDefault();
+    var t=e.touches[0];var rect=canvas.getBoundingClientRect();
+    shooter.aimX=t.clientX-rect.left;shooter.aimY=t.clientY-rect.top;
+},{passive:false});
+canvas.addEventListener('touchmove',function(e){e.preventDefault();
+    var t=e.touches[0];var rect=canvas.getBoundingClientRect();
+    shooter.aimX=t.clientX-rect.left;shooter.aimY=t.clientY-rect.top;
+},{passive:false});
+canvas.addEventListener('touchend',function(e){e.preventDefault();
+    shoot(shooter.aimX,shooter.aimY);
+},{passive:false});
+canvas.addEventListener('click',function(e){
+    var rect=canvas.getBoundingClientRect();shoot(e.clientX-rect.left,e.clientY-rect.top);
+});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(running)draw();});
+resize();
+</script>
+</body>
+</html>

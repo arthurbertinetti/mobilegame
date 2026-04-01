@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mastermind</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#1a1a2e;color:#eee;font-family:'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;align-items:center;height:100dvh;overflow-y:auto;overflow-x:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+        #top-bar{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:center;padding:10px 14px 6px;font-size:.95rem;position:sticky;top:0;background:#1a1a2e;z-index:10}
+        #top-bar a{color:#ff6b81;text-decoration:none;font-size:1.2rem}
+        #top-bar span{font-weight:bold;color:#ff6b81}
+        #board{width:100%;max-width:380px;padding:0 10px;display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+        .row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;background:rgba(255,255,255,.04)}
+        .row.active{background:rgba(255,255,255,.08);box-shadow:0 0 12px rgba(255,107,129,.15)}
+        .row.past{opacity:.7}
+        .pegs{display:flex;gap:6px}
+        .peg{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.15);cursor:pointer;transition:transform .1s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+        .peg:active{transform:scale(.9)}
+        .peg.empty{background:rgba(255,255,255,.06)}
+        .hints{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-left:auto}
+        .hint{width:14px;height:14px;border-radius:50%;border:1px solid rgba(255,255,255,.12)}
+        .hint-black{background:#2ecc71;border-color:#27ae60}
+        .hint-white{background:#e74c3c;border-color:#c0392b}
+        .hint-absent{background:#222;border-color:#444}
+        .hint-empty{background:rgba(255,255,255,.06)}
+        .legend{display:flex;gap:12px;justify-content:center;padding:4px 0 2px;font-size:.7rem;color:#aaa}
+        .legend span{display:flex;align-items:center;gap:4px}
+        .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+        #color-picker{display:flex;gap:10px;justify-content:center;padding:8px 0;flex-wrap:wrap;position:sticky;bottom:60px;background:#1a1a2e;width:100%;max-width:380px;z-index:5}
+        .pick-color{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .12s;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+        .pick-color.selected{border-color:#fff;transform:scale(1.15);box-shadow:0 0 12px rgba(255,255,255,.3)}
+        .pick-color:active{transform:scale(.92)}
+        #actions{display:flex;gap:12px;padding:8px 0 16px;position:sticky;bottom:0;background:#1a1a2e;z-index:5;width:100%;max-width:380px;justify-content:center}
+        #actions button{padding:12px 28px;font-size:1rem;border-radius:14px;border:1px solid rgba(255,255,255,.1);font-weight:bold;color:#eee;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        #actions button:active{transform:scale(.94)}
+        #btn-check{background:linear-gradient(145deg,#27ae60,#1e8449)}
+        #btn-check:disabled{opacity:.35}
+        #btn-clear{background:linear-gradient(145deg,#e67e22,#d35400)}
+        #btn-new{background:linear-gradient(145deg,#3498db,#2471a3)}
+        #overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);flex-direction:column;justify-content:center;align-items:center;z-index:30;backdrop-filter:blur(3px)}
+        #overlay.visible{display:flex}
+        #overlay h2{font-size:2rem;margin-bottom:8px;text-shadow:0 0 20px rgba(255,71,87,.5)}
+        .ov-win{color:#6bff8e}
+        .ov-lose{color:#ff4757}
+        #overlay p{font-size:1.1rem;margin-bottom:16px}
+        #overlay .solution{display:flex;gap:8px;margin-bottom:16px}
+        #overlay .sol-peg{width:32px;height:32px;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+        #overlay button{padding:14px 36px;font-size:1.1rem;border-radius:14px;background:linear-gradient(145deg,#27ae60,#1e8449);color:#eee;border:1px solid rgba(255,255,255,.12);font-weight:bold;cursor:pointer}
+    </style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html">← Menu</a>
+    <div>Ligne : <span id="cur-row">1</span>/10</div>
+</div>
+<div id="board"></div>
+<div class="legend"><span><span class="legend-dot" style="background:#2ecc71"></span>Bien placé</span><span><span class="legend-dot" style="background:#e74c3c"></span>Mal placé</span><span><span class="legend-dot" style="background:#222;border:1px solid #444"></span>N'existe pas</span></div>
+<div id="color-picker"></div>
+<div id="actions">
+    <button id="btn-clear">Effacer</button>
+    <button id="btn-check" disabled>Vérifier</button>
+    <button id="btn-new">Nouvelle</button>
+</div>
+<div id="overlay">
+    <h2 id="ov-title"></h2>
+    <p id="ov-msg"></p>
+    <div class="solution" id="ov-solution"></div>
+    <button id="ov-btn">Nouvelle partie</button>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+/* ============================================================
+   MASTERMIND – 4 pions, 6 couleurs, 10 essais
+   ============================================================ */
+const COLORS = [
+    '#e74c3c', // rouge
+    '#3498db', // bleu
+    '#2ecc71', // vert
+    '#f1c40f', // jaune
+    '#9b59b6', // violet
+    '#e67e22', // orange
+];
+const CODE_LEN = 4;
+const MAX_ROWS = 10;
+
+const boardEl = document.getElementById('board');
+const pickerEl = document.getElementById('color-picker');
+const overlay = document.getElementById('overlay');
+const ovTitle = document.getElementById('ov-title');
+const ovMsg = document.getElementById('ov-msg');
+const ovSolution = document.getElementById('ov-solution');
+const ovBtn = document.getElementById('ov-btn');
+const btnCheck = document.getElementById('btn-check');
+const btnClear = document.getElementById('btn-clear');
+const btnNew = document.getElementById('btn-new');
+const curRowEl = document.getElementById('cur-row');
+
+let secret, currentRow, guesses, selectedColor, gameActive;
+
+/* --- Init --- */
+function newGame() {
+    secret = [];
+    for (let i = 0; i < CODE_LEN; i++) secret.push(Math.floor(Math.random() * COLORS.length));
+    currentRow = 0;
+    guesses = [];
+    selectedColor = 0;
+    gameActive = true;
+    overlay.classList.remove('visible');
+    buildBoard();
+    buildPicker();
+    curRowEl.textContent = 1;
+    btnCheck.disabled = true;
+}
+
+function buildBoard() {
+    boardEl.innerHTML = '';
+    for (let r = 0; r < MAX_ROWS; r++) {
+        const row = document.createElement('div');
+        row.className = 'row' + (r === 0 ? ' active' : '');
+        row.dataset.row = r;
+
+        const pegs = document.createElement('div');
+        pegs.className = 'pegs';
+        for (let c = 0; c < CODE_LEN; c++) {
+            const peg = document.createElement('div');
+            peg.className = 'peg empty';
+            peg.dataset.row = r;
+            peg.dataset.col = c;
+            peg.addEventListener('click', onPegClick);
+            peg.addEventListener('touchstart', function(e){ e.preventDefault(); onPegClick.call(this, e); }, {passive:false});
+            pegs.appendChild(peg);
+        }
+
+        const hints = document.createElement('div');
+        hints.className = 'hints';
+        for (let h = 0; h < CODE_LEN; h++) {
+            const hint = document.createElement('div');
+            hint.className = 'hint hint-empty';
+            hints.appendChild(hint);
+        }
+
+        row.appendChild(pegs);
+        row.appendChild(hints);
+        boardEl.appendChild(row);
+    }
+}
+
+function buildPicker() {
+    pickerEl.innerHTML = '';
+    COLORS.forEach((color, i) => {
+        const div = document.createElement('div');
+        div.className = 'pick-color' + (i === 0 ? ' selected' : '');
+        div.style.background = color;
+        div.addEventListener('click', () => selectColor(i));
+        div.addEventListener('touchstart', e => { e.preventDefault(); selectColor(i); }, {passive:false});
+        pickerEl.appendChild(div);
+    });
+}
+
+function selectColor(idx) {
+    selectedColor = idx;
+    pickerEl.querySelectorAll('.pick-color').forEach((el, i) => {
+        el.classList.toggle('selected', i === idx);
+    });
+}
+
+function onPegClick() {
+    if (!gameActive) return;
+    const r = parseInt(this.dataset.row);
+    const c = parseInt(this.dataset.col);
+    if (r !== currentRow) return;
+
+    this.style.background = COLORS[selectedColor];
+    this.style.boxShadow = '0 2px 10px ' + COLORS[selectedColor] + '80';
+    this.classList.remove('empty');
+    this.dataset.color = selectedColor;
+
+    checkCanSubmit();
+}
+
+function checkCanSubmit() {
+    const row = boardEl.querySelectorAll(`.peg[data-row="${currentRow}"]`);
+    const filled = Array.from(row).every(p => p.dataset.color !== undefined && p.dataset.color !== '');
+    btnCheck.disabled = !filled;
+}
+
+function getGuess() {
+    const row = boardEl.querySelectorAll(`.peg[data-row="${currentRow}"]`);
+    return Array.from(row).map(p => parseInt(p.dataset.color));
+}
+
+function evaluate(guess) {
+    let blacks = 0, whites = 0;
+    const sUsed = Array(CODE_LEN).fill(false);
+    const gUsed = Array(CODE_LEN).fill(false);
+
+    // Exact matches (black)
+    for (let i = 0; i < CODE_LEN; i++) {
+        if (guess[i] === secret[i]) { blacks++; sUsed[i] = true; gUsed[i] = true; }
+    }
+    // Color matches (white)
+    for (let i = 0; i < CODE_LEN; i++) {
+        if (gUsed[i]) continue;
+        for (let j = 0; j < CODE_LEN; j++) {
+            if (sUsed[j]) continue;
+            if (guess[i] === secret[j]) { whites++; sUsed[j] = true; break; }
+        }
+    }
+    return {blacks, whites};
+}
+
+function showHints(result) {
+    const rowEl = boardEl.querySelectorAll('.row')[currentRow];
+    const hints = rowEl.querySelectorAll('.hint');
+    const absent = CODE_LEN - result.blacks - result.whites;
+    let idx = 0;
+    for (let i = 0; i < result.blacks; i++) { hints[idx].className = 'hint hint-black'; idx++; }
+    for (let i = 0; i < result.whites; i++) { hints[idx].className = 'hint hint-white'; idx++; }
+    for (let i = 0; i < absent; i++) { hints[idx].className = 'hint hint-absent'; idx++; }
+}
+
+function submitGuess() {
+    if (!gameActive) return;
+    const guess = getGuess();
+    const result = evaluate(guess);
+    guesses.push({guess, result});
+    showHints(result);
+
+    const rowEl = boardEl.querySelectorAll('.row')[currentRow];
+    rowEl.classList.remove('active');
+    rowEl.classList.add('past');
+
+    // Disable pegs of this row
+    rowEl.querySelectorAll('.peg').forEach(p => {
+        p.removeEventListener('click', onPegClick);
+        p.style.cursor = 'default';
+    });
+
+    if (result.blacks === CODE_LEN) {
+        // WIN
+        gameActive = false;
+        const finalScore = (MAX_ROWS - currentRow) * 100;
+        Leaderboard.promptName(finalScore, (name) => {
+            if (name) Leaderboard.add('mastermind', name, finalScore);
+            ovTitle.textContent = '🎉 Trouvé !';
+            ovTitle.className = 'ov-win';
+            ovMsg.textContent = `En ${currentRow + 1} essai${currentRow > 0 ? 's' : ''} — Score: ${finalScore}`;
+            showSolution();
+            overlay.classList.add('visible');
+        });
+        return;
+    }
+
+    currentRow++;
+    curRowEl.textContent = currentRow + 1;
+
+    if (currentRow >= MAX_ROWS) {
+        // LOSE
+        gameActive = false;
+        Leaderboard.promptName(0, (name) => {
+            if (name) Leaderboard.add('mastermind', name, 0);
+            ovTitle.textContent = '😢 Perdu !';
+            ovTitle.className = 'ov-lose';
+            ovMsg.textContent = 'La combinaison était :';
+            showSolution();
+            overlay.classList.add('visible');
+        });
+        return;
+    }
+
+    // Activate next row
+    const nextRow = boardEl.querySelectorAll('.row')[currentRow];
+    nextRow.classList.add('active');
+    btnCheck.disabled = true;
+
+    // Scroll to active row
+    nextRow.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function showSolution() {
+    ovSolution.innerHTML = '';
+    secret.forEach(ci => {
+        const div = document.createElement('div');
+        div.className = 'sol-peg';
+        div.style.background = COLORS[ci];
+        ovSolution.appendChild(div);
+    });
+}
+
+function clearRow() {
+    if (!gameActive) return;
+    const pegs = boardEl.querySelectorAll(`.peg[data-row="${currentRow}"]`);
+    pegs.forEach(p => {
+        p.style.background = '';
+        p.style.boxShadow = '';
+        p.classList.add('empty');
+        delete p.dataset.color;
+    });
+    btnCheck.disabled = true;
+}
+
+btnCheck.addEventListener('click', submitGuess);
+btnClear.addEventListener('click', clearRow);
+btnNew.addEventListener('click', newGame);
+ovBtn.addEventListener('click', newGame);
+
+[btnCheck, btnClear, btnNew, ovBtn].forEach(btn => {
+    btn.addEventListener('touchstart', e => { e.preventDefault(); btn.click(); }, {passive:false});
+});
+
+newGame();
+</script>
+</body>
+</html>

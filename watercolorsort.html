@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Water Color Sort</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e1a;color:#eee;font-family:'Segoe UI',Arial,sans-serif;
+  display:flex;flex-direction:column;align-items:center;height:100dvh;overflow:hidden;
+  -webkit-user-select:none;user-select:none}
+#top-bar{width:100%;display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:rgba(0,0,0,.4)}
+.top-btn{color:#fff;text-decoration:none;font-size:1.5rem;line-height:1}
+#hud{display:flex;gap:14px;font-size:.95rem;align-items:center}
+#hud span{color:#ffd93d}
+.btn{background:rgba(255,255,255,.12);border:none;color:#fff;padding:6px 14px;
+  border-radius:8px;font-size:.9rem;cursor:pointer}
+.btn:active{background:rgba(255,255,255,.25)}
+#game-area{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;width:100%;padding:10px}
+#tubes-container{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
+  max-width:360px}
+.tube{display:flex;flex-direction:column-reverse;width:48px;border:2px solid rgba(255,255,255,.25);
+  border-top:none;border-radius:0 0 14px 14px;cursor:pointer;transition:transform .15s;
+  position:relative;background:rgba(255,255,255,.04)}
+.tube.selected{transform:translateY(-12px);border-color:#ffd93d}
+.tube-segment{width:100%;height:30px;transition:background .2s}
+.tube-segment:first-child{border-radius:0 0 12px 12px}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;
+  flex-direction:column;align-items:center;justify-content:center;z-index:100}
+#overlay h2{font-size:2rem;margin-bottom:12px;color:#ffd93d}
+#overlay p{font-size:1.1rem;margin-bottom:20px;color:#aaa;text-align:center;padding:0 20px}
+#overlay .btn-big{background:linear-gradient(135deg,#00bcd4,#0097a7);color:#fff;
+  border:none;padding:14px 40px;border-radius:12px;font-size:1.2rem;cursor:pointer;
+  margin:6px}
+#overlay .btn-big:active{filter:brightness(1.2)}
+#bottom-bar{display:flex;gap:12px;padding:12px}
+.colors-ref{display:flex;gap:4px;margin-top:8px}
+
+/* Level complete animation */
+@keyframes celebrate{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+.celebrate{animation:celebrate .4s ease}
+</style>
+</head>
+<body>
+
+<div id="top-bar">
+  <a href="index.html" class="top-btn">🏠</a>
+  <div id="hud">
+    <span>Niveau <b id="level-num">1</b></span>
+    <span>Coups: <b id="moves">0</b></span>
+  </div>
+</div>
+
+<div id="game-area">
+  <div id="tubes-container"></div>
+</div>
+
+<div id="bottom-bar">
+  <button class="btn" id="btn-undo">↩ Annuler</button>
+  <button class="btn" id="btn-hint">💡 Indice</button>
+  <button class="btn" id="btn-restart">🔄 Restart</button>
+</div>
+
+<div id="overlay">
+  <h2>🧪 Water Color Sort</h2>
+  <p>Trie les liquides colorés dans les tubes.<br>Un seul couleur par tube pour gagner !</p>
+  <button class="btn-big" id="btn-start">▶ Jouer</button>
+</div>
+
+<script src="leaderboard.js"></script>
+<script>
+const COLORS = [
+  '#e74c3c','#3498db','#2ecc71','#f1c40f','#9b59b6',
+  '#e67e22','#1abc9c','#e91e63','#00bcd4','#ff5722',
+  '#8bc34a','#673ab7'
+];
+const TUBE_CAPACITY = 4;
+const container = document.getElementById('tubes-container');
+const overlay = document.getElementById('overlay');
+const levelEl = document.getElementById('level-num');
+const movesEl = document.getElementById('moves');
+
+let tubes = [];
+let selected = null;
+let moves = 0;
+let level = 1;
+let totalScore = 0;
+let history = [];
+let gameActive = false;
+
+function getNumColors(lvl) {
+  return Math.min(3 + Math.floor((lvl - 1) / 2), COLORS.length);
+}
+function getExtraTubes(lvl) {
+  return lvl <= 3 ? 2 : (lvl <= 8 ? 2 : 2);
+}
+
+function generateLevel(lvl) {
+  const numColors = getNumColors(lvl);
+  const extraTubes = getExtraTubes(lvl);
+  const totalTubes = numColors + extraTubes;
+  
+  // Create color pool: each color appears TUBE_CAPACITY times
+  let pool = [];
+  for (let c = 0; c < numColors; c++) {
+    for (let i = 0; i < TUBE_CAPACITY; i++) pool.push(c);
+  }
+  
+  // Shuffle pool (Fisher-Yates)
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  
+  // Fill tubes
+  tubes = [];
+  let idx = 0;
+  for (let t = 0; t < numColors; t++) {
+    const tube = [];
+    for (let s = 0; s < TUBE_CAPACITY; s++) {
+      tube.push(pool[idx++]);
+    }
+    tubes.push(tube);
+  }
+  // Add empty tubes
+  for (let t = 0; t < extraTubes; t++) {
+    tubes.push([]);
+  }
+  
+  selected = null;
+  moves = 0;
+  history = [];
+  movesEl.textContent = '0';
+  levelEl.textContent = lvl;
+}
+
+function render() {
+  container.innerHTML = '';
+  const numColors = getNumColors(level);
+  
+  tubes.forEach((tube, ti) => {
+    const tubeEl = document.createElement('div');
+    tubeEl.className = 'tube' + (selected === ti ? ' selected' : '');
+    tubeEl.style.height = (TUBE_CAPACITY * 30 + 8) + 'px';
+    
+    for (let s = 0; s < TUBE_CAPACITY; s++) {
+      const seg = document.createElement('div');
+      seg.className = 'tube-segment';
+      if (s < tube.length) {
+        seg.style.background = COLORS[tube[s]];
+      }
+      tubeEl.appendChild(seg);
+    }
+    
+    tubeEl.addEventListener('click', () => onTubeClick(ti));
+    container.appendChild(tubeEl);
+  });
+}
+
+function onTubeClick(ti) {
+  if (!gameActive) return;
+  
+  if (selected === null) {
+    // Select a tube (must have at least one segment)
+    if (tubes[ti].length > 0) {
+      selected = ti;
+      render();
+    }
+  } else if (selected === ti) {
+    // Deselect
+    selected = null;
+    render();
+  } else {
+    // Try to pour
+    tryPour(selected, ti);
+    selected = null;
+    render();
+    checkWin();
+  }
+}
+
+function tryPour(from, to) {
+  if (tubes[from].length === 0) return;
+  if (tubes[to].length >= TUBE_CAPACITY) return;
+  
+  const topColor = tubes[from][tubes[from].length - 1];
+  
+  // Can only pour onto same color or empty tube
+  if (tubes[to].length > 0 && tubes[to][tubes[to].length - 1] !== topColor) return;
+  
+  // Pour as many matching segments as possible
+  const moved = [];
+  while (
+    tubes[from].length > 0 &&
+    tubes[from][tubes[from].length - 1] === topColor &&
+    tubes[to].length < TUBE_CAPACITY
+  ) {
+    const seg = tubes[from].pop();
+    tubes[to].push(seg);
+    moved.push(seg);
+  }
+  
+  if (moved.length > 0) {
+    history.push({ from, to, count: moved.length });
+    moves++;
+    movesEl.textContent = moves;
+  }
+}
+
+function undo() {
+  if (history.length === 0) return;
+  const last = history.pop();
+  for (let i = 0; i < last.count; i++) {
+    const seg = tubes[last.to].pop();
+    tubes[last.from].push(seg);
+  }
+  moves++;
+  movesEl.textContent = moves;
+  selected = null;
+  render();
+}
+
+function giveHint() {
+  // Simple hint: find a valid beneficial move
+  for (let f = 0; f < tubes.length; f++) {
+    if (tubes[f].length === 0) continue;
+    const topColor = tubes[f][tubes[f].length - 1];
+    
+    for (let t = 0; t < tubes.length; t++) {
+      if (f === t) continue;
+      if (tubes[t].length >= TUBE_CAPACITY) continue;
+      
+      // Prefer pouring onto same color
+      if (tubes[t].length > 0 && tubes[t][tubes[t].length - 1] === topColor) {
+        flashTubes(f, t);
+        return;
+      }
+    }
+  }
+  // Try empty tube
+  for (let f = 0; f < tubes.length; f++) {
+    if (tubes[f].length === 0) continue;
+    for (let t = 0; t < tubes.length; t++) {
+      if (f === t) continue;
+      if (tubes[t].length === 0) {
+        flashTubes(f, t);
+        return;
+      }
+    }
+  }
+}
+
+function flashTubes(a, b) {
+  const tubeEls = container.querySelectorAll('.tube');
+  [a, b].forEach(i => {
+    tubeEls[i].style.border = '2px solid #ffd93d';
+    tubeEls[i].style.borderTop = 'none';
+    setTimeout(() => {
+      tubeEls[i].style.border = '2px solid rgba(255,255,255,.25)';
+      tubeEls[i].style.borderTop = 'none';
+    }, 800);
+  });
+}
+
+function checkWin() {
+  const numColors = getNumColors(level);
+  let complete = 0;
+  for (const tube of tubes) {
+    if (tube.length === 0) continue;
+    if (tube.length !== TUBE_CAPACITY) return;
+    if (new Set(tube).size !== 1) return;
+    complete++;
+  }
+  if (complete === numColors) {
+    // Win!
+    gameActive = false;
+    container.classList.add('celebrate');
+    setTimeout(() => {
+      container.classList.remove('celebrate');
+      showLevelComplete();
+    }, 500);
+  }
+}
+
+function showLevelComplete() {
+  const sc = level * 100 + Math.max(0, (50 - moves) * 5);
+  totalScore += sc;
+  
+  if (level >= 10) {
+    // After 10 levels: save score and show final screen
+    overlay.innerHTML = `
+      <h2>🏆 Bravo ! 10 niveaux terminés !</h2>
+      <p>Score total : ${totalScore} pts</p>
+      <button class="btn-big" id="btn-next">🔄 Recommencer</button>
+    `;
+    overlay.style.display = 'flex';
+    document.getElementById('btn-next').addEventListener('click', function() {
+      level = 1; totalScore = 0;
+      overlay.style.display = 'none';
+      generateLevel(level);
+      render();
+      gameActive = true;
+    });
+    try { var name = Leaderboard.promptName(); Leaderboard.add('watercolorsort', totalScore, name); } catch(e) {}
+  } else {
+    overlay.innerHTML = `
+      <h2>✅ Niveau ${level} terminé !</h2>
+      <p>Coups : ${moves} — Score : +${sc} pts<br>Score total : ${totalScore} pts</p>
+      <button class="btn-big" id="btn-next">Niveau suivant ▶</button>
+    `;
+    overlay.style.display = 'flex';
+    document.getElementById('btn-next').addEventListener('click', function() {
+      level++;
+      overlay.style.display = 'none';
+      generateLevel(level);
+      render();
+      gameActive = true;
+    });
+  }
+}
+
+function restartLevel() {
+  generateLevel(level);
+  render();
+}
+
+// Events
+document.getElementById('btn-undo').addEventListener('click', undo);
+document.getElementById('btn-hint').addEventListener('click', giveHint);
+document.getElementById('btn-restart').addEventListener('click', restartLevel);
+document.getElementById('btn-start').addEventListener('click', () => {
+  overlay.style.display = 'none';
+  level = 1; totalScore = 0;
+  generateLevel(level);
+  render();
+  gameActive = true;
+});
+</script>
+</body>
+</html>

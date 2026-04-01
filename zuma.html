@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Zuma</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a1a0a;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh}
+#top-bar{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,26,10,0.92);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(46,204,113,0.15);border:2px solid #2ecc71;border-radius:10px;color:#2ecc71;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#score-disp{color:#ffd93d;font-size:1.2rem;font-weight:bold}
+#level-disp{color:#2ecc71;font-size:1rem;font-weight:bold}
+canvas{display:block;width:100%;height:100%}
+#overlay{position:fixed;inset:0;background:rgba(10,26,10,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#2ecc71;margin-bottom:10px;text-shadow:0 0 15px #2ecc71}
+#overlay p{color:#82e0aa;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(46,204,113,0.15);border:2px solid #2ecc71;border-radius:12px;color:#2ecc71;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#82e0aa;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="score-disp">0 pts</span>
+    <span id="level-disp">Niveau 1</span>
+</div>
+<canvas id="c"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">🐸 Zuma</h2>
+    <p id="ovMsg">Tire des billes pour aligner 3+ de la même couleur !<br>Touche l'écran pour viser et tirer.<br>Empêche la chaîne d'atteindre le trou !</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var scoreEl=document.getElementById('score-disp'),levelEl=document.getElementById('level-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var W,H,CX,CY;
+var COLORS=['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6'];
+var RAD,path,chain,shooter,bullet,particles;
+var score,level,speed,totalBalls,spawned,running,animId,aimAngle;
+
+function resize(){W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas.height=H;CX=W/2;CY=H-80;RAD=Math.max(10,W*0.025);}
+
+// Spiral path
+function buildPath(){
+    path=[];
+    var cx=W/2,cy=H*0.38;
+    var loops=5,steps=600;
+    for(var i=0;i<steps;i++){
+        var t=i/steps;
+        var angle=t*loops*Math.PI*2;
+        var r=Math.min(W,H)*0.04+t*Math.min(W,H)*0.38;
+        path.push({x:cx+Math.cos(angle)*r,y:cy+Math.sin(angle)*r});
+    }
+}
+
+function startGame(){
+    resize();buildPath();
+    chain=[];shooter={color:randColor()};bullet=null;particles=[];
+    score=0;level=1;speed=0.15;totalBalls=50+level*15;spawned=0;
+    aimAngle=0;running=true;
+    overlay.classList.add('hidden');updateHUD();
+    if(animId)cancelAnimationFrame(animId);loop();
+}
+
+function randColor(){return Math.floor(Math.random()*Math.min(3+Math.floor(level/2),COLORS.length));}
+function updateHUD(){scoreEl.textContent=score+' pts';levelEl.textContent='Niveau '+level;}
+
+function update(){
+    // Spawn new balls at head
+    if(spawned<totalBalls&&(chain.length===0||chain[0].t>RAD*2.2/pathLen())){
+        chain.unshift({t:0,color:randColor()});spawned++;
+    }
+    // Move chain — push from head, enforce no gaps
+    var sp=speed/pathLen();
+    var minGap=RAD*2/pathLen();
+    if(chain.length>0){
+        chain[0].t+=sp;
+        for(var i=1;i<chain.length;i++){
+            var maxT=chain[i-1].t+minGap;
+            chain[i].t=maxT;
+        }
+    }
+    // Check end
+    if(chain.length>0&&chain[chain.length-1].t>=1){gameOver();return;}
+    // Bullet
+    if(bullet){
+        bullet.x+=bullet.vx;bullet.y+=bullet.vy;
+        if(bullet.x<-50||bullet.x>W+50||bullet.y<-50||bullet.y>H+50){bullet=null;}
+        else{
+            // Check collision with chain
+            for(var i=0;i<chain.length;i++){
+                var bp=getPos(chain[i].t);
+                var dx=bullet.x-bp.x,dy=bullet.y-bp.y;
+                if(Math.sqrt(dx*dx+dy*dy)<RAD*2){
+                    // Insert
+                    chain.splice(i+1,0,{t:chain[i].t+RAD*2/pathLen(),color:bullet.color});
+                    bullet=null;
+                    // Push back
+                    for(var j=i+2;j<chain.length;j++)chain[j].t+=RAD*2/pathLen();
+                    checkMatch(i+1);
+                    break;
+                }
+            }
+        }
+    }
+    // Particles
+    for(var i=particles.length-1;i>=0;i--){
+        var p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;
+        if(--p.life<=0)particles.splice(i,1);
+    }
+    // Level complete
+    if(spawned>=totalBalls&&chain.length===0){
+        level++;speed=0.15+level*0.03;totalBalls=50+level*15;spawned=0;
+        updateHUD();
+    }
+}
+
+function checkMatch(idx){
+    var color=chain[idx].color;
+    var start=idx,end=idx;
+    while(start>0&&chain[start-1].color===color)start--;
+    while(end<chain.length-1&&chain[end+1].color===color)end++;
+    var count=end-start+1;
+    if(count>=3){
+        for(var i=start;i<=end;i++){
+            var p=getPos(chain[i].t);
+            spawnParts(p.x,p.y,COLORS[chain[i].color]);
+        }
+        chain.splice(start,count);
+        score+=count*20;
+        updateHUD();
+        // Collapse: slide the tail portion forward to close the gap
+        if(start>0&&start<chain.length){
+            var gapTarget=chain[start-1].t+RAD*2/pathLen();
+            var shift=chain[start].t-gapTarget;
+            if(shift>0){
+                for(var j=start;j<chain.length;j++)chain[j].t-=shift;
+            }
+            // Chain reaction after collapse
+            if(chain[start-1].color===chain[start].color){
+                setTimeout(function(){checkMatch(start);},150);
+            }
+        }
+    }
+}
+
+function pathLen(){
+    var len=0;
+    for(var i=1;i<path.length;i++){
+        var dx=path[i].x-path[i-1].x,dy=path[i].y-path[i-1].y;
+        len+=Math.sqrt(dx*dx+dy*dy);
+    }
+    return len;
+}
+
+function getPos(t){
+    t=Math.max(0,Math.min(1,t));
+    var idx=t*(path.length-1);
+    var i=Math.floor(idx);
+    if(i>=path.length-1)return path[path.length-1];
+    var f=idx-i;
+    return{x:path[i].x+(path[i+1].x-path[i].x)*f,y:path[i].y+(path[i+1].y-path[i].y)*f};
+}
+
+function spawnParts(x,y,col){
+    for(var i=0;i<6;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*5,vy:(Math.random()-0.5)*5,life:18,color:col,size:RAD*0.3+Math.random()*RAD*0.3});
+}
+
+function shoot(tx,ty){
+    if(bullet||!running)return;
+    var dx=tx-CX,dy=ty-CY;
+    var dist=Math.sqrt(dx*dx+dy*dy);if(dist<1)return;
+    bullet={x:CX,y:CY,vx:dx/dist*12,vy:dy/dist*12,color:shooter.color};
+    shooter.color=randColor();
+}
+
+function gameOver(){
+    running=false;
+    ovTitle.textContent='🐸 Game Over !';
+    ovMsg.textContent='Niveau '+level+' atteint';
+    ovScore.textContent=score+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    if(score>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('zuma',score,n);}
+}
+
+function draw(){
+    ctx.fillStyle='#0a1a0a';ctx.fillRect(0,0,W,H);
+    // Path
+    ctx.strokeStyle='rgba(46,204,113,0.15)';ctx.lineWidth=RAD*2.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(path[0].x,path[0].y);
+    for(var i=1;i<path.length;i++)ctx.lineTo(path[i].x,path[i].y);
+    ctx.stroke();
+    // Hole at end
+    var ep=path[path.length-1];
+    ctx.fillStyle='#111';ctx.beginPath();ctx.arc(ep.x,ep.y,RAD*2,0,Math.PI*2);ctx.fill();
+    // Chain
+    for(var i=0;i<chain.length;i++){
+        var p=getPos(chain[i].t);
+        ctx.fillStyle=COLORS[chain[i].color];
+        ctx.shadowColor=COLORS[chain[i].color];ctx.shadowBlur=6;
+        ctx.beginPath();ctx.arc(p.x,p.y,RAD,0,Math.PI*2);ctx.fill();
+        ctx.shadowBlur=0;
+        ctx.fillStyle='rgba(255,255,255,0.2)';
+        ctx.beginPath();ctx.arc(p.x-RAD*0.25,p.y-RAD*0.25,RAD*0.25,0,Math.PI*2);ctx.fill();
+    }
+    // Shooter (frog)
+    ctx.fillStyle='#2ecc71';ctx.shadowColor='#2ecc71';ctx.shadowBlur=15;
+    ctx.beginPath();ctx.arc(CX,CY,RAD*1.8,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+    // Eyes
+    var eyeOx=Math.cos(aimAngle)*RAD*0.4,eyeOy=Math.sin(aimAngle)*RAD*0.4;
+    ctx.fillStyle='#fff';
+    ctx.beginPath();ctx.arc(CX-RAD*0.6+eyeOx*0.3,CY-RAD*0.6+eyeOy*0.3,RAD*0.45,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(CX+RAD*0.6+eyeOx*0.3,CY-RAD*0.6+eyeOy*0.3,RAD*0.45,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#111';
+    ctx.beginPath();ctx.arc(CX-RAD*0.55+eyeOx*0.5,CY-RAD*0.55+eyeOy*0.5,RAD*0.2,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(CX+RAD*0.65+eyeOx*0.5,CY-RAD*0.55+eyeOy*0.5,RAD*0.2,0,Math.PI*2);ctx.fill();
+    // Next ball shown ON TOP of frog
+    ctx.fillStyle=COLORS[shooter.color];ctx.shadowColor=COLORS[shooter.color];ctx.shadowBlur=10;
+    ctx.beginPath();ctx.arc(CX+Math.cos(aimAngle)*RAD*1.2,CY+Math.sin(aimAngle)*RAD*1.2,RAD*0.85,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.beginPath();ctx.arc(CX+Math.cos(aimAngle)*RAD*1.2-RAD*0.15,CY+Math.sin(aimAngle)*RAD*1.2-RAD*0.15,RAD*0.2,0,Math.PI*2);ctx.fill();
+    // Aim line
+    ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+    ctx.beginPath();ctx.moveTo(CX,CY);
+    ctx.lineTo(CX+Math.cos(aimAngle)*W*0.4,CY+Math.sin(aimAngle)*W*0.4);ctx.stroke();ctx.setLineDash([]);
+    // Bullet
+    if(bullet){
+        ctx.fillStyle=COLORS[bullet.color];ctx.shadowColor=COLORS[bullet.color];ctx.shadowBlur=8;
+        ctx.beginPath();ctx.arc(bullet.x,bullet.y,RAD,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+    }
+    // Particles
+    for(var i=0;i<particles.length;i++){
+        var p=particles[i];ctx.globalAlpha=p.life/18;ctx.fillStyle=p.color;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();
+    }
+    ctx.globalAlpha=1;
+}
+
+function loop(){if(!running)return;update();if(!running)return;draw();animId=requestAnimationFrame(loop);}
+
+canvas.addEventListener('touchstart',function(e){e.preventDefault();
+    var t=e.touches[0];aimAngle=Math.atan2(t.clientY-CY,t.clientX-CX);
+},{passive:false});
+canvas.addEventListener('touchmove',function(e){e.preventDefault();
+    var t=e.touches[0];aimAngle=Math.atan2(t.clientY-CY,t.clientX-CX);
+},{passive:false});
+canvas.addEventListener('touchend',function(e){e.preventDefault();
+    var t=e.changedTouches[0];shoot(t.clientX,t.clientY);
+},{passive:false});
+canvas.addEventListener('mousemove',function(e){aimAngle=Math.atan2(e.clientY-CY,e.clientX-CX);});
+canvas.addEventListener('click',function(e){shoot(e.clientX,e.clientY);});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();buildPath();if(running)draw();});
+resize();
+</script>
+</body>
+</html>

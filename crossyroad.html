@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Crossy Road</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#4a7c59;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(74,124,89,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(255,217,61,0.15);border:2px solid #ffd93d;border-radius:10px;color:#ffd93d;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#score-disp{color:#fff;font-size:1.4rem;font-weight:bold;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+#coins-disp{color:#ffd93d;font-size:1rem;font-weight:bold}
+canvas{display:block}
+#overlay{position:fixed;inset:0;background:rgba(30,50,35,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#ffd93d;margin-bottom:10px}
+#overlay p{color:#8bc34a;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(255,217,61,0.15);border:2px solid #ffd93d;border-radius:12px;color:#ffd93d;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#8bc34a;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="score-disp">0</span>
+    <span id="coins-disp">🪙 0</span>
+</div>
+<canvas id="c"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">🐔 Crossy Road</h2>
+    <p id="ovMsg">Traverse la route sans te faire écraser !<br>Tap haut = avancer, swipe gauche/droite.<br>Collecte les pièces 🪙<br>Ne reste pas immobile trop longtemps !</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var scoreEl=document.getElementById('score-disp'),coinsEl=document.getElementById('coins-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var W,H,TB=52,TILE;
+var VISIBLE_ROWS=14;
+var player,rows,score,coins,maxRow,idleTimer,running,animId,frameCount;
+var ROW_TYPES=['grass','road','road','grass','road','road','road','grass','water','grass','road','road','grass'];
+
+function resize(){W=window.innerWidth;H=window.innerHeight-TB;canvas.width=W;canvas.height=H;TILE=Math.floor(H/VISIBLE_ROWS);}
+
+function genRow(idx){
+    var type;
+    if(idx<=0)type='grass';
+    else{
+        var t=Math.random();
+        if(t<0.35)type='grass';
+        else if(t<0.82)type='road';
+        else type='water';
+    }
+    var row={type:type,y:0,obstacles:[],logs:[],coin:null};
+    if(type==='road'){
+        var speed=(1+Math.random()*2)*(Math.random()>0.5?1:-1);
+        var gap=TILE*3+Math.random()*TILE*3;
+        for(var x=-W;x<W*2;x+=gap+TILE*1.5){
+            var vw=TILE*(1+Math.random()*0.8);
+            row.obstacles.push({x:x,w:vw,h:TILE*0.7,speed:speed,color:['#e74c3c','#3498db','#f39c12','#9b59b6','#2ecc71'][Math.floor(Math.random()*5)]});
+        }
+    }
+    if(type==='water'){
+        var speed=(0.5+Math.random()*1.5)*(Math.random()>0.5?1:-1);
+        var gap=TILE*1.5+Math.random()*TILE*2;
+        for(var x=-W;x<W*2;x+=gap+TILE*2.5){
+            var lw=TILE*(2+Math.random()*2);
+            row.logs.push({x:x,w:lw,h:TILE*0.7,speed:speed});
+        }
+    }
+    if(Math.random()<0.15&&type!=='water')row.coin={x:Math.floor(Math.random()*(W/TILE))*TILE+TILE/2,collected:false};
+    return row;
+}
+
+function startGame(){
+    resize();score=0;coins=0;maxRow=0;idleTimer=0;frameCount=0;
+    player={col:Math.floor(W/TILE/2),row:0,px:0,py:0,dead:false};
+    player.px=player.col*TILE+TILE/2;player.py=H-TILE*2;
+    rows=[];
+    for(var i=-2;i<30;i++)rows[i]=genRow(i);
+    running=true;
+    overlay.classList.add('hidden');updateHUD();
+    if(animId)cancelAnimationFrame(animId);loop();
+}
+
+function updateHUD(){scoreEl.textContent=score;coinsEl.textContent='🪙 '+coins;}
+
+function movePlayer(dr,dc){
+    if(!running||player.dead)return;
+    var nr=player.row+dr,nc=player.col+dc;
+    if(nc<0||nc>=Math.floor(W/TILE))return;
+    player.row=nr;player.col=nc;
+    idleTimer=0;
+    if(nr>maxRow){maxRow=nr;score=maxRow;updateHUD();}
+    // ensure row exists
+    if(!rows[nr])rows[nr]=genRow(nr);
+}
+
+function checkCollision(){
+    var r=rows[player.row];
+    if(!r)return;
+    var px=player.col*TILE+TILE/2;
+    var ps=TILE*0.35;
+    if(r.type==='road'){
+        for(var i=0;i<r.obstacles.length;i++){
+            var o=r.obstacles[i];
+            if(px+ps>o.x&&px-ps<o.x+o.w)return true;
+        }
+    }
+    if(r.type==='water'){
+        var onLog=false;
+        for(var i=0;i<r.logs.length;i++){
+            var l=r.logs[i];
+            if(px+ps>l.x&&px-ps<l.x+l.w){onLog=true;player.col+=(l.speed>0?0.02:-0.02);break;}
+        }
+        if(!onLog)return true;
+    }
+    // Coin
+    if(r.coin&&!r.coin.collected){
+        if(Math.abs(px-r.coin.x)<TILE*0.6){r.coin.collected=true;coins++;updateHUD();}
+    }
+    return false;
+}
+
+function update(){
+    frameCount++;
+    // Move obstacles
+    for(var k in rows){
+        var r=rows[k];
+        if(r.obstacles)for(var i=0;i<r.obstacles.length;i++){
+            var o=r.obstacles[i];o.x+=o.speed;
+            if(o.speed>0&&o.x>W+TILE*2)o.x=-o.w-TILE;
+            if(o.speed<0&&o.x+o.w<-TILE*2)o.x=W+TILE;
+        }
+        if(r.logs)for(var i=0;i<r.logs.length;i++){
+            var l=r.logs[i];l.x+=l.speed;
+            if(l.speed>0&&l.x>W+TILE*2)l.x=-l.w-TILE;
+            if(l.speed<0&&l.x+l.w<-TILE*2)l.x=W+TILE;
+        }
+    }
+    // Idle timer
+    idleTimer++;
+    if(idleTimer>300){player.dead=true;gameOver();return;}
+    if(checkCollision()){player.dead=true;gameOver();return;}
+    // Smooth camera
+    player.px+=(player.col*TILE+TILE/2-player.px)*0.25;
+    player.py+=(H-TILE*3-player.px*0+0-player.py)*0.15;
+}
+
+function draw(){
+    ctx.fillStyle='#4a7c59';ctx.fillRect(0,0,W,H);
+    var camY=player.row*TILE-H+TILE*4;
+    // Draw rows
+    var startR=Math.floor(camY/TILE)-2;
+    var endR=startR+VISIBLE_ROWS+4;
+    for(var ri=startR;ri<=endR;ri++){
+        var r=rows[ri];if(!r)continue;
+        var sy=H-(ri*TILE-camY)-TILE;
+        // Row background
+        if(r.type==='grass')ctx.fillStyle=(ri%2===0)?'#4a7c59':'#5a8c69';
+        else if(r.type==='road')ctx.fillStyle='#555';
+        else ctx.fillStyle='#2980b9';
+        ctx.fillRect(0,sy,W,TILE);
+        // Road lines
+        if(r.type==='road'){
+            ctx.strokeStyle='#777';ctx.lineWidth=2;ctx.setLineDash([8,8]);
+            ctx.beginPath();ctx.moveTo(0,sy+TILE/2);ctx.lineTo(W,sy+TILE/2);ctx.stroke();ctx.setLineDash([]);
+        }
+        // Obstacles (cars)
+        if(r.obstacles)for(var i=0;i<r.obstacles.length;i++){
+            var o=r.obstacles[i];
+            ctx.fillStyle=o.color;
+            ctx.fillRect(o.x,sy+(TILE-o.h)/2,o.w,o.h);
+            ctx.fillStyle='rgba(255,255,255,0.2)';
+            ctx.fillRect(o.x+4,sy+(TILE-o.h)/2+3,o.w*0.3,o.h*0.4);
+        }
+        // Logs
+        if(r.logs)for(var i=0;i<r.logs.length;i++){
+            var l=r.logs[i];
+            ctx.fillStyle='#8B4513';
+            ctx.fillRect(l.x,sy+(TILE-l.h)/2,l.w,l.h);
+            ctx.fillStyle='#A0522D';
+            ctx.fillRect(l.x+3,sy+(TILE-l.h)/2+3,l.w-6,l.h-6);
+        }
+        // Coin
+        if(r.coin&&!r.coin.collected){
+            ctx.fillStyle='#ffd93d';ctx.shadowColor='#ffd93d';ctx.shadowBlur=8;
+            ctx.beginPath();ctx.arc(r.coin.x,sy+TILE/2,TILE*0.2,0,Math.PI*2);ctx.fill();
+            ctx.shadowBlur=0;
+        }
+    }
+    // Player
+    var py=H-(player.row*TILE-camY)-TILE;
+    ctx.fillStyle=player.dead?'#e74c3c':'#ffd93d';
+    ctx.shadowColor=player.dead?'#e74c3c':'#ffd93d';ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(player.px,py+TILE/2,TILE*0.35,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;
+    // Eyes
+    if(!player.dead){
+        ctx.fillStyle='#111';
+        ctx.beginPath();ctx.arc(player.px-TILE*0.1,py+TILE*0.4,TILE*0.06,0,Math.PI*2);ctx.fill();
+        ctx.beginPath();ctx.arc(player.px+TILE*0.1,py+TILE*0.4,TILE*0.06,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#e74c3c';
+        ctx.beginPath();ctx.moveTo(player.px-TILE*0.08,py+TILE*0.55);
+        ctx.quadraticCurveTo(player.px,py+TILE*0.65,player.px+TILE*0.08,py+TILE*0.55);ctx.fill();
+    }
+    // Idle warning
+    if(idleTimer>200){
+        ctx.fillStyle='rgba(255,0,0,'+(0.3+Math.sin(frameCount/5)*0.2)+')';
+        ctx.fillRect(0,0,W,H);
+        ctx.fillStyle='#fff';ctx.font='bold 18px sans-serif';ctx.textAlign='center';
+        ctx.fillText('BOUGE !',W/2,H/2);
+    }
+}
+
+function gameOver(){
+    running=false;
+    ovTitle.textContent='🐔 Game Over !';
+    ovMsg.textContent=coins+' pièces collectées';
+    ovScore.textContent=score+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    if(score>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('crossyroad',score,n);}
+}
+
+function loop(){if(!running)return;update();if(!running)return;draw();animId=requestAnimationFrame(loop);}
+
+// Controls
+var tx,ty;
+canvas.addEventListener('touchstart',function(e){e.preventDefault();tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:false});
+canvas.addEventListener('touchend',function(e){e.preventDefault();
+    var t=e.changedTouches[0];var dx=t.clientX-tx,dy=t.clientY-ty;
+    if(Math.abs(dx)<15&&Math.abs(dy)<15){movePlayer(1,0);return;}
+    if(Math.abs(dx)>Math.abs(dy)){movePlayer(0,dx>0?1:-1);}
+    else{movePlayer(dy<0?1:-1,0);}
+},{passive:false});
+canvas.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowUp')movePlayer(1,0);
+    else if(e.key==='ArrowDown')movePlayer(-1,0);
+    else if(e.key==='ArrowLeft')movePlayer(0,-1);
+    else if(e.key==='ArrowRight')movePlayer(0,1);
+});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(running)draw();});
+resize();
+</script>
+</body>
+</html>

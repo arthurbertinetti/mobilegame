@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Solitaire</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a5e2a;color:#eee;font-family:'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;align-items:center;height:100dvh;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+        #top-bar{width:100%;max-width:500px;display:flex;justify-content:space-between;align-items:center;padding:6px 12px 2px;font-size:.9rem;z-index:5}
+        #top-bar a{color:#ffd93d;text-decoration:none;font-size:1.1rem}
+        #top-bar span{font-weight:bold;color:#ffd93d}
+        #board{position:relative;width:100%;max-width:500px;flex:1;overflow:hidden}
+        .slot{position:absolute;width:var(--cw);height:var(--ch);border-radius:6px;border:1.5px dashed rgba(255,255,255,.18);background:rgba(0,0,0,.08)}
+        .slot-label{position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-size:calc(var(--cw)*0.35);color:rgba(255,255,255,.15);font-weight:bold;pointer-events:none}
+        .card{position:absolute;width:var(--cw);height:var(--ch);border-radius:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:box-shadow .15s}
+        .card.face-down{background:linear-gradient(135deg,#1a4a8a,#1e5799,#14396a);border:1.5px solid #ffd93d33;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+        .card.face-down::after{content:'';position:absolute;inset:3px;border:1px solid rgba(255,217,61,.15);border-radius:4px}
+        .card.face-up{background:#fff;border:1px solid rgba(0,0,0,.12);box-shadow:0 2px 8px rgba(0,0,0,.2);display:flex;flex-direction:column;justify-content:flex-start;padding:2px 3px}
+        .card.face-up .rank-suit{font-weight:bold;font-size:calc(var(--cw)*0.28);line-height:1.1}
+        .card.face-up .big-suit{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:calc(var(--cw)*0.5);opacity:.6}
+        .card.red{color:#d63031}
+        .card.black{color:#222}
+        .card.dragging{z-index:1000!important;box-shadow:0 8px 25px rgba(0,0,0,.45)!important;opacity:.92;transition:none}
+        .card.highlight{box-shadow:0 0 0 3px #ffd93d,0 4px 15px rgba(255,217,61,.4)!important}
+        #undo-btn{position:absolute;bottom:8px;right:8px;padding:7px 14px;font-size:.85rem;border-radius:10px;z-index:10;background:linear-gradient(145deg,#555,#333);color:#eee;border:1px solid rgba(255,255,255,.1);cursor:pointer;-webkit-tap-highlight-color:transparent}
+        #overlay{display:none;position:absolute;inset:0;background:rgba(0,0,0,.75);flex-direction:column;justify-content:center;align-items:center;z-index:50;backdrop-filter:blur(3px)}
+        #overlay.visible{display:flex}
+        #overlay h2{font-size:2rem;margin-bottom:10px;color:#6bff8e;text-shadow:0 0 20px rgba(107,255,142,.5)}
+        #overlay p{font-size:1.1rem;margin-bottom:18px}
+        #overlay button{background:linear-gradient(145deg,#27ae60,#1e8449);color:#eee;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 36px;font-size:1.1rem;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.4)}
+        #stock-area{position:absolute;cursor:pointer;width:var(--cw);height:var(--ch);z-index:2}
+        #stock-recycle{position:absolute;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:calc(var(--cw)*0.5);color:rgba(255,255,255,.25);pointer-events:none}
+    </style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html">← Menu</a>
+    <div>Coups : <span id="moves">0</span></div>
+    <div>Temps : <span id="timer">0:00</span></div>
+</div>
+<div id="board">
+    <div id="overlay">
+        <h2 id="ov-title"></h2>
+        <p id="ov-msg"></p>
+        <button id="ov-btn">Nouvelle partie</button>
+    </div>
+    <button id="undo-btn">↩ Annuler</button>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ===== DOM refs ===== */
+var board = document.getElementById('board');
+var movesEl = document.getElementById('moves');
+var timerEl = document.getElementById('timer');
+var overlay = document.getElementById('overlay');
+var ovTitle = document.getElementById('ov-title');
+var ovMsg = document.getElementById('ov-msg');
+var ovBtn = document.getElementById('ov-btn');
+var undoBtn = document.getElementById('undo-btn');
+
+/* ===== Constants ===== */
+var SUITS = ['\u2660','\u2665','\u2666','\u2663'];
+var RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+
+function isRed(suit){ return suit==='\u2665'||suit==='\u2666'; }
+
+/* ===== Layout ===== */
+var CW, CH, GAP, COL_X, FOUND_X, STOCK_X, WASTE_X, TOP_Y, TAB_Y, FGAP_DOWN, FGAP_UP, WASTE_FAN;
+
+function calcLayout(){
+    var bw = board.clientWidth;
+    CW = Math.floor(bw / 8.2);
+    CH = Math.floor(CW * 1.45);
+    GAP = Math.floor((bw - 7*CW) / 8);
+    COL_X = [];
+    for(var i=0;i<7;i++) COL_X.push(GAP + i*(CW+GAP));
+    TOP_Y = 4;
+    TAB_Y = TOP_Y + CH + 10;
+    STOCK_X = COL_X[0];
+    WASTE_X = COL_X[1];
+    FOUND_X = [COL_X[3], COL_X[4], COL_X[5], COL_X[6]];
+    FGAP_DOWN = Math.floor(CH * 0.18);
+    FGAP_UP = Math.floor(CH * 0.28);
+    WASTE_FAN = Math.floor(CW * 0.35);
+    board.style.setProperty('--cw', CW+'px');
+    board.style.setProperty('--ch', CH+'px');
+}
+
+/* ===== Game State ===== */
+var stock, waste, foundations, tableau;
+var moves, seconds, timerID, gameWon;
+var history;
+
+/* ===== All card DOM elements ===== */
+var allCardEls = [];
+var slotEls = [];
+var stockClickArea;
+
+/* ===== Deck ===== */
+function makeDeck(){
+    var d=[];
+    for(var s=0;s<4;s++)
+        for(var r=0;r<13;r++)
+            d.push({suit:SUITS[s], rank:r, faceUp:false, el:null});
+    // Fisher-Yates
+    for(var i=d.length-1;i>0;i--){
+        var j=Math.floor(Math.random()*(i+1));
+        var tmp=d[i]; d[i]=d[j]; d[j]=tmp;
+    }
+    return d;
+}
+
+function createCardEl(card){
+    var el = document.createElement('div');
+    el.className = 'card';
+    card.el = el;
+    el._card = card;
+    return el;
+}
+
+function updateCardEl(card){
+    var el = card.el;
+    if(!el) return;
+    if(card.faceUp){
+        el.className = 'card face-up ' + (isRed(card.suit)?'red':'black');
+        el.innerHTML = '<div class="rank-suit">'+RANKS[card.rank]+card.suit+'</div><div class="big-suit">'+card.suit+'</div>';
+    } else {
+        el.className = 'card face-down';
+        el.innerHTML = '';
+    }
+}
+
+/* ===== Place all cards on the board ===== */
+function renderAll(){
+    // Remove highlight from all
+    allCardEls.forEach(function(el){ el.classList.remove('highlight'); });
+
+    // Stock
+    stock.forEach(function(c,i){
+        updateCardEl(c);
+        c.el.style.left = STOCK_X+'px';
+        c.el.style.top = TOP_Y+'px';
+        c.el.style.zIndex = i;
+        c.el.style.display = '';
+    });
+    // Show recycle icon if stock empty
+    var recycleEl = document.getElementById('stock-recycle');
+    if(recycleEl) recycleEl.style.display = stock.length===0?'flex':'none';
+
+    // Waste: show up to 3 fanned
+    waste.forEach(function(c,i){
+        updateCardEl(c);
+        var show = Math.min(3, waste.length);
+        var fromEnd = waste.length - show;
+        if(i < fromEnd){
+            c.el.style.display = 'none';
+        } else {
+            c.el.style.display = '';
+            var fanIdx = i - fromEnd;
+            c.el.style.left = (WASTE_X + fanIdx * WASTE_FAN)+'px';
+            c.el.style.top = TOP_Y+'px';
+            c.el.style.zIndex = i + 10;
+        }
+    });
+
+    // Foundations
+    for(var fi=0;fi<4;fi++){
+        foundations[fi].forEach(function(c,i){
+            updateCardEl(c);
+            c.el.style.left = FOUND_X[fi]+'px';
+            c.el.style.top = TOP_Y+'px';
+            c.el.style.zIndex = i;
+            c.el.style.display = '';
+        });
+    }
+
+    // Tableau
+    for(var col=0;col<7;col++){
+        var y = TAB_Y;
+        tableau[col].forEach(function(c,idx){
+            updateCardEl(c);
+            c.el.style.left = COL_X[col]+'px';
+            c.el.style.top = y+'px';
+            c.el.style.zIndex = idx + 20;
+            c.el.style.display = '';
+            y += c.faceUp ? FGAP_UP : FGAP_DOWN;
+        });
+    }
+}
+
+/* ===== Slots (visual placeholders) ===== */
+function createSlots(){
+    slotEls.forEach(function(el){ el.remove(); });
+    slotEls = [];
+    function addSlot(x,y,label){
+        var s = document.createElement('div');
+        s.className = 'slot';
+        s.style.left = x+'px'; s.style.top = y+'px';
+        if(label){
+            var l = document.createElement('div');
+            l.className = 'slot-label'; l.textContent = label;
+            s.appendChild(l);
+        }
+        board.appendChild(s);
+        slotEls.push(s);
+    }
+    // Stock slot
+    addSlot(STOCK_X, TOP_Y, '');
+    // Waste slot
+    addSlot(WASTE_X, TOP_Y, '');
+    // Foundation slots
+    for(var i=0;i<4;i++) addSlot(FOUND_X[i], TOP_Y, SUITS[i]);
+    // Tableau slots
+    for(var i=0;i<7;i++) addSlot(COL_X[i], TAB_Y, '');
+
+    // Stock click area (invisible, always on top)
+    if(stockClickArea) stockClickArea.remove();
+    stockClickArea = document.createElement('div');
+    stockClickArea.id = 'stock-area';
+    stockClickArea.style.left = STOCK_X+'px';
+    stockClickArea.style.top = TOP_Y+'px';
+    var recycle = document.createElement('div');
+    recycle.id = 'stock-recycle';
+    recycle.textContent = '\u21BB';
+    stockClickArea.appendChild(recycle);
+    board.appendChild(stockClickArea);
+}
+
+/* ===== DEAL ===== */
+function deal(){
+    // Clear old cards
+    allCardEls.forEach(function(el){ el.remove(); });
+    allCardEls = [];
+
+    var deck = makeDeck();
+    stock = []; waste = []; foundations = [[],[],[],[]]; tableau = [];
+    history = [];
+    moves = 0; seconds = 0; gameWon = false;
+    movesEl.textContent = '0'; timerEl.textContent = '0:00';
+    overlay.classList.remove('visible');
+
+    // Deal tableau
+    for(var i=0;i<7;i++){
+        tableau[i] = [];
+        for(var j=0;j<=i;j++){
+            var c = deck.pop();
+            c.faceUp = (j===i);
+            tableau[i].push(c);
+        }
+    }
+    // Rest to stock
+    stock = deck;
+    stock.forEach(function(c){ c.faceUp = false; });
+
+    // Create DOM elements for all 52 cards
+    var allCards = [].concat(stock, waste);
+    for(var fi=0;fi<4;fi++) allCards = allCards.concat(foundations[fi]);
+    for(var col=0;col<7;col++) allCards = allCards.concat(tableau[col]);
+    allCards.forEach(function(c){
+        var el = createCardEl(c);
+        board.appendChild(el);
+        allCardEls.push(el);
+    });
+
+    calcLayout();
+    createSlots();
+    renderAll();
+
+    if(timerID) clearInterval(timerID);
+    timerID = setInterval(function(){
+        seconds++;
+        timerEl.textContent = Math.floor(seconds/60)+':'+String(seconds%60).padStart(2,'0');
+    }, 1000);
+}
+
+/* ===== Find where a card is ===== */
+function findCard(card){
+    for(var col=0;col<7;col++){
+        var idx = tableau[col].indexOf(card);
+        if(idx !== -1) return {zone:'tableau', col:col, idx:idx};
+    }
+    if(waste.indexOf(card) !== -1) return {zone:'waste', idx:waste.indexOf(card)};
+    for(var fi=0;fi<4;fi++){
+        if(foundations[fi].indexOf(card) !== -1) return {zone:'foundation', col:fi, idx:foundations[fi].indexOf(card)};
+    }
+    if(stock.indexOf(card) !== -1) return {zone:'stock', idx:stock.indexOf(card)};
+    return null;
+}
+
+/* ===== Game Logic ===== */
+function canPlaceOnTableau(card, col){
+    if(tableau[col].length === 0) return card.rank === 12; // King
+    var top = tableau[col][tableau[col].length-1];
+    if(!top.faceUp) return false;
+    return isRed(card.suit) !== isRed(top.suit) && card.rank === top.rank - 1;
+}
+
+function canPlaceOnFoundation(card, fi){
+    var f = foundations[fi];
+    if(f.length === 0) return card.rank === 0; // Ace
+    var top = f[f.length-1];
+    return card.suit === top.suit && card.rank === top.rank + 1;
+}
+
+function flipTopCards(){
+    for(var col=0;col<7;col++){
+        if(tableau[col].length > 0){
+            var top = tableau[col][tableau[col].length-1];
+            if(!top.faceUp) top.faceUp = true;
+        }
+    }
+}
+
+function doMove(){ moves++; movesEl.textContent = moves; }
+
+function checkWin(){
+    if(foundations.every(function(f){ return f.length===13; })){
+        gameWon = true;
+        clearInterval(timerID);
+        var finalScore = Math.max(0, 10000 - moves*10 - seconds*2);
+        Leaderboard.promptName(finalScore, function(name){
+            if(name) Leaderboard.add('solitaire', name, finalScore);
+            ovTitle.textContent = '🎉 Gagné !';
+            ovMsg.textContent = moves+' coups en '+timerEl.textContent+' — Score: '+finalScore;
+            overlay.classList.add('visible');
+        });
+    }
+}
+
+/* ===== History for undo ===== */
+function cloneState(){
+    function cc(c){ return {suit:c.suit, rank:c.rank, faceUp:c.faceUp}; }
+    return {
+        stock: stock.map(cc), waste: waste.map(cc),
+        foundations: foundations.map(function(f){ return f.map(cc); }),
+        tableau: tableau.map(function(col){ return col.map(cc); }),
+        moves: moves
+    };
+}
+function saveHistory(){
+    history.push(cloneState());
+    if(history.length > 50) history.shift();
+}
+function restoreState(s){
+    // Match saved cards back to actual card objects by rebuilding
+    // Easiest: re-map card properties
+    function applyCards(saved, actual){
+        saved.forEach(function(sc, i){
+            actual[i].suit = sc.suit;
+            actual[i].rank = sc.rank;
+            actual[i].faceUp = sc.faceUp;
+        });
+    }
+    // Gather all current card objects
+    var allCurrent = [];
+    allCurrent = allCurrent.concat(stock, waste);
+    for(var fi=0;fi<4;fi++) allCurrent = allCurrent.concat(foundations[fi]);
+    for(var col=0;col<7;col++) allCurrent = allCurrent.concat(tableau[col]);
+
+    // Gather all saved cards in same order
+    var allSaved = [];
+    allSaved = allSaved.concat(s.stock, s.waste);
+    for(var fi=0;fi<4;fi++) allSaved = allSaved.concat(s.foundations[fi]);
+    for(var col=0;col<7;col++) allSaved = allSaved.concat(s.tableau[col]);
+
+    // Rebuild arrays with proper sizes, reusing card objects
+    var ci = 0;
+    stock = []; for(var i=0;i<s.stock.length;i++){ var c=allCurrent[ci++]; c.suit=s.stock[i].suit; c.rank=s.stock[i].rank; c.faceUp=s.stock[i].faceUp; stock.push(c); }
+    waste = []; for(var i=0;i<s.waste.length;i++){ var c=allCurrent[ci++]; c.suit=s.waste[i].suit; c.rank=s.waste[i].rank; c.faceUp=s.waste[i].faceUp; waste.push(c); }
+    foundations = [[],[],[],[]];
+    for(var fi=0;fi<4;fi++) for(var i=0;i<s.foundations[fi].length;i++){ var c=allCurrent[ci++]; c.suit=s.foundations[fi][i].suit; c.rank=s.foundations[fi][i].rank; c.faceUp=s.foundations[fi][i].faceUp; foundations[fi].push(c); }
+    tableau = [];
+    for(var col=0;col<7;col++){ tableau[col]=[]; for(var i=0;i<s.tableau[col].length;i++){ var c=allCurrent[ci++]; c.suit=s.tableau[col][i].suit; c.rank=s.tableau[col][i].rank; c.faceUp=s.tableau[col][i].faceUp; tableau[col].push(c); } }
+    moves = s.moves;
+    movesEl.textContent = moves;
+}
+function undo(){
+    if(history.length===0) return;
+    var s = history.pop();
+    restoreState(s);
+    renderAll();
+}
+
+/* ===== Auto-send to foundation on tap ===== */
+function tryAutoFoundation(card, loc){
+    for(var fi=0;fi<4;fi++){
+        if(canPlaceOnFoundation(card, fi)){
+            saveHistory();
+            // Remove from source
+            if(loc.zone==='waste') waste.pop();
+            else if(loc.zone==='tableau') tableau[loc.col].splice(loc.idx);
+            else if(loc.zone==='foundation') foundations[loc.col].pop();
+            foundations[fi].push(card);
+            flipTopCards();
+            doMove();
+            renderAll();
+            checkWin();
+            return true;
+        }
+    }
+    return false;
+}
+
+/* ===== DRAG & DROP ===== */
+var drag = null; // {cards:[], els:[], from:{zone,col,idx}, startX, startY, offsets:[]}
+
+function getPageXY(e){
+    if(e.touches && e.touches.length > 0) return {x: e.touches[0].pageX, y: e.touches[0].pageY};
+    if(e.changedTouches && e.changedTouches.length > 0) return {x: e.changedTouches[0].pageX, y: e.changedTouches[0].pageY};
+    return {x: e.pageX, y: e.pageY};
+}
+
+function startDrag(cards, from, px, py){
+    drag = {cards: cards, from: from, startX: px, startY: py, offsets: []};
+    cards.forEach(function(c){
+        var r = c.el.getBoundingClientRect();
+        drag.offsets.push({dx: r.left - px, dy: r.top - py});
+        c.el.classList.add('dragging');
+    });
+}
+
+function moveDrag(px, py){
+    if(!drag) return;
+    drag.cards.forEach(function(c, i){
+        c.el.style.left = (px + drag.offsets[i].dx - board.getBoundingClientRect().left)+'px';
+        c.el.style.top = (py + drag.offsets[i].dy - board.getBoundingClientRect().top + window.scrollY)+'px';
+    });
+}
+
+function endDrag(px, py){
+    if(!drag) return;
+    var d = drag;
+    drag = null;
+    d.cards.forEach(function(c){ c.el.classList.remove('dragging'); });
+
+    var wasTap = Math.abs(px - d.startX) < 10 && Math.abs(py - d.startY) < 10;
+
+    // On tap: try auto-foundation
+    if(wasTap && d.cards.length === 1){
+        if(tryAutoFoundation(d.cards[0], d.from)){
+            return;
+        }
+    }
+
+    // Try drop
+    if(!wasTap){
+        var placed = tryDrop(d);
+        if(placed){ renderAll(); return; }
+    }
+
+    // Snap back
+    renderAll();
+}
+
+function tryDrop(d){
+    // Use center of first dragged card to find target
+    var r = d.cards[0].el.getBoundingClientRect();
+    var cx = r.left + r.width/2;
+    var cy = r.top + r.height/2;
+
+    // Check foundations (single card only)
+    if(d.cards.length === 1){
+        for(var fi=0;fi<4;fi++){
+            var fx = FOUND_X[fi] + board.getBoundingClientRect().left;
+            var fy = TOP_Y + board.getBoundingClientRect().top;
+            if(cx > fx - 10 && cx < fx + CW + 10 && cy > fy - 10 && cy < fy + CH + 10){
+                if(canPlaceOnFoundation(d.cards[0], fi)){
+                    saveHistory();
+                    removeSource(d.from);
+                    foundations[fi].push(d.cards[0]);
+                    flipTopCards();
+                    doMove();
+                    checkWin();
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Check tableau columns
+    for(var col=0;col<7;col++){
+        var tx = COL_X[col] + board.getBoundingClientRect().left;
+        if(cx < tx - GAP/2 || cx > tx + CW + GAP/2) continue;
+        // Y: anywhere below tableau start
+        var ty = TAB_Y + board.getBoundingClientRect().top;
+        if(cy > ty - 20){
+            if(canPlaceOnTableau(d.cards[0], col)){
+                saveHistory();
+                removeSource(d.from);
+                for(var i=0;i<d.cards.length;i++) tableau[col].push(d.cards[i]);
+                flipTopCards();
+                doMove();
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+function removeSource(from){
+    if(from.zone==='waste') waste.pop();
+    else if(from.zone==='tableau') tableau[from.col].splice(from.idx);
+    else if(from.zone==='foundation') foundations[from.col].pop();
+}
+
+/* ===== EVENT HANDLERS ===== */
+var tapTimeout = null;
+
+// Stock click
+function onStockClick(e){
+    e.preventDefault(); e.stopPropagation();
+    if(gameWon) return;
+    saveHistory();
+    if(stock.length === 0){
+        // Recycle waste back to stock
+        while(waste.length > 0){
+            var c = waste.pop();
+            c.faceUp = false;
+            stock.push(c);
+        }
+    } else {
+        var count = Math.min(3, stock.length);
+        for(var i=0;i<count;i++){
+            var c = stock.pop();
+            c.faceUp = true;
+            waste.push(c);
+        }
+    }
+    doMove();
+    renderAll();
+}
+
+stockClickArea = null; // will be created in createSlots
+
+// Card interaction
+function onCardDown(e){
+    e.preventDefault();
+    if(gameWon || drag) return;
+    var el = e.currentTarget;
+    var card = el._card;
+    if(!card || !card.faceUp) return;
+
+    var loc = findCard(card);
+    if(!loc || loc.zone==='stock') return;
+
+    var p = getPageXY(e);
+    var cards;
+
+    if(loc.zone === 'waste'){
+        // Only top waste card
+        if(waste[waste.length-1] !== card) return;
+        cards = [card];
+    } else if(loc.zone === 'foundation'){
+        // Top foundation card
+        var f = foundations[loc.col];
+        if(f[f.length-1] !== card) return;
+        cards = [card];
+    } else if(loc.zone === 'tableau'){
+        // Stack from this card down
+        cards = tableau[loc.col].slice(loc.idx);
+    }
+
+    startDrag(cards, loc, p.x, p.y);
+}
+
+function onGlobalMove(e){
+    if(!drag) return;
+    e.preventDefault();
+    var p = getPageXY(e);
+    moveDrag(p.x, p.y);
+}
+
+function onGlobalUp(e){
+    if(!drag) return;
+    var p = getPageXY(e);
+    endDrag(p.x, p.y);
+}
+
+// Double-tap to auto-foundation
+function onCardDblTap(card){
+    if(!card.faceUp || gameWon) return;
+    var loc = findCard(card);
+    if(!loc) return;
+    // Only works for single top cards
+    if(loc.zone === 'waste' && waste[waste.length-1] === card){
+        tryAutoFoundation(card, loc);
+    } else if(loc.zone === 'tableau'){
+        var col = tableau[loc.col];
+        if(col[col.length-1] === card){
+            tryAutoFoundation(card, loc);
+        }
+    }
+}
+
+/* ===== Wire up events ===== */
+// We need to attach events to card elements
+// Since cards are recreated on deal, we use event delegation on board
+
+var lastTapTime = 0;
+var lastTapCard = null;
+
+board.addEventListener('touchstart', function(e){
+    // Stock area
+    var el = e.target.closest('#stock-area');
+    if(el){
+        onStockClick(e);
+        return;
+    }
+    // Card
+    var cardEl = e.target.closest('.card');
+    if(!cardEl || !cardEl._card) return;
+    var card = cardEl._card;
+
+    // If it's a face-down card in the stock, treat as stock click
+    if(!card.faceUp){
+        var loc = findCard(card);
+        if(loc && loc.zone==='stock'){ onStockClick(e); return; }
+        return;
+    }
+
+    // Double tap
+    var now = Date.now();
+    if(now - lastTapTime < 350 && lastTapCard === card){
+        lastTapTime = 0; lastTapCard = null;
+        e.preventDefault();
+        onCardDblTap(card);
+        return;
+    }
+    lastTapTime = now;
+    lastTapCard = card;
+
+    e.preventDefault();
+    if(gameWon || drag) return;
+    var loc = findCard(card);
+    if(!loc || loc.zone==='stock') return;
+
+    var p = getPageXY(e);
+    var cards;
+    if(loc.zone==='waste'){
+        if(waste[waste.length-1]!==card) return;
+        cards = [card];
+    } else if(loc.zone==='foundation'){
+        if(foundations[loc.col][foundations[loc.col].length-1]!==card) return;
+        cards = [card];
+    } else if(loc.zone==='tableau'){
+        cards = tableau[loc.col].slice(loc.idx);
+    }
+    startDrag(cards, loc, p.x, p.y);
+}, {passive:false});
+
+document.addEventListener('touchmove', onGlobalMove, {passive:false});
+document.addEventListener('touchend', function(e){
+    if(!drag) return;
+    var p = getPageXY(e);
+    endDrag(p.x, p.y);
+}, {passive:false});
+document.addEventListener('touchcancel', function(){
+    if(drag){
+        drag.cards.forEach(function(c){ c.el.classList.remove('dragging'); });
+        drag = null;
+        renderAll();
+    }
+});
+
+// Mouse fallback for desktop
+board.addEventListener('mousedown', function(e){
+    // Stock area
+    var el = e.target.closest('#stock-area');
+    if(el){ onStockClick(e); return; }
+    // Card
+    var cardEl = e.target.closest('.card');
+    if(!cardEl || !cardEl._card) return;
+    var card = cardEl._card;
+    // Face-down card in stock = stock click
+    if(!card.faceUp){
+        var loc = findCard(card);
+        if(loc && loc.zone==='stock'){ onStockClick(e); return; }
+        return;
+    }
+    var now = Date.now();
+    if(now - lastTapTime < 350 && lastTapCard === card){
+        lastTapTime = 0; lastTapCard = null;
+        onCardDblTap(card);
+        return;
+    }
+    lastTapTime = now; lastTapCard = card;
+    e.preventDefault();
+    if(gameWon || drag) return;
+    var loc = findCard(card);
+    if(!loc || loc.zone==='stock') return;
+    var p = {x:e.pageX, y:e.pageY};
+    var cards;
+    if(loc.zone==='waste'){ if(waste[waste.length-1]!==card) return; cards=[card]; }
+    else if(loc.zone==='foundation'){ if(foundations[loc.col][foundations[loc.col].length-1]!==card) return; cards=[card]; }
+    else if(loc.zone==='tableau'){ cards=tableau[loc.col].slice(loc.idx); }
+    startDrag(cards, loc, p.x, p.y);
+});
+document.addEventListener('mousemove', onGlobalMove);
+document.addEventListener('mouseup', function(e){
+    if(!drag) return;
+    endDrag(e.pageX, e.pageY);
+});
+
+// Undo
+undoBtn.addEventListener('click', function(e){ e.preventDefault(); undo(); });
+undoBtn.addEventListener('touchstart', function(e){ e.preventDefault(); undo(); }, {passive:false});
+
+// Overlay
+ovBtn.addEventListener('click', deal);
+ovBtn.addEventListener('touchstart', function(e){ e.preventDefault(); deal(); }, {passive:false});
+
+// Resize
+window.addEventListener('resize', function(){ calcLayout(); createSlots(); renderAll(); });
+
+/* ===== Start ===== */
+deal();
+
+})();
+</script>
+</body>
+</html>

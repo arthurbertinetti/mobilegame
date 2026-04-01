@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Retro Highway</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:#0a0e1a;color:#eee;font-family:'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;align-items:center;height:100dvh;overflow:hidden;touch-action:manipulation;-webkit-user-select:none;user-select:none;image-rendering:pixelated}
+        #top-bar{width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:center;padding:8px 14px 4px;font-size:.9rem}
+        #top-bar a{color:#ffd93d;text-decoration:none;font-size:1.2rem}
+        #top-bar span{font-weight:bold;color:#ffd93d}
+        canvas{display:block;border-radius:6px;box-shadow:0 0 20px rgba(0,0,0,.6)}
+        #hud{width:100%;max-width:420px;display:flex;justify-content:space-around;padding:6px 10px;font-size:.85rem}
+        #hud div{text-align:center}
+        #hud span{display:block;font-weight:bold;color:#ffd93d;font-size:1rem}
+        #controls{display:flex;gap:12px;justify-content:center;padding:8px 10px;width:100%;max-width:340px}
+        .ctrl-btn{flex:1;min-height:56px;font-size:1.6rem;display:flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(145deg,#1a3a5c,#0d2137);color:#eee;border:1px solid rgba(255,255,255,.08);cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 15px rgba(0,0,0,.4)}
+        .ctrl-btn:active{background:linear-gradient(145deg,#e94560,#c0392b);transform:scale(.95)}
+        #trick-btn{background:linear-gradient(145deg,#8e44ad,#6c3483);font-size:1.1rem;font-weight:bold}
+        #legend{width:100%;max-width:420px;display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:center;padding:4px 10px;font-size:.75rem;color:#aaa}
+        #legend span{display:inline-flex;align-items:center;gap:3px}
+        #legend .dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+        #overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);flex-direction:column;justify-content:center;align-items:center;z-index:20;backdrop-filter:blur(3px)}
+        #overlay.visible{display:flex}
+        #overlay h2{font-size:2rem;margin-bottom:10px;color:#ffd93d;text-shadow:0 0 20px rgba(255,217,61,.5)}
+        #overlay p{font-size:1rem;margin-bottom:8px;text-align:center;max-width:300px}
+        button#ov-btn{background:linear-gradient(145deg,#27ae60,#1e8449);color:#eee;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 36px;font-size:1.1rem;font-weight:bold;cursor:pointer;margin-top:10px;box-shadow:0 4px 15px rgba(0,0,0,.4)}
+    </style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html">← Menu</a>
+    <div>Score : <span id="score">0</span></div>
+    <div id="loc-name">🏔️ Montagne</div>
+</div>
+<canvas id="c"></canvas>
+<div id="hud">
+    <div>Distance<span id="dist">0m</span></div>
+    <div>💰<span id="coins">0</span></div>
+    <div>Combo<span id="combo">x1</span></div>
+</div>
+<div id="controls">
+    <button class="ctrl-btn" id="btn-left">◀</button>
+    <button class="ctrl-btn" id="trick-btn">🔥 Cascade</button>
+    <button class="ctrl-btn" id="btn-right">▶</button>
+</div>
+<div id="legend">
+    <span><span class="dot" style="background:#e74c3c"></span> Voiture</span>
+    <span><span class="dot" style="background:#2c3e50"></span> Camion</span>
+    <span><span class="dot" style="background:#ffd93d"></span> Rampe = Cascade!</span>
+</div>
+<div id="overlay">
+    <h2 id="ov-title">Retro Highway</h2>
+    <p id="ov-msg">Pixel art moto stunt!</p>
+    <button id="ov-btn">Go !</button>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var cvs = document.getElementById('c');
+var ctx = cvs.getContext('2d');
+var scoreEl = document.getElementById('score');
+var distEl = document.getElementById('dist');
+var coinsEl = document.getElementById('coins');
+var comboEl = document.getElementById('combo');
+var locNameEl = document.getElementById('loc-name');
+var overlay = document.getElementById('overlay');
+var ovTitle = document.getElementById('ov-title');
+var ovMsg = document.getElementById('ov-msg');
+var ovBtn = document.getElementById('ov-btn');
+
+var W, H, LANES, laneW, roadLeft, roadRight;
+var PX; // pixel scale
+
+var LOCATIONS = [
+    { name: '🏔️ Montagne', sky: '#4a90d9', road: '#555', grass: '#2d8a4e', accent: '#3a7a3e', dist: 0 },
+    { name: '🏜️ Désert', sky: '#e8a838', road: '#b8956a', grass: '#c4a248', accent: '#a08830', dist: 500 },
+    { name: '🌙 Lune', sky: '#0a0a2e', road: '#444', grass: '#1a1a3a', accent: '#2a2a4a', dist: 1500 }
+];
+
+var MOTO_STYLES = [
+    { name: 'Starter', body: '#e74c3c', accent: '#c0392b' },
+    { name: 'Sport', body: '#3498db', accent: '#2471a3' },
+    { name: 'Gold', body: '#f1c40f', accent: '#d4ac0f' },
+    { name: 'Neon', body: '#00ff88', accent: '#00cc66' }
+];
+
+var player, obstacles, roadLines, particles, ramps;
+var score, coins, dist, combo, comboTimer, baseSpeed, running, animId, frameCount;
+var currentLoc, currentMoto, unlockedMotos;
+var trickActive, trickTimer, trickY, trickRotation;
+var keys = {};
+
+function resize() {
+    W = Math.min(window.innerWidth - 4, 420);
+    H = Math.floor(window.innerHeight * 0.45);
+    cvs.width = W; cvs.height = H;
+    PX = Math.max(2, Math.floor(W / 140));
+    LANES = 3;
+    var roadW = W * 0.7;
+    roadLeft = (W - roadW) / 2;
+    roadRight = roadLeft + roadW;
+    laneW = roadW / LANES;
+}
+
+function laneX(lane) { return roadLeft + lane * laneW + laneW / 2; }
+
+function startGame() {
+    resize();
+    score = 0; coins = 0; dist = 0; combo = 1; comboTimer = 0;
+    baseSpeed = 3; frameCount = 0;
+    currentLoc = 0; currentMoto = 0;
+    trickActive = false; trickTimer = 0; trickY = 0; trickRotation = 0;
+    running = true;
+    scoreEl.textContent = '0'; distEl.textContent = '0m';
+    coinsEl.textContent = '0'; comboEl.textContent = 'x1';
+    locNameEl.textContent = LOCATIONS[0].name;
+    overlay.classList.remove('visible');
+
+    player = { lane: 1, x: laneX(1), targetX: laneX(1), y: H - 70, w: laneW * 0.4, h: laneW * 0.85 };
+    obstacles = []; roadLines = []; particles = []; ramps = [];
+
+    for (var y = -40; y < H + 40; y += 40) roadLines.push({ y: y });
+
+    if (animId) cancelAnimationFrame(animId);
+    loop();
+}
+
+function spawnObstacle() {
+    var lane = Math.floor(Math.random() * LANES);
+    var types = ['car','truck'];
+    var type = types[Math.floor(Math.random() * types.length)];
+    var w = type === 'truck' ? laneW * 0.5 : laneW * 0.4;
+    var h = type === 'truck' ? laneW * 1.3 : laneW * 0.7;
+    obstacles.push({ lane: lane, x: laneX(lane), y: -h, w: w, h: h, type: type, speed: baseSpeed * (0.5 + Math.random() * 0.4), passed: false });
+}
+
+function spawnRamp() {
+    var lane = Math.floor(Math.random() * LANES);
+    ramps.push({ lane: lane, x: laneX(lane), y: -30, w: laneW * 0.6, h: 20, speed: baseSpeed * 0.6 });
+}
+
+function spawnParticles(x, y, color, count) {
+    for (var i = 0; i < count; i++) {
+        var a = Math.random() * Math.PI * 2;
+        var s = 2 + Math.random() * 4;
+        particles.push({ x: x, y: y, vx: Math.cos(a)*s, vy: Math.sin(a)*s, life: 1, size: PX + Math.random() * PX, color: color });
+    }
+}
+
+function doTrick() {
+    if (trickActive || !running) return;
+    trickActive = true;
+    trickTimer = 40;
+    trickY = 0;
+    trickRotation = 0;
+    combo++;
+    comboTimer = 180;
+    var trickCoins = 10 * combo;
+    coins += trickCoins;
+    score += trickCoins * 5;
+    coinsEl.textContent = coins;
+    comboEl.textContent = 'x' + combo;
+    scoreEl.textContent = score;
+    spawnParticles(player.x, player.y - 20, '#ffd93d', 8);
+    spawnParticles(player.x, player.y - 20, '#ff6b81', 6);
+}
+
+function loop() {
+    if (!running) return;
+    frameCount++;
+    update();
+    draw();
+    animId = requestAnimationFrame(loop);
+}
+
+function update() {
+    if (keys.left && player.lane > 0) { player.lane--; player.targetX = laneX(player.lane); keys.left = false; }
+    if (keys.right && player.lane < LANES - 1) { player.lane++; player.targetX = laneX(player.lane); keys.right = false; }
+    player.x += (player.targetX - player.x) * 0.2;
+
+    // Trick animation
+    if (trickActive) {
+        trickTimer--;
+        var half = 20;
+        if (trickTimer > half) trickY = Math.min(trickY + 3, 40);
+        else trickY = Math.max(trickY - 3, 0);
+        trickRotation += 9;
+        if (trickTimer <= 0) { trickActive = false; trickY = 0; trickRotation = 0; }
+    }
+
+    // Combo decay
+    if (comboTimer > 0) { comboTimer--; }
+    else if (combo > 1) { combo = 1; comboEl.textContent = 'x1'; }
+
+    // Distance & speed up
+    dist += baseSpeed * 0.3;
+    distEl.textContent = Math.floor(dist) + 'm';
+    if (frameCount % 300 === 0) baseSpeed += 0.3;
+
+    // Location changes
+    var newLoc = 0;
+    for (var i = LOCATIONS.length - 1; i >= 0; i--) {
+        if (dist >= LOCATIONS[i].dist) { newLoc = i; break; }
+    }
+    if (newLoc !== currentLoc) {
+        currentLoc = newLoc;
+        locNameEl.textContent = LOCATIONS[currentLoc].name;
+        spawnParticles(W/2, H/2, '#ffd93d', 20);
+    }
+
+    // Spawn
+    var spawnRate = Math.max(70, 140 - Math.floor(dist / 200));
+    if (frameCount % spawnRate === 0) spawnObstacle();
+    if (frameCount % 250 === 0 && Math.random() < 0.5) spawnRamp();
+
+    // Move obstacles
+    for (var i = obstacles.length - 1; i >= 0; i--) {
+        var o = obstacles[i];
+        o.y += o.speed;
+        if (!o.passed && o.y > player.y + player.h) {
+            o.passed = true;
+            score += 15 * combo;
+            scoreEl.textContent = score;
+        }
+        if (o.y > H + 100) { obstacles.splice(i, 1); continue; }
+        if (!trickActive) {
+            var dx = Math.abs(o.x - player.x);
+            var dy = Math.abs(o.y - player.y);
+            if (dx < (o.w + player.w) * 0.4 && dy < (o.h + player.h) * 0.4) {
+                spawnParticles(player.x, player.y, '#ff6b81', 20);
+                gameOverFunc();
+                return;
+            }
+        }
+    }
+
+    // Move ramps
+    for (var i = ramps.length - 1; i >= 0; i--) {
+        ramps[i].y += ramps[i].speed;
+        if (ramps[i].y > H + 50) { ramps.splice(i, 1); continue; }
+        var r = ramps[i];
+        if (!trickActive && Math.abs(r.x - player.x) < (r.w + player.w) * 0.4 && Math.abs(r.y - player.y) < 20) {
+            doTrick();
+            ramps.splice(i, 1);
+        }
+    }
+
+    // Road scroll
+    roadLines.forEach(function(l) { l.y += baseSpeed; if (l.y > H + 40) l.y -= roadLines.length * 40; });
+
+    // Particles
+    for (var i = particles.length - 1; i >= 0; i--) {
+        var p = particles[i];
+        p.x += p.vx; p.y += p.vy; p.life -= 0.03; p.vy += 0.08;
+        if (p.life <= 0) particles.splice(i, 1);
+    }
+}
+
+function draw() {
+    var loc = LOCATIONS[currentLoc];
+
+    // Sky
+    ctx.fillStyle = loc.sky;
+    ctx.fillRect(0, 0, W, H);
+
+    // Scenery pixelated
+    if (currentLoc === 0) { // Mountains
+        ctx.fillStyle = '#5a9a6e';
+        drawPixelMountain(0, H * 0.2, W * 0.4, H * 0.3);
+        ctx.fillStyle = '#4a8a5e';
+        drawPixelMountain(W * 0.5, H * 0.15, W * 0.5, H * 0.35);
+    } else if (currentLoc === 1) { // Desert
+        ctx.fillStyle = '#d4a030';
+        drawPixelMountain(W * 0.1, H * 0.3, W * 0.3, H * 0.15);
+        drawPixelMountain(W * 0.6, H * 0.28, W * 0.35, H * 0.18);
+    } else { // Moon
+        ctx.fillStyle = '#222244';
+        for (var i = 0; i < 30; i++) {
+            var sx = (i * 97 + frameCount * 0.1) % W;
+            var sy = (i * 53) % (H * 0.4);
+            pixRect(sx, sy, PX, PX, '#fff');
+        }
+        ctx.fillStyle = '#333355';
+        drawPixelMountain(W * 0.2, H * 0.35, W * 0.3, H * 0.1);
+    }
+
+    // Grass/ground
+    ctx.fillStyle = loc.grass;
+    ctx.fillRect(0, H * 0.4, W, H * 0.6);
+
+    // Road
+    ctx.fillStyle = loc.road;
+    ctx.fillRect(roadLeft, 0, roadRight - roadLeft, H);
+
+    // Road lines
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    for (var li = 1; li < LANES; li++) {
+        var lx = roadLeft + li * laneW;
+        roadLines.forEach(function(l) {
+            pixRect(lx - PX/2, l.y, PX, 12, 'rgba(255,255,255,0.35)');
+        });
+    }
+
+    // Road edges
+    pixRect(roadLeft - PX, 0, PX, H, '#eee');
+    pixRect(roadRight, 0, PX, H, '#eee');
+
+    // Ramps
+    ramps.forEach(function(r) {
+        ctx.fillStyle = '#f39c12';
+        pixRect(r.x - r.w/2, r.y, r.w, r.h, '#f39c12');
+        pixRect(r.x - r.w/2 + PX, r.y + PX, r.w - PX*2, r.h - PX*2, '#ffd93d');
+    });
+
+    // Obstacles
+    obstacles.forEach(function(o) { drawObstacle(o); });
+
+    // Player moto
+    var moto = MOTO_STYLES[currentMoto];
+    var py = player.y - trickY;
+    if (trickActive) {
+        ctx.save();
+        ctx.translate(player.x, py);
+        ctx.rotate(trickRotation * Math.PI / 180);
+        drawMoto(0, 0, player.w, player.h, moto.body, moto.accent, true);
+        ctx.restore();
+        // Trick text
+        ctx.fillStyle = '#ffd93d';
+        ctx.font = 'bold ' + (PX * 5) + 'px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('STUNT! +' + (10 * combo), player.x, py - player.h);
+    } else {
+        drawMoto(player.x, py, player.w, player.h, moto.body, moto.accent, true);
+    }
+
+    // Exhaust particles when not in trick
+    if (!trickActive && frameCount % 3 === 0) {
+        spawnParticles(player.x, player.y + player.h/2, '#888', 1);
+    }
+
+    // Particles
+    particles.forEach(function(p) {
+        ctx.globalAlpha = Math.max(0, p.life);
+        pixRect(p.x, p.y, p.size, p.size, p.color);
+    });
+    ctx.globalAlpha = 1;
+}
+
+function drawMoto(cx, cy, w, h, bodyColor, accentColor, isPlayer) {
+    var x = cx - w/2, y = cy - h/2;
+    // Wheels
+    pixRect(x + w*0.2, y + h - PX*3, w*0.25, PX*3, '#222');
+    pixRect(x + w*0.55, y + h - PX*3, w*0.25, PX*3, '#222');
+    // Wheel spokes
+    pixRect(x + w*0.25, y + h - PX*2, w*0.15, PX, '#555');
+    pixRect(x + w*0.6, y + h - PX*2, w*0.15, PX, '#555');
+    // Body
+    pixRect(x + w*0.15, y + h*0.3, w*0.7, h*0.45, bodyColor);
+    // Seat
+    pixRect(x + w*0.3, y + h*0.15, w*0.4, h*0.2, accentColor);
+    // Rider
+    pixRect(x + w*0.35, y, w*0.3, h*0.25, '#222'); // helmet
+    pixRect(x + w*0.38, y + PX, w*0.24, PX*2, '#44aaff'); // visor
+    pixRect(x + w*0.3, y + h*0.15, w*0.4, h*0.15, accentColor); // torso
+    // Handlebars
+    pixRect(x + w*0.1, y + h*0.35, w*0.15, PX*2, '#888');
+    pixRect(x + w*0.75, y + h*0.35, w*0.15, PX*2, '#888');
+    // Headlight
+    if (isPlayer) {
+        pixRect(x + w*0.35, y + h*0.3, w*0.3, PX*2, '#ffd93d');
+    } else {
+        pixRect(x + w*0.35, y + h*0.85, w*0.3, PX*2, '#e74c3c');
+    }
+    // Exhaust
+    pixRect(x + w*0.8, y + h*0.65, w*0.2, PX*2, '#888');
+}
+
+function drawObstacle(o) {
+    var x = o.x - o.w/2, y = o.y - o.h/2;
+    if (o.type === 'car') {
+        var colors = ['#e74c3c','#3498db','#27ae60','#9b59b6','#f39c12'];
+        var c = colors[Math.floor((o.x * 7 + o.y * 3) % colors.length)];
+        pixRect(x, y, o.w, o.h, c);
+        pixRect(x + PX, y + o.h*0.2, o.w - PX*2, o.h*0.3, 'rgba(100,200,255,0.3)');
+        pixRect(x + o.w*0.15, y + o.h - PX*3, o.w*0.2, PX*2, '#e74c3c');
+        pixRect(x + o.w*0.65, y + o.h - PX*3, o.w*0.2, PX*2, '#e74c3c');
+    } else if (o.type === 'truck') {
+        pixRect(x, y, o.w, o.h*0.6, '#2c3e50');
+        pixRect(x, y + o.h*0.55, o.w, o.h*0.45, '#7f8c8d');
+        pixRect(x + PX, y + o.h*0.6, o.w - PX*2, PX, '#bdc3c7');
+    } else if (o.type === 'barrier') {
+        pixRect(x, y, o.w, o.h, '#f39c12');
+        for (var s = 0; s < o.w; s += PX * 4) pixRect(x + s, y, PX*2, o.h, '#222');
+    } else if (o.type === 'oil') {
+        ctx.globalAlpha = 0.5;
+        pixRect(x, y, o.w, o.h, '#111');
+        ctx.globalAlpha = 1;
+    }
+}
+
+function drawPixelMountain(startX, peakY, width, height) {
+    var steps = Math.floor(width / (PX * 2));
+    for (var i = 0; i <= steps; i++) {
+        var t = i / steps;
+        var mh = height * 4 * t * (1 - t);
+        ctx.fillRect(startX + i * PX * 2, peakY + height - mh, PX * 2, mh + H);
+    }
+}
+
+function pixRect(x, y, w, h, color) {
+    ctx.fillStyle = color;
+    var px = Math.round(x / PX) * PX;
+    var py = Math.round(y / PX) * PX;
+    ctx.fillRect(px, py, Math.round(w / PX) * PX || PX, Math.round(h / PX) * PX || PX);
+}
+
+function gameOverFunc() {
+    running = false;
+    cancelAnimationFrame(animId);
+    Leaderboard.promptName(score, function(name) {
+        if (name) Leaderboard.add('retrohighway', name, score);
+        ovTitle.textContent = 'Crash !';
+        ovMsg.textContent = 'Distance : ' + Math.floor(dist) + 'm — Score : ' + score + ' — 💰 ' + coins;
+        overlay.classList.add('visible');
+    });
+}
+
+// Controls
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); keys.left = true; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); keys.right = true; }
+    if (e.key === ' ' || e.key === 'ArrowUp') { e.preventDefault(); doTrick(); }
+});
+
+function bindBtn(id, fn, hold) {
+    var el = document.getElementById(id);
+    el.addEventListener('touchstart', function(e) { e.preventDefault(); fn(); }, {passive:false});
+    el.addEventListener('mousedown', function(e) { e.preventDefault(); fn(); });
+}
+bindBtn('btn-left', function() { keys.left = true; });
+bindBtn('btn-right', function() { keys.right = true; });
+bindBtn('trick-btn', doTrick);
+
+// Swipe on canvas
+var swStartX;
+cvs.addEventListener('touchstart', function(e) { e.preventDefault(); swStartX = e.touches[0].clientX; }, {passive:false});
+cvs.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    var dx = e.changedTouches[0].clientX - swStartX;
+    if (Math.abs(dx) > 25) { if (dx < 0) keys.left = true; else keys.right = true; }
+    else doTrick();
+}, {passive:false});
+
+ovBtn.addEventListener('click', startGame);
+ovBtn.addEventListener('touchstart', function(e) { e.preventDefault(); startGame(); }, {passive:false});
+window.addEventListener('resize', function() { resize(); });
+
+// Show start overlay
+ovTitle.textContent = '🏍️ Retro Highway';
+ovMsg.textContent = 'Fais des cascades, gagne des coins!\nÉvite les obstacles et va le plus loin possible';
+overlay.classList.add('visible');
+resize();
+</script>
+</body>
+</html>

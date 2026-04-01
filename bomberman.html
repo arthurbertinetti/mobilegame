@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Bomberman</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#222;display:flex;flex-direction:column;align-items:center;height:100dvh;overflow:hidden;font-family:'Segoe UI',sans-serif;-webkit-user-select:none;user-select:none}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#111;color:#fff;z-index:10;flex-shrink:0}
+.top-btn{width:34px;height:34px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;text-decoration:none}
+#hud{font-size:.78rem;display:flex;gap:10px;color:#fff;flex-wrap:wrap}
+canvas{display:block;touch-action:none}
+#controls{display:flex;justify-content:center;gap:6px;padding:4px;flex-shrink:0;width:100%;max-width:320px}
+.dpad{display:grid;grid-template-columns:50px 50px 50px;grid-template-rows:50px 50px 50px;gap:2px}
+.dpad button{background:#333;border:2px solid #555;border-radius:10px;color:#fff;font-size:1.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dpad button:active{background:#555}
+.dpad .c{grid-column:2;grid-row:2}
+.dpad .u{grid-column:2;grid-row:1}
+.dpad .d{grid-column:2;grid-row:3}
+.dpad .l{grid-column:1;grid-row:2}
+.dpad .r{grid-column:3;grid-row:2}
+#btn-bomb{width:70px;height:70px;border-radius:50%;background:radial-gradient(circle,#e74c3c,#c0392b);border:3px solid #ff6b6b;color:#fff;font-size:2rem;font-weight:bold;cursor:pointer;align-self:center;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 12px rgba(231,76,60,.4)}
+#btn-bomb:active{transform:scale(.92)}
+#btn-det{width:50px;height:50px;border-radius:50%;background:radial-gradient(circle,#9b59b6,#6c3483);border:3px solid #bb8fce;color:#fff;font-size:1.2rem;cursor:pointer;align-self:center;display:none;-webkit-tap-highlight-color:transparent}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;text-align:center;padding:16px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:1.8rem;color:#ffd93d;margin-bottom:8px}
+#overlay p{color:#ddd;margin-bottom:14px;font-size:.88rem;line-height:1.4}
+.diff-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.diff-btns button{padding:12px 24px;font-size:1rem;border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer}
+.diff-btns .easy{background:#27ae60}.diff-btns .med{background:#f39c12}.diff-btns .hard{background:#e74c3c}
+</style>
+</head>
+<body>
+<div id="top-bar">
+  <a href="index.html" class="top-btn">🏠</a>
+  <div id="hud">
+    <span>🏆<b id="score">0</b></span>
+    <span>❤️<b id="lives">3</b></span>
+    <span>💣<b id="bombs">1</b></span>
+    <span>🔥<b id="range">1</b></span>
+    <span>⚡<b id="spd">1</b></span>
+  </div>
+</div>
+<canvas id="c"></canvas>
+<div id="controls">
+  <div class="dpad">
+    <button class="u" data-dir="3">⬆️</button>
+    <button class="l" data-dir="2">⬅️</button>
+    <button class="c" style="background:transparent;border-color:transparent"></button>
+    <button class="r" data-dir="0">➡️</button>
+    <button class="d" data-dir="1">⬇️</button>
+  </div>
+  <button id="btn-bomb">💣</button>
+  <button id="btn-det">📡</button>
+</div>
+<div id="overlay">
+  <h2>💣 Bomberman</h2>
+  <p>Pose des bombes, détruis les murs et élimine les ennemis !<br>
+  Ramasse les bonus dans les murs détruits.<br>
+  Attention à ne pas te faire exploser !</p>
+  <div class="diff-btns">
+    <button class="easy" data-diff="0">🟢 Facile</button>
+    <button class="med" data-diff="1">🟡 Moyen</button>
+    <button class="hard" data-diff="2">🔴 Difficile</button>
+  </div>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var C=document.getElementById('c'),X=C.getContext('2d');
+var COLS=13,ROWS=13,CS;
+var W,H,dpr;
+function resize(){
+  dpr=Math.min(window.devicePixelRatio||1,2);
+  var topH=document.getElementById('top-bar').offsetHeight;
+  var ctlH=document.getElementById('controls').offsetHeight;
+  var avail=window.innerHeight-topH-ctlH-8;
+  CS=Math.floor(Math.min(window.innerWidth/COLS,avail/ROWS));
+  W=COLS*CS;H=ROWS*CS;
+  C.width=W*dpr;C.height=H*dpr;C.style.width=W+'px';C.style.height=H+'px';
+  X.setTransform(dpr,0,0,dpr,0,0);
+}
+resize();window.addEventListener('resize',resize);
+
+// CELL: 0=empty,1=wall(indestructible),2=brick(destructible),3=bomb internal
+// BONUS IDs
+var B_BOMB_UP=0,B_BOMB_DOWN=1,B_FIRE_UP=2,B_FIRE_DOWN=3,B_FULL_FIRE=4,B_SPEED_UP=5,B_SPEED_DOWN=6,
+    B_KICK=7,B_REMOTE=8,B_WALL_PASS=9,B_BOMB_PASS=10,B_PIERCE=11,B_HEART=12,B_INVINCIBLE=13;
+var BONUS_LIST=[
+  {id:B_BOMB_UP,name:'Bomb Up',emoji:'💣',color:'#e74c3c',weight:15},
+  {id:B_FIRE_UP,name:'Fire Up',emoji:'🔥',color:'#f39c12',weight:15},
+  {id:B_FULL_FIRE,name:'Full Fire',emoji:'🔴',color:'#ff0',weight:3},
+  {id:B_SPEED_UP,name:'Speed Up',emoji:'⚡',color:'#3498db',weight:12},
+  {id:B_KICK,name:'Bomb Kick',emoji:'👢',color:'#8e44ad',weight:6},
+  {id:B_REMOTE,name:'Télécommande',emoji:'📡',color:'#9b59b6',weight:5},
+  {id:B_WALL_PASS,name:'Passe-Murs',emoji:'👻',color:'#1abc9c',weight:4},
+  {id:B_BOMB_PASS,name:'Passe-Bombes',emoji:'🟣',color:'#7f8c8d',weight:5},
+  {id:B_PIERCE,name:'Pierce',emoji:'🔺',color:'#e74c3c',weight:4},
+  {id:B_HEART,name:'Cœur',emoji:'💖',color:'#e91e63',weight:5},
+  {id:B_INVINCIBLE,name:'Invincible',emoji:'⭐',color:'#ffd93d',weight:3},
+  {id:B_BOMB_DOWN,name:'Bomb Down',emoji:'❌💣',color:'#666',weight:3},
+  {id:B_FIRE_DOWN,name:'Fire Down',emoji:'❌🔥',color:'#666',weight:3},
+  {id:B_SPEED_DOWN,name:'Speed Down',emoji:'🐌',color:'#666',weight:3},
+];
+var totalWeight=0;BONUS_LIST.forEach(function(b){totalWeight+=b.weight});
+
+var grid=[],bonusGrid=[],bombs=[],explosions=[],enemies=[];
+var player={gx:1,gy:1,px:0,py:0,dir:1,moving:false,
+  maxBombs:1,range:1,speed:1,bombsPlaced:0,
+  hasKick:false,hasRemote:false,hasWallPass:false,hasBombPass:false,hasPierce:false,
+  heart:false,invincible:0};
+var score=0,lives=3,difficulty=0,gameState='menu',tick=0;
+var DIFF_NAMES=['Facile','Moyen','Difficile'];
+var ENEMY_COUNTS=[3,5,8];
+var ENEMY_SPEED=[0.4,0.6,0.9];
+var ENEMY_SMART=[0.1,0.35,0.65];// AI chance to chase
+var BRICK_DENSITY=[0.55,0.65,0.75];
+
+// ===== MAP GEN =====
+function genMap(){
+  grid=[];bonusGrid=[];
+  for(var r=0;r<ROWS;r++){grid[r]=[];bonusGrid[r]=[];
+    for(var c=0;c<COLS;c++){
+      bonusGrid[r][c]=-1;
+      if(r===0||r===ROWS-1||c===0||c===COLS-1)grid[r][c]=1;// border
+      else if(r%2===0&&c%2===0)grid[r][c]=1;// pillars
+      else grid[r][c]=0;
+    }
+  }
+  // Clear spawn area (top-left)
+  var safe=[[1,1],[2,1],[1,2]];
+  // Place bricks
+  for(var r=1;r<ROWS-1;r++){for(var c=1;c<COLS-1;c++){
+    if(grid[r][c]!==0)continue;
+    var isSafe=false;safe.forEach(function(s){if(s[0]===c&&s[1]===r)isSafe=true});
+    if(isSafe)continue;
+    if(Math.random()<BRICK_DENSITY[difficulty])grid[r][c]=2;
+  }}
+  // Place bonuses inside bricks
+  for(var r=1;r<ROWS-1;r++){for(var c=1;c<COLS-1;c++){
+    if(grid[r][c]===2&&Math.random()<0.35){
+      bonusGrid[r][c]=pickBonus();
+    }
+  }}
+}
+
+function pickBonus(){
+  var r=Math.random()*totalWeight,acc=0;
+  for(var i=0;i<BONUS_LIST.length;i++){acc+=BONUS_LIST[i].weight;if(r<acc)return BONUS_LIST[i].id}
+  return B_FIRE_UP;
+}
+
+// ===== ENEMIES =====
+function spawnEnemies(){
+  enemies=[];
+  var count=ENEMY_COUNTS[difficulty];
+  var spots=[];
+  for(var r=1;r<ROWS-1;r++){for(var c=1;c<COLS-1;c++){
+    if(grid[r][c]===0&&!(c<=2&&r<=2))spots.push([c,r])
+  }}
+  for(var i=0;i<count&&spots.length>0;i++){
+    var idx=Math.floor(Math.random()*spots.length);
+    var s=spots.splice(idx,1)[0];
+    enemies.push({gx:s[0],gy:s[1],px:s[0]*CS,py:s[1]*CS,dir:Math.floor(Math.random()*4),
+      moveTimer:0,alive:true,smart:Math.random()<ENEMY_SMART[difficulty],
+      speed:ENEMY_SPEED[difficulty]*(0.8+Math.random()*0.4)});
+  }
+}
+
+// ===== INIT =====
+function startGame(diff){
+  difficulty=diff;score=0;lives=3;
+  player.maxBombs=1;player.range=1;player.speed=1;player.bombsPlaced=0;
+  player.hasKick=false;player.hasRemote=false;player.hasWallPass=false;
+  player.hasBombPass=false;player.hasPierce=false;player.heart=false;player.invincible=0;
+  bombs=[];explosions=[];
+  genMap();spawnEnemies();
+  player.gx=1;player.gy=1;player.px=CS;player.py=CS;player.dir=1;player.moving=false;
+  updateHUD();gameState='play';
+}
+
+function nextLevel(){
+  bombs=[];explosions=[];
+  genMap();spawnEnemies();
+  player.gx=1;player.gy=1;player.px=CS;player.py=CS;player.bombsPlaced=0;
+}
+
+// ===== MOVEMENT =====
+var DX=[1,0,-1,0],DY=[0,1,0,-1],moveDir=-1,moveHeld=false;
+
+function canWalk(gx,gy){
+  if(gx<0||gx>=COLS||gy<0||gy>=ROWS)return false;
+  var cell=grid[gy][gx];
+  if(cell===1)return false;
+  if(cell===2)return player.hasWallPass;
+  // Check bombs
+  var onBomb=false;
+  bombs.forEach(function(b){if(b.gx===gx&&b.gy===gy)onBomb=true});
+  if(onBomb&&!player.hasBombPass)return false;
+  return true;
+}
+
+function movePlayer(){
+  if(moveDir<0)return;
+  var spd=(1+player.speed*0.3)*1.8;
+  var tx=player.gx+DX[moveDir],ty=player.gy+DY[moveDir];
+  var tpx=tx*CS,tpy=ty*CS;
+  if(!canWalk(tx,ty)){
+    // Kick bomb?
+    if(player.hasKick){
+      bombs.forEach(function(b){
+        if(b.gx===tx&&b.gy===ty&&!b.moving){
+          b.moving=true;b.moveDir=moveDir;b.moveSpeed=4;
+        }
+      });
+    }
+    return;
+  }
+  // Smooth movement toward target
+  var dx=tpx-player.px,dy=tpy-player.py;
+  var dist=Math.sqrt(dx*dx+dy*dy);
+  if(dist<spd){player.px=tpx;player.py=tpy;player.gx=tx;player.gy=ty}
+  else{player.px+=dx/dist*spd;player.py+=dy/dist*spd}
+  player.dir=moveDir;
+}
+
+// ===== BOMBS =====
+function placeBomb(){
+  if(gameState!=='play')return;
+  if(player.bombsPlaced>=player.maxBombs)return;
+  var bx=player.gx,by=player.gy;
+  // Check no bomb already there
+  var exists=false;bombs.forEach(function(b){if(b.gx===bx&&b.gy===by)exists=true});
+  if(exists)return;
+  var b={gx:bx,gy:by,timer:player.hasRemote?-1:150,range:player.range,
+    pierce:player.hasPierce,remote:player.hasRemote,
+    moving:false,moveDir:0,moveSpeed:0,anim:0};
+  bombs.push(b);player.bombsPlaced++;
+}
+
+function detonateBombs(){
+  if(!player.hasRemote)return;
+  bombs.forEach(function(b){if(b.remote&&b.timer===-1)b.timer=1});
+}
+
+function explodeBomb(bomb){
+  player.bombsPlaced=Math.max(0,player.bombsPlaced-1);
+  explosions.push({gx:bomb.gx,gy:bomb.gy,timer:20});
+  
+  for(var d=0;d<4;d++){
+    for(var dist=1;dist<=bomb.range;dist++){
+      var ex=bomb.gx+DX[d]*dist,ey=bomb.gy+DY[d]*dist;
+      if(ex<0||ex>=COLS||ey<0||ey>=ROWS)break;
+      if(grid[ey][ex]===1)break;// indestructible
+      if(grid[ey][ex]===2){
+        grid[ey][ex]=0;// destroy brick
+        explosions.push({gx:ex,gy:ey,timer:20});
+        score+=10;
+        if(!bomb.pierce)break;
+        continue;
+      }
+      explosions.push({gx:ex,gy:ey,timer:20});
+      // Chain-detonate other bombs
+      bombs.forEach(function(ob){if(ob!==bomb&&ob.gx===ex&&ob.gy===ey&&ob.timer>1)ob.timer=1});
+    }
+  }
+  updateHUD();
+}
+
+function updateBombs(){
+  bombs.forEach(function(b){
+    b.anim++;
+    // Moving bomb (kicked)
+    if(b.moving){
+      var nx=b.gx+DX[b.moveDir],ny=b.gy+DY[b.moveDir];
+      if(nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&grid[ny][nx]===0){
+        var blocked=false;
+        bombs.forEach(function(ob){if(ob!==b&&ob.gx===nx&&ob.gy===ny)blocked=true});
+        enemies.forEach(function(e){if(e.alive&&e.gx===nx&&e.gy===ny)blocked=true});
+        if(!blocked){b.gx=nx;b.gy=ny}else{b.moving=false}
+      }else{b.moving=false}
+    }
+    if(b.timer>0){b.timer--;if(b.timer<=0)explodeBomb(b)}
+  });
+  bombs=bombs.filter(function(b){return b.timer!==0});
+  
+  explosions.forEach(function(e){e.timer--});
+  explosions=explosions.filter(function(e){return e.timer>0});
+}
+
+// ===== ENEMY AI =====
+function updateEnemies(){
+  enemies.forEach(function(e){
+    if(!e.alive)return;
+    e.moveTimer--;
+    if(e.moveTimer>0)return;
+    e.moveTimer=Math.floor(CS/(e.speed*2));
+    
+    var dirs=[0,1,2,3];
+    // Smart enemies chase player sometimes
+    if(e.smart&&Math.random()<ENEMY_SMART[difficulty]){
+      var dx=player.gx-e.gx,dy=player.gy-e.gy;
+      if(Math.abs(dx)>Math.abs(dy))dirs.sort(function(a,b){return Math.abs(DX[a]-Math.sign(dx))-Math.abs(DX[b]-Math.sign(dx))});
+      else dirs.sort(function(a,b){return Math.abs(DY[a]-Math.sign(dy))-Math.abs(DY[b]-Math.sign(dy))});
+    }else{
+      // Shuffle for random movement
+      for(var i=dirs.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=dirs[i];dirs[i]=dirs[j];dirs[j]=t}
+      // Prefer current direction
+      var ci=dirs.indexOf(e.dir);if(ci>0){dirs.splice(ci,1);dirs.unshift(e.dir)}
+    }
+    
+    var moved=false;
+    for(var i=0;i<dirs.length;i++){
+      var d=dirs[i];
+      var nx=e.gx+DX[d],ny=e.gy+DY[d];
+      if(nx<1||nx>=COLS-1||ny<1||ny>=ROWS-1)continue;
+      if(grid[ny][nx]!==0)continue;
+      var onBomb=false;bombs.forEach(function(b){if(b.gx===nx&&b.gy===ny)onBomb=true});
+      if(onBomb)continue;
+      // Avoid explosions (smart)
+      if(e.smart){var inExp=false;explosions.forEach(function(ex){if(ex.gx===nx&&ex.gy===ny)inExp=true});
+        if(inExp)continue}
+      e.gx=nx;e.gy=ny;e.px=nx*CS;e.py=ny*CS;e.dir=d;moved=true;break;
+    }
+  });
+}
+
+// ===== COLLISIONS =====
+function checkCollisions(){
+  // Player in explosion
+  if(player.invincible<=0){
+    explosions.forEach(function(ex){
+      if(ex.gx===player.gx&&ex.gy===player.gy){
+        if(player.heart){player.heart=false;player.invincible=60}
+        else{playerDie()}
+      }
+    });
+  }
+  if(player.invincible>0)player.invincible--;
+  
+  // Player touches enemy
+  if(player.invincible<=0){
+    enemies.forEach(function(e){
+      if(e.alive&&e.gx===player.gx&&e.gy===player.gy){
+        if(player.heart){player.heart=false;player.invincible=60}
+        else{playerDie()}
+      }
+    });
+  }
+  
+  // Enemies in explosion
+  enemies.forEach(function(e){
+    if(!e.alive)return;
+    explosions.forEach(function(ex){
+      if(ex.gx===e.gx&&ex.gy===e.gy){e.alive=false;score+=100;updateHUD()}
+    });
+  });
+  
+  // Player picks up bonus
+  var b=bonusGrid[player.gy][player.gx];
+  if(b>=0&&grid[player.gy][player.gx]===0){
+    applyBonus(b);bonusGrid[player.gy][player.gx]=-1;
+  }
+  
+  // All enemies dead → next level
+  var allDead=true;enemies.forEach(function(e){if(e.alive)allDead=false});
+  if(allDead){score+=500;nextLevel();updateHUD()}
+}
+
+function playerDie(){
+  lives--;
+  if(lives<=0){gameOver();return}
+  player.gx=1;player.gy=1;player.px=CS;player.py=CS;player.invincible=90;player.bombsPlaced=0;
+  bombs=[];updateHUD();
+}
+
+function gameOver(){
+  gameState='over';
+  var name=Leaderboard.promptName();
+  if(name)Leaderboard.add('bomberman',score,name);
+  document.getElementById('overlay').classList.remove('hidden');
+  document.getElementById('overlay').querySelector('h2').textContent='💀 Game Over';
+  document.getElementById('overlay').querySelector('p').innerHTML='Score: <b>'+score+'</b><br>Difficulté: '+DIFF_NAMES[difficulty];
+  var btns=document.querySelector('.diff-btns');
+  btns.innerHTML='<button class="easy" data-diff="0">🔄 Rejouer</button>';
+  btns.querySelector('button').addEventListener('click',function(){
+    document.getElementById('overlay').classList.add('hidden');
+    startGame(difficulty);
+  });
+}
+
+function applyBonus(id){
+  switch(id){
+    case B_BOMB_UP:player.maxBombs=Math.min(player.maxBombs+1,8);showFloat('💣+1');break;
+    case B_BOMB_DOWN:player.maxBombs=Math.max(player.maxBombs-1,1);showFloat('💣-1');break;
+    case B_FIRE_UP:player.range=Math.min(player.range+1,10);showFloat('🔥+1');break;
+    case B_FIRE_DOWN:player.range=Math.max(player.range-1,1);showFloat('🔥-1');break;
+    case B_FULL_FIRE:player.range=10;showFloat('🔥 MAX!');break;
+    case B_SPEED_UP:player.speed=Math.min(player.speed+1,5);showFloat('⚡+1');break;
+    case B_SPEED_DOWN:player.speed=Math.max(player.speed-1,1);showFloat('🐌-1');break;
+    case B_KICK:player.hasKick=true;showFloat('👢 Kick!');break;
+    case B_REMOTE:player.hasRemote=true;document.getElementById('btn-det').style.display='';showFloat('📡 Remote!');break;
+    case B_WALL_PASS:player.hasWallPass=true;showFloat('👻 Pass!');break;
+    case B_BOMB_PASS:player.hasBombPass=true;showFloat('🟣 Bomb Pass!');break;
+    case B_PIERCE:player.hasPierce=true;showFloat('🔺 Pierce!');break;
+    case B_HEART:player.heart=true;showFloat('💖 Cœur!');break;
+    case B_INVINCIBLE:player.invincible=300;showFloat('⭐ Invincible!');break;
+  }
+  score+=25;updateHUD();
+}
+
+function showFloat(t){
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;left:50%;top:30%;transform:translateX(-50%);font-size:1.2rem;font-weight:bold;color:#ffd93d;text-shadow:0 2px 4px rgba(0,0,0,.8);z-index:40;pointer-events:none;animation:fup 1.2s ease-out forwards';
+  el.textContent=t;document.body.appendChild(el);setTimeout(function(){el.remove()},1200);
+}
+
+// ===== INPUT =====
+document.querySelectorAll('.dpad button[data-dir]').forEach(function(btn){
+  btn.addEventListener('touchstart',function(e){e.preventDefault();moveDir=+btn.dataset.dir;moveHeld=true},{passive:false});
+  btn.addEventListener('touchend',function(e){e.preventDefault();if(moveDir===+btn.dataset.dir){moveHeld=false;moveDir=-1}},{passive:false});
+});
+document.getElementById('btn-bomb').addEventListener('click',placeBomb);
+document.getElementById('btn-det').addEventListener('click',detonateBombs);
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight')moveDir=0;if(e.key==='ArrowDown')moveDir=1;
+  if(e.key==='ArrowLeft')moveDir=2;if(e.key==='ArrowUp')moveDir=3;
+  if(e.key===' ')placeBomb();if(e.key==='d'||e.key==='D')detonateBombs();
+  moveHeld=true;
+});
+document.addEventListener('keyup',function(e){
+  var d=-1;if(e.key==='ArrowRight')d=0;if(e.key==='ArrowDown')d=1;if(e.key==='ArrowLeft')d=2;if(e.key==='ArrowUp')d=3;
+  if(d===moveDir){moveHeld=false;moveDir=-1}
+});
+
+// ===== DRAW =====
+function draw(){
+  X.fillStyle='#333';X.fillRect(0,0,W,H);
+  if(!grid.length)return;
+  for(var r=0;r<ROWS;r++){for(var c=0;c<COLS;c++){
+    var px=c*CS,py=r*CS,v=grid[r][c];
+    if(v===1){// Indestructible wall
+      X.fillStyle='#555';X.fillRect(px,py,CS,CS);
+      X.fillStyle='#666';X.fillRect(px+2,py+2,CS-4,CS-4);
+      X.fillStyle='#777';X.fillRect(px+4,py+4,CS/2-4,CS/2-4);
+    }else if(v===2){// Brick
+      X.fillStyle='#8B4513';X.fillRect(px,py,CS,CS);
+      X.strokeStyle='#A0522D';X.lineWidth=1;
+      X.strokeRect(px+1,py+1,CS/2-1,CS/2-1);X.strokeRect(px+CS/2,py+CS/2,CS/2-1,CS/2-1);
+    }else{// Floor
+      X.fillStyle=(r+c)%2===0?'#4a7c4a':'#3d6b3d';X.fillRect(px,py,CS,CS);
+      // Bonus on floor
+      var bi=bonusGrid[r][c];
+      if(bi>=0){
+        var bo=null;BONUS_LIST.forEach(function(bl){if(bl.id===bi)bo=bl});
+        if(bo){
+          X.fillStyle=bo.color;X.globalAlpha=0.8;
+          X.beginPath();X.arc(px+CS/2,py+CS/2,CS*0.32,0,Math.PI*2);X.fill();
+          X.globalAlpha=1;X.font=(CS*0.45)+'px sans-serif';X.textAlign='center';X.textBaseline='middle';
+          X.fillText(bo.emoji,px+CS/2,py+CS/2);
+        }
+      }
+    }
+  }}
+  
+  // Explosions
+  explosions.forEach(function(ex){
+    var px=ex.gx*CS,py=ex.gy*CS;
+    var alpha=ex.timer/20;
+    X.globalAlpha=alpha;
+    var grad=X.createRadialGradient(px+CS/2,py+CS/2,0,px+CS/2,py+CS/2,CS*0.6);
+    grad.addColorStop(0,'#fff');grad.addColorStop(0.3,'#ffd93d');grad.addColorStop(0.7,'#e74c3c');grad.addColorStop(1,'rgba(231,76,60,0)');
+    X.fillStyle=grad;X.fillRect(px-CS*0.1,py-CS*0.1,CS*1.2,CS*1.2);
+    X.globalAlpha=1;
+  });
+  
+  // Bombs
+  bombs.forEach(function(b){
+    var px=b.gx*CS+CS/2,py=b.gy*CS+CS/2;
+    var sc=0.32+Math.sin(b.anim*0.15)*0.04;
+    X.fillStyle=b.remote?'#9b59b6':'#111';X.beginPath();X.arc(px,py,CS*sc,0,Math.PI*2);X.fill();
+    X.fillStyle='#888';X.fillRect(px-2,py-CS*sc-4,4,8);
+    // Fuse spark
+    if(b.timer>0||b.remote){
+      X.fillStyle=tick%4<2?'#ffd93d':'#e74c3c';X.beginPath();X.arc(px,py-CS*sc-4,3,0,Math.PI*2);X.fill();
+    }
+  });
+  
+  // Enemies
+  enemies.forEach(function(e){
+    if(!e.alive)return;
+    var px=e.px+CS/2,py=e.py+CS/2;
+    // Body
+    X.fillStyle=e.smart?'#9b59b6':'#e74c3c';
+    X.beginPath();X.arc(px,py-CS*0.05,CS*0.35,Math.PI,0);
+    X.lineTo(px+CS*0.35,py+CS*0.3);
+    // Tentacles
+    for(var t=0;t<4;t++){
+      var tx=px+CS*0.35-t*CS*0.175;
+      X.lineTo(tx-CS*0.04,py+CS*0.2+(tick+t*3)%6<3?CS*0.05:0);
+      X.lineTo(tx-CS*0.088,py+CS*0.3);
+    }
+    X.fill();
+    // Eyes
+    X.fillStyle='#fff';X.beginPath();X.arc(px-CS*0.1,py-CS*0.1,CS*0.1,0,Math.PI*2);X.fill();
+    X.beginPath();X.arc(px+CS*0.1,py-CS*0.1,CS*0.1,0,Math.PI*2);X.fill();
+    X.fillStyle='#000';
+    var edx=DX[e.dir]*CS*0.04,edy=DY[e.dir]*CS*0.04;
+    X.beginPath();X.arc(px-CS*0.1+edx,py-CS*0.1+edy,CS*0.05,0,Math.PI*2);X.fill();
+    X.beginPath();X.arc(px+CS*0.1+edx,py-CS*0.1+edy,CS*0.05,0,Math.PI*2);X.fill();
+  });
+  
+  // Player
+  if(player.invincible<=0||tick%4<2){
+    var ppx=player.px+CS/2,ppy=player.py+CS/2;
+    // Body
+    X.fillStyle=player.invincible>0?'#ffd93d':'#fff';
+    X.beginPath();X.arc(ppx,ppy-CS*0.08,CS*0.3,0,Math.PI*2);X.fill();
+    // Helmet
+    X.fillStyle=player.invincible>0?'#ff0':'#2196F3';
+    X.beginPath();X.arc(ppx,ppy-CS*0.15,CS*0.25,Math.PI,0);X.fill();
+    // Eyes
+    X.fillStyle='#000';
+    X.beginPath();X.arc(ppx-CS*0.08,ppy-CS*0.12,CS*0.05,0,Math.PI*2);X.fill();
+    X.beginPath();X.arc(ppx+CS*0.08,ppy-CS*0.12,CS*0.05,0,Math.PI*2);X.fill();
+    // Body below
+    X.fillStyle=player.invincible>0?'#ffd93d':'#fff';
+    X.fillRect(ppx-CS*0.15,ppy+CS*0.1,CS*0.3,CS*0.2);
+    // Heart indicator
+    if(player.heart){X.font=(CS*0.3)+'px sans-serif';X.textAlign='center';X.fillText('💖',ppx,ppy+CS*0.42)}
+  }
+}
+
+function updateHUD(){
+  document.getElementById('score').textContent=score;
+  document.getElementById('lives').textContent=lives;
+  document.getElementById('bombs').textContent=player.maxBombs;
+  document.getElementById('range').textContent=player.range;
+  document.getElementById('spd').textContent=player.speed;
+}
+
+function loop(){
+  tick++;
+  if(gameState==='play'){
+    movePlayer();updateBombs();
+    if(tick%2===0)updateEnemies();
+    checkCollisions();
+  }
+  draw();requestAnimationFrame(loop);
+}
+
+// Difficulty buttons
+document.querySelectorAll('.diff-btns button[data-diff]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.getElementById('overlay').classList.add('hidden');
+    startGame(+btn.dataset.diff);
+  });
+});
+
+// Float animation
+var style=document.createElement('style');style.textContent='@keyframes fup{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-60px)}}';
+document.head.appendChild(style);
+
+loop();
+</script>
+</body>
+</html>

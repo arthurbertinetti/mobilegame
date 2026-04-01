@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Arcade Mobile</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #041547;
+            color: #eee;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100dvh;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #ff6b81, #ffd93d, #6bff8e, #74b9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 2px 12px rgba(255,107,129,.3));
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #ff0101;
+            margin-bottom: 40px;
+        }
+
+        .game-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            width: 90%;
+            max-width: 340px;
+        }
+
+        .game-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 20px;
+            background: linear-gradient(145deg, #14203a, #0d1829);
+            border: 1px solid rgba(255,255,255,.06);
+            border-radius: 18px;
+            text-decoration: none;
+            color: #eee;
+            box-shadow:
+                0 6px 25px rgba(0,0,0,.5),
+                inset 0 1px 0 rgba(255,255,255,.05);
+            transition: transform .15s, box-shadow .15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .game-card:active {
+            transform: scale(.96);
+            box-shadow: 0 2px 10px rgba(0,0,0,.6);
+        }
+
+        .game-icon {
+            font-size: 2.6rem;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            flex-shrink: 0;
+        }
+        .icon-snake {
+            background: linear-gradient(135deg, #27ae60, #1e8449);
+            box-shadow: 0 4px 12px rgba(39,174,96,.3);
+        }
+        .icon-breakout {
+            background: linear-gradient(135deg, #e94560, #c0392b);
+            box-shadow: 0 4px 12px rgba(233,69,96,.3);
+        }
+
+        .game-info h2 {
+            font-size: 1.2rem;
+            margin-bottom: 3px;
+        }
+        .game-info p {
+            font-size: 0.82rem;
+            color: #999;
+            line-height: 1.3;
+        }
+        .game-record {
+            font-size: 0.75rem;
+            color: #ffd93d;
+            margin-top: 4px;
+            opacity: 0.85;
+        }
+
+        .icon-asteroids {
+            background: linear-gradient(135deg, #3498db, #2471a3);
+            box-shadow: 0 4px 12px rgba(52,152,219,.3);
+        }
+        .icon-cardodge {
+            background: linear-gradient(135deg, #f39c12, #d68910);
+            box-shadow: 0 4px 12px rgba(243,156,18,.3);
+        }
+        .icon-solitaire {
+            background: linear-gradient(135deg, #1a5276, #154360);
+            box-shadow: 0 4px 12px rgba(26,82,118,.3);
+        }
+        .icon-blackjack {
+            background: linear-gradient(135deg, #0a5e2a, #074a20);
+            box-shadow: 0 4px 12px rgba(10,94,42,.3);
+        }
+        .icon-spaceinvaders {
+            background: linear-gradient(135deg, #222, #111);
+            box-shadow: 0 4px 12px rgba(0,255,0,.15);
+        }
+        .icon-mastermind {
+            background: linear-gradient(135deg, #8e44ad, #6c3483);
+            box-shadow: 0 4px 12px rgba(142,68,173,.3);
+        }
+        .icon-tetris {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            box-shadow: 0 4px 12px rgba(0,184,148,.3);
+        }
+        .icon-minesweeper {
+            background: linear-gradient(135deg, #636e72, #2d3436);
+            box-shadow: 0 4px 12px rgba(99,110,114,.3);
+        }
+        .icon-retrohighway {
+            background: linear-gradient(135deg, #e17055, #d63031);
+            box-shadow: 0 4px 12px rgba(225,112,85,.3);
+        }
+        .icon-motodge {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            box-shadow: 0 4px 12px rgba(192,57,43,.3);
+        }
+        .icon-maze {
+            background: linear-gradient(135deg, #00cec9, #0984e3);
+            box-shadow: 0 4px 12px rgba(0,206,201,.3);
+        }
+        .icon-candycrush {
+            background: linear-gradient(135deg, #e91e63, #9b59b6);
+            box-shadow: 0 4px 12px rgba(233,30,99,.3);
+        }
+        .icon-bubbleshooter {
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            box-shadow: 0 4px 12px rgba(116,185,255,.3);
+        }
+        .icon-poolclub {
+            background: linear-gradient(135deg, #27ae60, #1a5e2a);
+            box-shadow: 0 4px 12px rgba(39,174,96,.3);
+        }
+        .icon-neonwar {
+            background: linear-gradient(135deg, #00ff88, #0a0a1e);
+            box-shadow: 0 4px 12px rgba(0,255,136,.3);
+        }
+        .icon-crossyroad {
+            background: linear-gradient(135deg, #ffd93d, #f39c12);
+            box-shadow: 0 4px 12px rgba(255,217,61,.3);
+        }
+        .icon-connect4 {
+            background: linear-gradient(135deg, #e74c3c, #ffd93d);
+            box-shadow: 0 4px 12px rgba(231,76,60,.3);
+        }
+        .icon-battleship {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            box-shadow: 0 4px 12px rgba(52,152,219,.3);
+        }
+        .icon-checkers {
+            background: linear-gradient(135deg, #c0392b, #8B4513);
+            box-shadow: 0 4px 12px rgba(192,57,43,.3);
+        }
+        .icon-chess {
+            background: linear-gradient(135deg, #9b59b6, #1a1a2e);
+            box-shadow: 0 4px 12px rgba(155,89,182,.3);
+        }
+        .icon-fruitninja {
+            background: linear-gradient(135deg, #e74c3c, #27ae60);
+            box-shadow: 0 4px 12px rgba(231,76,60,.3);
+        }
+        .icon-sudoku {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 4px 12px rgba(52,152,219,.3);
+        }
+        .icon-zuma {
+            background: linear-gradient(135deg, #2ecc71, #0a1a0a);
+            box-shadow: 0 4px 12px rgba(46,204,113,.3);
+        }
+        .icon-mahjong {
+            background: linear-gradient(135deg, #e74c3c, #1a0a2e);
+            box-shadow: 0 4px 12px rgba(231,76,60,.3);
+        }
+        .icon-onelinedraw {
+            background: linear-gradient(135deg, #ff6b81, #74b9ff);
+            box-shadow: 0 4px 12px rgba(255,107,129,.3);
+        }
+        .icon-watercolorsort {
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            box-shadow: 0 4px 12px rgba(0,188,212,.3);
+        }
+        .icon-tictactoe {
+            background: linear-gradient(135deg, #e74c3c, #3498db);
+            box-shadow: 0 4px 12px rgba(231,76,60,.3);
+        }
+        .icon-nutsandbolts {
+            background: linear-gradient(135deg, #f39c12, #7f8c8d);
+            box-shadow: 0 4px 12px rgba(243,156,18,.3);
+        }
+        .icon-farmvalley {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            box-shadow: 0 4px 12px rgba(76,175,80,.3);
+        }
+        .icon-sonic {
+            background: linear-gradient(135deg, #2196F3, #1565C0);
+            box-shadow: 0 4px 12px rgba(33,150,243,.3);
+        }
+        .icon-pacman {
+            background: linear-gradient(135deg, #ffd93d, #f39c12);
+            box-shadow: 0 4px 12px rgba(255,217,61,.3);
+        }
+        .icon-bomberman {
+            background: linear-gradient(135deg, #e74c3c, #f39c12);
+            box-shadow: 0 4px 12px rgba(231,76,60,.3);
+        }
+
+        .ranking-link {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            padding: 14px 24px;
+            background: linear-gradient(145deg, #2c3e50, #1a252f);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            color: #ffd93d;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,.4);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ranking-link:active { transform: scale(.96); }
+
+        .game-list {
+            max-height: calc(100dvh - 160px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,.1) transparent;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.75rem;
+            color: #ffffff;
+        }
+
+        /* ===== FAVORITES ===== */
+        .fav-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 14px;
+            border: 2px solid rgba(255,217,61,.3);
+            background: rgba(255,217,61,.08);
+            color: #ffd93d;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 10px;
+            -webkit-tap-highlight-color: transparent;
+            transition: background .2s, border-color .2s, transform .15s;
+        }
+        .fav-toggle:active { transform: scale(.95); }
+        .fav-toggle.active {
+            background: rgba(255,217,61,.2);
+            border-color: #ffd93d;
+            box-shadow: 0 0 16px rgba(255,217,61,.25);
+        }
+        .fav-toggle .fav-star { font-size: 1.3rem; }
+
+        .fav-btn {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 5;
+            filter: grayscale(1) opacity(.35);
+            transition: filter .2s, transform .15s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .fav-btn.is-fav {
+            filter: none;
+            animation: pop-star .3s ease;
+        }
+        @keyframes pop-star {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+        .game-card { position: relative; }
+    </style>
+</head>
+<body>
+
+    <h1>🕹️ Retro Game Hub</h1>
+    <h3 class="subtitle">Choisis ton CHALLENGE</h3>
+
+    <button class="fav-toggle" id="fav-toggle" onclick="toggleFavMode()">
+        <span class="fav-star">⭐</span> Favoris
+    </button>
+
+    <div class="game-list" id="game-list">
+        <a href="snake.html" class="game-card">
+            <div class="game-icon icon-snake">🐍</div>
+            <div class="game-info">
+                <h2>Snake 2.0</h2>
+                <p>Mange les fruits et grandis</p>
+                <p class="game-record" id="rec-snake"></p>
+            </div>
+        </a>
+
+        <a href="breakout.html" class="game-card">
+            <div class="game-icon icon-breakout">🧱</div>
+            <div class="game-info">
+                <h2>Casse-Briques 2.0</h2>
+                <p>Détruis les briques et récup les bonus</p>
+                <p class="game-record" id="rec-breakout"></p>
+            </div>
+        </a>
+
+        <a href="asteroids.html" class="game-card">
+            <div class="game-icon icon-asteroids">☄️</div>
+            <div class="game-info">
+                <h2>Asteroids 2.0</h2>
+                <p>Pilote et pulvérise les astéroïdes</p>
+                <p class="game-record" id="rec-asteroids"></p>
+            </div>
+        </a>
+
+        <a href="cardodge.html" class="game-card">
+            <div class="game-icon icon-cardodge">🚗</div>
+            <div class="game-info">
+                <h2>Road Racer 2.0</h2>
+                <p>Évite les voitures, la vitesse augmente</p>
+                <p class="game-record" id="rec-cardodge"></p>
+            </div>
+        </a>
+
+        <a href="solitaire.html" class="game-card">
+            <div class="game-icon icon-solitaire">🃏</div>
+            <div class="game-info">
+                <h2>Solitaire</h2>
+                <p>Le classique Klondike, glisse les cartes</p>
+                <p class="game-record" id="rec-solitaire"></p>
+            </div>
+        </a>
+
+        <a href="blackjack.html" class="game-card">
+            <div class="game-icon icon-blackjack">🂡</div>
+            <div class="game-info">
+                <h2>Blackjack</h2>
+                <p>Bats la banque avec 50 pièces</p>
+                <p class="game-record" id="rec-blackjack"></p>
+            </div>
+        </a>
+
+        <a href="spaceinvaders.html" class="game-card">
+            <div class="game-icon icon-spaceinvaders">👾</div>
+            <div class="game-info">
+                <h2>Space Invaders</h2>
+                <p>Détruis les vagues d'aliens</p>
+                <p class="game-record" id="rec-spaceinvaders"></p>
+            </div>
+        </a>
+
+        <a href="mastermind.html" class="game-card">
+            <div class="game-icon icon-mastermind">🧠</div>
+            <div class="game-info">
+                <h2>Mastermind</h2>
+                <p>Trouve la combinaison secrète en 10 essais</p>
+                <p class="game-record" id="rec-mastermind"></p>
+            </div>
+        </a>
+
+        <a href="tetris.html" class="game-card">
+            <div class="game-icon icon-tetris">🧩</div>
+            <div class="game-info">
+                <h2>Tetris</h2>
+                <p>Empile les pièces et complète les lignes</p>
+                <p class="game-record" id="rec-tetris"></p>
+            </div>
+        </a>
+
+        <a href="minesweeper.html" class="game-card">
+            <div class="game-icon icon-minesweeper">💣</div>
+            <div class="game-info">
+                <h2>Démineur</h2>
+                <p>3 niveaux : facile, moyen, difficile</p>
+                <p class="game-record" id="rec-minesweeper"></p>
+            </div>
+        </a>
+
+        <a href="retrohighway.html" class="game-card">
+            <div class="game-icon icon-retrohighway">🏍️</div>
+            <div class="game-info">
+                <h2>Retro Highway</h2>
+                <p>Cascades pixel art, va le plus loin possible</p>
+                <p class="game-record" id="rec-retrohighway"></p>
+            </div>
+        </a>
+
+        <a href="motodge.html" class="game-card">
+            <div class="game-icon icon-motodge">🏎️</div>
+            <div class="game-info">
+                <h2>Moto Dodge CBR650R</h2>
+                <p>Évite vélos, scooters, trous et piétons</p>
+                <p class="game-record" id="rec-motodge"></p>
+            </div>
+        </a>
+
+        <a href="maze.html" class="game-card">
+            <div class="game-icon icon-maze">🏁</div>
+            <div class="game-info">
+                <h2>Maze Speedrunner</h2>
+                <p>Trouve la sortie du labyrinthe néon</p>
+                <p class="game-record" id="rec-maze"></p>
+            </div>
+        </a>
+
+        <a href="candycrush.html" class="game-card">
+            <div class="game-icon icon-candycrush">🍬</div>
+            <div class="game-info">
+                <h2>Candy Crush</h2>
+                <p>Aligne 3+ bonbons identiques</p>
+                <p class="game-record" id="rec-candycrush"></p>
+            </div>
+        </a>
+
+        <a href="bubbleshooter.html" class="game-card">
+            <div class="game-icon icon-bubbleshooter">🫧</div>
+            <div class="game-info">
+                <h2>Bubble Shooter</h2>
+                <p>Éclate les bulles par groupes de 3+</p>
+                <p class="game-record" id="rec-bubbleshooter"></p>
+            </div>
+        </a>
+
+        <a href="poolclub.html" class="game-card">
+            <div class="game-icon icon-poolclub">🎱</div>
+            <div class="game-info">
+                <h2>Pool Club</h2>
+                <p>Empoche les billes en 90 secondes</p>
+                <p class="game-record" id="rec-poolclub"></p>
+            </div>
+        </a>
+
+        <a href="neonwar.html" class="game-card">
+            <div class="game-icon icon-neonwar">💥</div>
+            <div class="game-info">
+                <h2>Neon War</h2>
+                <p>Canon auto, détruis les blocs néon</p>
+                <p class="game-record" id="rec-neonwar"></p>
+            </div>
+        </a>
+
+        <a href="crossyroad.html" class="game-card">
+            <div class="game-icon icon-crossyroad">🐔</div>
+            <div class="game-info">
+                <h2>Crossy Road</h2>
+                <p>Traverse la route, évite le trafic</p>
+                <p class="game-record" id="rec-crossyroad"></p>
+            </div>
+        </a>
+
+        <a href="connect4.html" class="game-card">
+            <div class="game-icon icon-connect4">🔴</div>
+            <div class="game-info">
+                <h2>Puissance 4</h2>
+                <p>Aligne 4 jetons contre l'IA</p>
+                <p class="game-record" id="rec-connect4"></p>
+            </div>
+        </a>
+
+        <a href="battleship.html" class="game-card">
+            <div class="game-icon icon-battleship">🚢</div>
+            <div class="game-info">
+                <h2>Bataille Navale</h2>
+                <p>Coule la flotte de l'IA</p>
+                <p class="game-record" id="rec-battleship"></p>
+            </div>
+        </a>
+
+        <a href="checkers.html" class="game-card">
+            <div class="game-icon icon-checkers">♟️</div>
+            <div class="game-info">
+                <h2>Jeu de Dames</h2>
+                <p>Bats l'IA au jeu de dames</p>
+                <p class="game-record" id="rec-checkers"></p>
+            </div>
+        </a>
+
+        <a href="chess.html" class="game-card">
+            <div class="game-icon icon-chess">♟</div>
+            <div class="game-info">
+                <h2>Échecs</h2>
+                <p>Joue les blancs contre l'IA</p>
+                <p class="game-record" id="rec-chess"></p>
+            </div>
+        </a>
+
+        <a href="fruitninja.html" class="game-card">
+            <div class="game-icon icon-fruitninja">🍉</div>
+            <div class="game-info">
+                <h2>Fruit Ninja</h2>
+                <p>Tranche les fruits, évite les bombes</p>
+                <p class="game-record" id="rec-fruitninja"></p>
+            </div>
+        </a>
+
+        <a href="sudoku.html" class="game-card">
+            <div class="game-icon icon-sudoku">🔢</div>
+            <div class="game-info">
+                <h2>Sudoku</h2>
+                <p>3 niveaux de difficulté</p>
+                <p class="game-record" id="rec-sudoku"></p>
+            </div>
+        </a>
+
+        <a href="zuma.html" class="game-card">
+            <div class="game-icon icon-zuma">🐸</div>
+            <div class="game-info">
+                <h2>Zuma</h2>
+                <p>Tire et aligne 3+ billes identiques</p>
+                <p class="game-record" id="rec-zuma"></p>
+            </div>
+        </a>
+
+        <a href="mahjong.html" class="game-card">
+            <div class="game-icon icon-mahjong">🀄</div>
+            <div class="game-info">
+                <h2>Mahjong</h2>
+                <p>Trouve les paires de tuiles</p>
+                <p class="game-record" id="rec-mahjong"></p>
+            </div>
+        </a>
+
+        <a href="onelinedraw.html" class="game-card">
+            <div class="game-icon icon-onelinedraw">✏️</div>
+            <div class="game-info">
+                <h2>One Line Draw</h2>
+                <p>Complète le motif d'un seul trait</p>
+                <p class="game-record" id="rec-onelinedraw"></p>
+            </div>
+        </a>
+
+        <a href="watercolorsort.html" class="game-card">
+            <div class="game-icon icon-watercolorsort">🧪</div>
+            <div class="game-info">
+                <h2>Water Color Sort</h2>
+                <p>Trie les liquides par couleur</p>
+                <p class="game-record" id="rec-watercolorsort"></p>
+            </div>
+        </a>
+
+        <a href="tictactoe.html" class="game-card">
+            <div class="game-icon icon-tictactoe">❌</div>
+            <div class="game-info">
+                <h2>Tic Tac Toe</h2>
+                <p>Aligne 3 symboles, solo ou multi</p>
+                <p class="game-record" id="rec-tictactoe"></p>
+            </div>
+        </a>
+
+        <a href="nutsandbolts.html" class="game-card">
+            <div class="game-icon icon-nutsandbolts">🔩</div>
+            <div class="game-info">
+                <h2>Nuts And Bolts</h2>
+                <p>Dévisse et démonte les plaques</p>
+                <p class="game-record" id="rec-nutsandbolts"></p>
+            </div>
+        </a>
+
+        <a href="farmvalley.html" class="game-card">
+            <div class="game-icon icon-farmvalley">🌾</div>
+            <div class="game-info">
+                <h2>Farm Valley</h2>
+                <p>Farming idle : plante, récolte, améliore !</p>
+                <p class="game-record" id="rec-farmvalley"></p>
+            </div>
+        </a>
+
+        <a href="sonic.html" class="game-card">
+            <div class="game-icon icon-sonic">🦔</div>
+            <div class="game-info">
+                <h2>Sonic Runner</h2>
+                <p>Cours, saute et dash à toute vitesse !</p>
+                <p class="game-record" id="rec-sonic"></p>
+            </div>
+        </a>
+
+        <a href="pacman.html" class="game-card">
+            <div class="game-icon icon-pacman">👾</div>
+            <div class="game-info">
+                <h2>Pac-Man</h2>
+                <p>Mange les gommes, fuis les fantômes</p>
+                <p class="game-record" id="rec-pacman"></p>
+            </div>
+        </a>
+
+        <a href="bomberman.html" class="game-card">
+            <div class="game-icon icon-bomberman">💣</div>
+            <div class="game-info">
+                <h2>Bomberman</h2>
+                <p>Pose des bombes, récupère les bonus !</p>
+                <p class="game-record" id="rec-bomberman"></p>
+            </div>
+        </a>
+
+        <a href="ranking.html" class="ranking-link">🏆 Classement général</a>
+    </div>
+    <div class="footer">© 2026 Arthur B - Tous droits réservés</div>
+<script src="leaderboard.js"></script>
+<script>
+var GAME_IDS = ['snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','sonic','pacman','bomberman'];
+var FAV_KEY = 'arcade_favorites';
+var favMode = false;
+
+function getFavs() {
+    try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch(e) { return []; }
+}
+function saveFavs(arr) {
+    localStorage.setItem(FAV_KEY, JSON.stringify(arr));
+}
+
+// Add star to each game card + records
+var cards = document.querySelectorAll('.game-card');
+cards.forEach(function(card) {
+    var href = card.getAttribute('href') || '';
+    var id = href.replace('.html','');
+    if (GAME_IDS.indexOf(id) === -1) return;
+    card.dataset.gameId = id;
+    // Fav star
+    var star = document.createElement('span');
+    star.className = 'fav-btn' + (getFavs().indexOf(id) !== -1 ? ' is-fav' : '');
+    star.textContent = '⭐';
+    star.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var favs = getFavs();
+        var idx = favs.indexOf(id);
+        if (idx !== -1) { favs.splice(idx, 1); star.classList.remove('is-fav'); }
+        else { favs.push(id); star.classList.add('is-fav'); }
+        saveFavs(favs);
+        if (favMode) applyFavFilter();
+    });
+    card.appendChild(star);
+    // Record
+    var best = Leaderboard.best(id);
+    var el = document.getElementById('rec-' + id);
+    if (best && el) el.textContent = '\u{1F3C6} ' + best.name + ' — ' + best.score + ' pts';
+    else if (el) el.textContent = 'Aucun record';
+});
+
+function toggleFavMode() {
+    favMode = !favMode;
+    document.getElementById('fav-toggle').classList.toggle('active', favMode);
+    applyFavFilter();
+}
+
+function applyFavFilter() {
+    var favs = getFavs();
+    cards.forEach(function(card) {
+        var id = card.dataset.gameId;
+        if (!id) return;
+        if (favMode) {
+            card.style.display = favs.indexOf(id) !== -1 ? '' : 'none';
+        } else {
+            card.style.display = '';
+        }
+    });
+}
+</script>
+
+</body>
+</html>

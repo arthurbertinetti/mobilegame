@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Sudoku</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e1a;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,14,26,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(52,152,219,0.15);border:2px solid #3498db;border-radius:10px;color:#3498db;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#timer-disp{color:#ffd93d;font-size:1.1rem;font-weight:bold}
+#diff-disp{color:#74b9ff;font-size:0.9rem;font-weight:bold}
+canvas{display:block;margin-top:4px}
+#numpad{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:8px;max-width:340px}
+.num-btn{width:34px;height:40px;background:rgba(52,152,219,0.12);border:2px solid #3498db;border-radius:8px;color:#3498db;font-size:1.2rem;font-weight:bold;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.num-btn:active{background:rgba(52,152,219,0.3)}
+.num-btn.erase{color:#e74c3c;border-color:#e74c3c}
+#overlay{position:fixed;inset:0;background:rgba(10,14,26,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#3498db;margin-bottom:10px}
+#overlay p{color:#74b9ff;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:10px;padding:12px 36px;font-size:1.1rem;background:rgba(52,152,219,0.15);border:2px solid #3498db;border-radius:12px;color:#3498db;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#74b9ff;font-size:0.95rem;text-decoration:none}
+.diff-btns{display:flex;gap:10px;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="timer-disp">0:00</span>
+    <span id="diff-disp"></span>
+</div>
+<canvas id="c"></canvas>
+<div id="numpad"></div>
+<div id="overlay">
+    <h2 id="ovTitle">🔢 Sudoku</h2>
+    <p id="ovMsg">Remplis la grille 9×9 !<br>Chaque ligne, colonne et bloc 3×3<br>doit contenir les chiffres 1 à 9.</p>
+    <div class="ov-score" id="ovScore"></div>
+    <div class="diff-btns">
+        <button onclick="startGame(35)">Facile</button>
+        <button onclick="startGame(45)">Moyen</button>
+        <button onclick="startGame(55)">Difficile</button>
+    </div>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var timerEl=document.getElementById('timer-disp'),diffEl=document.getElementById('diff-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore');
+var numpad=document.getElementById('numpad');
+
+var SZ=9,CELL;
+var solution,puzzle,userGrid,fixed;
+var selR=-1,selC=-1;
+var running,startTime,timerInterval,removedCount;
+
+function resize(){
+    var W=window.innerWidth,H=window.innerHeight-140;
+    CELL=Math.floor(Math.min(W*0.96,H)/SZ);
+    canvas.width=canvas.height=CELL*SZ;
+}
+
+// Generate solved board
+function generate(){
+    solution=[];for(var r=0;r<9;r++){solution[r]=[];for(var c=0;c<9;c++)solution[r][c]=0;}
+    fillBoard(0,0);
+}
+
+function fillBoard(r,c){
+    if(r===9)return true;
+    var nr=c===8?r+1:r,nc=c===8?0:c+1;
+    var nums=shuffle([1,2,3,4,5,6,7,8,9]);
+    for(var i=0;i<9;i++){
+        if(isValid(solution,r,c,nums[i])){solution[r][c]=nums[i];if(fillBoard(nr,nc))return true;solution[r][c]=0;}
+    }
+    return false;
+}
+
+function isValid(b,r,c,n){
+    for(var i=0;i<9;i++){if(b[r][i]===n||b[i][c]===n)return false;}
+    var br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;
+    for(var dr=0;dr<3;dr++)for(var dc=0;dc<3;dc++)if(b[br+dr][bc+dc]===n)return false;
+    return true;
+}
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function makePuzzle(remove){
+    puzzle=[];fixed=[];userGrid=[];
+    for(var r=0;r<9;r++){puzzle[r]=[];fixed[r]=[];userGrid[r]=[];
+        for(var c=0;c<9;c++){puzzle[r][c]=solution[r][c];fixed[r][c]=true;userGrid[r][c]=0;}}
+    var cells=[];for(var r=0;r<9;r++)for(var c=0;c<9;c++)cells.push({r:r,c:c});
+    shuffle(cells);
+    for(var i=0;i<Math.min(remove,cells.length);i++){
+        puzzle[cells[i].r][cells[i].c]=0;fixed[cells[i].r][cells[i].c]=false;
+    }
+}
+
+function startGame(remove){
+    resize();removedCount=remove;
+    generate();makePuzzle(remove);
+    selR=-1;selC=-1;running=true;startTime=Date.now();
+    diffEl.textContent=remove<=35?'Facile':remove<=45?'Moyen':'Difficile';
+    overlay.classList.add('hidden');
+    buildNumpad();draw();
+    if(timerInterval)clearInterval(timerInterval);
+    timerInterval=setInterval(updateTimer,1000);
+}
+
+function updateTimer(){
+    if(!running)return;
+    var s=Math.floor((Date.now()-startTime)/1000);
+    var m=Math.floor(s/60);s=s%60;
+    timerEl.textContent=m+':'+(s<10?'0':'')+s;
+}
+
+function buildNumpad(){
+    numpad.innerHTML='';
+    for(var i=1;i<=9;i++){
+        var b=document.createElement('div');b.className='num-btn';b.textContent=i;
+        b.dataset.num=i;b.addEventListener('click',function(){placeNum(parseInt(this.dataset.num));});
+        numpad.appendChild(b);
+    }
+    var er=document.createElement('div');er.className='num-btn erase';er.textContent='✕';
+    er.addEventListener('click',function(){placeNum(0);});numpad.appendChild(er);
+}
+
+function placeNum(n){
+    if(!running||selR<0||fixed[selR][selC])return;
+    userGrid[selR][selC]=n;draw();
+    checkComplete();
+}
+
+function checkComplete(){
+    for(var r=0;r<9;r++)for(var c=0;c<9;c++){
+        if(!fixed[r][c]&&userGrid[r][c]!==solution[r][c])return;
+    }
+    // Won!
+    running=false;clearInterval(timerInterval);
+    var elapsed=Math.floor((Date.now()-startTime)/1000);
+    var sc=Math.max(100,5000-elapsed*5+removedCount*20);
+    ovTitle.textContent='🔢 Bravo !';
+    ovMsg.textContent='Puzzle complété en '+timerEl.textContent;
+    ovScore.textContent=sc+' pts';
+    overlay.querySelector('.diff-btns').innerHTML='<button onclick="startGame('+removedCount+')">Rejouer</button>';
+    overlay.classList.remove('hidden');
+    var name=Leaderboard.promptName();if(name)Leaderboard.add('sudoku',sc,name);
+}
+
+function draw(){
+    var s=CELL*SZ;
+    ctx.fillStyle='#0a0e1a';ctx.fillRect(0,0,s,s);
+    // Cells
+    for(var r=0;r<9;r++)for(var c=0;c<9;c++){
+        var x=c*CELL,y=r*CELL;
+        ctx.fillStyle=(Math.floor(r/3)+Math.floor(c/3))%2===0?'#121830':'#161e3a';
+        ctx.fillRect(x+1,y+1,CELL-2,CELL-2);
+        if(r===selR&&c===selC){ctx.fillStyle='rgba(52,152,219,0.25)';ctx.fillRect(x+1,y+1,CELL-2,CELL-2);}
+        else if(r===selR||c===selC){ctx.fillStyle='rgba(52,152,219,0.08)';ctx.fillRect(x+1,y+1,CELL-2,CELL-2);}
+        var val=fixed[r][c]?puzzle[r][c]:userGrid[r][c];
+        if(val>0){
+            ctx.fillStyle=fixed[r][c]?'#ecf0f1':userGrid[r][c]===solution[r][c]?'#3498db':'#e74c3c';
+            ctx.font='bold '+Math.floor(CELL*0.55)+'px sans-serif';ctx.textAlign='center';
+            ctx.fillText(val,x+CELL/2,y+CELL*0.68);
+        }
+    }
+    // Grid lines
+    ctx.strokeStyle='#2c3e50';ctx.lineWidth=1;
+    for(var i=0;i<=9;i++){ctx.beginPath();ctx.moveTo(i*CELL,0);ctx.lineTo(i*CELL,s);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(0,i*CELL);ctx.lineTo(s,i*CELL);ctx.stroke();}
+    ctx.strokeStyle='#3498db';ctx.lineWidth=2.5;
+    for(var i=0;i<=3;i++){ctx.beginPath();ctx.moveTo(i*CELL*3,0);ctx.lineTo(i*CELL*3,s);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(0,i*CELL*3);ctx.lineTo(s,i*CELL*3);ctx.stroke();}
+}
+
+canvas.addEventListener('touchstart',function(e){e.preventDefault();
+    var rect=canvas.getBoundingClientRect();
+    selC=Math.floor((e.touches[0].clientX-rect.left)/CELL);
+    selR=Math.floor((e.touches[0].clientY-rect.top)/CELL);
+    if(selR<0||selR>=9||selC<0||selC>=9){selR=-1;selC=-1;}
+    draw();
+},{passive:false});
+canvas.addEventListener('click',function(e){
+    var rect=canvas.getBoundingClientRect();
+    selC=Math.floor((e.clientX-rect.left)/CELL);
+    selR=Math.floor((e.clientY-rect.top)/CELL);
+    if(selR<0||selR>=9||selC<0||selC>=9){selR=-1;selC=-1;}
+    draw();
+});
+document.addEventListener('keydown',function(e){
+    var n=parseInt(e.key);if(n>=1&&n<=9)placeNum(n);
+    if(e.key==='Backspace'||e.key==='Delete')placeNum(0);
+});
+
+window.addEventListener('resize',function(){resize();if(puzzle)draw();});
+resize();
+</script>
+</body>
+</html>

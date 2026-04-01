@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Nuts And Bolts</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a2e;color:#eee;font-family:'Segoe UI',Arial,sans-serif;
+  display:flex;flex-direction:column;align-items:center;height:100dvh;overflow:hidden;
+  -webkit-user-select:none;user-select:none}
+#top-bar{width:100%;display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:rgba(0,0,0,.4);z-index:10}
+.top-btn{color:#fff;text-decoration:none;font-size:1.5rem;line-height:1}
+#hud{display:flex;gap:14px;font-size:.95rem;align-items:center}
+#hud span{color:#ffd93d}
+#game-area{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;width:100%;position:relative;overflow:hidden}
+canvas{display:block;touch-action:none}
+#slots-bar{display:flex;gap:8px;padding:12px;background:rgba(0,0,0,.3);
+  width:100%;justify-content:center}
+.slot{width:44px;height:44px;border:2px dashed rgba(255,255,255,.2);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+  transition:all .2s}
+.slot.filled{border-color:#ffd93d;background:rgba(255,217,61,.1)}
+.slot.full{border-color:#e74c3c;background:rgba(231,76,60,.15)}
+#bottom-bar{display:flex;gap:12px;padding:10px}
+.btn{background:rgba(255,255,255,.12);border:none;color:#fff;padding:8px 16px;
+  border-radius:8px;font-size:.9rem;cursor:pointer}
+.btn:active{background:rgba(255,255,255,.25)}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;
+  flex-direction:column;align-items:center;justify-content:center;z-index:100}
+#overlay h2{font-size:2rem;margin-bottom:12px;color:#ffd93d}
+#overlay p{font-size:1rem;color:#aaa;margin-bottom:20px;text-align:center;padding:0 24px;line-height:1.5}
+.btn-big{background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;
+  border:none;padding:14px 40px;border-radius:12px;font-size:1.2rem;cursor:pointer;margin:6px}
+.btn-big:active{filter:brightness(1.2)}
+</style>
+</head>
+<body>
+
+<div id="top-bar">
+  <a href="index.html" class="top-btn">🏠</a>
+  <div id="hud">
+    <span>Niveau <b id="level-num">1</b></span>
+    <span>Score: <b id="score">0</b></span>
+  </div>
+</div>
+
+<div id="game-area">
+  <canvas id="c"></canvas>
+</div>
+
+<div id="slots-bar" id="slots"></div>
+
+<div id="bottom-bar">
+  <button class="btn" id="btn-undo">↩ Annuler</button>
+  <button class="btn" id="btn-restart">🔄 Restart</button>
+</div>
+
+<div id="overlay">
+  <h2>🔩 Nuts And Bolts</h2>
+  <p>Dévisse les boulons des plaques de métal !<br>Attention : nombre d'emplacements limité.<br>Retire toutes les vis pour gagner !</p>
+  <button class="btn-big" id="btn-start">▶ Jouer</button>
+</div>
+
+<script src="leaderboard.js"></script>
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const slotsBar = document.getElementById('slots-bar');
+const overlay = document.getElementById('overlay');
+const levelEl = document.getElementById('level-num');
+const scoreEl = document.getElementById('score');
+
+// Colors for bolts/screws
+const BOLT_COLORS = ['#e74c3c','#3498db','#2ecc71','#f1c40f','#9b59b6','#e67e22','#1abc9c','#e91e63'];
+
+let W, H;
+let level = 1;
+let score = 0;
+let gameActive = false;
+let plates = [];
+let slots = [];
+let maxSlots = 5;
+let history = [];
+let totalBolts = 0;
+let removedBolts = 0;
+
+function resize() {
+  const area = document.getElementById('game-area');
+  W = area.clientWidth;
+  H = area.clientHeight;
+  canvas.width = W;
+  canvas.height = H;
+}
+
+function generateLevel(lvl) {
+  plates = [];
+  slots = [];
+  history = [];
+  removedBolts = 0;
+  totalBolts = 0;
+  
+  const numPlates = Math.min(3 + Math.floor(lvl / 2), 8);
+  maxSlots = Math.max(5, Math.min(7, 5 + Math.floor(lvl / 4)));
+  const numColors = Math.min(2 + Math.floor(lvl / 2), BOLT_COLORS.length);
+  
+  // Generate overlapping plates
+  const margin = 40;
+  const plateW = W * 0.55;
+  const plateH = 50 + Math.random() * 30;
+  
+  for (let i = 0; i < numPlates; i++) {
+    const pw = plateW * (0.6 + Math.random() * 0.4);
+    const ph = plateH * (0.8 + Math.random() * 0.5);
+    const px = margin + Math.random() * (W - pw - margin * 2);
+    const py = margin + (i / numPlates) * (H - ph - margin * 2);
+    const angle = (Math.random() - 0.5) * 0.3;
+    
+    // Each plate has 2-4 bolts
+    const numBoltsOnPlate = 2 + Math.floor(Math.random() * 3);
+    const bolts = [];
+    
+    for (let b = 0; b < numBoltsOnPlate; b++) {
+      const bx = px + 20 + Math.random() * (pw - 40);
+      const by = py + 15 + Math.random() * (ph - 30);
+      const colorIdx = Math.floor(Math.random() * numColors);
+      bolts.push({
+        x: bx, y: by,
+        color: BOLT_COLORS[colorIdx],
+        colorIdx: colorIdx,
+        removed: false,
+        radius: 14
+      });
+      totalBolts++;
+    }
+    
+    plates.push({
+      x: px, y: py, w: pw, h: ph,
+      angle: angle,
+      color: `hsl(${200 + i * 30}, 20%, ${25 + i * 5}%)`,
+      bolts: bolts,
+      opacity: 1
+    });
+  }
+  
+  levelEl.textContent = lvl;
+  renderSlots();
+}
+
+function renderSlots() {
+  slotsBar.innerHTML = '';
+  for (let i = 0; i < maxSlots; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'slot' + (i < slots.length ? ' filled' : '');
+    if (i < slots.length) {
+      slot.style.borderColor = slots[i].color;
+      slot.style.background = slots[i].color + '33';
+      slot.textContent = '🔩';
+    }
+    // Click slot to return bolt
+    slot.addEventListener('click', () => {
+      if (i < slots.length) returnBoltFromSlot(i);
+    });
+    slotsBar.appendChild(slot);
+  }
+  
+  // Check if slots are full (game over condition)
+  if (slots.length >= maxSlots && removedBolts < totalBolts) {
+    // Check if any matching pairs can be auto-removed
+    autoRemoveMatching();
+  }
+}
+
+function autoRemoveMatching() {
+  // Check win first - all plates dissolved
+  if (plates.every(p => p.opacity <= 0)) {
+    if (!gameActive) return;
+    gameActive = false;
+    slots = [];
+    renderSlots();
+    setTimeout(showLevelComplete, 300);
+    return;
+  }
+  
+  // Find groups of same color in slots
+  const colorCounts = {};
+  slots.forEach((s, i) => {
+    if (!colorCounts[s.colorIdx]) colorCounts[s.colorIdx] = [];
+    colorCounts[s.colorIdx].push(i);
+  });
+  
+  let removed = false;
+  for (const [colorIdx, indices] of Object.entries(colorCounts)) {
+    if (indices.length >= 2) {
+      // Remove these bolts from slots (matched!)
+      const toRemove = indices.slice(0, 2).sort((a, b) => b - a);
+      toRemove.forEach(i => slots.splice(i, 1));
+      score += 50;
+      scoreEl.textContent = score;
+      removed = true;
+      break;
+    }
+  }
+  
+  if (removed) {
+    renderSlots();
+    render();
+    return;
+  }
+  
+  // If slots full and no matches, game over
+  if (slots.length >= maxSlots) {
+    gameOver();
+  }
+}
+
+function render() {
+  ctx.clearRect(0, 0, W, H);
+  
+  // Draw plates
+  plates.forEach(plate => {
+    if (plate.opacity <= 0) return;
+    
+    ctx.save();
+    ctx.globalAlpha = plate.opacity;
+    ctx.translate(plate.x + plate.w / 2, plate.y + plate.h / 2);
+    ctx.rotate(plate.angle);
+    
+    // Plate body
+    ctx.fillStyle = plate.color;
+    ctx.strokeStyle = 'rgba(255,255,255,.15)';
+    ctx.lineWidth = 2;
+    const rx = -plate.w / 2, ry = -plate.h / 2;
+    roundRect(ctx, rx, ry, plate.w, plate.h, 6);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Metal texture lines
+    ctx.strokeStyle = 'rgba(255,255,255,.05)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < plate.w; i += 12) {
+      ctx.beginPath();
+      ctx.moveTo(rx + i, ry);
+      ctx.lineTo(rx + i, ry + plate.h);
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+    
+    // Draw bolts (relative to canvas, not plate rotation for easier click detection)
+    plate.bolts.forEach(bolt => {
+      if (bolt.removed) return;
+      drawBolt(bolt);
+    });
+  });
+}
+
+function drawBolt(bolt) {
+  const r = bolt.radius;
+  
+  // Bolt head (hexagonal)
+  ctx.save();
+  ctx.translate(bolt.x, bolt.y);
+  
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,.3)';
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i - Math.PI / 6;
+    const x = Math.cos(angle) * (r + 1) + 2;
+    const y = Math.sin(angle) * (r + 1) + 2;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fill();
+  
+  // Hex body
+  ctx.fillStyle = bolt.color;
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI / 3) * i - Math.PI / 6;
+    const x = Math.cos(angle) * r;
+    const y = Math.sin(angle) * r;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fill();
+  
+  // Inner circle
+  ctx.fillStyle = 'rgba(0,0,0,.2)';
+  ctx.beginPath();
+  ctx.arc(0, 0, r * 0.5, 0, Math.PI * 2);
+  ctx.fill();
+  
+  // Cross slot
+  ctx.strokeStyle = 'rgba(255,255,255,.4)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(-r * 0.3, 0); ctx.lineTo(r * 0.3, 0);
+  ctx.moveTo(0, -r * 0.3); ctx.lineTo(0, r * 0.3);
+  ctx.stroke();
+  
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// Click/touch handling
+function handleClick(ex, ey) {
+  if (!gameActive) return;
+  if (slots.length >= maxSlots) return;
+  
+  // Check bolts from top plates first (reverse order = on top)
+  for (let p = plates.length - 1; p >= 0; p--) {
+    const plate = plates[p];
+    if (plate.opacity <= 0) continue;
+    
+    for (let b = plate.bolts.length - 1; b >= 0; b--) {
+      const bolt = plate.bolts[b];
+      if (bolt.removed) continue;
+      
+      const dx = ex - bolt.x;
+      const dy = ey - bolt.y;
+      if (dx * dx + dy * dy <= bolt.radius * bolt.radius * 1.5) {
+        // Remove bolt
+        removeBolt(p, b);
+        return;
+      }
+    }
+  }
+}
+
+function removeBolt(plateIdx, boltIdx) {
+  const plate = plates[plateIdx];
+  const bolt = plate.bolts[boltIdx];
+  
+  bolt.removed = true;
+  removedBolts++;
+  
+  slots.push({ color: bolt.color, colorIdx: bolt.colorIdx, plateIdx, boltIdx });
+  history.push({ plateIdx, boltIdx });
+  
+  score += 10;
+  scoreEl.textContent = score;
+  
+  // Check if plate has no more bolts -> dissolve it
+  if (plate.bolts.every(b => b.removed)) {
+    plate.opacity = 0;
+    score += 30;
+    scoreEl.textContent = score;
+  }
+  
+  renderSlots();
+  render();
+  
+  // Short delay then check for auto-matches
+  setTimeout(() => {
+    autoRemoveMatching();
+    checkWin();
+  }, 100);
+}
+
+function returnBoltFromSlot(slotIdx) {
+  if (!gameActive) return;
+  const slot = slots[slotIdx];
+  
+  // Put bolt back on its plate
+  const plate = plates[slot.plateIdx];
+  const bolt = plate.bolts[slot.boltIdx];
+  bolt.removed = false;
+  removedBolts--;
+  plate.opacity = 1;
+  
+  slots.splice(slotIdx, 1);
+  score = Math.max(0, score - 10);
+  scoreEl.textContent = score;
+  
+  renderSlots();
+  render();
+}
+
+function undo() {
+  if (history.length === 0) return;
+  const last = history.pop();
+  
+  // Find this bolt in slots and remove it
+  const idx = slots.findIndex(s => s.plateIdx === last.plateIdx && s.boltIdx === last.boltIdx);
+  if (idx >= 0) {
+    returnBoltFromSlot(idx);
+  }
+}
+
+function checkWin() {
+  if (!gameActive) return;
+  if (plates.every(p => p.opacity <= 0)) {
+    gameActive = false;
+    slots = [];
+    renderSlots();
+    setTimeout(showLevelComplete, 300);
+  }
+}
+
+function showLevelComplete() {
+  const bonus = level * 50;
+  score += bonus;
+  scoreEl.textContent = score;
+  
+  overlay.innerHTML = `
+    <h2>✅ Niveau ${level} terminé !</h2>
+    <p>Score : ${score} pts<br>Bonus niveau : +${bonus}</p>
+    <button class="btn-big" id="btn-next">Niveau suivant ▶</button>
+  `;
+  overlay.style.display = 'flex';
+  
+  document.getElementById('btn-next').addEventListener('click', function() {
+    level++;
+    overlay.style.display = 'none';
+    resize();
+    generateLevel(level);
+    render();
+    gameActive = true;
+  });
+}
+
+function gameOver() {
+  gameActive = false;
+  overlay.innerHTML = `
+    <h2>💀 Game Over</h2>
+    <p>Plus d'emplacements disponibles !<br>Niveau ${level} — Score : ${score} pts</p>
+    <button class="btn-big" id="btn-retry">🔄 Recommencer</button>
+  `;
+  overlay.style.display = 'flex';
+  
+  document.getElementById('btn-retry').addEventListener('click', function() {
+    score = 0;
+    level = 1;
+    scoreEl.textContent = '0';
+    overlay.style.display = 'none';
+    resize();
+    generateLevel(level);
+    render();
+    gameActive = true;
+  });
+  
+  if (score > 0) {
+    try { var name = Leaderboard.promptName(); Leaderboard.add('nutsandbolts', score, name); } catch(e) {}
+  }
+}
+
+// Events
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  handleClick(e.clientX - rect.left, e.clientY - rect.top);
+});
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const t = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  handleClick(t.clientX - rect.left, t.clientY - rect.top);
+}, { passive: false });
+
+document.getElementById('btn-undo').addEventListener('click', undo);
+document.getElementById('btn-restart').addEventListener('click', () => {
+  generateLevel(level);
+  render();
+  renderSlots();
+});
+document.getElementById('btn-start').addEventListener('click', () => {
+  overlay.style.display = 'none';
+  resize();
+  generateLevel(level);
+  render();
+  gameActive = true;
+});
+
+window.addEventListener('resize', () => {
+  resize();
+  if (gameActive) render();
+});
+</script>
+</body>
+</html>

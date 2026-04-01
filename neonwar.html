@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Neon War</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1e;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,10,30,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(0,255,136,0.15);border:2px solid #0f8;border-radius:10px;color:#0f8;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#score-disp{color:#ffd93d;font-size:1.1rem;font-weight:bold}
+#wave-disp{color:#0f8;font-size:1rem;font-weight:bold}
+#hp-disp{color:#ff6b81;font-size:0.9rem;font-weight:bold}
+canvas{display:block}
+#overlay{position:fixed;inset:0;background:rgba(10,10,30,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#0f8;margin-bottom:10px;text-shadow:0 0 15px #0f8}
+#overlay p{color:#8cf;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(0,255,136,0.15);border:2px solid #0f8;border-radius:12px;color:#0f8;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#8cf;font-size:0.95rem;text-decoration:none}
+#upgrades{position:fixed;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:8px;z-index:5;pointer-events:none}
+#upgrades.hidden{display:none}
+.upg-btn{pointer-events:auto;padding:6px 12px;background:rgba(0,255,136,0.12);border:1.5px solid #0f8;border-radius:8px;color:#0f8;font-size:0.75rem;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.upg-btn:active{background:rgba(0,255,136,0.3)}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="score-disp">0 pts</span>
+    <span id="wave-disp">Vague 1</span>
+    <span id="hp-disp">❤️ 3</span>
+</div>
+<canvas id="c"></canvas>
+<div id="upgrades" class="hidden">
+    <button class="upg-btn" id="upg-dmg">🔥 Dégâts (0)</button>
+    <button class="upg-btn" id="upg-rate">⚡ Cadence (0)</button>
+    <button class="upg-btn" id="upg-hp">❤️ Santé (0)</button>
+</div>
+<div id="overlay">
+    <h2 id="ovTitle">💥 Neon War</h2>
+    <p id="ovMsg">Contrôle le canon : glisse horizontalement !<br>Le canon tire automatiquement.<br>Détruis les blocs avant qu'ils atteignent le bas.<br>Gagne des points pour améliorer dégâts, cadence et santé !</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var scoreEl=document.getElementById('score-disp'),waveEl=document.getElementById('wave-disp'),hpEl=document.getElementById('hp-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+var upgradesDiv=document.getElementById('upgrades');
+
+var W,H,TB=52;
+var cannon,bullets,blocks,particles;
+var score,wave,hp,maxHp,upgPoints;
+var dmgLevel,rateLevel,hpLevel;
+var fireRate,fireCd,running,animId,frameCount;
+
+function resize(){W=window.innerWidth;H=window.innerHeight-TB;canvas.width=W;canvas.height=H;}
+
+function startGame(){
+    resize();
+    score=0;wave=1;hp=3;maxHp=3;upgPoints=0;
+    dmgLevel=0;rateLevel=0;hpLevel=0;
+    fireRate=30;fireCd=0;frameCount=0;
+    cannon={x:W/2,w:40,h:24};
+    bullets=[];blocks=[];particles=[];
+    running=true;
+    spawnWave();
+    overlay.classList.add('hidden');
+    upgradesDiv.classList.remove('hidden');
+    updateHUD();
+    if(animId)cancelAnimationFrame(animId);loop();
+}
+
+function spawnWave(){
+    var rows=Math.min(3+Math.floor(wave/3),8);
+    var cols=Math.min(4+Math.floor(wave/2),Math.floor(W/50));
+    var bw=Math.min(50,W/cols-4);
+    var bh=22;
+    var ox=(W-cols*(bw+4))/2;
+    for(var r=0;r<rows;r++){
+        for(var c=0;c<cols;c++){
+            var tier=0,hp2;
+            var rng=Math.random();
+            if(wave>=8&&rng<0.08){tier=3;hp2=Math.ceil(wave*4)+Math.floor(Math.random()*wave*2);}
+            else if(wave>=5&&rng<0.2){tier=2;hp2=Math.ceil(wave*2.5)+Math.floor(Math.random()*wave);}
+            else if(wave>=2&&rng<0.4){tier=1;hp2=Math.ceil(wave*1.5)+Math.floor(Math.random()*wave);}
+            else{tier=0;hp2=Math.ceil(wave*0.8)+Math.floor(Math.random()*wave);}
+            var hue=tier===3?0:tier===2?30:tier===1?200:Math.random()*360;
+            var sat=tier>=2?'90%':'70%';
+            var lit=tier===3?'40%':tier===2?'50%':'55%';
+            blocks.push({x:ox+c*(bw+4),y:30+r*(bh+4),w:bw,h:bh,hp:hp2,maxHp:hp2,tier:tier,
+                color:'hsl('+hue+','+sat+','+lit+')',vy:0.07+wave*0.01});
+        }
+    }
+}
+
+function getDmg(){return 1+dmgLevel;}
+function getFireRate(){return Math.max(10,60-rateLevel*5);}
+
+function updateHUD(){
+    scoreEl.textContent=score+' pts';
+    waveEl.textContent='Vague '+wave;
+    hpEl.textContent='❤️ '+hp;
+    document.getElementById('upg-dmg').textContent='🔥 Dégâts ('+dmgLevel+') — '+(20+dmgLevel*12)+' pts';
+    document.getElementById('upg-rate').textContent='⚡ Cadence ('+rateLevel+') — '+(20+rateLevel*12)+' pts';
+    document.getElementById('upg-hp').textContent='❤️ Santé ('+hpLevel+') — '+(30+hpLevel*18)+' pts';
+}
+
+function upgrade(type){
+    if(!running)return;
+    var cost;
+    if(type==='dmg'){cost=20+dmgLevel*12;if(score>=cost){score-=cost;dmgLevel++;}}
+    else if(type==='rate'){cost=20+rateLevel*12;if(score>=cost){score-=cost;rateLevel++;}}
+    else{cost=30+hpLevel*18;if(score>=cost){score-=cost;hpLevel++;maxHp++;hp=Math.min(hp+1,maxHp);}}
+    updateHUD();
+}
+
+document.getElementById('upg-dmg').addEventListener('click',function(){upgrade('dmg');});
+document.getElementById('upg-rate').addEventListener('click',function(){upgrade('rate');});
+document.getElementById('upg-hp').addEventListener('click',function(){upgrade('hp');});
+
+function update(){
+    frameCount++;
+    // Auto-fire
+    fireCd--;
+    if(fireCd<=0){
+        fireCd=getFireRate();
+        bullets.push({x:cannon.x,y:H-cannon.h-8,vy:-7,dmg:getDmg()});
+    }
+    // Bullets
+    for(var i=bullets.length-1;i>=0;i--){
+        bullets[i].y+=bullets[i].vy;
+        if(bullets[i].y<-10){bullets.splice(i,1);continue;}
+        // Hit blocks
+        for(var j=blocks.length-1;j>=0;j--){
+            var b=blocks[j],bl=bullets[i];
+            if(bl&&bl.x>b.x&&bl.x<b.x+b.w&&bl.y>b.y&&bl.y<b.y+b.h){
+                b.hp-=bl.dmg;
+                spawnParts(bl.x,bl.y,b.color,4);
+                bullets.splice(i,1);
+                if(b.hp<=0){
+                    var pts=b.tier===3?b.maxHp*2:b.tier===2?Math.ceil(b.maxHp*1.2):b.tier===1?Math.ceil(b.maxHp*0.8):Math.ceil(b.maxHp*0.5);
+                    score+=pts;
+                    spawnParts(b.x+b.w/2,b.y+b.h/2,b.color,8);
+                    blocks.splice(j,1);
+                }
+                break;
+            }
+        }
+    }
+    // Move blocks down slowly
+    for(var i=blocks.length-1;i>=0;i--){
+        blocks[i].y+=blocks[i].vy;
+        if(blocks[i].y+blocks[i].h>H-cannon.h-20){
+            hp--;
+            spawnParts(blocks[i].x+blocks[i].w/2,H-20,'#ff6b81',10);
+            blocks.splice(i,1);
+            if(hp<=0){gameOver();return;}
+        }
+    }
+    // Next wave
+    if(blocks.length===0){wave++;spawnWave();}
+    // Particles
+    for(var i=particles.length-1;i>=0;i--){
+        var p=particles[i];p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;
+        if(--p.life<=0)particles.splice(i,1);
+    }
+    updateHUD();
+}
+
+function spawnParts(x,y,col,n){
+    for(var i=0;i<n;i++)particles.push({x:x,y:y,vx:(Math.random()-0.5)*5,vy:(Math.random()-0.5)*5,life:15,color:col,size:2+Math.random()*2});
+}
+
+function draw(){
+    ctx.fillStyle='#0a0a1e';ctx.fillRect(0,0,W,H);
+    // Blocks
+    for(var i=0;i<blocks.length;i++){
+        var b=blocks[i];
+        ctx.fillStyle=b.color;ctx.shadowColor=b.color;ctx.shadowBlur=b.tier>=2?12:6;
+        ctx.fillRect(b.x,b.y,b.w,b.h);
+        if(b.tier>=2){ctx.strokeStyle='#fff';ctx.lineWidth=b.tier===3?2:1;ctx.strokeRect(b.x+1,b.y+1,b.w-2,b.h-2);}
+        ctx.shadowBlur=0;
+        // HP text
+        ctx.fillStyle='#fff';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+        ctx.fillText(b.hp,b.x+b.w/2,b.y+b.h/2+4);
+    }
+    // Bullets
+    ctx.fillStyle='#0f8';ctx.shadowColor='#0f8';ctx.shadowBlur=8;
+    for(var i=0;i<bullets.length;i++){
+        ctx.beginPath();ctx.arc(bullets[i].x,bullets[i].y,3,0,Math.PI*2);ctx.fill();
+    }
+    ctx.shadowBlur=0;
+    // Cannon
+    ctx.fillStyle='#0f8';ctx.shadowColor='#0f8';ctx.shadowBlur=12;
+    ctx.beginPath();
+    ctx.moveTo(cannon.x,H-cannon.h-12);
+    ctx.lineTo(cannon.x-cannon.w/2,H-4);
+    ctx.lineTo(cannon.x+cannon.w/2,H-4);
+    ctx.closePath();ctx.fill();
+    ctx.shadowBlur=0;
+    // Particles
+    for(var i=0;i<particles.length;i++){
+        var p=particles[i];ctx.globalAlpha=p.life/15;ctx.fillStyle=p.color;
+        ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size);
+    }
+    ctx.globalAlpha=1;
+}
+
+function gameOver(){
+    running=false;upgradesDiv.classList.add('hidden');
+    ovTitle.textContent='💥 Game Over !';
+    ovMsg.textContent='Vague '+wave+' atteinte';
+    ovScore.textContent=score+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    if(score>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('neonwar',score,n);}
+}
+
+function loop(){if(!running)return;update();if(!running)return;draw();animId=requestAnimationFrame(loop);}
+
+// Touch: drag cannon
+var touching=false;
+canvas.addEventListener('touchstart',function(e){e.preventDefault();touching=true;
+    cannon.x=e.touches[0].clientX;
+},{passive:false});
+canvas.addEventListener('touchmove',function(e){e.preventDefault();if(!touching)return;
+    cannon.x=e.touches[0].clientX;
+    cannon.x=Math.max(cannon.w/2,Math.min(W-cannon.w/2,cannon.x));
+},{passive:false});
+canvas.addEventListener('touchend',function(e){e.preventDefault();touching=false;},{passive:false});
+// Mouse
+canvas.addEventListener('mousemove',function(e){if(!running)return;cannon.x=Math.max(cannon.w/2,Math.min(W-cannon.w/2,e.clientX));});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(running)draw();});
+resize();
+</script>
+</body>
+</html>

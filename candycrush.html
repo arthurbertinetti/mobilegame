@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Candy Crush</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a0a2e;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(26,10,46,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(255,107,129,0.15);border:2px solid #ff6b81;border-radius:10px;color:#ff6b81;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#score-disp{color:#ffd93d;font-size:1.2rem;font-weight:bold}
+#moves-disp{color:#ff6b81;font-size:1rem;font-weight:bold}
+canvas{display:block;margin-top:4px;border-radius:12px}
+#overlay{position:fixed;inset:0;background:rgba(26,10,46,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#ff6b81;margin-bottom:10px}
+#overlay p{color:#cba6f7;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(255,107,129,0.15);border:2px solid #ff6b81;border-radius:12px;color:#ff6b81;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#cba6f7;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="score-disp">0 pts</span>
+    <span id="moves-disp">30 coups</span>
+</div>
+<canvas id="c"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">🍬 Candy Crush</h2>
+    <p id="ovMsg">Aligne 3+ bonbons identiques !<br>Glisse pour échanger deux bonbons adjacents.<br>30 coups par partie.</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var scoreEl=document.getElementById('score-disp'),movesEl=document.getElementById('moves-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var COLS=7,ROWS=9,CELL,BX,BY;
+var CANDIES=['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#e91e63'];
+var SHAPES=['circle','diamond','square','triangle','heart','star'];
+var board,score,moves,running,animating,selected;
+
+function resize(){
+    var W=window.innerWidth,H=window.innerHeight-56;
+    CELL=Math.min(Math.floor(W/COLS)-2,Math.floor(H/ROWS)-2);
+    canvas.width=COLS*CELL;canvas.height=ROWS*CELL;
+    BX=0;BY=0;
+}
+
+function init(){
+    board=[];
+    for(var r=0;r<ROWS;r++){board[r]=[];for(var c=0;c<COLS;c++){board[r][c]=randCandy(r,c);}}
+    while(findMatches().length>0){
+        for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++)board[r][c]=randCandy(r,c);
+    }
+    score=0;moves=30;running=true;animating=false;selected=null;
+    updateHUD();draw();
+}
+
+function randCandy(r,c){
+    var avoid=[];
+    if(c>=2&&board[r][c-1]===board[r][c-2])avoid.push(board[r][c-1]);
+    if(r>=2&&board[r-1]&&board[r-2]&&board[r-1][c]===board[r-2][c])avoid.push(board[r-1][c]);
+    var ch;do{ch=Math.floor(Math.random()*CANDIES.length);}while(avoid.indexOf(ch)!==-1);
+    return ch;
+}
+
+function updateHUD(){scoreEl.textContent=score+' pts';movesEl.textContent=moves+' coups';}
+
+function findMatches(){
+    var m=[];
+    for(var r=0;r<ROWS;r++){for(var c=0;c<COLS-2;c++){
+        if(board[r][c]!==-1&&board[r][c]===board[r][c+1]&&board[r][c]===board[r][c+2]){
+            var len=3;while(c+len<COLS&&board[r][c+len]===board[r][c])len++;
+            for(var i=0;i<len;i++)m.push({r:r,c:c+i});
+        }
+    }}
+    for(var c=0;c<COLS;c++){for(var r=0;r<ROWS-2;r++){
+        if(board[r][c]!==-1&&board[r][c]===board[r+1][c]&&board[r][c]===board[r+2][c]){
+            var len=3;while(r+len<ROWS&&board[r+len][c]===board[r][c])len++;
+            for(var i=0;i<len;i++)m.push({r:r+i,c:c});
+        }
+    }}
+    var u={},res=[];
+    for(var i=0;i<m.length;i++){var k=m[i].r+','+m[i].c;if(!u[k]){u[k]=1;res.push(m[i]);}}
+    return res;
+}
+
+function removeAndDrop(cb){
+    var matches=findMatches();
+    if(matches.length===0){cb();return;}
+    var combo=0;
+    function step(){
+        var m=findMatches();
+        if(m.length===0){cb();return;}
+        combo++;
+        score+=m.length*10*combo;
+        for(var i=0;i<m.length;i++)board[m[i].r][m[i].c]=-1;
+        draw();
+        setTimeout(function(){
+            for(var c=0;c<COLS;c++){
+                var wr=ROWS-1;
+                for(var r=ROWS-1;r>=0;r--){if(board[r][c]!==-1){board[wr][c]=board[r][c];wr--;}}
+                for(;wr>=0;wr--)board[wr][c]=Math.floor(Math.random()*CANDIES.length);
+            }
+            draw();
+            setTimeout(step,180);
+        },150);
+    }
+    step();
+}
+
+function swap(r1,c1,r2,c2,cb){
+    var t=board[r1][c1];board[r1][c1]=board[r2][c2];board[r2][c2]=t;
+    draw();setTimeout(cb,100);
+}
+
+function trySwap(r1,c1,r2,c2){
+    if(animating||!running)return;
+    animating=true;
+    swap(r1,c1,r2,c2,function(){
+        if(findMatches().length>0){
+            moves--;updateHUD();
+            removeAndDrop(function(){
+                animating=false;draw();
+                if(moves<=0)gameOver();
+            });
+        } else {
+            swap(r1,c1,r2,c2,function(){animating=false;draw();});
+        }
+    });
+}
+
+function gameOver(){
+    running=false;
+    ovTitle.textContent='🍬 Partie terminée !';
+    ovMsg.textContent='Plus de coups disponibles.';
+    ovScore.textContent=score+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    if(score>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('candycrush',score,n);}
+}
+
+function draw(){
+    ctx.fillStyle='#1a0a2e';ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(var r=0;r<ROWS;r++){for(var c=0;c<COLS;c++){
+        var x=c*CELL,y=r*CELL;
+        ctx.fillStyle=(r+c)%2===0?'rgba(255,255,255,0.03)':'rgba(255,255,255,0.06)';
+        ctx.fillRect(x,y,CELL,CELL);
+        if(board[r][c]===-1)continue;
+        var cx=x+CELL/2,cy=y+CELL/2,rad=CELL*0.36;
+        ctx.fillStyle=CANDIES[board[r][c]];
+        ctx.shadowColor=CANDIES[board[r][c]];ctx.shadowBlur=8;
+        drawShape(cx,cy,rad,SHAPES[board[r][c]]);
+        ctx.shadowBlur=0;
+        if(selected&&selected.r===r&&selected.c===c){
+            ctx.strokeStyle='#fff';ctx.lineWidth=3;
+            ctx.strokeRect(x+3,y+3,CELL-6,CELL-6);
+        }
+    }}
+}
+
+function drawShape(cx,cy,r,shape){
+    ctx.beginPath();
+    if(shape==='circle'){ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();}
+    else if(shape==='square'){ctx.fillRect(cx-r*0.8,cy-r*0.8,r*1.6,r*1.6);}
+    else if(shape==='diamond'){ctx.moveTo(cx,cy-r);ctx.lineTo(cx+r*0.7,cy);ctx.lineTo(cx,cy+r);ctx.lineTo(cx-r*0.7,cy);ctx.closePath();ctx.fill();}
+    else if(shape==='triangle'){ctx.moveTo(cx,cy-r);ctx.lineTo(cx+r,cy+r*0.7);ctx.lineTo(cx-r,cy+r*0.7);ctx.closePath();ctx.fill();}
+    else if(shape==='heart'){
+        var s=r*0.55;
+        ctx.moveTo(cx,cy+r*0.7);ctx.bezierCurveTo(cx-r*1.2,cy-r*0.2,cx-r*0.4,cy-r*1.1,cx,cy-r*0.4);
+        ctx.bezierCurveTo(cx+r*0.4,cy-r*1.1,cx+r*1.2,cy-r*0.2,cx,cy+r*0.7);ctx.fill();}
+    else{
+        for(var i=0;i<10;i++){var a=i*Math.PI/5-Math.PI/2;var d=i%2===0?r:r*0.4;
+        if(i===0)ctx.moveTo(cx+Math.cos(a)*d,cy+Math.sin(a)*d);else ctx.lineTo(cx+Math.cos(a)*d,cy+Math.sin(a)*d);}
+        ctx.closePath();ctx.fill();
+    }
+}
+
+// Touch
+var tx,ty;
+canvas.addEventListener('touchstart',function(e){e.preventDefault();var t=e.touches[0];tx=t.clientX;ty=t.clientY;
+    var rect=canvas.getBoundingClientRect();var c=Math.floor((tx-rect.left)/CELL),r=Math.floor((ty-rect.top)/CELL);
+    if(r<0||r>=ROWS||c<0||c>=COLS)return;
+    if(selected){
+        var dr=Math.abs(r-selected.r),dc=Math.abs(c-selected.c);
+        if((dr===1&&dc===0)||(dr===0&&dc===1)){trySwap(selected.r,selected.c,r,c);selected=null;}
+        else{selected={r:r,c:c};}
+    }else{selected={r:r,c:c};}
+    draw();
+},{passive:false});
+
+canvas.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+
+canvas.addEventListener('touchend',function(e){e.preventDefault();
+    if(!selected||animating)return;
+    var t=e.changedTouches[0];var dx=t.clientX-tx,dy=t.clientY-ty;
+    if(Math.abs(dx)<20&&Math.abs(dy)<20)return;
+    var dr=0,dc=0;
+    if(Math.abs(dx)>Math.abs(dy))dc=dx>0?1:-1;else dr=dy>0?1:-1;
+    var nr=selected.r+dr,nc=selected.c+dc;
+    if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS){trySwap(selected.r,selected.c,nr,nc);}
+    selected=null;draw();
+},{passive:false});
+
+ovBtn.addEventListener('click',function(){overlay.classList.add('hidden');resize();init();});
+window.addEventListener('resize',function(){resize();if(running)draw();});
+resize();
+</script>
+</body>
+</html>

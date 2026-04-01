@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Bataille Navale</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a1628;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,22,40,0.97);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(52,152,219,0.15);border:2px solid #3498db;border-radius:10px;color:#3498db;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#status{color:#ffd93d;font-size:1rem;font-weight:bold;text-align:center;flex:1}
+.grid-label{color:#74b9ff;font-size:0.95rem;font-weight:bold;margin:8px 0 4px;text-align:center}
+canvas{display:block;margin:0 auto 8px;border-radius:8px}
+#overlay{position:fixed;inset:0;background:rgba(10,22,40,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#3498db;margin-bottom:10px}
+#overlay p{color:#74b9ff;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:1.6rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(52,152,219,0.15);border:2px solid #3498db;border-radius:12px;color:#3498db;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#74b9ff;font-size:0.95rem;text-decoration:none}
+#place-info{color:#74b9ff;font-size:0.85rem;text-align:center;margin:4px 0;min-height:20px}
+#rotate-btn{display:none;margin:4px auto;padding:8px 20px;background:rgba(52,152,219,0.15);border:2px solid #3498db;border-radius:8px;color:#3498db;font-weight:bold;font-size:0.9rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="status">Place tes navires</span>
+    <div style="width:40px"></div>
+</div>
+<div class="grid-label" id="label-enemy">Grille ennemie</div>
+<canvas id="enemy"></canvas>
+<button id="rotate-btn">🔄 Tourner</button>
+<div id="place-info"></div>
+<div class="grid-label" id="label-player">Ta flotte</div>
+<canvas id="player"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">🚢 Bataille Navale</h2>
+    <p id="ovMsg">Place tes navires puis coule la flotte de l'IA !<br>Touche la grille ennemie pour tirer.</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var enemyC=document.getElementById('enemy'),playerC=document.getElementById('player');
+var ectx=enemyC.getContext('2d'),pctx=playerC.getContext('2d');
+var statusEl=document.getElementById('status'),placeInfo=document.getElementById('place-info'),rotateBtn=document.getElementById('rotate-btn');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var SIZE=10,CELL,GW;
+var SHIPS=[5,4,3,3,2];
+var pBoard,eBoard,pShips,eShips,pHits,eHits;
+var phase,placingIdx,placeHoriz,turn,shots,running;
+
+function resize(){
+    var W=window.innerWidth;
+    CELL=Math.floor(Math.min(W*0.92,360)/SIZE);
+    GW=CELL*SIZE;
+    enemyC.width=playerC.width=GW;
+    enemyC.height=playerC.height=GW;
+}
+
+function makeBoard(){var b=[];for(var r=0;r<SIZE;r++){b[r]=[];for(var c=0;c<SIZE;c++)b[r][c]=0;}return b;}
+
+function canPlace(board,r,c,len,horiz){
+    for(var i=0;i<len;i++){
+        var rr=horiz?r:r+i,cc=horiz?c+i:c;
+        if(rr>=SIZE||cc>=SIZE||board[rr][cc]!==0)return false;
+    }
+    return true;
+}
+
+function placeShip(board,r,c,len,horiz,id){
+    for(var i=0;i<len;i++){var rr=horiz?r:r+i,cc=horiz?c+i:c;board[rr][cc]=id;}
+}
+
+function placeAI(){
+    eBoard=makeBoard();eShips=[];
+    for(var s=0;s<SHIPS.length;s++){
+        var placed=false;
+        while(!placed){
+            var h=Math.random()>0.5,r=Math.floor(Math.random()*SIZE),c=Math.floor(Math.random()*SIZE);
+            if(canPlace(eBoard,r,c,SHIPS[s],h)){placeShip(eBoard,r,c,SHIPS[s],h,s+1);eShips.push({id:s+1,len:SHIPS[s],hits:0});placed=true;}
+        }
+    }
+}
+
+function startGame(){
+    resize();
+    pBoard=makeBoard();eBoard=makeBoard();
+    pHits=makeBoard();eHits=makeBoard();
+    pShips=[];eShips=[];
+    phase='place';placingIdx=0;placeHoriz=true;shots=0;turn='player';running=true;
+    placeAI();
+    overlay.classList.add('hidden');
+    rotateBtn.style.display='block';
+    statusEl.textContent='Place tes navires';
+    updatePlaceInfo();
+    drawPlayer();drawEnemy();
+}
+
+function updatePlaceInfo(){
+    if(phase==='place'&&placingIdx<SHIPS.length)placeInfo.textContent='Navire '+SHIPS[placingIdx]+' cases — '+(placeHoriz?'horizontal':'vertical');
+    else placeInfo.textContent='';
+}
+
+rotateBtn.addEventListener('click',function(){placeHoriz=!placeHoriz;updatePlaceInfo();});
+
+function playerPlace(r,c){
+    if(phase!=='place'||placingIdx>=SHIPS.length)return;
+    var len=SHIPS[placingIdx];
+    if(!canPlace(pBoard,r,c,len,placeHoriz))return;
+    placeShip(pBoard,r,c,len,placeHoriz,placingIdx+1);
+    pShips.push({id:placingIdx+1,len:len,hits:0});
+    placingIdx++;
+    if(placingIdx>=SHIPS.length){phase='battle';rotateBtn.style.display='none';statusEl.textContent='Ton tour — Tire !';}
+    updatePlaceInfo();drawPlayer();
+}
+
+function playerShoot(r,c){
+    if(phase!=='battle'||turn!=='player'||eHits[r][c]!==0)return;
+    shots++;
+    if(eBoard[r][c]>0){
+        eHits[r][c]=2;
+        var sid=eBoard[r][c];
+        for(var s=0;s<eShips.length;s++){if(eShips[s].id===sid)eShips[s].hits++;}
+        statusEl.textContent='Touché ! 💥';
+    } else {
+        eHits[r][c]=1;
+        statusEl.textContent='Raté... 💧';
+    }
+    drawEnemy();
+    if(allSunk(eShips)){endGame(true);return;}
+    turn='ai';
+    setTimeout(aiShoot,500);
+}
+
+function aiShoot(){
+    // Smart AI: hunt/target
+    var targets=[];
+    for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){
+        if(pHits[r][c]!==0)continue;
+        // check adjacent hits
+        var adj=false;
+        if(r>0&&pHits[r-1][c]===2)adj=true;
+        if(r<SIZE-1&&pHits[r+1][c]===2)adj=true;
+        if(c>0&&pHits[r][c-1]===2)adj=true;
+        if(c<SIZE-1&&pHits[r][c+1]===2)adj=true;
+        if(adj)targets.push({r:r,c:c,p:100});
+        else targets.push({r:r,c:c,p:(r+c)%2===0?2:1});
+    }
+    if(targets.length===0){turn='player';return;}
+    // Pick highest priority
+    targets.sort(function(a,b){return b.p-a.p;});
+    var maxP=targets[0].p;
+    var top=targets.filter(function(t){return t.p===maxP;});
+    var pick=top[Math.floor(Math.random()*top.length)];
+    if(pBoard[pick.r][pick.c]>0){
+        pHits[pick.r][pick.c]=2;
+        var sid=pBoard[pick.r][pick.c];
+        for(var s=0;s<pShips.length;s++){if(pShips[s].id===sid)pShips[s].hits++;}
+    } else {
+        pHits[pick.r][pick.c]=1;
+    }
+    drawPlayer();
+    if(allSunk(pShips)){endGame(false);return;}
+    turn='player';
+    statusEl.textContent='Ton tour — Tire !';
+}
+
+function allSunk(ships){
+    for(var s=0;s<ships.length;s++){
+        var sh=ships[s];
+        var len=SHIPS[ships.indexOf(sh)<SHIPS.length?s:0];
+        if(sh.hits<sh.len)return false;
+    }
+    return true;
+}
+
+function endGame(won){
+    running=false;
+    var sc=won?Math.max(100,1000-shots*10):0;
+    ovTitle.textContent=won?'🚢 Victoire !':'🚢 Défaite...';
+    ovMsg.textContent=shots+' tirs effectués';
+    ovScore.textContent=sc>0?sc+' pts':'';
+    ovBtn.textContent='Rejouer';
+    setTimeout(function(){overlay.classList.remove('hidden');},400);
+    if(sc>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('battleship',sc,n);}
+}
+
+function drawGrid(c2d,board,hits,showShips){
+    var w=c2d.canvas.width;
+    c2d.fillStyle='#0a1628';c2d.fillRect(0,0,w,w);
+    for(var r=0;r<SIZE;r++)for(var c=0;c<SIZE;c++){
+        var x=c*CELL,y=r*CELL;
+        c2d.fillStyle='#152238';c2d.fillRect(x+1,y+1,CELL-2,CELL-2);
+        if(showShips&&board[r][c]>0){c2d.fillStyle='#3498db';c2d.fillRect(x+2,y+2,CELL-4,CELL-4);}
+        if(hits[r][c]===2){
+            c2d.fillStyle='#e74c3c';c2d.beginPath();c2d.arc(x+CELL/2,y+CELL/2,CELL*0.3,0,Math.PI*2);c2d.fill();
+        } else if(hits[r][c]===1){
+            c2d.fillStyle='#555';c2d.beginPath();c2d.arc(x+CELL/2,y+CELL/2,CELL*0.15,0,Math.PI*2);c2d.fill();
+        }
+    }
+    c2d.strokeStyle='#1a3050';c2d.lineWidth=1;
+    for(var i=0;i<=SIZE;i++){c2d.beginPath();c2d.moveTo(i*CELL,0);c2d.lineTo(i*CELL,w);c2d.stroke();
+        c2d.beginPath();c2d.moveTo(0,i*CELL);c2d.lineTo(w,i*CELL);c2d.stroke();}
+}
+
+function drawEnemy(){drawGrid(ectx,eBoard,eHits,false);}
+function drawPlayer(){drawGrid(pctx,pBoard,pHits,true);}
+
+enemyC.addEventListener('touchstart',function(e){e.preventDefault();
+    var rect=enemyC.getBoundingClientRect();
+    var c=Math.floor((e.touches[0].clientX-rect.left)/CELL),r=Math.floor((e.touches[0].clientY-rect.top)/CELL);
+    if(r>=0&&r<SIZE&&c>=0&&c<SIZE)playerShoot(r,c);
+},{passive:false});
+enemyC.addEventListener('click',function(e){
+    var rect=enemyC.getBoundingClientRect();
+    var c=Math.floor((e.clientX-rect.left)/CELL),r=Math.floor((e.clientY-rect.top)/CELL);
+    if(r>=0&&r<SIZE&&c>=0&&c<SIZE)playerShoot(r,c);
+});
+
+playerC.addEventListener('touchstart',function(e){e.preventDefault();
+    var rect=playerC.getBoundingClientRect();
+    var c=Math.floor((e.touches[0].clientX-rect.left)/CELL),r=Math.floor((e.touches[0].clientY-rect.top)/CELL);
+    if(r>=0&&r<SIZE&&c>=0&&c<SIZE)playerPlace(r,c);
+},{passive:false});
+playerC.addEventListener('click',function(e){
+    var rect=playerC.getBoundingClientRect();
+    var c=Math.floor((e.clientX-rect.left)/CELL),r=Math.floor((e.clientY-rect.top)/CELL);
+    if(r>=0&&r<SIZE&&c>=0&&c<SIZE)playerPlace(r,c);
+});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(pBoard){drawPlayer();drawEnemy();}});
+resize();
+</script>
+</body>
+</html>

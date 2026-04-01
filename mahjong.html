@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Mahjong</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a0a2e;overflow:auto;touch-action:pan-y;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;min-height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(26,10,46,0.97);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(231,76,60,0.15);border:2px solid #e74c3c;border-radius:10px;color:#e74c3c;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#score-disp{color:#ffd93d;font-size:1.1rem;font-weight:bold}
+#pairs-disp{color:#e74c3c;font-size:0.9rem;font-weight:bold}
+#timer-disp{color:#74b9ff;font-size:1rem;font-weight:bold}
+canvas{display:block;margin:4px auto}
+#overlay{position:fixed;inset:0;background:rgba(26,10,46,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#e74c3c;margin-bottom:10px}
+#overlay p{color:#cba6f7;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(231,76,60,0.15);border:2px solid #e74c3c;border-radius:12px;color:#e74c3c;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#cba6f7;font-size:0.95rem;text-decoration:none}
+.land-btn{width:40px;height:40px;background:rgba(116,185,255,0.15);border:2px solid #74b9ff;border-radius:10px;color:#74b9ff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.land-btn.active{background:rgba(116,185,255,0.35);border-color:#ffd93d;color:#ffd93d}
+.zoom-btn{width:36px;height:36px;background:rgba(116,185,255,0.15);border:2px solid #74b9ff;border-radius:10px;color:#74b9ff;font-size:1.3rem;font-weight:bold;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:1}
+#zoom-bar{display:flex;gap:6px;align-items:center}
+#land-wrap{position:fixed;inset:0;z-index:5;display:none;background:#1a0a2e}
+#land-wrap.active{display:flex;flex-direction:column;align-items:center}
+#land-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:rgba(26,10,46,0.97);z-index:10;flex-shrink:0}
+#land-bar .top-btn,#land-bar .land-btn,#land-bar .zoom-btn{flex-shrink:0}
+#land-bar span{font-size:.85rem}
+#land-canvas-wrap{flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;width:100%;-webkit-overflow-scrolling:touch}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <div id="zoom-bar">
+      <button class="zoom-btn" id="zoom-out">−</button>
+      <button class="zoom-btn" id="zoom-in">+</button>
+    </div>
+    <button id="land-toggle" class="land-btn" title="Mode paysage">🔄</button>
+    <span id="score-disp">0 pts</span>
+    <span id="pairs-disp">72 paires</span>
+    <span id="timer-disp">0:00</span>
+</div>
+<canvas id="c"></canvas>
+<div id="land-wrap">
+  <div id="land-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <div id="zoom-bar">
+      <button class="zoom-btn" id="lzoom-out">−</button>
+      <button class="zoom-btn" id="lzoom-in">+</button>
+    </div>
+    <button id="land-toggle2" class="land-btn active" title="Mode portrait">🔄</button>
+    <span id="lscore-disp">0 pts</span>
+    <span id="lpairs-disp">72 paires</span>
+    <span id="ltimer-disp">0:00</span>
+  </div>
+  <div id="land-canvas-wrap"><canvas id="lc"></canvas></div>
+</div>
+<div id="overlay">
+    <h2 id="ovTitle">🀄 Mahjong</h2>
+    <p id="ovMsg">Trouve les paires de tuiles identiques !<br>Seules les tuiles libres (non bloquées et non recouvertes) peuvent être sélectionnées.</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var lcanvas=document.getElementById('lc'),lctx=lcanvas.getContext('2d');
+var scoreEl=document.getElementById('score-disp'),pairsEl=document.getElementById('pairs-disp'),timerEl=document.getElementById('timer-disp');
+var lscoreEl=document.getElementById('lscore-disp'),lpairsEl=document.getElementById('lpairs-disp'),ltimerEl=document.getElementById('ltimer-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+var landWrap=document.getElementById('land-wrap');
+
+var TW,TH,OX,OY;
+var zoomLevel=0;// -3 to +3
+var landActive=false;
+var SYMBOLS=['�','🍊','🍋','🍇','🍉','🍓','🍒','🍑','🥝','🍌',
+             '🌸','🌻','🌹','🪻','🌺','🍀','🌵','🌴','🎄','🌙',
+             '🐶','🐱','🐸','🐵','🐼','🐨','🦊','🐯','🐮','🐷',
+             '🦋','🐝','🐬','🦄','🐙','🦀','🐳','🦅','🐧','🦜',
+             '⚽','🏀','🎾','🎯','🎸','🎺','🎨','🎭','🧩','🎲',
+             '🚀','🛸','⭐','🌈','💎','🔥','❄️','💡','🎃','👑',
+             '🍕','🍔','🍟','🍩','🧁','🍫','🎂','🍪','🍿','🌮',
+             '🏠','🏰','⛩️','🗼','🎪','🚗','🚂','✈️','⛵','🚀'];
+var tiles,selected,score,pairs,running,startTime,timerInterval;
+
+// Layout: Turtle/classic simplified — 4 layers, each smaller
+var LAYOUTS=[
+    // Layer 0: 12x8
+    {cols:12,rows:8,ox:0,oy:0},
+    // Layer 1: 10x6
+    {cols:10,rows:6,ox:1,oy:1},
+    // Layer 2: 6x4
+    {cols:6,rows:4,ox:3,oy:2},
+    // Layer 3: 2x2
+    {cols:2,rows:2,ox:5,oy:3}
+];
+
+function resize(){
+    var W,H;
+    if(landActive){
+        // Landscape: use screen.width as the wide dimension
+        W=Math.max(window.innerWidth,window.innerHeight);
+        H=Math.min(window.innerWidth,window.innerHeight)-50;
+    }else{
+        W=window.innerWidth;
+        H=window.innerHeight-52;
+    }
+    var zoomFactor=1+zoomLevel*0.12;// each step is 12%
+    TW=Math.floor(Math.min(W*0.97/12.5, H*0.92/9)*zoomFactor);
+    TH=Math.floor(TW*1.2);
+    var cw=Math.ceil(TW*12.5),ch=Math.ceil(TH*9.2);
+    var activeCanvas=landActive?lcanvas:canvas;
+    var activeCtx=landActive?lctx:ctx;
+    activeCanvas.width=cw;activeCanvas.height=ch;
+    activeCanvas.style.width=cw+'px';activeCanvas.style.height=ch+'px';
+    OX=Math.floor(TW*0.25);OY=Math.floor(TH*0.3);
+}
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function buildTiles(){
+    tiles=[];
+    var needed=0;
+    for(var l=0;l<LAYOUTS.length;l++)needed+=LAYOUTS[l].cols*LAYOUTS[l].rows;
+    // pairs
+    var symList=[];
+    for(var i=0;i<Math.ceil(needed/2);i++)symList.push(SYMBOLS[i%SYMBOLS.length],SYMBOLS[i%SYMBOLS.length]);
+    shuffle(symList);
+    var idx=0;
+    for(var l=0;l<LAYOUTS.length;l++){
+        var lay=LAYOUTS[l];
+        for(var r=0;r<lay.rows;r++){
+            for(var c=0;c<lay.cols;c++){
+                if(idx>=symList.length)break;
+                tiles.push({layer:l,row:r+lay.oy,col:c+lay.ox,sym:symList[idx],removed:false});
+                idx++;
+            }
+        }
+    }
+    pairs=Math.floor(tiles.length/2);
+}
+
+function startGame(){
+    resize();buildTiles();selected=null;score=0;running=true;startTime=Date.now();
+    overlay.classList.add('hidden');updateHUD();draw();
+    if(timerInterval)clearInterval(timerInterval);
+    timerInterval=setInterval(function(){
+        if(!running)return;
+        var s=Math.floor((Date.now()-startTime)/1000);
+        var txt=Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);
+        timerEl.textContent=txt;ltimerEl.textContent=txt;
+    },1000);
+}
+
+function updateHUD(){
+    scoreEl.textContent=score+' pts';pairsEl.textContent=pairs+' paires';
+    lscoreEl.textContent=score+' pts';lpairsEl.textContent=pairs+' paires';
+}
+
+function isFree(tile){
+    if(tile.removed)return false;
+    // Not covered by higher layer tile
+    for(var i=0;i<tiles.length;i++){
+        var t=tiles[i];if(t.removed||t.layer<=tile.layer)continue;
+        if(Math.abs(t.col-tile.col)<=0&&Math.abs(t.row-tile.row)<=0)return false;
+    }
+    // Not blocked left AND right on same layer
+    var blockedL=false,blockedR=false;
+    for(var i=0;i<tiles.length;i++){
+        var t=tiles[i];if(t.removed||t.layer!==tile.layer||t===tile)continue;
+        if(t.row===tile.row){
+            if(t.col===tile.col-1)blockedL=true;
+            if(t.col===tile.col+1)blockedR=true;
+        }
+    }
+    return!(blockedL&&blockedR);
+}
+
+function tileAt(x,y){
+    // Top layers first
+    for(var i=tiles.length-1;i>=0;i--){
+        var t=tiles[i];if(t.removed)continue;
+        var tx=OX+t.col*TW-t.layer*3;
+        var ty=OY+t.row*TH-t.layer*3;
+        if(x>=tx&&x<=tx+TW&&y>=ty&&y<=ty+TH)return t;
+    }
+    return null;
+}
+
+function clickTile(t){
+    if(!running||!t||t.removed||!isFree(t))return;
+    if(!selected){selected=t;draw();return;}
+    if(selected===t){selected=null;draw();return;}
+    if(selected.sym===t.sym){
+        selected.removed=true;t.removed=true;
+        score+=50;pairs--;selected=null;updateHUD();draw();
+        if(pairs<=0){win();return;}
+        // Check if any moves left
+        if(!hasValidPair()){gameOver();}
+    }else{
+        selected=t;draw();
+    }
+}
+
+function hasValidPair(){
+    var free=tiles.filter(function(t){return!t.removed&&isFree(t);});
+    for(var i=0;i<free.length;i++)for(var j=i+1;j<free.length;j++){
+        if(free[i].sym===free[j].sym)return true;
+    }
+    return false;
+}
+
+function win(){
+    running=false;clearInterval(timerInterval);
+    var elapsed=Math.floor((Date.now()-startTime)/1000);
+    var sc=score+Math.max(0,5000-elapsed*5);
+    ovTitle.textContent='🀄 Félicitations !';
+    ovMsg.textContent='Puzzle résolu en '+timerEl.textContent;
+    ovScore.textContent=sc+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    var n=Leaderboard.promptName();if(n)Leaderboard.add('mahjong',sc,n);
+}
+
+function gameOver(){
+    running=false;clearInterval(timerInterval);
+    ovTitle.textContent='🀄 Bloqué !';
+    ovMsg.textContent='Plus de paires disponibles.';
+    ovScore.textContent=score+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    if(score>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('mahjong',score,n);}
+}
+
+function draw(){
+    var activeCtx=landActive?lctx:ctx;
+    var activeCanvas=landActive?lcanvas:canvas;
+    activeCtx.fillStyle='#1a0a2e';activeCtx.fillRect(0,0,activeCanvas.width,activeCanvas.height);
+    // Sort by layer for proper draw order
+    var sorted=tiles.filter(function(t){return!t.removed;}).sort(function(a,b){return a.layer-b.layer;});
+    for(var i=0;i<sorted.length;i++){
+        var t=sorted[i];
+        var x=OX+t.col*TW-t.layer*3;
+        var y=OY+t.row*TH-t.layer*3;
+        var free=isFree(t);
+        // Shadow
+        activeCtx.fillStyle='rgba(0,0,0,0.3)';
+        activeCtx.fillRect(x+3,y+3,TW-2,TH-2);
+        // Tile
+        activeCtx.fillStyle=selected===t?'#3d1a6e':free?'#f5f0e8':'#c0b8a8';
+        activeCtx.strokeStyle=selected===t?'#9b59b6':'#8a7e6a';activeCtx.lineWidth=1.5;
+        activeCtx.fillRect(x,y,TW-2,TH-2);activeCtx.strokeRect(x,y,TW-2,TH-2);
+        // Symbol
+        activeCtx.font=Math.floor(TW*0.7)+'px sans-serif';activeCtx.textAlign='center';activeCtx.textBaseline='middle';
+        activeCtx.fillText(t.sym,x+TW/2-1,y+TH*0.5);
+    }
+}
+
+function handleCanvasTouch(e){
+    e.preventDefault();
+    var c=e.currentTarget;
+    var rect=c.getBoundingClientRect();
+    var t=tileAt(e.touches[0].clientX-rect.left,e.touches[0].clientY-rect.top);
+    clickTile(t);
+}
+function handleCanvasClick(e){
+    var c=e.currentTarget;
+    var rect=c.getBoundingClientRect();
+    clickTile(tileAt(e.clientX-rect.left,e.clientY-rect.top));
+}
+canvas.addEventListener('touchstart',handleCanvasTouch,{passive:false});
+canvas.addEventListener('click',handleCanvasClick);
+lcanvas.addEventListener('touchstart',handleCanvasTouch,{passive:false});
+lcanvas.addEventListener('click',handleCanvasClick);
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(tiles)draw();});
+
+// ===== LANDSCAPE MODE =====
+var landBtn=document.getElementById('land-toggle');
+var landBtn2=document.getElementById('land-toggle2');
+function toggleLandscape(){
+  landActive=!landActive;
+  if(landActive){
+    landWrap.classList.add('active');
+    landBtn.classList.add('active');
+    // Try native fullscreen + orientation lock
+    try{
+      var el=document.documentElement;
+      if(el.requestFullscreen)el.requestFullscreen().catch(function(){});
+      else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+      if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape-primary').catch(function(){});
+    }catch(e){}
+  }else{
+    landWrap.classList.remove('active');
+    landBtn.classList.remove('active');
+    try{
+      if(document.exitFullscreen)document.exitFullscreen().catch(function(){});
+      else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+      if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();
+    }catch(e){}
+  }
+  setTimeout(function(){resize();if(tiles)draw();},100);
+}
+landBtn.addEventListener('click',toggleLandscape);
+landBtn2.addEventListener('click',toggleLandscape);
+
+// ===== ZOOM =====
+function doZoom(delta){
+  zoomLevel=Math.max(-3,Math.min(3,zoomLevel+delta));
+  resize();if(tiles)draw();
+}
+document.getElementById('zoom-in').addEventListener('click',function(){doZoom(1)});
+document.getElementById('zoom-out').addEventListener('click',function(){doZoom(-1)});
+document.getElementById('lzoom-in').addEventListener('click',function(){doZoom(1)});
+document.getElementById('lzoom-out').addEventListener('click',function(){doZoom(-1)});
+
+// ===== TIMER SYNC =====
+var origTimerInterval;
+function syncTimer(){
+  if(!running)return;
+  var s=Math.floor((Date.now()-startTime)/1000);
+  var txt=Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60);
+  timerEl.textContent=txt;ltimerEl.textContent=txt;
+}
+
+resize();
+</script>
+</body>
+</html>

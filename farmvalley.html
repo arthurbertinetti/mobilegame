@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Farm Valley</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;align-items:center;height:100dvh;overflow:hidden;-webkit-user-select:none;user-select:none;color:#333}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:linear-gradient(180deg,#5d4037,#4e342e);color:#fff;z-index:20;flex-shrink:0}
+.top-btn{width:34px;height:34px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:8px;color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer}
+#stats{display:flex;gap:8px;font-size:.78rem;align-items:center;flex-wrap:wrap}
+#stats span{display:flex;align-items:center;gap:2px}
+#day-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:3px 8px;background:rgba(78,52,46,.85);color:#ddd;font-size:.72rem;flex-shrink:0}
+#main{flex:1;display:flex;flex-direction:column;align-items:center;width:100%;overflow-y:auto;padding:2px 0}
+#cat-bar{display:flex;gap:4px;justify-content:center;padding:3px}
+.cat-btn{padding:4px 14px;border-radius:7px;border:2px solid transparent;background:rgba(255,255,255,.7);cursor:pointer;font-size:.9rem;-webkit-tap-highlight-color:transparent}
+.cat-btn.active{border-color:#4CAF50;background:#E8F5E9;font-weight:bold}
+#seed-bar{display:flex;gap:2px;justify-content:center;padding:2px 2px;flex-wrap:wrap}
+.seed-btn{display:flex;align-items:center;gap:1px;padding:2px 4px;border-radius:5px;border:2px solid transparent;background:rgba(255,255,255,.8);cursor:pointer;font-size:.6rem;-webkit-tap-highlight-color:transparent}
+.seed-btn .s-ico{font-size:.85rem}
+.seed-btn.active{border-color:#4CAF50;background:#E8F5E9}
+.seed-btn:disabled{opacity:.35;cursor:default}
+.seed-btn .s-ico{font-size:.85rem}
+.seed-btn.mystery{background:linear-gradient(135deg,#e8d5f5,#d5e8f5);border-color:#9b59b6}
+.seed-btn.mystery.active{background:#d4b8e8;border-color:#8e44ad}
+#auto-bar{display:flex;gap:6px;justify-content:center;padding:2px;flex-shrink:0}
+.auto-btn{padding:4px 12px;border-radius:7px;border:none;font-size:.72rem;font-weight:bold;cursor:pointer;color:#fff;-webkit-tap-highlight-color:transparent}
+.auto-btn.active{animation:pulse-auto 2s infinite}
+.auto-btn.rdy{background:#27ae60}
+.auto-btn.on{background:#e74c3c}
+.auto-btn.off{display:none}
+@keyframes pulse-auto{0%,100%{opacity:1}50%{opacity:.7}}
+#farm{display:grid;gap:3px;padding:4px;background:rgba(139,119,101,.3);border-radius:10px;margin:2px auto}
+.plot{width:100%;aspect-ratio:1;background:linear-gradient(145deg,#8B7355,#A0845C);border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:transform .1s;border:2px solid rgba(0,0,0,.1);font-size:1.2rem;overflow:hidden}
+.plot:active{transform:scale(.93)}
+.plot.empty{background:linear-gradient(145deg,#8B7355,#A0845C)}
+.plot.waiting{background:linear-gradient(145deg,#228B22,#32CD32)}
+.plot.needs-water{background:linear-gradient(145deg,#1a6b9a,#2196F3);animation:pulse-water 1.5s infinite alternate}
+.plot.mature{background:linear-gradient(145deg,#FFD700,#FFA500);animation:pulse-mature 1s infinite alternate}
+.plot.locked{background:linear-gradient(145deg,#555,#777);opacity:.6}
+.plot.locked.afford{opacity:.8;border-color:rgba(76,175,80,.5)}
+@keyframes pulse-water{from{box-shadow:0 0 4px rgba(33,150,243,.3)}to{box-shadow:0 0 12px rgba(33,150,243,.7)}}
+@keyframes pulse-mature{from{box-shadow:0 0 6px rgba(255,215,0,.4)}to{box-shadow:0 0 16px rgba(255,215,0,.8)}}
+.plot .emoji{font-size:1.2em;line-height:1}
+.plot .sub{position:absolute;bottom:0;font-size:.45rem;color:#fff;background:rgba(0,0,0,.55);padding:0 3px;border-radius:2px;width:100%;text-align:center;white-space:nowrap}
+.plot .badge{position:absolute;top:0;right:1px;font-size:.65rem}
+#tabs{width:100%;display:flex;justify-content:space-around;background:linear-gradient(0deg,#5d4037,#6d4c41);padding:5px 0 max(5px,env(safe-area-inset-bottom));flex-shrink:0}
+.tab-btn{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:none;color:rgba(255,255,255,.6);font-size:.65rem;cursor:pointer;padding:3px 10px;border-radius:7px;-webkit-tap-highlight-color:transparent}
+.tab-btn.active{color:#ffd93d;background:rgba(255,255,255,.1)}
+.tab-btn .ico{font-size:1.2rem}
+.panel{display:none;width:96%;max-width:400px;flex-direction:column;gap:6px;padding:6px 0}
+.panel.active{display:flex}
+.panel h3{text-align:center;color:#4e342e;margin-bottom:2px;font-size:1rem}
+.sect-hdr{font-weight:bold;font-size:.85rem;color:#5d4037;padding:4px 8px;background:rgba(255,255,255,.5);border-radius:8px;text-align:center;margin-top:4px}
+.shop-item,.upg-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.85);padding:8px 10px;border-radius:9px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.shop-item .icon,.upg-item .icon{font-size:1.6rem;flex-shrink:0}
+.shop-item .info,.upg-item .info{flex:1}
+.shop-item .info .name,.upg-item .info .name{font-weight:bold;font-size:.85rem}
+.shop-item .info .desc,.upg-item .info .desc{font-size:.68rem;color:#666}
+.shop-item.locked-item{opacity:.45}
+.buy-btn{padding:6px 10px;color:#fff;border:none;border-radius:7px;font-weight:bold;font-size:.78rem;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.buy-btn:disabled{background:#999!important;cursor:default}
+.shop-item .buy-btn{background:#4CAF50}.shop-item .buy-btn:active{background:#388E3C}
+.upg-item .buy-btn{background:#FF9800}.upg-item .buy-btn:active{background:#F57C00}
+.water-btn{background:#2196F3!important}.water-btn:active{background:#1976D2!important}
+.stat-row{display:flex;justify-content:space-between;background:rgba(255,255,255,.85);padding:8px 12px;border-radius:9px;font-size:.85rem}
+.float-text{position:fixed;pointer-events:none;font-weight:bold;font-size:1rem;color:#ffd93d;text-shadow:0 1px 3px rgba(0,0,0,.5);z-index:50;animation:float-up 1.2s ease-out forwards}
+@keyframes float-up{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:1.8rem;color:#ffd93d;margin-bottom:10px}
+#overlay p{color:#ddd;margin-bottom:14px;line-height:1.5;font-size:.9rem}
+#overlay button{padding:12px 36px;font-size:1.1rem;background:#4CAF50;border:none;border-radius:12px;color:#fff;font-weight:bold;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="top-bar">
+  <a href="index.html" class="top-btn">🏠</a>
+  <div id="stats">
+    <span>💰<b id="coins">20</b></span>
+    <span>💧<b id="water">50</b>/<small id="maxw">100</small></span>
+    <span>🏅Niv.<b id="level">1</b></span>
+  </div>
+</div>
+<div id="day-bar">📅 Jour <b id="day">1</b>, Mois <b id="month">1</b> &nbsp;|&nbsp; 🏠 Loyer: <b id="rent">25</b>💰<span id="debt-info"></span></div>
+<div id="main">
+  <div id="cat-bar">
+    <button class="cat-btn active" data-cat="0">🌱 Cultures</button>
+    <button class="cat-btn" data-cat="1">🌳 Arbres</button>
+    <button class="cat-btn" data-cat="2">🐄 Animaux</button>
+  </div>
+  <div id="seed-bar"></div>
+  <div id="auto-bar">
+    <button class="auto-btn off" id="btn-ah">🤖 Récolte</button>
+    <button class="auto-btn off" id="btn-aw">💧 Arrosage</button>
+  </div>
+  <div class="panel active" id="panel-farm"><div id="farm"></div></div>
+  <div class="panel" id="panel-shop"><h3>🏪 Boutique</h3><div id="shop-list"></div></div>
+  <div class="panel" id="panel-upgrades"><h3>⬆️ Améliorations</h3><div id="upg-list"></div></div>
+  <div class="panel" id="panel-stats"><h3>📊 Statistiques</h3><div id="stats-list"></div></div>
+</div>
+<div id="tabs">
+  <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
+  <button class="tab-btn" data-panel="shop"><span class="ico">🏪</span>Boutique</button>
+  <button class="tab-btn" data-panel="upgrades"><span class="ico">⬆️</span>Amélio.</button>
+  <button class="tab-btn" data-panel="stats"><span class="ico">📊</span>Stats</button>
+</div>
+<div id="overlay">
+  <h2>🌾 Farm Valley</h2>
+  <p>Plante, arrose, récolte et agrandis ta ferme !<br>
+  🌱 Cultures (3💧) · 🌳 Arbres (5💧) · 🐄 Animaux (10💧)<br>
+  Choisis un objet, touche une parcelle, puis arrose !<br>
+  Attention au loyer mensuel ! 🏠</p>
+  <button id="btn-start">🚜 Commencer</button>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+// ===== DATA: [name, emoji, stageTime(s), cost, sellValue, xp, reqLevel] =====
+var N=0,E=1,ST=2,CO=3,SV=4,XP=5,RL=6;
+var CROPS=[
+['Carotte','🥕',3,5,15,5,1],['Tomate','🍅',6,8,22,8,1],['Salade','🥬',10,12,32,12,2],
+['Poivron','🫑',16,16,45,16,2],['Blé','🌾',22,20,58,20,3],['Concombre','🥒',30,25,72,25,3],
+['Maïs','🌽',40,30,88,30,4],['Aubergine','🍆',55,38,110,38,5],['P.de terre','🥔',70,46,135,46,6],
+['Fraise','🍓',90,55,165,55,7],['Piment','🌶️',110,65,200,65,8],['Oignon','🧅',135,78,240,78,9],
+['Brocoli','🥦',165,92,290,92,10],['Melon','🍈',200,110,350,110,11],['Pastèque','🍉',240,130,420,130,12],
+['Champignon','🍄',290,155,500,155,14],['Ail','🧄',350,185,600,185,16],['Cerise','🍒',420,220,720,220,17],
+['Citrouille','🎃',550,270,870,270,18],['Fleur dorée','💐',1100,350,1500,400,20]];
+var TREES=[
+['Pommier','🍎',90,200,400,100,3],['Poirier','🍐',130,300,600,150,5],['Oranger','🍊',180,450,900,220,7],
+['Citronnier','🍋',240,600,1200,300,9],['Bananier','🍌',310,800,1600,400,11],['Pêcher','🍑',400,1100,2200,530,13],
+['Manguier','🥭',500,1500,3000,700,15],['Vigne','🍇',620,2000,4000,900,17],['Cocotier','🥥',750,2800,5600,1200,19],
+['Olivier','🫒',900,3800,7800,1600,20]];
+var ANIMALS=[
+['Poule','🐔',30,800,1100,150,5],['Canard','🦆',40,1000,1400,200,5],['Lapin','🐰',50,1300,1850,280,6],
+['Mouton','🐑',65,1700,2400,370,7],['Chèvre','🐐',80,2200,3100,480,8],['Cochon','🐷',95,2800,4000,600,9],
+['Vache','🐄',115,3500,5100,750,10],['Cheval','🐴',135,4400,6500,930,11],['Abeille','🐝',155,5500,8200,1150,12],
+['Dinde','🦃',180,6800,10000,1400,13],['Alpaga','🦙',205,8500,12500,1700,14],['Paon','🦚',235,10500,15500,2100,15],
+['Cygne','🦢',265,13000,19500,2600,16],['Flamant','🦩',300,16000,24000,3200,17],['Perroquet','🦜',340,20000,30000,4000,18],
+['Hibou','🦉',380,25000,38000,5000,18],['Tortue','🐢',420,31000,47000,6200,19],['Dauphin','🐬',470,40000,60000,8000,19],
+['Panda','🐼',530,52000,78000,10000,20],['Licorne','🦄',600,70000,110000,15000,20]];
+var ITEMS=[CROPS,TREES,ANIMALS];
+var CAT_WATER=[3,5,10];
+var CAT_NAMES=['Cultures','Arbres','Animaux'];
+var CAT_ICONS=['🌱','🌳','🐄'];
+var MYSTERY_COSTS=[0,0,0];
+function calcMysteryCosts(){for(var c=0;c<3;c++){var arr=ITEMS[c],sum=0;for(var i=0;i<arr.length;i++)sum+=arr[i][CO];MYSTERY_COSTS[c]=Math.round(sum/arr.length);}}
+function getMysteryCost(cat){if(cat<0||cat>2)return MYSTERY_COSTS[0];return MYSTERY_COSTS[cat]}
+var UPGRADES=[
+{id:'speed',name:'Engrais rapide',desc:'-5% temps/niv',icon:'⚡',base:30,mult:1.15,max:100},
+{id:'value',name:'Meilleur marché',desc:'+15% vente/niv',icon:'💎',base:40,mult:2.0,max:10},
+{id:'autoharvest',name:'Auto-récolte',desc:'Récolte auto (2-10 min)',icon:'🤖',base:300,mult:2.5,max:5},
+{id:'autowater',name:'Auto-arrosage',desc:'Arrose auto (1-5 min)',icon:'🚿',base:400,mult:2.5,max:5},
+{id:'watermax',name:'Réservoir',desc:'+10 eau max (→2000)',icon:'🪣',base:15,mult:1.03,max:190}];
+var WATER_PACKS=[[10,20,'10💧'],[30,50,'30💧'],[100,150,'100💧']];
+
+// ===== GRID =====
+var GCOLS=6,GMAX=9,GTOTAL=GCOLS*GMAX,GSTART=12;
+
+// ===== STATE =====
+var SAVE_KEY='farmvalley_save';
+var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000];
+var state={version:3,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+  selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
+  autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,
+  day:1,month:1,lastDayTick:0,lastWaterRegen:0,lastSave:0};
+
+// ===== DOM =====
+var $=document.getElementById.bind(document);
+var coinsEl=$('coins'),waterEl=$('water'),maxwEl=$('maxw'),levelEl=$('level');
+var dayEl=$('day'),monthEl=$('month'),rentEl=$('rent');
+var farmEl=$('farm'),seedBar=$('seed-bar'),overlay=$('overlay');
+var btnAH=$('btn-ah'),btnAW=$('btn-aw');
+
+// ===== INIT =====
+function init(){
+  calcMysteryCosts();
+  loadGame();
+  UPGRADES.forEach(function(u){if(state.upgrades[u.id]===undefined)state.upgrades[u.id]=0});
+  if(!state.gridBought)state.gridBought=0;
+  if(!state.ahResets)state.ahResets=0;
+  if(!state.awResets)state.awResets=0;
+  if(!state.debt)state.debt=0;
+  state.maxWater=100+(state.upgrades.watermax||0)*10;
+  while(state.plots.length<GTOTAL)state.plots.push({catIdx:-1,itemIdx:-1,wc:0,lw:0,locked:state.plots.length>=GSTART+state.gridBought});
+  var unlocked=GSTART+state.gridBought;
+  for(var i=0;i<state.plots.length;i++)state.plots[i].locked=i>=unlocked;
+  if(!state.lastDayTick)state.lastDayTick=Date.now();
+  if(!state.lastWaterRegen)state.lastWaterRegen=Date.now();
+  if(!state.lastSave)state.lastSave=Date.now();
+  processOffline();
+  buildSeedBar();buildFarm();buildShop();buildUpgrades();
+  updateAuto();updateUI();
+  setInterval(gameTick,500);
+  setInterval(saveGame,5000);
+}
+
+// ===== OFFLINE =====
+function processOffline(){
+  var now=Date.now(),elapsed=now-state.lastSave;
+  if(elapsed<1000)return;
+  // Water regen
+  var wGain=Math.floor((now-state.lastWaterRegen)/30000);
+  if(wGain>0){state.water=Math.min(state.maxWater,state.water+wGain);state.lastWaterRegen+=wGain*30000}
+  // Day/rent offline
+  var dPassed=Math.floor((now-state.lastDayTick)/20000);
+  if(dPassed>0){
+    state.lastDayTick+=dPassed*20000;
+    var totalDays=state.day+dPassed-1;
+    var mPassed=Math.floor(totalDays/30);
+    state.day=totalDays%30+1;
+    if(mPassed>0){state.month+=mPassed;var r=getRent()*mPassed;
+      if(state.debt>0){for(var mi=0;mi<mPassed;mi++){var intR=getDebtRate();state.debt+=Math.ceil(state.debt*intR)}}
+      if(state.coins>=r){state.coins-=r}else{state.debt+=(r-state.coins);state.coins=0}}
+  }
+  // Auto-harvest offline
+  if((state.upgrades.autoharvest||0)>=1&&state.autoHarvestEnd>state.lastSave){
+    var end=Math.min(state.autoHarvestEnd,now);
+    state.plots.forEach(function(p){
+      if(p.catIdx<0||p.locked)return;var it=ITEMS[p.catIdx][p.itemIdx];
+      if(p.wc>=CAT_WATER[p.catIdx]){var sv=getSellVal(it);state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
+    });
+  }
+  // Auto-water offline (approximate)
+  if((state.upgrades.autowater||0)>=1&&state.autoWaterEnd>state.lastSave){
+    state.plots.forEach(function(p){
+      if(p.catIdx<0||p.locked)return;var it=ITEMS[p.catIdx][p.itemIdx];
+      var needed=CAT_WATER[p.catIdx];if(p.wc>=needed)return;
+      var stMs=getStageTime(it);
+      while(p.wc<needed&&state.water>0){
+        var ready=p.lw===0||(now-p.lw>=stMs);
+        if(!ready)break;
+        state.water--;p.wc++;p.lw=now;
+      }
+    });
+  }
+  state.lastSave=now;checkLevelUp();
+}
+
+// ===== HELPERS =====
+function getStageTime(it){return Math.max(it[ST]*1000*Math.pow(0.95,state.upgrades.speed||0),2000)}
+function getSellVal(it){return Math.floor(it[SV]*(1+(state.upgrades.value||0)*0.15))}
+function getCellCost(){return Math.floor(50*Math.pow(1.18,state.gridBought))}
+function getRent(){return state.level*25}
+function getAutoHDur(){var l=state.upgrades.autoharvest||0;return l>0?l*2*60000:0}
+function getAutoWDur(){var l=state.upgrades.autowater||0;return l>0?l*60000:0}
+function getReactivateHCost(){var l=state.upgrades.autoharvest||0;return Math.floor(80*l*(l>=5?3:1))}
+function getReactivateWCost(){var l=state.upgrades.autowater||0;return Math.floor(60*l*(l>=5?3:1))}
+function getDebtRate(){return Math.min(0.05+state.debt/100000,0.30)}
+function getVisibleRows(){var u=GSTART+state.gridBought;return Math.min(GMAX,Math.floor((u-1)/GCOLS)+2)}
+function xpFor(lv){return lv-1<XP_TABLE.length?XP_TABLE[lv-1]:45000+(lv-20)*10000}
+function checkLevelUp(){
+  var ch=false;
+  while(state.xp>=xpFor(state.level+1)){state.level++;ch=true;
+    var wBonus=5+state.level*3;
+    var gBonus=10+state.level*15;
+    state.water=Math.min(state.maxWater,state.water+wBonus);
+    state.coins+=gBonus;state.totalEarned+=gBonus;
+    showFloat(innerWidth/2,100,'🎉 Niveau '+state.level+' !');
+    showFloat(innerWidth/2,130,'+'+wBonus+'💧 +'+fmtN(gBonus)+'💰')}
+  if(ch){buildSeedBar();buildShop();buildUpgrades()}
+}
+function getStageEmoji(p){
+  if(p.catIdx===0){var s=['🌱','🌿','☘️',ITEMS[0][p.itemIdx][E]];return s[Math.min(p.wc,3)]}
+  if(p.catIdx===1){var w=p.wc;if(w>=5)return ITEMS[1][p.itemIdx][E];if(w>=3)return'🌳';if(w>=1)return'🌿';return'🌱'}
+  return ITEMS[2][p.itemIdx][E];
+}
+function isReady(p){
+  if(p.catIdx<0)return false;
+  var needed=CAT_WATER[p.catIdx];if(p.wc>=needed)return false;
+  var stMs=getStageTime(ITEMS[p.catIdx][p.itemIdx]);
+  return p.lw===0||(Date.now()-p.lw>=stMs);
+}
+function isMature(p){return p.catIdx>=0&&p.wc>=CAT_WATER[p.catIdx]}
+
+// ===== FARM GRID =====
+function buildFarm(){
+  var rows=getVisibleRows(),cols=GCOLS;
+  var ps=Math.min(Math.floor((innerWidth*0.95-8)/cols)-3,60);
+  farmEl.style.gridTemplateColumns='repeat('+cols+','+ps+'px)';
+  farmEl.innerHTML='';
+  for(var i=0;i<rows*cols;i++){
+    var d=document.createElement('div');d.className='plot';d.style.width=ps+'px';
+    d.dataset.idx=i;d.addEventListener('click',onPlot);farmEl.appendChild(d);
+  }
+  updateVisuals();
+}
+function updateVisuals(){
+  var now=Date.now(),cc=getCellCost();
+  farmEl.querySelectorAll('.plot').forEach(function(el,i){
+    if(i>=state.plots.length)return;
+    var p=state.plots[i];
+    if(p.locked){el.className='plot locked'+(state.coins>=cc?' afford':'');
+      el.innerHTML='🔒<span class="sub">'+fmtN(cc)+'💰</span>';return}
+    if(p.catIdx<0){el.className='plot empty';el.innerHTML='';return}
+    var it=ITEMS[p.catIdx][p.itemIdx],needed=CAT_WATER[p.catIdx];
+    if(p.wc>=needed){el.className='plot mature';
+      el.innerHTML='<span class="emoji">'+it[E]+'</span><span class="sub">✅ Récolter</span>';return}
+    var stMs=getStageTime(it),since=now-p.lw,ready=p.lw===0||since>=stMs;
+    var em=getStageEmoji(p);
+    if(ready){
+      el.className='plot needs-water';
+      el.innerHTML='<span class="emoji">'+em+'</span><span class="badge">💧</span><span class="sub">'+p.wc+'/'+needed+'</span>';
+    }else{
+      el.className='plot waiting';
+      var rem=Math.ceil((stMs-since)/1000);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
+      el.innerHTML='<span class="emoji">'+em+'</span><span class="sub">'+ts+' · '+p.wc+'/'+needed+'</span>';
+    }
+  });
+}
+
+// ===== PLOT CLICK =====
+function onPlot(e){
+  var idx=+e.currentTarget.dataset.idx,p=state.plots[idx];if(!p)return;
+  var r=e.currentTarget.getBoundingClientRect(),fx=r.left+r.width/2,fy=r.top;
+  // Locked → buy cell
+  if(p.locked){var c=getCellCost();
+    if(state.coins>=c){state.coins-=c;p.locked=false;state.gridBought++;
+      showFloat(fx,fy,'🔓 -'+fmtN(c));buildFarm();buildUpgrades();updateUI()
+    }else showFloat(fx,fy,'❌ '+fmtN(c)+'💰');return}
+  // Empty → plant
+  if(p.catIdx<0){
+    var cat=state.selCat,si=state.selItem;
+    if(cat===-1){// mystery — use active category tab
+      var mCat=0;document.querySelectorAll('.cat-btn').forEach(function(b,i){if(b.classList.contains('active'))mCat=i});
+      var mc=getMysteryCost(mCat);
+      if(state.coins<mc){showFloat(fx,fy,'❌ Pas assez!');return}
+      state.coins-=mc;var arr=ITEMS[mCat],ri=Math.floor(Math.random()*arr.length);
+      p.catIdx=mCat;p.itemIdx=ri;p.wc=0;p.lw=0;
+      showFloat(fx,fy,'❓→'+arr[ri][E]);updateUI();return}
+    if(cat<0||cat>2)return;var arr=ITEMS[cat];if(si<0||si>=arr.length)return;
+    var it=arr[si];
+    if(it[RL]>state.level&&cat!==0){showFloat(fx,fy,'🔒 Niv.'+it[RL]);return}
+    if(state.coins<it[CO]){showFloat(fx,fy,'❌ Pas assez!');return}
+    state.coins-=it[CO];p.catIdx=cat;p.itemIdx=si;p.wc=0;p.lw=0;
+    showFloat(fx,fy,'🌱 -'+fmtN(it[CO]));updateUI();return}
+  // Needs water → water
+  if(isReady(p)){
+    if(state.water<=0){showFloat(fx,fy,'❌ Pas d\'eau!');return}
+    state.water--;p.wc++;p.lw=Date.now();
+    var it=ITEMS[p.catIdx][p.itemIdx],needed=CAT_WATER[p.catIdx];
+    if(p.wc>=needed)showFloat(fx,fy,'✅ Mûr!');
+    else showFloat(fx,fy,'💧 '+p.wc+'/'+needed);
+    updateUI();return}
+  // Mature → harvest
+  if(isMature(p)){
+    var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
+    state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
+    showFloat(fx,fy,'+'+fmtN(sv)+'💰');showFloat(fx,fy-20,'+'+it[XP]+'⭐');
+    p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0;
+    checkLevelUp();updateUI()}
+}
+
+// ===== SEED BAR =====
+function buildSeedBar(){
+  seedBar.innerHTML='';
+  var cat=state.selCat;
+  if(cat===-1)cat=0;// show crops for mystery
+  var arr=ITEMS[cat];
+  arr.forEach(function(it,i){
+    var ok=it[RL]<=state.level;
+    var b=document.createElement('button');
+    b.className='seed-btn'+(state.selCat>=0&&state.selCat===cat&&state.selItem===i?' active':'');
+    b.disabled=!ok;
+    b.innerHTML='<span class="s-ico">'+it[E]+'</span><span>'+fmtN(it[CO])+'</span>';
+    b.title=it[N];
+    b.addEventListener('click',function(){state.selCat=cat;state.selItem=i;buildSeedBar()});
+    seedBar.appendChild(b);
+  });
+  // Mystery
+  var activeCat=cat;
+  var mc=getMysteryCost(activeCat);
+  var mb=document.createElement('button');
+  mb.className='seed-btn mystery'+(state.selCat===-1?' active':'');
+  mb.innerHTML='<span class="s-ico">❓</span><span>'+fmtN(mc)+'</span>';
+  mb.addEventListener('click',function(){state.selCat=-1;state.selItem=-1;buildSeedBar()});
+  seedBar.appendChild(mb);
+}
+
+// ===== CAT BAR =====
+document.querySelectorAll('.cat-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.remove('active')});
+    btn.classList.add('active');
+    var c=+btn.dataset.cat;state.selCat=c;state.selItem=0;buildSeedBar();
+  });
+});
+
+// ===== SHOP =====
+function buildShop(){
+  var list=$('shop-list');list.innerHTML='';
+  // Water packs
+  var h=document.createElement('div');h.className='sect-hdr';h.textContent='💧 Acheter de l\'eau';list.appendChild(h);
+  WATER_PACKS.forEach(function(pk){
+    var d=document.createElement('div');d.className='shop-item';
+    d.innerHTML='<div class="icon">💧</div><div class="info"><div class="name">'+pk[2]+'</div><div class="desc">Recharge immédiate</div></div><button class="buy-btn water-btn" '+(state.coins>=pk[1]?'':'disabled')+'>'+fmtN(pk[1])+'💰</button>';
+    d.querySelector('.buy-btn').addEventListener('click',function(){
+      if(state.coins>=pk[1]){state.coins-=pk[1];state.water=Math.min(state.maxWater,state.water+pk[0]);
+        showFloat(innerWidth/2,innerHeight/2,'+'+pk[0]+'💧');updateUI();buildShop()}});
+    list.appendChild(d);
+  });
+  // Debt repayment
+  if(state.debt>0){
+    var dh=document.createElement('div');dh.className='sect-hdr';dh.textContent='💳 Rembourser crédit ('+fmtN(state.debt)+'💰)';list.appendChild(dh);
+    var intPct=Math.round(getDebtRate()*100);
+    var di2=document.createElement('div');di2.className='shop-item';
+    di2.innerHTML='<div class="icon">💳</div><div class="info"><div class="name">Crédit en cours</div><div class="desc">Intérêt mensuel: '+intPct+'% · Remboursez vite!</div></div>';
+    list.appendChild(di2);
+    [[0.1,'10%'],[0.5,'50%'],[1,'Tout']].forEach(function(opt){
+      var amt=opt[0]<1?Math.ceil(state.debt*opt[0]):state.debt;
+      if(amt<1)amt=1;
+      var dd=document.createElement('div');dd.className='shop-item';
+      dd.innerHTML='<div class="icon">💰</div><div class="info"><div class="name">Payer '+opt[1]+'</div><div class="desc">'+fmtN(amt)+'💰</div></div><button class="buy-btn" style="background:#e74c3c" '+(state.coins>=amt?'':'disabled')+'>Payer</button>';
+      (function(a){dd.querySelector('.buy-btn').addEventListener('click',function(){
+        if(state.coins>=a){state.coins-=a;state.debt=Math.max(0,state.debt-a);
+          showFloat(innerWidth/2,innerHeight/2,'💳 -'+fmtN(a)+'💰');updateUI();buildShop()}
+      })})(amt);
+      list.appendChild(dd);
+    });
+  }
+  // Items by category
+  for(var c=0;c<3;c++){
+    var hdr=document.createElement('div');hdr.className='sect-hdr';hdr.textContent=CAT_ICONS[c]+' '+CAT_NAMES[c]+' ('+CAT_WATER[c]+'💧)';list.appendChild(hdr);
+    ITEMS[c].forEach(function(it,i){
+      var ok=it[RL]<=state.level;
+      var d=document.createElement('div');d.className='shop-item'+(ok?'':' locked-item');
+      var stS=it[ST],wN=CAT_WATER[c],totalS=stS*wN;
+      var tStr=totalS>=60?Math.round(totalS/60)+'min':totalS+'s';
+      d.innerHTML='<div class="icon">'+it[E]+'</div><div class="info"><div class="name">'+it[N]+(ok?'':' 🔒Niv.'+it[RL])+'</div><div class="desc">⏱'+tStr+' | 💰'+fmtN(getSellVal(it))+' | ⭐+'+it[XP]+'</div></div><button class="buy-btn" '+(ok&&state.coins>=it[CO]?'':'disabled')+'>'+fmtN(it[CO])+'💰</button>';
+      if(ok){(function(cat,idx,item){
+        d.querySelector('.buy-btn').addEventListener('click',function(){
+          if(state.coins>=item[CO]){
+            for(var j=0;j<state.plots.length;j++){
+              if(!state.plots[j].locked&&state.plots[j].catIdx<0){
+                state.coins-=item[CO];state.plots[j].catIdx=cat;state.plots[j].itemIdx=idx;state.plots[j].wc=0;state.plots[j].lw=0;
+                showFloat(innerWidth/2,innerHeight/2,'🌱 '+item[N]);updateUI();buildShop();return}}
+            showFloat(innerWidth/2,innerHeight/2,'❌ Plus de place!')}
+        });})(c,i,it)}
+      list.appendChild(d);
+    });
+  }
+  // Mystery per category
+  for(var mc2=0;mc2<3;mc2++){
+    var mhdr=document.createElement('div');mhdr.className='sect-hdr';mhdr.textContent='❓ Mystère '+CAT_NAMES[mc2];list.appendChild(mhdr);
+    var mcost=getMysteryCost(mc2);
+    var md2=document.createElement('div');md2.className='shop-item';
+    md2.innerHTML='<div class="icon">❓</div><div class="info"><div class="name">Mystère '+CAT_NAMES[mc2]+'</div><div class="desc">'+CAT_ICONS[mc2]+' aléatoire (même non débloqué!)</div></div><button class="buy-btn" '+(state.coins>=mcost?'':'disabled')+'>'+fmtN(mcost)+'💰</button>';
+    (function(myCat,myCost){
+      md2.querySelector('.buy-btn').addEventListener('click',function(){
+        if(state.coins>=myCost){
+          for(var j=0;j<state.plots.length;j++){
+            if(!state.plots[j].locked&&state.plots[j].catIdx<0){
+              state.coins-=myCost;var ri=Math.floor(Math.random()*ITEMS[myCat].length);
+              state.plots[j].catIdx=myCat;state.plots[j].itemIdx=ri;state.plots[j].wc=0;state.plots[j].lw=0;
+              showFloat(innerWidth/2,innerHeight/2,'❓→'+ITEMS[myCat][ri][N]+'!');updateUI();buildShop();return}}
+          showFloat(innerWidth/2,innerHeight/2,'❌ Plus de place!')}
+      });
+    })(mc2,mcost);
+    list.appendChild(md2);
+  }
+}
+
+// ===== UPGRADES =====
+function buildUpgrades(){
+  var list=$('upg-list');list.innerHTML='';
+  UPGRADES.forEach(function(upg){
+    var lv=state.upgrades[upg.id]||0,mx=lv>=upg.max;
+    var rm=1;if(upg.id==='autoharvest')rm=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm=Math.pow(1.25,state.awResets||0);
+    var cost=Math.floor(upg.base*Math.pow(upg.mult,lv)*rm);
+    var d=document.createElement('div');d.className='upg-item';
+    var extra='';
+    if(upg.id==='autoharvest'){if(lv>0)extra=' ('+lv*2+'min)';if(state.ahResets>0)extra+=' 🔄×'+state.ahResets}
+    if(upg.id==='autowater'){if(lv>0)extra=' ('+lv+'min)';if(state.awResets>0)extra+=' 🔄×'+state.awResets}
+    if(upg.id==='watermax')extra=' ('+state.maxWater+'/2000)';
+    d.innerHTML='<div class="icon">'+upg.icon+'</div><div class="info"><div class="name">'+upg.name+' ('+lv+'/'+upg.max+')</div><div class="desc">'+upg.desc+extra+'</div></div><button class="buy-btn" '+(mx||state.coins<cost?'disabled':'')+'>'+(mx?'MAX':fmtN(cost)+'💰')+'</button>';
+    if(!mx){d.querySelector('.buy-btn').addEventListener('click',function(){
+      var rm2=1;if(upg.id==='autoharvest')rm2=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm2=Math.pow(1.25,state.awResets||0);
+      var c=Math.floor(upg.base*Math.pow(upg.mult,state.upgrades[upg.id])*rm2);
+      if(state.coins>=c){state.coins-=c;state.upgrades[upg.id]++;
+        if(upg.id==='watermax'){state.maxWater=100+(state.upgrades.watermax)*10}
+        showFloat(innerWidth/2,innerHeight/2,'⬆️ '+upg.name+'!');
+        updateAuto();updateUI();buildUpgrades();buildShop()}
+    })}
+    list.appendChild(d);
+  });
+  // Grid info
+  var gi=document.createElement('div');gi.className='upg-item';
+  var unlocked=GSTART+state.gridBought;
+  gi.innerHTML='<div class="icon">🔲</div><div class="info"><div class="name">Parcelles</div><div class="desc">'+unlocked+'/'+GTOTAL+' débloquées · Touche 🔒 sur la ferme</div></div><div style="font-size:.8rem;font-weight:bold">'+fmtN(getCellCost())+'💰</div>';
+  list.appendChild(gi);
+}
+
+// ===== AUTO BUTTONS =====
+function updateAuto(){
+  var now=Date.now();
+  // Harvest
+  var ahLv=state.upgrades.autoharvest||0;
+  if(ahLv>0){btnAH.classList.remove('off');
+    if(state.autoHarvestEnd>now){var r=Math.ceil((state.autoHarvestEnd-now)/1000);var m=Math.floor(r/60),s=r%60;
+      btnAH.className='auto-btn on';btnAH.textContent='🤖 '+m+':'+(s<10?'0':'')+s;
+    }else if(state.autoHarvestEnd>0){
+      btnAH.className='auto-btn rdy';btnAH.textContent='🤖 Réactiver '+fmtN(getReactivateHCost())+'💰';
+    }else{btnAH.className='auto-btn rdy';btnAH.textContent='🤖 Récolte ('+ahLv*2+'min)'}
+  }else btnAH.className='auto-btn off';
+  // Water
+  var awLv=state.upgrades.autowater||0;
+  if(awLv>0){btnAW.classList.remove('off');
+    if(state.autoWaterEnd>now){var r2=Math.ceil((state.autoWaterEnd-now)/1000);var m2=Math.floor(r2/60),s2=r2%60;
+      btnAW.className='auto-btn on';btnAW.textContent='💧 '+m2+':'+(s2<10?'0':'')+s2;
+    }else if(state.autoWaterEnd>0){
+      btnAW.className='auto-btn rdy';btnAW.textContent='💧 Réactiver '+fmtN(getReactivateWCost())+'💰';
+    }else{btnAW.className='auto-btn rdy';btnAW.textContent='💧 Arrosage ('+awLv+'min)'}
+  }else btnAW.className='auto-btn off';
+}
+btnAH.addEventListener('click',function(){
+  var lv=state.upgrades.autoharvest||0;if(lv<=0)return;
+  var now=Date.now();if(state.autoHarvestEnd>now)return;
+  if(state.autoHarvestEnd>0){var cost=getReactivateHCost();
+    if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return}
+    state.coins-=cost;showFloat(innerWidth/2,innerHeight/2,'🤖 Réactivé! -'+fmtN(cost)+'💰');
+  }else{showFloat(innerWidth/2,innerHeight/2,'🤖 Auto-récolte activée!')}
+  state.autoHarvestEnd=now+getAutoHDur();updateAuto();updateUI();
+});
+btnAW.addEventListener('click',function(){
+  var lv=state.upgrades.autowater||0;if(lv<=0)return;
+  var now=Date.now();if(state.autoWaterEnd>now)return;
+  if(state.autoWaterEnd>0){var cost=getReactivateWCost();
+    if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return}
+    state.coins-=cost;showFloat(innerWidth/2,innerHeight/2,'💧 Réactivé! -'+fmtN(cost)+'💰');
+  }else{showFloat(innerWidth/2,innerHeight/2,'💧 Auto-arrosage activé!')}
+  state.autoWaterEnd=now+getAutoWDur();updateAuto();updateUI();
+});
+
+// ===== STATS =====
+function buildStats(){
+  var list=$('stats-list');list.innerHTML='';
+  var ahLv=state.upgrades.autoharvest||0,awLv=state.upgrades.autowater||0;
+  var rows=[
+    ['💰 Total gagné',fmtN(state.totalEarned)],['🌾 Récoltes',state.totalHarvested],
+    ['🏅 Niveau',state.level],['⭐ XP',fmtN(state.xp)+' / '+fmtN(xpFor(state.level+1))],
+    ['📏 Parcelles',(GSTART+state.gridBought)+'/'+GTOTAL],
+    ['💧 Eau max',state.maxWater],
+    ['⚡ Engrais','Niv.'+(state.upgrades.speed||0)],['💎 Marché','Niv.'+(state.upgrades.value||0)],
+    ['🤖 Auto-récolte',ahLv>0?'Niv.'+ahLv+' ('+ahLv*2+'min)':'Non'],
+    ['🚿 Auto-arrosage',awLv>0?'Niv.'+awLv+' ('+awLv+'min)':'Non'],
+    ['📅 Jour/Mois','J.'+state.day+' M.'+state.month],['🏠 Loyer',fmtN(getRent())+'💰/mois'],
+    ['💳 Crédit',state.debt>0?fmtN(state.debt)+'💰 ('+Math.round(getDebtRate()*100)+'%/mois)':'Aucun']];
+  rows.forEach(function(r){var d=document.createElement('div');d.className='stat-row';
+    d.innerHTML='<span>'+r[0]+'</span><b>'+r[1]+'</b>';list.appendChild(d)});
+}
+
+// ===== UI =====
+function updateUI(){
+  coinsEl.textContent=fmtN(state.coins);waterEl.textContent=state.water;maxwEl.textContent=state.maxWater;
+  levelEl.textContent=state.level;dayEl.textContent=state.day;monthEl.textContent=state.month;
+  rentEl.textContent=fmtN(getRent());
+  var debtInfo=$('debt-info');if(state.debt>0)debtInfo.innerHTML=' | 💳<b style="color:#e74c3c">'+fmtN(state.debt)+'</b>';else debtInfo.textContent='';
+  updateVisuals();
+}
+function fmtN(n){if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e4)return(n/1e3).toFixed(1)+'K';return n}
+
+// ===== GAME TICK =====
+function gameTick(){
+  var now=Date.now();
+  // Water regen
+  var wG=Math.floor((now-state.lastWaterRegen)/30000);
+  if(wG>0){state.water=Math.min(state.maxWater,state.water+wG);state.lastWaterRegen+=wG*30000}
+  // Day/rent
+  var dP=Math.floor((now-state.lastDayTick)/20000);
+  if(dP>0){
+    state.lastDayTick+=dP*20000;
+    for(var d=0;d<dP;d++){state.day++;
+      if(state.day>30){state.day=1;state.month++;var rent=getRent();
+        if(state.debt>0){var interest=Math.ceil(state.debt*getDebtRate());state.debt+=interest;
+          showFloat(innerWidth/2,50,'💳 Intérêts: +'+fmtN(interest)+'💰')}
+        if(state.coins>=rent){state.coins-=rent}else{state.debt+=(rent-state.coins);state.coins=0}
+        showFloat(innerWidth/2,80,'🏠 Loyer M.'+state.month+': -'+fmtN(rent)+'💰')}}
+  }
+  // Auto-water
+  if((state.upgrades.autowater||0)>=1&&state.autoWaterEnd>now){
+    state.plots.forEach(function(p){
+      if(p.catIdx<0||p.locked||state.water<=0)return;
+      if(p.wc>=CAT_WATER[p.catIdx])return;
+      if(isReady(p)){state.water--;p.wc++;p.lw=now}
+    });
+  }
+  // Auto-harvest
+  if((state.upgrades.autoharvest||0)>=1&&state.autoHarvestEnd>now){
+    state.plots.forEach(function(p){
+      if(p.catIdx<0||p.locked)return;
+      if(isMature(p)){var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
+        state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
+        showFloat(Math.random()*innerWidth*.6+innerWidth*.2,Math.random()*200+200,'+'+fmtN(sv)+'💰');
+        p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
+    });checkLevelUp();
+  }
+  updateAuto();updateUI();state.lastSave=now;
+}
+
+// ===== FLOAT =====
+function showFloat(x,y,t){var e=document.createElement('div');e.className='float-text';e.textContent=t;
+  e.style.left=Math.max(10,Math.min(x,innerWidth-130))+'px';e.style.top=y+'px';
+  document.body.appendChild(e);setTimeout(function(){e.remove()},1200)}
+
+// ===== SAVE/LOAD =====
+function saveGame(){state.lastSave=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){}}
+function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.parse(d);
+  if(!s.version||s.version<3){s.plots=[];s.upgrades={};s.gridBought=0;s.water=50;s.maxWater=100;s.day=1;s.month=1;s.lastDayTick=0;s.lastWaterRegen=0;s.version=3}
+  for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
+
+// ===== TABS =====
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});
+    btn.classList.add('active');$('panel-'+btn.dataset.panel).classList.add('active');
+    if(btn.dataset.panel==='shop')buildShop();
+    if(btn.dataset.panel==='upgrades')buildUpgrades();
+    if(btn.dataset.panel==='stats')buildStats();
+    var isFarm=btn.dataset.panel==='farm';
+    $('cat-bar').style.display=isFarm?'flex':'none';
+    seedBar.style.display=isFarm?'flex':'none';
+    $('auto-bar').style.display=isFarm?'flex':'none';
+    $('day-bar').style.display=isFarm?'flex':'none';
+  });
+});
+
+// ===== START =====
+$('btn-start').addEventListener('click',function(){overlay.classList.add('hidden');init()});
+if(localStorage.getItem(SAVE_KEY)){overlay.classList.add('hidden');init()}
+</script>
+</body>
+</html>

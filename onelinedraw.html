@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>One Line Draw</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e1a;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,14,26,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(255,107,129,0.15);border:2px solid #ff6b81;border-radius:10px;color:#ff6b81;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#level-disp{color:#ffd93d;font-size:1.2rem;font-weight:bold}
+#score-disp{color:#ff6b81;font-size:1rem;font-weight:bold}
+canvas{display:block;margin-top:4px}
+#undo-btn{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);padding:10px 28px;background:rgba(255,107,129,0.12);border:2px solid #ff6b81;border-radius:10px;color:#ff6b81;font-size:1rem;font-weight:bold;z-index:5;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay{position:fixed;inset:0;background:rgba(10,14,26,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#ff6b81;margin-bottom:10px}
+#overlay p{color:#74b9ff;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(255,107,129,0.15);border:2px solid #ff6b81;border-radius:12px;color:#ff6b81;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#74b9ff;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="level-disp">Niveau 1</span>
+    <span id="score-disp">0 pts</span>
+</div>
+<canvas id="c"></canvas>
+<button id="undo-btn">↩ Annuler</button>
+<div id="overlay">
+    <h2 id="ovTitle">✏️ One Line Draw</h2>
+    <p id="ovMsg">Complète le motif d'un seul trait !<br>Touche un point de départ, puis trace sans lever le doigt.<br>Pas de retour en arrière !</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var levelEl=document.getElementById('level-disp'),scoreEl=document.getElementById('score-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+var undoBtn=document.getElementById('undo-btn');
+
+var W,H,TB=52;
+var nodes,edges,drawnEdges,path;
+var level,score,totalLevels,running;
+var NODE_R;
+
+function resize(){
+    W=window.innerWidth;H=window.innerHeight-TB-60;
+    canvas.width=W;canvas.height=H;
+    NODE_R=Math.max(14,W*0.04);
+}
+
+// Level generation — progressively harder graph puzzles
+function genLevel(lv){
+    var n,e;
+    if(lv<=3){n=4+lv;e=[];}
+    else if(lv<=6){n=6+lv-3;e=[];}
+    else{n=8+Math.min(lv-6,6);e=[];}
+
+    // Place nodes
+    nodes=[];
+    var cx=W/2,cy=H/2;
+    var rad=Math.min(W,H)*0.32;
+    for(var i=0;i<n;i++){
+        var angle=i*Math.PI*2/n-Math.PI/2;
+        var r=rad*(0.7+Math.random()*0.3);
+        nodes.push({x:cx+Math.cos(angle)*r,y:cy+Math.sin(angle)*r});
+    }
+    // Add center node for higher levels
+    if(lv>=3)nodes.push({x:cx+((Math.random()-0.5)*rad*0.3),y:cy+((Math.random()-0.5)*rad*0.3)});
+
+    // Create edges that form an Euler path
+    edges=[];
+    // Start with a ring
+    for(var i=0;i<n;i++)edges.push({a:i,b:(i+1)%n});
+    // Add extra edges for complexity
+    var extra=Math.min(lv,n);
+    for(var i=0;i<extra;i++){
+        var a=Math.floor(Math.random()*nodes.length);
+        var b=Math.floor(Math.random()*nodes.length);
+        if(a===b)continue;
+        var exists=false;
+        for(var j=0;j<edges.length;j++){
+            if((edges[j].a===a&&edges[j].b===b)||(edges[j].a===b&&edges[j].b===a)){exists=true;break;}
+        }
+        if(!exists)edges.push({a:a,b:b});
+    }
+
+    // Ensure Euler path exists (at most 2 odd-degree nodes)
+    ensureEuler();
+
+    drawnEdges=[];path=[];
+}
+
+function ensureEuler(){
+    // Count degree of each node
+    var deg=[];for(var i=0;i<nodes.length;i++)deg[i]=0;
+    for(var i=0;i<edges.length;i++){deg[edges[i].a]++;deg[edges[i].b]++;}
+    // Find odd-degree nodes
+    var odd=[];for(var i=0;i<nodes.length;i++)if(deg[i]%2!==0)odd.push(i);
+    // Need 0 or 2 odd nodes for Euler path
+    while(odd.length>2){
+        var a=odd.pop(),b=odd.pop();
+        var exists=false;
+        for(var j=0;j<edges.length;j++){
+            if((edges[j].a===a&&edges[j].b===b)||(edges[j].a===b&&edges[j].b===a)){exists=true;break;}
+        }
+        if(!exists)edges.push({a:a,b:b});
+        else{
+            // Remove the edge instead
+            for(var j=0;j<edges.length;j++){
+                if((edges[j].a===a&&edges[j].b===b)||(edges[j].a===b&&edges[j].b===a)){edges.splice(j,1);break;}
+            }
+        }
+    }
+}
+
+function getAdj(nodeIdx){
+    var adj=[];
+    for(var i=0;i<edges.length;i++){
+        if(edges[i].a===nodeIdx)adj.push({edge:i,node:edges[i].b});
+        if(edges[i].b===nodeIdx)adj.push({edge:i,node:edges[i].a});
+    }
+    return adj;
+}
+
+function isDrawn(edgeIdx){return drawnEdges.indexOf(edgeIdx)!==-1;}
+
+function findEdge(a,b){
+    for(var i=0;i<edges.length;i++){
+        if((edges[i].a===a&&edges[i].b===b)||(edges[i].a===b&&edges[i].b===a))return i;
+    }
+    return -1;
+}
+
+function startGame(){
+    resize();level=1;score=0;running=true;
+    genLevel(level);
+    overlay.classList.add('hidden');updateHUD();draw();
+}
+
+function nextLevel(){
+    level++;score+=edges.length*50;
+    genLevel(level);updateHUD();draw();
+}
+
+function updateHUD(){levelEl.textContent='Niveau '+level;scoreEl.textContent=score+' pts';}
+
+function tryNode(idx){
+    if(!running)return;
+    if(path.length===0){
+        path.push(idx);draw();return;
+    }
+    var last=path[path.length-1];
+    if(idx===last)return;
+    var ei=findEdge(last,idx);
+    if(ei===-1||isDrawn(ei))return;
+    drawnEdges.push(ei);
+    path.push(idx);
+    draw();
+    // Check win
+    if(drawnEdges.length===edges.length){
+        setTimeout(function(){
+            ovTitle.textContent='✏️ Bravo !';
+            ovMsg.textContent='Niveau '+level+' complété !';
+            ovScore.textContent='';
+            ovBtn.textContent='Niveau suivant';
+            overlay.classList.remove('hidden');
+        },300);
+    }
+}
+
+function undo(){
+    if(path.length<=1){path=[];drawnEdges=[];draw();return;}
+    path.pop();
+    if(drawnEdges.length>0)drawnEdges.pop();
+    draw();
+}
+
+function nodeAt(x,y){
+    for(var i=0;i<nodes.length;i++){
+        var dx=x-nodes[i].x,dy=y-nodes[i].y;
+        if(Math.sqrt(dx*dx+dy*dy)<NODE_R*2)return i;
+    }
+    return -1;
+}
+
+function draw(){
+    ctx.fillStyle='#0a0e1a';ctx.fillRect(0,0,W,H);
+    // Undrawn edges
+    ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=3;
+    for(var i=0;i<edges.length;i++){
+        if(isDrawn(i))continue;
+        var a=nodes[edges[i].a],b=nodes[edges[i].b];
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    }
+    // Drawn edges
+    ctx.strokeStyle='#ff6b81';ctx.lineWidth=4;ctx.shadowColor='#ff6b81';ctx.shadowBlur=10;
+    for(var i=0;i<drawnEdges.length;i++){
+        var e=edges[drawnEdges[i]];
+        var a=nodes[e.a],b=nodes[e.b];
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    }
+    ctx.shadowBlur=0;
+    // Nodes
+    for(var i=0;i<nodes.length;i++){
+        var n=nodes[i];
+        var inPath=path.indexOf(i)!==-1;
+        var isLast=path.length>0&&path[path.length-1]===i;
+        ctx.fillStyle=isLast?'#ffd93d':inPath?'#ff6b81':'#fff';
+        ctx.shadowColor=isLast?'#ffd93d':inPath?'#ff6b81':'#fff';
+        ctx.shadowBlur=isLast?14:8;
+        ctx.beginPath();ctx.arc(n.x,n.y,NODE_R*(isLast?1.2:1),0,Math.PI*2);ctx.fill();
+        ctx.shadowBlur=0;
+    }
+    // Progress
+    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='bold 14px sans-serif';ctx.textAlign='center';
+    ctx.fillText(drawnEdges.length+' / '+edges.length+' lignes',W/2,H-10);
+}
+
+canvas.addEventListener('touchstart',function(e){e.preventDefault();
+    var rect=canvas.getBoundingClientRect();
+    var idx=nodeAt(e.touches[0].clientX-rect.left,e.touches[0].clientY-rect.top);
+    if(idx>=0)tryNode(idx);
+},{passive:false});
+canvas.addEventListener('touchmove',function(e){e.preventDefault();
+    if(path.length===0)return;
+    var rect=canvas.getBoundingClientRect();
+    var idx=nodeAt(e.touches[0].clientX-rect.left,e.touches[0].clientY-rect.top);
+    if(idx>=0&&idx!==path[path.length-1])tryNode(idx);
+},{passive:false});
+canvas.addEventListener('click',function(e){
+    var rect=canvas.getBoundingClientRect();
+    var idx=nodeAt(e.clientX-rect.left,e.clientY-rect.top);
+    if(idx>=0)tryNode(idx);
+});
+
+undoBtn.addEventListener('click',undo);
+
+ovBtn.addEventListener('click',function(){
+    if(drawnEdges&&edges&&drawnEdges.length===edges.length){nextLevel();overlay.classList.add('hidden');}
+    else startGame();
+});
+
+window.addEventListener('resize',function(){resize();if(nodes)draw();});
+resize();
+</script>
+</body>
+</html>

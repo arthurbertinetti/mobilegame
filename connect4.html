@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Puissance 4</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e1a;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,14,26,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(255,107,129,0.15);border:2px solid #ff6b81;border-radius:10px;color:#ff6b81;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#status{color:#ffd93d;font-size:1.1rem;font-weight:bold;text-align:center;flex:1}
+canvas{display:block;margin-top:8px}
+#overlay{position:fixed;inset:0;background:rgba(10,14,26,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#ff6b81;margin-bottom:10px}
+#overlay p{color:#74b9ff;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:1.6rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(255,107,129,0.15);border:2px solid #ff6b81;border-radius:12px;color:#ff6b81;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#74b9ff;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="status">Ton tour</span>
+    <div style="width:40px"></div>
+</div>
+<canvas id="c"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">🔴🟡 Puissance 4</h2>
+    <p id="ovMsg">Aligne 4 jetons avant l'IA !<br>Touche une colonne pour jouer.</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var statusEl=document.getElementById('status');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var COLS=7,ROWS=6,CELL,BX,BY;
+var board,turn,running,gameResult,wins;
+
+function resize(){
+    var W=window.innerWidth,H=window.innerHeight-60;
+    CELL=Math.min(Math.floor(W/(COLS+0.5)),Math.floor(H/(ROWS+1.5)));
+    canvas.width=(COLS+0.5)*CELL;canvas.height=(ROWS+1.5)*CELL;
+    BX=CELL*0.25;BY=CELL*0.75;
+}
+
+function startGame(){
+    resize();
+    board=[];for(var r=0;r<ROWS;r++){board[r]=[];for(var c=0;c<COLS;c++)board[r][c]=0;}
+    turn=1;running=true;gameResult=null;wins=0;
+    overlay.classList.add('hidden');
+    statusEl.textContent='Ton tour 🔴';
+    draw();
+}
+
+function drop(col,player){
+    for(var r=ROWS-1;r>=0;r--){
+        if(board[r][col]===0){board[r][col]=player;return r;}
+    }
+    return -1;
+}
+
+function undrop(col){for(var r=0;r<ROWS;r++){if(board[r][col]!==0){board[r][col]=0;return;}}}
+
+function checkWin(p){
+    for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++){
+        if(c+3<COLS&&board[r][c]===p&&board[r][c+1]===p&&board[r][c+2]===p&&board[r][c+3]===p)return true;
+        if(r+3<ROWS&&board[r][c]===p&&board[r+1][c]===p&&board[r+2][c]===p&&board[r+3][c]===p)return true;
+        if(r+3<ROWS&&c+3<COLS&&board[r][c]===p&&board[r+1][c+1]===p&&board[r+2][c+2]===p&&board[r+3][c+3]===p)return true;
+        if(r+3<ROWS&&c-3>=0&&board[r][c]===p&&board[r+1][c-1]===p&&board[r+2][c-2]===p&&board[r+3][c-3]===p)return true;
+    }
+    return false;
+}
+
+function isFull(){for(var c=0;c<COLS;c++)if(board[0][c]===0)return false;return true;}
+
+function evalBoard(){
+    var sc=0;
+    function evalLine(cells){
+        var p1=0,p2=0,empty=0;
+        for(var i=0;i<cells.length;i++){if(cells[i]===1)p1++;else if(cells[i]===2)p2++;else empty++;}
+        if(p1>0&&p2>0)return 0;
+        if(p2===4)return 10000;if(p2===3&&empty===1)return 50;if(p2===2&&empty===2)return 5;
+        if(p1===4)return -10000;if(p1===3&&empty===1)return -40;if(p1===2&&empty===2)return -3;
+        return 0;
+    }
+    for(var r=0;r<ROWS;r++)for(var c=0;c<=COLS-4;c++){sc+=evalLine([board[r][c],board[r][c+1],board[r][c+2],board[r][c+3]]);}
+    for(var c=0;c<COLS;c++)for(var r=0;r<=ROWS-4;r++){sc+=evalLine([board[r][c],board[r+1][c],board[r+2][c],board[r+3][c]]);}
+    for(var r=0;r<=ROWS-4;r++)for(var c=0;c<=COLS-4;c++){sc+=evalLine([board[r][c],board[r+1][c+1],board[r+2][c+2],board[r+3][c+3]]);}
+    for(var r=0;r<=ROWS-4;r++)for(var c=3;c<COLS;c++){sc+=evalLine([board[r][c],board[r+1][c-1],board[r+2][c-2],board[r+3][c-3]]);}
+    // Center column preference
+    for(var r=0;r<ROWS;r++){if(board[r][3]===2)sc+=3;if(board[r][3]===1)sc-=3;}
+    return sc;
+}
+
+function minimax(depth,alpha,beta,maximizing){
+    if(checkWin(2))return 100000-depth;
+    if(checkWin(1))return -100000+depth;
+    if(isFull()||depth===0)return evalBoard();
+    if(maximizing){
+        var best=-Infinity;
+        for(var c=0;c<COLS;c++){
+            if(board[0][c]!==0)continue;
+            drop(c,2);best=Math.max(best,minimax(depth-1,alpha,beta,false));undrop(c);
+            alpha=Math.max(alpha,best);if(alpha>=beta)break;
+        }
+        return best;
+    } else {
+        var best=Infinity;
+        for(var c=0;c<COLS;c++){
+            if(board[0][c]!==0)continue;
+            drop(c,1);best=Math.min(best,minimax(depth-1,alpha,beta,true));undrop(c);
+            beta=Math.min(beta,best);if(alpha>=beta)break;
+        }
+        return best;
+    }
+}
+
+function aiMove(){
+    var bestS=-Infinity,bestC=3;
+    var order=[3,2,4,1,5,0,6];
+    for(var i=0;i<order.length;i++){
+        var c=order[i];if(board[0][c]!==0)continue;
+        drop(c,2);var s=minimax(5,-Infinity,Infinity,false);undrop(c);
+        if(s>bestS){bestS=s;bestC=c;}
+    }
+    return bestC;
+}
+
+function playCol(col){
+    if(!running||turn!==1||board[0][col]!==0)return;
+    drop(col,1);draw();
+    if(checkWin(1)){endGame('Victoire ! 🎉');return;}
+    if(isFull()){endGame('Égalité !');return;}
+    turn=2;statusEl.textContent='IA réfléchit... 🟡';
+    setTimeout(function(){
+        var ac=aiMove();drop(ac,2);draw();
+        if(checkWin(2)){endGame('L\'IA gagne ! 😤');return;}
+        if(isFull()){endGame('Égalité !');return;}
+        turn=1;statusEl.textContent='Ton tour 🔴';
+    },300);
+}
+
+function endGame(msg){
+    running=false;statusEl.textContent=msg;
+    var sc=checkWin(1)?1000:checkWin(2)?0:500;
+    ovTitle.textContent='🔴🟡 Puissance 4';
+    ovMsg.textContent=msg;
+    ovScore.textContent=sc>0?sc+' pts':'';
+    ovBtn.textContent='Rejouer';
+    setTimeout(function(){overlay.classList.remove('hidden');},600);
+    if(sc>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('connect4',sc,n);}
+}
+
+function draw(){
+    var cw=canvas.width,ch=canvas.height;
+    ctx.fillStyle='#0a0e1a';ctx.fillRect(0,0,cw,ch);
+    // Board
+    ctx.fillStyle='#1a3a8a';
+    ctx.beginPath();ctx.roundRect(BX,BY,COLS*CELL,ROWS*CELL,12);ctx.fill();
+    for(var r=0;r<ROWS;r++){for(var c=0;c<COLS;c++){
+        var cx=BX+c*CELL+CELL/2,cy=BY+r*CELL+CELL/2;
+        ctx.fillStyle=board[r][c]===1?'#e74c3c':board[r][c]===2?'#ffd93d':'#0a0e1a';
+        ctx.shadowColor=board[r][c]===1?'#e74c3c':board[r][c]===2?'#ffd93d':'transparent';
+        ctx.shadowBlur=board[r][c]?8:0;
+        ctx.beginPath();ctx.arc(cx,cy,CELL*0.38,0,Math.PI*2);ctx.fill();
+        ctx.shadowBlur=0;
+    }}
+}
+
+canvas.addEventListener('touchstart',function(e){e.preventDefault();
+    var rect=canvas.getBoundingClientRect();
+    var mx=e.touches[0].clientX-rect.left;
+    var col=Math.floor((mx-BX)/CELL);
+    if(col>=0&&col<COLS)playCol(col);
+},{passive:false});
+canvas.addEventListener('click',function(e){
+    var rect=canvas.getBoundingClientRect();
+    var col=Math.floor((e.clientX-rect.left-BX)/CELL);
+    if(col>=0&&col<COLS)playCol(col);
+});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(board)draw();});
+resize();
+</script>
+</body>
+</html>

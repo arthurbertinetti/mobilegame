@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Pool Club</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a3d0a;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;font-family:'Segoe UI',Arial,sans-serif;height:100dvh;display:flex;flex-direction:column;align-items:center}
+#top-bar{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(10,61,10,0.95);z-index:10}
+.top-btn{width:40px;height:40px;background:rgba(255,217,61,0.15);border:2px solid #ffd93d;border-radius:10px;color:#ffd93d;font-size:1.3rem;display:flex;align-items:center;justify-content:center;text-decoration:none;-webkit-tap-highlight-color:transparent}
+#score-disp{color:#ffd93d;font-size:1.2rem;font-weight:bold}
+#timer-disp{color:#ff6b81;font-size:1.2rem;font-weight:bold}
+#combo-disp{color:#74b9ff;font-size:0.9rem;font-weight:bold}
+canvas{display:block}
+#overlay{position:fixed;inset:0;background:rgba(5,30,5,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+#overlay.hidden{display:none}
+#overlay h2{font-size:2rem;color:#ffd93d;margin-bottom:10px}
+#overlay p{color:#8bc34a;font-size:1rem;margin-bottom:5px;line-height:1.5}
+.ov-score{font-size:2rem;color:#ffd93d;margin:12px 0}
+#overlay button{margin-top:14px;padding:14px 40px;font-size:1.2rem;background:rgba(255,217,61,0.15);border:2px solid #ffd93d;border-radius:12px;color:#ffd93d;font-weight:bold;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay a{display:inline-block;margin-top:14px;color:#8bc34a;font-size:0.95rem;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="top-bar">
+    <a href="index.html" class="top-btn">🏠</a>
+    <span id="score-disp">0 pts</span>
+    <span id="combo-disp"></span>
+    <span id="timer-disp">90 s.</span>
+</div>
+<canvas id="c"></canvas>
+<div id="overlay">
+    <h2 id="ovTitle">🎱 Pool Club</h2>
+    <p id="ovMsg">Enfonce toutes les billes en 90 secondes !<br>Glisse depuis la bille blanche pour viser et tirer.<br>Chaque bille empochée = +5 sec.<br>Combo = secondes bonus supplémentaires !</p>
+    <div class="ov-score" id="ovScore"></div>
+    <button id="ovBtn">Jouer !</button>
+    <a href="index.html">← Menu</a>
+</div>
+<script src="leaderboard.js"></script>
+<script>
+var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
+var scoreEl=document.getElementById('score-disp'),timerEl=document.getElementById('timer-disp'),comboEl=document.getElementById('combo-disp');
+var overlay=document.getElementById('overlay'),ovTitle=document.getElementById('ovTitle'),ovMsg=document.getElementById('ovMsg'),ovScore=document.getElementById('ovScore'),ovBtn=document.getElementById('ovBtn');
+
+var W,H,TB=52,TW,TH,TX,TY,BR;
+var balls,cue,pockets,score,timeLeft,combo,lastPocket,running,animId,lastTick;
+var dragging=false,dragX,dragY,aimX,aimY;
+var FRICTION=0.985,MIN_VEL=0.15;
+var BALL_COLORS=['#ffd93d','#3498db','#e74c3c','#8e44ad','#f39c12','#27ae60','#c0392b','#111',
+                 '#ffd93d','#3498db','#e74c3c','#8e44ad','#f39c12','#27ae60','#c0392b'];
+var STRIPE_START=8;
+
+function resize(){
+    W=window.innerWidth;H=window.innerHeight-TB;
+    canvas.width=W;canvas.height=H;
+    BR=Math.max(8,Math.min(W,H)*0.022);
+    var pad=BR*4;
+    if(W<H){TW=W-pad*2;TH=TW*1.8;if(TH>H-pad*2){TH=H-pad*2;TW=TH/1.8;}}
+    else{TH=H-pad*2;TW=TH/1.8;if(TW>W-pad*2){TW=W-pad*2;TH=TW*1.8;}}
+    TX=(W-TW)/2;TY=(H-TH)/2;
+    pockets=[{x:TX,y:TY},{x:TX+TW/2,y:TY},{x:TX+TW,y:TY},{x:TX,y:TY+TH},{x:TX+TW/2,y:TY+TH},{x:TX+TW,y:TY+TH}];
+}
+
+function rackBalls(){
+    balls=[];
+    var cx=TX+TW/2,sy=TY+TH*0.3;
+    balls.push({x:cx,y:TY+TH*0.75,vx:0,vy:0,color:'#fff',r:BR,id:-1,pocketed:false,stripe:false});
+    var order=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+    // Shuffle
+    for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}
+    var idx=0;
+    for(var row=0;row<5;row++){
+        for(var col=0;col<=row;col++){
+            if(idx>=15)break;
+            var bx=cx+(col-row/2)*BR*2.15;
+            var by=sy+row*BR*1.85;
+            var bi=order[idx];
+            balls.push({x:bx,y:by,vx:0,vy:0,color:BALL_COLORS[bi],r:BR,id:bi,pocketed:false,stripe:bi>=STRIPE_START});
+            idx++;
+        }
+    }
+}
+
+function startGame(){
+    resize();score=0;timeLeft=90;combo=0;lastPocket=0;running=true;lastTick=Date.now();
+    rackBalls();
+    overlay.classList.add('hidden');updateHUD();
+    if(animId)cancelAnimationFrame(animId);loop();
+}
+
+function updateHUD(){
+    scoreEl.textContent=score+' pts';
+    timerEl.textContent=Math.max(0,Math.ceil(timeLeft))+' s.';
+    comboEl.textContent=combo>1?'Combo x'+combo:'';
+}
+
+function isMoving(){
+    for(var i=0;i<balls.length;i++){
+        if(balls[i].pocketed)continue;
+        if(Math.abs(balls[i].vx)>MIN_VEL||Math.abs(balls[i].vy)>MIN_VEL)return true;
+    }
+    return false;
+}
+
+function physics(){
+    var pocketed=0;
+    for(var i=0;i<balls.length;i++){
+        var b=balls[i];if(b.pocketed)continue;
+        b.x+=b.vx;b.y+=b.vy;b.vx*=FRICTION;b.vy*=FRICTION;
+        if(Math.abs(b.vx)<MIN_VEL*0.5)b.vx=0;
+        if(Math.abs(b.vy)<MIN_VEL*0.5)b.vy=0;
+        // Walls
+        if(b.x-b.r<TX){b.x=TX+b.r;b.vx*=-0.8;}
+        if(b.x+b.r>TX+TW){b.x=TX+TW-b.r;b.vx*=-0.8;}
+        if(b.y-b.r<TY){b.y=TY+b.r;b.vy*=-0.8;}
+        if(b.y+b.r>TY+TH){b.y=TY+TH-b.r;b.vy*=-0.8;}
+        // Pockets
+        for(var p=0;p<pockets.length;p++){
+            var dx=b.x-pockets[p].x,dy=b.y-pockets[p].y;
+            if(Math.sqrt(dx*dx+dy*dy)<BR*2.5){
+                b.pocketed=true;b.vx=0;b.vy=0;
+                if(b.id===-1){
+                    // Cue ball - reset
+                    setTimeout(function(){b.pocketed=false;b.x=TX+TW/2;b.y=TY+TH*0.75;},500);
+                    combo=0;
+                } else {
+                    pocketed++;
+                }
+            }
+        }
+    }
+    if(pocketed>0){
+        if(Date.now()-lastPocket<3000)combo++;else combo=1;
+        lastPocket=Date.now();
+        var bonus=pocketed*5+Math.max(0,(combo-1)*3);
+        timeLeft+=bonus;
+        score+=pocketed*100*(combo>1?combo:1);
+        updateHUD();
+        // Check if all pocketed
+        var remaining=0;
+        for(var i=0;i<balls.length;i++)if(balls[i].id>=0&&!balls[i].pocketed)remaining++;
+        if(remaining===0){score+=500;rackBalls();updateHUD();}
+    }
+    // Ball-ball collisions
+    for(var i=0;i<balls.length;i++){
+        if(balls[i].pocketed)continue;
+        for(var j=i+1;j<balls.length;j++){
+            if(balls[j].pocketed)continue;
+            var a=balls[i],b2=balls[j];
+            var dx=b2.x-a.x,dy=b2.y-a.y;
+            var dist=Math.sqrt(dx*dx+dy*dy);
+            if(dist<a.r+b2.r&&dist>0){
+                var nx=dx/dist,ny=dy/dist;
+                var overlap=(a.r+b2.r-dist)/2;
+                a.x-=nx*overlap;a.y-=ny*overlap;
+                b2.x+=nx*overlap;b2.y+=ny*overlap;
+                var dvx=a.vx-b2.vx,dvy=a.vy-b2.vy;
+                var dvn=dvx*nx+dvy*ny;
+                if(dvn>0){a.vx-=dvn*nx;a.vy-=dvn*ny;b2.vx+=dvn*nx;b2.vy+=dvn*ny;}
+            }
+        }
+    }
+}
+
+function draw(){
+    ctx.fillStyle='#0a3d0a';ctx.fillRect(0,0,W,H);
+    // Table
+    ctx.fillStyle='#1a6e1a';
+    ctx.beginPath();ctx.roundRect(TX-BR*2,TY-BR*2,TW+BR*4,TH+BR*4,BR*2);ctx.fill();
+    ctx.fillStyle='#0d5e0d';
+    ctx.fillRect(TX,TY,TW,TH);
+    // Rails
+    ctx.strokeStyle='#5a3a1a';ctx.lineWidth=BR*2;
+    ctx.beginPath();ctx.roundRect(TX-BR,TY-BR,TW+BR*2,TH+BR*2,BR);ctx.stroke();
+    // Pockets
+    for(var i=0;i<pockets.length;i++){
+        ctx.fillStyle='#111';
+        ctx.beginPath();ctx.arc(pockets[i].x,pockets[i].y,BR*2.3,0,Math.PI*2);ctx.fill();
+    }
+    // Balls
+    for(var i=0;i<balls.length;i++){
+        var b=balls[i];if(b.pocketed)continue;
+        ctx.fillStyle=b.color;ctx.shadowColor=b.color;ctx.shadowBlur=4;
+        ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fill();
+        ctx.shadowBlur=0;
+        if(b.stripe){
+            ctx.fillStyle='#fff';
+            ctx.beginPath();ctx.arc(b.x,b.y,b.r*0.55,0,Math.PI*2);ctx.fill();
+            ctx.fillStyle=b.color;
+            ctx.beginPath();ctx.arc(b.x,b.y,b.r*0.35,0,Math.PI*2);ctx.fill();
+        }
+        if(b.id===-1){
+            ctx.fillStyle='rgba(255,255,255,0.25)';
+            ctx.beginPath();ctx.arc(b.x-b.r*0.25,b.y-b.r*0.25,b.r*0.3,0,Math.PI*2);ctx.fill();
+        }
+    }
+    // Aim line
+    if(dragging&&!isMoving()){
+        var cb=balls[0];
+        ctx.strokeStyle='rgba(255,255,255,0.35)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+        ctx.beginPath();ctx.moveTo(cb.x,cb.y);
+        var dx=cb.x-aimX,dy=cb.y-aimY;
+        ctx.lineTo(cb.x+dx*3,cb.y+dy*3);ctx.stroke();
+        ctx.setLineDash([]);
+    }
+}
+
+function loop(){
+    if(!running)return;
+    var now=Date.now();
+    if(now-lastTick>=1000){timeLeft--;lastTick+=1000;updateHUD();if(timeLeft<=0){gameOver();return;}}
+    physics();draw();animId=requestAnimationFrame(loop);
+}
+
+function gameOver(){
+    running=false;
+    ovTitle.textContent='🎱 Temps écoulé !';
+    ovMsg.textContent='Combo max : x'+combo;
+    ovScore.textContent=score+' pts';
+    ovBtn.textContent='Rejouer';
+    overlay.classList.remove('hidden');
+    if(score>0){var n=Leaderboard.promptName();if(n)Leaderboard.add('poolclub',score,n);}
+}
+
+canvas.addEventListener('touchstart',function(e){e.preventDefault();
+    if(isMoving()||!running)return;
+    var t=e.touches[0],rect=canvas.getBoundingClientRect();
+    var mx=t.clientX-rect.left,my=t.clientY-rect.top;
+    var cb=balls[0];if(cb.pocketed)return;
+    var dx=mx-cb.x,dy=my-cb.y;
+    if(Math.sqrt(dx*dx+dy*dy)<BR*5){dragging=true;aimX=mx;aimY=my;}
+},{passive:false});
+canvas.addEventListener('touchmove',function(e){e.preventDefault();
+    if(!dragging)return;
+    var t=e.touches[0],rect=canvas.getBoundingClientRect();
+    aimX=t.clientX-rect.left;aimY=t.clientY-rect.top;
+},{passive:false});
+canvas.addEventListener('touchend',function(e){e.preventDefault();
+    if(!dragging)return;dragging=false;
+    var cb=balls[0];var dx=cb.x-aimX,dy=cb.y-aimY;
+    var dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<10)return;
+    var power=Math.min(dist/8,18);
+    cb.vx=dx/dist*power;cb.vy=dy/dist*power;
+},{passive:false});
+
+ovBtn.addEventListener('click',startGame);
+window.addEventListener('resize',function(){resize();if(running)draw();});
+resize();
+</script>
+</body>
+</html>
