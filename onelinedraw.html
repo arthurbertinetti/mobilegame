@@ -55,45 +55,148 @@ function resize(){
     NODE_R=Math.max(14,W*0.04);
 }
 
-// Level generation — progressively harder graph puzzles
+// ---- Predefined shape templates (coordinates normalized 0-1) ----
+var SHAPES_EASY=[
+    // Triangle simple
+    {name:'Triangle',pts:[[.5,0],[0,1],[1,1]],ed:[[0,1],[1,2],[2,0]]},
+    // Carré
+    {name:'Carré',pts:[[0,0],[1,0],[1,1],[0,1]],ed:[[0,1],[1,2],[2,3],[3,0],[0,2]]},
+    // Losange
+    {name:'Losange',pts:[[.5,0],[1,.5],[.5,1],[0,.5]],ed:[[0,1],[1,2],[2,3],[3,0]]},
+    // Flèche
+    {name:'Flèche',pts:[[.5,0],[1,.4],[.7,.4],[.7,1],[.3,1],[.3,.4],[0,.4]],ed:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,0]]},
+    // Sablier
+    {name:'Sablier',pts:[[0,0],[1,0],[.5,.5],[0,1],[1,1]],ed:[[0,1],[1,2],[2,0],[2,3],[3,4],[4,2]]}
+];
+var SHAPES_MEDIUM=[
+    // Maison
+    {name:'Maison',pts:[[.5,0],[0,.4],[1,.4],[1,1],[0,1]],ed:[[0,1],[0,2],[1,2],[1,4],[2,3],[3,4],[1,3]]},
+    // Étoile
+    {name:'Étoile',pts:[[.5,0],[.62,.38],[1,.38],[.69,.6],[.81,1],[.5,.75],[.19,1],[.31,.6],[0,.38],[.38,.38]],ed:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,0]]},
+    // Papillon
+    {name:'Papillon',pts:[[.5,.5],[0,0],[1,0],[1,1],[0,1]],ed:[[0,1],[1,2],[2,0],[0,3],[3,4],[4,0]]},
+    // Enveloppe
+    {name:'Enveloppe',pts:[[0,0],[1,0],[1,1],[0,1],[.5,.5]],ed:[[0,1],[1,2],[2,3],[3,0],[0,4],[4,1],[3,4],[4,2]]},
+    // Poisson
+    {name:'Poisson',pts:[[0,.5],[.3,.15],[.6,.05],[.8,.25],[.95,.5],[.8,.75],[.6,.95],[.3,.85],[.5,.5]],ed:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0],[1,8],[8,7],[2,8],[8,6],[3,8],[8,5]]},
+    // Cerf-volant
+    {name:'Cerf-volant',pts:[[.5,0],[.85,.35],[.5,.6],[.15,.35],[.5,1]],ed:[[0,1],[1,2],[2,3],[3,0],[2,4],[0,2]]},
+    // Bateau
+    {name:'Bateau',pts:[[.2,.55],[.8,.55],[.6,1],[.4,1],[.5,.55],[.5,0],[.85,.55]],ed:[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,4],[0,4]]}
+];
+var SHAPES_HARD=[
+    // Château
+    {name:'Château',pts:[[0,1],[0,.5],[.15,.5],[.15,.35],[.25,.35],[.25,.5],[.4,.5],[.4,.2],[.5,0],[.6,.2],[.6,.5],[.75,.5],[.75,.35],[.85,.35],[.85,.5],[1,.5],[1,1],[.65,1],[.65,.7],[.35,.7],[.35,1]],
+     ed:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,20],[20,0]]},
+    // Sapin
+    {name:'Sapin',pts:[[.5,0],[.2,.3],[.35,.3],[.1,.6],[.3,.6],[.05,.9],[.95,.9],[.7,.6],[.9,.6],[.65,.3],[.8,.3],[.45,.9],[.55,.9],[.45,1],[.55,1]],
+     ed:[[0,1],[0,10],[1,2],[2,0],[10,9],[9,0],[2,3],[3,4],[4,2],[9,8],[8,7],[7,9],[4,5],[5,6],[6,7],[7,4],[5,11],[11,13],[13,14],[14,12],[12,6]]},
+    // Fusée
+    {name:'Fusée',pts:[[.5,0],[.35,.25],[.65,.25],[.35,.7],[.65,.7],[.2,.9],[.35,.9],[.65,.9],[.8,.9],[.5,1],[.5,.5]],
+     ed:[[0,1],[0,2],[1,2],[1,3],[2,4],[3,4],[3,6],[4,7],[5,6],[5,3],[7,8],[6,7],[6,9],[9,7],[3,10],[10,4]]},
+    // Couronne
+    {name:'Couronne',pts:[[0,.9],[0,.5],[.2,.15],[.35,.5],[.5,.1],[.65,.5],[.8,.15],[1,.5],[1,.9]],
+     ed:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,0],[1,3],[3,5],[5,7]]},
+    // Diamant complexe
+    {name:'Diamant',pts:[[.5,0],[.2,.3],[.8,.3],[.5,.3],[0,.5],[1,.5],[.5,1]],
+     ed:[[0,1],[0,2],[1,4],[2,5],[4,6],[5,6],[1,3],[3,2],[4,3],[3,5],[1,2]]},
+    // Papillon complexe
+    {name:'Papillon XL',pts:[[.5,.5],[.15,.1],[.85,.1],[.85,.9],[.15,.9],[0,.5],[1,.5],[.15,.5],[.85,.5]],
+     ed:[[0,1],[0,2],[0,3],[0,4],[1,5],[5,4],[4,3],[3,6],[6,2],[2,1],[1,7],[7,4],[2,8],[8,3],[5,7],[6,8]]},
+    // Étoile de David
+    {name:'Étoile de David',pts:[[.5,.05],[.22,.45],[.78,.45],[.5,.95],[.22,.55],[.78,.55],[.5,.32],[.35,.58],[.65,.58]],
+     ed:[[0,1],[1,2],[2,0],[3,4],[4,5],[5,3],[0,6],[6,1],[1,7],[7,3],[3,8],[8,2],[2,6],[4,7],[5,8],[6,7],[7,8],[8,6]]}
+];
+
+// Boss levels (every 5) — complex shapes with many edges
+var SHAPES_BOSS=[
+    // Cathédrale
+    {name:'Cathédrale',pts:[[.5,0],[.35,.15],[.65,.15],[.2,.3],[.8,.3],[.2,.65],[.8,.65],[.35,.65],[.65,.65],[0,.85],[1,.85],[0,1],[1,1],[.35,.85],[.65,.85],[.35,1],[.65,1],[.5,.45]],
+     ed:[[0,1],[0,2],[1,2],[1,3],[2,4],[3,4],[3,5],[4,6],[5,7],[7,8],[8,6],[5,9],[6,10],[9,11],[10,12],[11,15],[12,16],[15,16],[13,14],[9,13],[10,14],[13,15],[14,16],[5,6],[7,17],[17,8],[1,17],[2,17]]},
+    // Phénix
+    {name:'Phénix',pts:[[.5,.05],[.35,.2],[.65,.2],[.2,.35],[.8,.35],[.5,.35],[.1,.55],[.9,.55],[.3,.55],[.7,.55],[.05,.8],[.95,.8],[.15,.95],[.85,.95],[.5,.65],[.35,.8],[.65,.8]],
+     ed:[[0,1],[0,2],[1,3],[2,4],[1,5],[5,2],[3,6],[4,7],[3,8],[4,9],[6,10],[7,11],[10,12],[11,13],[8,14],[14,9],[6,8],[9,7],[14,15],[14,16],[15,10],[16,11],[12,15],[13,16],[5,14],[8,15],[9,16]]},
+    // Ancre marine
+    {name:'Ancre',pts:[[.5,0],[.35,.1],[.65,.1],[.5,.15],[.5,.55],[.25,.75],[.75,.75],[.1,.6],[.9,.6],[.15,.85],[.85,.85],[.3,.55],[.7,.55],[.5,.35],[.35,.35],[.65,.35]],
+     ed:[[0,1],[0,2],[1,3],[3,2],[3,13],[13,4],[4,5],[4,6],[5,7],[7,9],[6,8],[8,10],[5,11],[6,12],[11,4],[12,4],[9,5],[10,6],[13,14],[14,11],[13,15],[15,12],[1,14],[2,15]]},
+    // Dragon
+    {name:'Dragon',pts:[[.1,.5],[.25,.3],[.4,.25],[.55,.3],[.65,.2],[.8,.25],[.9,.4],[.95,.55],[.85,.65],[.7,.6],[.55,.55],[.4,.5],[.3,.55],[.2,.65],[.1,.7],[.5,.45],[.7,.4]],
+     ed:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,0],[1,11],[2,15],[15,3],[5,16],[16,9],[11,15],[15,10],[6,16],[16,10],[0,12],[13,1]]},
+    // Château fort
+    {name:'Forteresse',pts:[[.1,1],[.1,.55],[.2,.55],[.2,.45],[.3,.45],[.3,.55],[.4,.55],[.4,.3],[.5,.1],[.6,.3],[.6,.55],[.7,.55],[.7,.45],[.8,.45],[.8,.55],[.9,.55],[.9,1],[.45,1],[.55,1],[.45,.75],[.55,.75],[.35,1],[.65,1]],
+     ed:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,22],[22,18],[18,20],[20,19],[19,17],[17,21],[21,0],[7,10],[19,20],[17,18]]}
+];
+
+function pickShape(lv){
+    var isBoss=(lv%10===0);
+    var isHard=(lv%5===0&&!isBoss);
+    if(isBoss)return SHAPES_BOSS[(Math.floor(lv/10)-1)%SHAPES_BOSS.length];
+    if(isHard)return SHAPES_HARD[(Math.floor(lv/5)-1)%SHAPES_HARD.length];
+    if(lv<=3)return SHAPES_EASY[(lv-1)%SHAPES_EASY.length];
+    if(lv<=8)return SHAPES_MEDIUM[(lv-4)%SHAPES_MEDIUM.length];
+    // Cycle through easy and medium
+    var pool=SHAPES_EASY.concat(SHAPES_MEDIUM);
+    return pool[(lv-9)%pool.length];
+}
+
+// Level generation — themed shapes with boss every 5
 function genLevel(lv){
-    var n,e;
-    if(lv<=3){n=4+lv;e=[];}
-    else if(lv<=6){n=6+lv-3;e=[];}
-    else{n=8+Math.min(lv-6,6);e=[];}
-
-    // Place nodes
-    nodes=[];
+    var shape=pickShape(lv);
     var cx=W/2,cy=H/2;
-    var rad=Math.min(W,H)*0.32;
-    for(var i=0;i<n;i++){
-        var angle=i*Math.PI*2/n-Math.PI/2;
-        var r=rad*(0.7+Math.random()*0.3);
-        nodes.push({x:cx+Math.cos(angle)*r,y:cy+Math.sin(angle)*r});
-    }
-    // Add center node for higher levels
-    if(lv>=3)nodes.push({x:cx+((Math.random()-0.5)*rad*0.3),y:cy+((Math.random()-0.5)*rad*0.3)});
+    var s=Math.min(W,H)*0.38;
 
-    // Create edges that form an Euler path
+    // Center the shape
+    var minX=1,maxX=0,minY=1,maxY=0;
+    for(var i=0;i<shape.pts.length;i++){
+        if(shape.pts[i][0]<minX)minX=shape.pts[i][0];
+        if(shape.pts[i][0]>maxX)maxX=shape.pts[i][0];
+        if(shape.pts[i][1]<minY)minY=shape.pts[i][1];
+        if(shape.pts[i][1]>maxY)maxY=shape.pts[i][1];
+    }
+    var sw=maxX-minX||1,sh=maxY-minY||1;
+    var scale=s*2/Math.max(sw,sh);
+
+    nodes=[];
+    for(var i=0;i<shape.pts.length;i++){
+        var px=(shape.pts[i][0]-(minX+sw/2))*scale+cx;
+        var py=(shape.pts[i][1]-(minY+sh/2))*scale+cy;
+        nodes.push({x:px,y:py});
+    }
     edges=[];
-    // Start with a ring
-    for(var i=0;i<n;i++)edges.push({a:i,b:(i+1)%n});
-    // Add extra edges for complexity
-    var extra=Math.min(lv,n);
-    for(var i=0;i<extra;i++){
-        var a=Math.floor(Math.random()*nodes.length);
-        var b=Math.floor(Math.random()*nodes.length);
-        if(a===b)continue;
-        var exists=false;
-        for(var j=0;j<edges.length;j++){
-            if((edges[j].a===a&&edges[j].b===b)||(edges[j].a===b&&edges[j].b===a)){exists=true;break;}
-        }
-        if(!exists)edges.push({a:a,b:b});
+    for(var i=0;i<shape.ed.length;i++){
+        edges.push({a:shape.ed[i][0],b:shape.ed[i][1]});
     }
 
-    // Ensure Euler path exists (at most 2 odd-degree nodes)
-    ensureEuler();
+    // Deduplicate edges
+    var seen={};
+    var unique=[];
+    for(var i=0;i<edges.length;i++){
+        var ka=Math.min(edges[i].a,edges[i].b),kb=Math.max(edges[i].a,edges[i].b);
+        var key=ka+'-'+kb;
+        if(!seen[key]){seen[key]=true;unique.push(edges[i]);}
+    }
+    edges=unique;
 
+    // Ensure connectivity (BFS from node 0, connect components)
+    var visited=[];for(var i=0;i<nodes.length;i++)visited[i]=false;
+    var queue=[0];visited[0]=true;
+    while(queue.length>0){
+        var cur=queue.shift();
+        for(var i=0;i<edges.length;i++){
+            var nb=-1;
+            if(edges[i].a===cur)nb=edges[i].b;
+            if(edges[i].b===cur)nb=edges[i].a;
+            if(nb>=0&&!visited[nb]){visited[nb]=true;queue.push(nb);}
+        }
+    }
+    for(var i=1;i<nodes.length;i++){
+        if(!visited[i]){
+            edges.push({a:0,b:i});
+            visited[i]=true;
+        }
+    }
+
+    ensureEuler();
     drawnEdges=[];path=[];
 }
 
@@ -145,11 +248,20 @@ function startGame(){
 }
 
 function nextLevel(){
-    level++;score+=edges.length*50;
+    var isBoss=(level%10===0);
+    var isHard=(level%5===0&&!isBoss);
+    score+=edges.length*50+(isBoss?1000:isHard?500:0);
+    level++;
     genLevel(level);updateHUD();draw();
 }
 
-function updateHUD(){levelEl.textContent='Niveau '+level;scoreEl.textContent=score+' pts';}
+function updateHUD(){
+    var isBoss=(level%10===0);
+    var isHard=(level%5===0&&!isBoss);
+    levelEl.textContent=(isBoss?'👑 BOSS ':isHard?'⭐ DIFFICILE ':'')+'Niveau '+level;
+    levelEl.style.color=isBoss?'#ff6b81':isHard?'#ff9f43':'#ffd93d';
+    scoreEl.textContent=score+' pts';
+}
 
 function tryNode(idx){
     if(!running)return;
@@ -165,9 +277,12 @@ function tryNode(idx){
     draw();
     // Check win
     if(drawnEdges.length===edges.length){
+        var isBoss=(level%10===0);
+        var isHard=(level%5===0&&!isBoss);
+        var shapeName=pickShape(level).name;
         setTimeout(function(){
-            ovTitle.textContent='✏️ Bravo !';
-            ovMsg.textContent='Niveau '+level+' complété !';
+            ovTitle.textContent=isBoss?'🏆 Boss vaincu !':isHard?'⭐ Bien joué !':'✏️ Bravo !';
+            ovMsg.textContent=shapeName+' — Niveau '+level+' complété !'+(isBoss?'\n+1000 bonus !':isHard?'\n+500 bonus !':'');
             ovScore.textContent='';
             ovBtn.textContent='Niveau suivant';
             overlay.classList.remove('hidden');
@@ -192,15 +307,32 @@ function nodeAt(x,y){
 
 function draw(){
     ctx.fillStyle='#0a0e1a';ctx.fillRect(0,0,W,H);
-    // Undrawn edges
-    ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=3;
+    // Undrawn edges — outer glow
+    ctx.strokeStyle='rgba(116,185,255,0.25)';ctx.lineWidth=10;ctx.lineCap='round';
     for(var i=0;i<edges.length;i++){
         if(isDrawn(i))continue;
         var a=nodes[edges[i].a],b=nodes[edges[i].b];
         ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
     }
+    // Undrawn edges — main line
+    ctx.strokeStyle='rgba(116,185,255,0.55)';ctx.lineWidth=4;ctx.lineCap='round';
+    ctx.shadowColor='#74b9ff';ctx.shadowBlur=6;
+    for(var i=0;i<edges.length;i++){
+        if(isDrawn(i))continue;
+        var a=nodes[edges[i].a],b=nodes[edges[i].b];
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    }
+    ctx.shadowBlur=0;
+    // Undrawn edges — dashed center highlight
+    ctx.strokeStyle='rgba(200,230,255,0.35)';ctx.lineWidth=2;ctx.setLineDash([8,8]);
+    for(var i=0;i<edges.length;i++){
+        if(isDrawn(i))continue;
+        var a=nodes[edges[i].a],b=nodes[edges[i].b];
+        ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+    }
+    ctx.setLineDash([]);
     // Drawn edges
-    ctx.strokeStyle='#ff6b81';ctx.lineWidth=4;ctx.shadowColor='#ff6b81';ctx.shadowBlur=10;
+    ctx.strokeStyle='#ff6b81';ctx.lineWidth=5;ctx.lineCap='round';ctx.shadowColor='#ff6b81';ctx.shadowBlur=14;
     for(var i=0;i<drawnEdges.length;i++){
         var e=edges[drawnEdges[i]];
         var a=nodes[e.a],b=nodes[e.b];
