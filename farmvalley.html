@@ -1269,23 +1269,29 @@ function buildWell(){
   }else{
     var statusTxt='';
     if(state.water>state.maxWater){
-      statusTxt='⚠️ Eau au-dessus du maximum — génération en pause';
+      statusTxt='\u26a0\ufe0f Eau au-dessus du maximum \u2014 g\u00e9n\u00e9ration en pause';
     }else{
       var wellElapsed=Math.floor((Date.now()-state.lastWellTick)/1000);
       var nextIn=Math.max(0,20-(wellElapsed%20));
-      statusTxt='💧 +5 eau toutes les 20s (prochain dans '+nextIn+'s)';
+      statusTxt='\ud83d\udca7 +5 eau toutes les 20s (prochain dans '+nextIn+'s)';
     }
-    c.innerHTML='<div class="well-visual">🪣</div>'
-      +'<div class="well-info">Puits opérationnel</div>'
-      +'<div class="well-water-display">💧 '+state.wellWater+' eau accumulée</div>'
+    c.innerHTML='<div class="well-visual" id="well-tap" style="cursor:pointer">\ud83e\udea3</div>'
+      +'<div class="well-info">Puits op\u00e9rationnel \u2014 Touche le puits pour +10\ud83d\udca7</div>'
+      +'<div class="well-info" style="font-size:1rem">\ud83d\udca7 Ton eau: <b>'+state.water+'</b>/'+state.maxWater+'</div>'
+      +'<div class="well-water-display">\ud83e\udea3 '+state.wellWater+' eau accumul\u00e9e</div>'
       +'<div class="well-status">'+statusTxt+'</div>'
-      +(state.wellWater>0?'<button class="well-btn collect" id="well-collect-btn">💧 Récupérer l\'eau</button>':'<div class="well-info" style="opacity:.5">Aucune eau à récupérer</div>');
+      +(state.wellWater>0?'<button class="well-btn collect" id="well-collect-btn">\ud83d\udca7 R\u00e9cup\u00e9rer l\'eau</button>':'');
+    $('well-tap').addEventListener('click',function(){
+      state.water+=10;
+      showFloat(innerWidth/2,innerHeight/2,'+10\ud83d\udca7');
+      updateUI();buildWell();
+    });
     if(state.wellWater>0){
       $('well-collect-btn').addEventListener('click',function(){
         var amount=state.wellWater;
         state.water+=amount;
         state.wellWater=0;
-        showFloat(innerWidth/2,innerHeight/2,'+'+amount+'💧');
+        showFloat(innerWidth/2,innerHeight/2,'+'+amount+'\ud83d\udca7');
         updateUI();buildWell();
       });
     }
