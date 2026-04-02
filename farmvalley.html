@@ -46,7 +46,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .plot .sub{position:absolute;bottom:0;font-size:.45rem;color:#fff;background:rgba(0,0,0,.55);padding:0 3px;border-radius:2px;width:100%;text-align:center;white-space:nowrap}
 .plot .badge{position:absolute;top:0;right:1px;font-size:.65rem}
 #tabs{width:100%;display:flex;justify-content:space-around;background:linear-gradient(0deg,#5d4037,#6d4c41);padding:5px 0 max(5px,env(safe-area-inset-bottom));flex-shrink:0}
-.tab-btn{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:none;color:rgba(255,255,255,.6);font-size:.65rem;cursor:pointer;padding:3px 10px;border-radius:7px;-webkit-tap-highlight-color:transparent}
+.tab-btn{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:none;color:rgba(255,255,255,.6);font-size:.58rem;cursor:pointer;padding:3px 6px;border-radius:7px;-webkit-tap-highlight-color:transparent}
 .tab-btn.active{color:#ffd93d;background:rgba(255,255,255,.1)}
 .tab-btn .ico{font-size:1.2rem}
 .panel{display:none;width:96%;max-width:400px;flex-direction:column;gap:6px;padding:6px 0}
@@ -97,10 +97,10 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .bplot .prog-bar{position:absolute;bottom:14px;left:6px;right:6px;height:4px;background:rgba(0,0,0,.15);border-radius:2px;overflow:hidden}
 .bplot .prog-fill{height:100%;background:linear-gradient(90deg,#ff9800,#4CAF50);border-radius:2px;transition:width .4s linear}
 #recipe-bar{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;padding:3px}
-.recipe-btn{display:flex;flex-direction:column;align-items:center;padding:4px 8px;border-radius:7px;border:2px solid transparent;background:rgba(255,255,255,.85);cursor:pointer;font-size:.6rem;min-width:60px;-webkit-tap-highlight-color:transparent}
+.recipe-btn{display:flex;flex-direction:column;align-items:center;padding:8px 12px;border-radius:9px;border:2px solid transparent;background:rgba(255,255,255,.92);cursor:pointer;font-size:.78rem;min-width:100px;gap:3px;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .recipe-btn.can{border-color:#4CAF50;background:#E8F5E9}
 .recipe-btn.cant{opacity:.5}
-.recipe-btn .r-ico{font-size:1rem}
+.recipe-btn .r-ico{font-size:1.4rem}
 .sav-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;padding:2px}
 .sav-input{width:80px;padding:4px 6px;border:2px solid #2980b9;border-radius:6px;font-size:.8rem;text-align:center;background:rgba(255,255,255,.9)}
 .sav-pct{padding:3px 6px;border:1px solid #aaa;border-radius:5px;background:rgba(255,255,255,.7);font-size:.65rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -127,6 +127,17 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .qty-btn{width:26px;height:26px;border-radius:50%;border:1px solid #ccc;background:#fff;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .qty-btn:active{background:#eee}
 .qty-val{font-size:.8rem;font-weight:bold;min-width:20px;text-align:center}
+#well-container{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px}
+.well-visual{font-size:4rem;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2))}
+.well-info{text-align:center;font-size:.85rem;color:#5d4037}
+.well-progress{width:80%;max-width:250px;height:12px;background:rgba(0,0,0,.12);border-radius:6px;overflow:hidden}
+.well-fill{height:100%;background:linear-gradient(90deg,#8B4513,#D2691E);border-radius:6px;transition:width .3s}
+.well-btn{padding:12px 28px;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;color:#fff;-webkit-tap-highlight-color:transparent;transition:transform .1s}
+.well-btn.repair{background:linear-gradient(145deg,#8B4513,#A0522D)}
+.well-btn.collect{background:linear-gradient(145deg,#2196F3,#1976D2);animation:pulse-water 1.5s infinite alternate}
+.well-btn:active{transform:scale(.93)}
+.well-water-display{font-size:1.5rem;font-weight:bold;color:#2196F3}
+.well-status{font-size:.75rem;color:#888;text-align:center}
 </style>
 </head>
 <body>
@@ -156,6 +167,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div class="panel" id="panel-stats"><h3>📊 Statistiques</h3><div id="stats-list"></div></div>
   <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="res-bar"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
   <div class="panel" id="panel-recipes"><h3>📖 Recettes</h3><div id="recipe-list"></div></div>
+  <div class="panel" id="panel-well"><h3>🪣 Puits</h3><div id="well-container"></div></div>
 </div>
 <div id="tabs">
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
@@ -164,11 +176,12 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <button class="tab-btn" data-panel="stats"><span class="ico">📊</span>Stats</button>
   <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
   <button class="tab-btn" data-panel="recipes"><span class="ico">📖</span>Recettes</button>
+  <button class="tab-btn" data-panel="well"><span class="ico">🪣</span>Puits</button>
 </div>
 <div id="overlay">
   <h2>🌾 Farm Valley</h2>
   <p>Plante, arrose, récolte et agrandis ta ferme !<br>
-  🌱 Cultures (3💧) · 🌳 Arbres (5💧) · 🐄 Animaux (10💧)<br>
+  🌱 Cultures (3💧) · 🌳 Arbres (4💧) · 🐄 Animaux (5💧)<br>
   Choisis un objet, touche une parcelle, puis arrose !<br>
   Attention au loyer mensuel 🏠<br>
   Faits avec amour pour ma petite femme ❤️</p>
@@ -201,7 +214,7 @@ var ANIMALS=[
 ['Hibou','🦉',380,25000,38000,5000,18],['Tortue','🐢',420,31000,47000,6200,19],['Dauphin','🐬',470,40000,60000,8000,19],
 ['Panda','🐼',530,52000,78000,10000,20],['Licorne','🦄',600,70000,110000,15000,20]];
 var ITEMS=[CROPS,TREES,ANIMALS];
-var CAT_WATER=[3,5,10];
+var CAT_WATER=[3,4,5];
 var CAT_NAMES=['Cultures','Arbres','Animaux'];
 var CAT_ICONS=['🌱','🌳','🐄'];
 var MYSTERY_COSTS=[0,0,0];
@@ -380,20 +393,21 @@ var BUILDINGS=[
     {name:'Buffet palace',emoji:'\ud83c\udf86',inputs:{risotto:2,smoothie:2,tarte_citrouille:1,charcuterie:2,vin:1},time:150,sell:80000,xp:4000},
     {name:'Gala ultime',emoji:'\ud83c\udfc6',inputs:{chocolat:3,parfum:2,vin:3,pizza:2,coussin:1,cidre:2},time:200,sell:150000,xp:8000}]}
 ];
-var BCOLS=5,BMAX=10,BTOTAL=50,BSTART=3;
+var BCOLS=6,BMAX=10,BTOTAL=60,BSTART=3;
 
 // ===== GRID =====
-var GCOLS=5,GMAX=15,GTOTAL=GCOLS*GMAX,GSTART=12;
+var GCOLS=6,GMAX=15,GTOTAL=GCOLS*GMAX,GSTART=12;
 
 // ===== STATE =====
 var SAVE_KEY='farmvalley_save';
 var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000,
   58000,73000,90000,110000,135000,165000,200000,245000,300000,370000];
-var state={version:6,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+var state={version:7,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
   selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
   autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,savings:0,
   resources:{},bplots:[],bgridBought:0,selBuilding:0,selBuildingPlot:-1,
-  day:1,month:1,lastDayTick:0,lastWaterRegen:0,lastSave:0};
+  day:1,month:1,lastDayTick:0,lastWaterRegen:0,lastSave:0,
+  wellRepairs:0,wellWater:0,lastWellTick:0};
 
 // ===== DOM =====
 var $=document.getElementById.bind(document);
@@ -418,6 +432,9 @@ function init(){
   if(!state.bgridBought)state.bgridBought=0;
   if(state.selBuilding===undefined)state.selBuilding=0;
   if(state.selBuildingPlot===undefined)state.selBuildingPlot=-1;
+  if(state.wellRepairs===undefined)state.wellRepairs=0;
+  if(state.wellWater===undefined)state.wellWater=0;
+  if(!state.lastWellTick)state.lastWellTick=0;
   state.maxWater=100+(state.upgrades.watermax||0)*10;
   while(state.plots.length<GTOTAL)state.plots.push({catIdx:-1,itemIdx:-1,wc:0,lw:0,locked:state.plots.length>=GSTART+state.gridBought});
   var unlocked=GSTART+state.gridBought;
@@ -478,6 +495,11 @@ function processOffline(){
       }
     });
   }
+  // Well offline accumulation
+  if(state.wellRepairs>=15&&state.water<=state.maxWater&&state.lastWellTick){
+    var wellGain=Math.floor((now-state.lastWellTick)/20000);
+    if(wellGain>0){state.wellWater+=wellGain*5;state.lastWellTick+=wellGain*20000;}
+  }
   state.lastSave=now;checkLevelUp();
 }
 
@@ -507,7 +529,7 @@ function checkLevelUp(){
 }
 function getStageEmoji(p){
   if(p.catIdx===0){var s=['🌱','🌿','☘️',ITEMS[0][p.itemIdx][E]];return s[Math.min(p.wc,3)]}
-  if(p.catIdx===1){var w=p.wc;if(w>=5)return ITEMS[1][p.itemIdx][E];if(w>=3)return'🌳';if(w>=1)return'🌿';return'🌱'}
+  if(p.catIdx===1){var w=p.wc;if(w>=4)return ITEMS[1][p.itemIdx][E];if(w>=2)return'🌳';if(w>=1)return'🌿';return'🌱'}
   return ITEMS[2][p.itemIdx][E];
 }
 function isReady(p){
@@ -941,18 +963,26 @@ function gameTick(){
         p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
     });checkLevelUp();
   }
+  // Well water accumulation
+  if(state.wellRepairs>=15&&state.lastWellTick){
+    if(state.water<=state.maxWater){
+      var wellG=Math.floor((now-state.lastWellTick)/20000);
+      if(wellG>0){state.wellWater+=wellG*5;state.lastWellTick+=wellG*20000;}
+    }
+  }
+  var wellP=$('panel-well');if(wellP&&wellP.classList.contains('active'))buildWell();
   updateAuto();updateUI();state.lastSave=now;
 }
 
 // ===== BUILDINGS =====
 function getBCellCost(){return Math.floor(200*Math.pow(1.25,state.bgridBought))}
-function getBVisibleRows(){var u=BSTART+state.bgridBought;return Math.min(Math.ceil(BTOTAL/3),Math.floor((u-1)/3)+2)}
+function getBVisibleRows(){var u=BSTART+state.bgridBought;return Math.min(Math.ceil(BTOTAL/BCOLS),Math.floor((u-1)/BCOLS)+2)}
 function canMakeRecipe(rec){for(var k in rec.inputs){if((state.resources[k]||0)<rec.inputs[k])return false;}return true;}
 function getMaxQty(rec){var m=Infinity;for(var k in rec.inputs){m=Math.min(m,Math.floor((state.resources[k]||0)/rec.inputs[k]));}return m===Infinity?0:m;}
 
 function buildBuildingGrid(){
   var bfarm=$('bfarm');if(!bfarm)return;
-  var rows=getBVisibleRows(),cols=3;
+  var rows=getBVisibleRows(),cols=BCOLS;
   var ps=Math.min(Math.floor((innerWidth*0.95-16)/cols)-4,110);
   bfarm.style.gridTemplateColumns='repeat('+cols+',1fr)';
   bfarm.innerHTML='';
@@ -1216,6 +1246,52 @@ function buildRecipeList(){
   searchInput.addEventListener('input',function(){renderRecipes(searchInput.value);});
 }
 
+// ===== PUITS =====
+function buildWell(){
+  var c=$('well-container');if(!c)return;c.innerHTML='';
+  if(state.wellRepairs<15){
+    var pct=Math.floor(state.wellRepairs/15*100);
+    c.innerHTML='<div class="well-visual">🕳️</div>'
+      +'<div class="well-info">Le puits est cassé ! Répare-le !</div>'
+      +'<div class="well-progress"><div class="well-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="well-info"><b>'+state.wellRepairs+'/15</b> réparations</div>'
+      +'<button class="well-btn repair" id="well-repair-btn">🔧 Réparer</button>';
+    $('well-repair-btn').addEventListener('click',function(){
+      state.wellRepairs++;
+      if(state.wellRepairs>=15){
+        state.lastWellTick=Date.now();
+        showFloat(innerWidth/2,innerHeight/2,'🎉 Puits réparé !');
+      }else{
+        showFloat(innerWidth/2,innerHeight/2,'🔧 '+state.wellRepairs+'/15');
+      }
+      buildWell();
+    });
+  }else{
+    var statusTxt='';
+    if(state.water>state.maxWater){
+      statusTxt='⚠️ Eau au-dessus du maximum — génération en pause';
+    }else{
+      var wellElapsed=Math.floor((Date.now()-state.lastWellTick)/1000);
+      var nextIn=Math.max(0,20-(wellElapsed%20));
+      statusTxt='💧 +5 eau toutes les 20s (prochain dans '+nextIn+'s)';
+    }
+    c.innerHTML='<div class="well-visual">🪣</div>'
+      +'<div class="well-info">Puits opérationnel</div>'
+      +'<div class="well-water-display">💧 '+state.wellWater+' eau accumulée</div>'
+      +'<div class="well-status">'+statusTxt+'</div>'
+      +(state.wellWater>0?'<button class="well-btn collect" id="well-collect-btn">💧 Récupérer l\'eau</button>':'<div class="well-info" style="opacity:.5">Aucune eau à récupérer</div>');
+    if(state.wellWater>0){
+      $('well-collect-btn').addEventListener('click',function(){
+        var amount=state.wellWater;
+        state.water+=amount;
+        state.wellWater=0;
+        showFloat(innerWidth/2,innerHeight/2,'+'+amount+'💧');
+        updateUI();buildWell();
+      });
+    }
+  }
+}
+
 // ===== FLOAT =====
 function showFloat(x,y,t){var e=document.createElement('div');e.className='float-text';e.textContent=t;
   e.style.left=Math.max(10,Math.min(x,innerWidth-130))+'px';e.style.top=y+'px';
@@ -1233,6 +1309,7 @@ function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.pa
     if(bp.buildingIdx>=0&&bm6[bp.buildingIdx]!==undefined)bp.buildingIdx=bm6[bp.buildingIdx];
     else if(bp.buildingIdx>=0)bp.buildingIdx=-1;
     bp.recipe=-1;bp.prodStart=0;});s.selBuilding=0;s.selBuildingPlot=-1;s.version=6}
+  if(s.version<7){s.wellRepairs=0;s.wellWater=0;s.lastWellTick=0;s.version=7}
   for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
 
 // ===== TABS =====
@@ -1246,6 +1323,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     if(btn.dataset.panel==='stats')buildStats();
     if(btn.dataset.panel==='buildings'){buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
     if(btn.dataset.panel==='recipes')buildRecipeList();
+    if(btn.dataset.panel==='well')buildWell();
     var isFarm=btn.dataset.panel==='farm';
     $('cat-bar').style.display=isFarm?'flex':'none';
     seedBar.style.display=isFarm?'flex':'none';
