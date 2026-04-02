@@ -106,6 +106,27 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .sav-pct{padding:3px 6px;border:1px solid #aaa;border-radius:5px;background:rgba(255,255,255,.7);font-size:.65rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .sav-pct:active{background:#e0e0e0}
 .sav-act{padding:5px 12px;border:none;border-radius:6px;color:#fff;font-weight:bold;font-size:.75rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#recipe-list{display:flex;flex-direction:column;gap:6px}
+.rcp-card{background:rgba(255,255,255,.9);border-radius:10px;padding:8px 10px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.rcp-card .rcp-hdr{display:flex;align-items:center;gap:6px;font-weight:bold;font-size:.85rem}
+.rcp-card .rcp-bld{font-size:.65rem;color:#888;margin-left:auto}
+.rcp-card .rcp-ing{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.rcp-card .rcp-ing .ing-tag{display:flex;align-items:center;gap:2px;padding:2px 6px;background:#f0e6d3;border-radius:5px;font-size:.7rem;cursor:pointer;-webkit-tap-highlight-color:transparent;border:1px solid rgba(0,0,0,.1)}
+.rcp-card .rcp-ing .ing-tag:active{background:#e0d0b8}
+.rcp-card .rcp-out{font-size:.7rem;color:#666;margin-top:3px}
+#ing-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:110;padding:20px}
+#ing-modal.hidden{display:none}
+.modal-box{background:#fff;border-radius:14px;padding:16px;max-width:340px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.modal-box h3{text-align:center;font-size:1.1rem;margin-bottom:8px}
+.modal-box .src-item{background:#f9f4ec;border-radius:8px;padding:8px;margin:6px 0;font-size:.8rem;line-height:1.5}
+.modal-box .close-btn{display:block;margin:10px auto 0;padding:8px 24px;background:#e74c3c;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+.cheat-row{display:flex;align-items:center;gap:6px;justify-content:center;padding:4px}
+.cheat-input{width:100px;padding:5px 8px;border:2px solid #9b59b6;border-radius:6px;font-size:.85rem;text-align:center;text-transform:uppercase;background:rgba(255,255,255,.9)}
+.cheat-btn{padding:5px 14px;background:#9b59b6;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.8rem;cursor:pointer}
+.qty-row{display:flex;align-items:center;gap:4px;margin-top:3px;justify-content:center}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1px solid #ccc;background:#fff;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.qty-btn:active{background:#eee}
+.qty-val{font-size:.8rem;font-weight:bold;min-width:20px;text-align:center}
 </style>
 </head>
 <body>
@@ -134,6 +155,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div class="panel" id="panel-upgrades"><h3>⬆️ Améliorations</h3><div id="upg-list"></div></div>
   <div class="panel" id="panel-stats"><h3>📊 Statistiques</h3><div id="stats-list"></div></div>
   <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="res-bar"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
+  <div class="panel" id="panel-recipes"><h3>📖 Recettes</h3><div id="recipe-list"></div></div>
 </div>
 <div id="tabs">
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
@@ -141,6 +163,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <button class="tab-btn" data-panel="upgrades"><span class="ico">⬆️</span>Amélio.</button>
   <button class="tab-btn" data-panel="stats"><span class="ico">📊</span>Stats</button>
   <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
+  <button class="tab-btn" data-panel="recipes"><span class="ico">📖</span>Recettes</button>
 </div>
 <div id="overlay">
   <h2>🌾 Farm Valley</h2>
@@ -151,6 +174,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   Faits avec amour pour ma petite femme ❤️</p>
   <button id="btn-start">🚜 Commencer</button>
 </div>
+<div id="ing-modal" class="hidden"><div class="modal-box"><div id="ing-content"></div></div></div>
 <script src="leaderboard.js"></script>
 <script>
 // ===== DATA: [name, emoji, stageTime(s), cost, sellValue, xp, reqLevel] =====
@@ -748,6 +772,20 @@ function buildShop(){
     })(mc2,mcost);
     list.appendChild(md2);
   }
+  // Cheat codes
+  var chH=document.createElement('div');chH.className='sect-hdr';chH.textContent='\ud83d\udd11 Code secret';list.appendChild(chH);
+  var chD=document.createElement('div');chD.className='shop-item';chD.style.flexWrap='wrap';
+  chD.innerHTML='<div class="icon">\ud83d\udd11</div><div class="info"><div class="name">Entrer un code</div><div class="desc">Tape un code secret et valide</div></div>';
+  var chRow=document.createElement('div');chRow.className='cheat-row';
+  var chInput=document.createElement('input');chInput.type='text';chInput.className='cheat-input';chInput.placeholder='CODE';chInput.maxLength=20;
+  var chBtn=document.createElement('button');chBtn.type='button';chBtn.className='cheat-btn';chBtn.textContent='OK';
+  (function(inp){chBtn.addEventListener('click',function(){
+    var code=(inp.value||'').trim().toUpperCase();inp.value='';
+    if(code==='OR'){state.coins+=10000;state.totalEarned+=10000;showFloat(innerWidth/2,innerHeight/2,'+10000\ud83d\udcb0');updateUI();buildShop();}
+    else if(code==='EAU'){state.water=Math.min(state.maxWater,state.water+1000);showFloat(innerWidth/2,innerHeight/2,'+1000\ud83d\udca7');updateUI();buildShop();}
+    else{showFloat(innerWidth/2,innerHeight/2,'\u274c Code invalide');}
+  });})(chInput);
+  chRow.appendChild(chInput);chRow.appendChild(chBtn);chD.appendChild(chRow);list.appendChild(chD);
 }
 
 // ===== UPGRADES =====
@@ -910,6 +948,7 @@ function gameTick(){
 function getBCellCost(){return Math.floor(200*Math.pow(1.25,state.bgridBought))}
 function getBVisibleRows(){var u=BSTART+state.bgridBought;return Math.min(Math.ceil(BTOTAL/3),Math.floor((u-1)/3)+2)}
 function canMakeRecipe(rec){for(var k in rec.inputs){if((state.resources[k]||0)<rec.inputs[k])return false;}return true;}
+function getMaxQty(rec){var m=Infinity;for(var k in rec.inputs){m=Math.min(m,Math.floor((state.resources[k]||0)/rec.inputs[k]));}return m===Infinity?0:m;}
 
 function buildBuildingGrid(){
   var bfarm=$('bfarm');if(!bfarm)return;
@@ -938,16 +977,16 @@ function updateBuildingVisuals(){
     if(bp.recipe<0){
       el.className='bplot bbuilt';
       el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+bld.name+'</span><span class="sub">\ud83d\udc46 Choisir recette</span>';return;}
-    var rec=bld.recipes[bp.recipe];
-    var elapsed=(now-bp.prodStart)/1000;
-    if(elapsed>=rec.time){
+    var rec=bld.recipes[bp.recipe];var totalTime=rec.time*(bp.qty||1);
+    var elapsed=(now-bp.prodStart)/1000;var qtyTxt=(bp.qty||1)>1?' \u00d7'+(bp.qty||1):'';
+    if(elapsed>=totalTime){
       el.className='bplot bdone';
-      el.innerHTML='<span class="emoji">'+rec.emoji+'</span><span class="bname">'+rec.name+'</span><span class="sub">\u2705 R\u00e9cup\u00e9rer!</span>';
+      el.innerHTML='<span class="emoji">'+rec.emoji+'</span><span class="bname">'+rec.name+qtyTxt+'</span><span class="sub">\u2705 R\u00e9cup\u00e9rer!</span>';
     }else{
       el.className='bplot bprod';
-      var pct=Math.min(100,Math.floor(elapsed/rec.time*100));
-      var rem=Math.ceil(rec.time-elapsed);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
-      el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+rec.name+'</span>'
+      var pct=Math.min(100,Math.floor(elapsed/totalTime*100));
+      var rem=Math.ceil(totalTime-elapsed);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
+      el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+rec.name+qtyTxt+'</span>'
         +'<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'
         +'<span class="sub">\u23f3 '+ts+' ('+pct+'%)</span>';
     }
@@ -979,29 +1018,31 @@ function onBPlot(e){
     state.selBuildingPlot=idx;buildRecipeBar();updateBuildingVisuals();return;}
   // Check if production done
   var bld=BUILDINGS[bp.buildingIdx],rec=bld.recipes[bp.recipe];
+  var pQty=bp.qty||1;var totalTime=rec.time*pQty;
   var elapsed=(Date.now()-bp.prodStart)/1000;
-  if(elapsed>=rec.time){
+  if(elapsed>=totalTime){
     if(rec.output){
-      state.resources[rec.output]=(state.resources[rec.output]||0)+1;
-      showFloat(fx,fy,'+1 '+RES_INFO[rec.output].emoji);
+      state.resources[rec.output]=(state.resources[rec.output]||0)+pQty;
+      showFloat(fx,fy,'+'+pQty+' '+RES_INFO[rec.output].emoji);
     }else{
-      state.coins+=rec.sell;state.totalEarned+=rec.sell;
-      showFloat(fx,fy,'+'+fmtN(rec.sell)+'💰');
+      var totalSell=rec.sell*pQty;state.coins+=totalSell;state.totalEarned+=totalSell;
+      showFloat(fx,fy,'+'+fmtN(totalSell)+'💰');
     }
-    state.xp+=rec.xp;
-    bp.recipe=-1;bp.prodStart=0;
+    state.xp+=rec.xp*pQty;
+    bp.recipe=-1;bp.prodStart=0;bp.qty=1;
     checkLevelUp();updateResBar();updateBuildingVisuals();updateUI();
     state.selBuildingPlot=idx;buildRecipeBar();
   }else{
-    showFloat(fx,fy,'⏳ '+Math.ceil(rec.time-elapsed)+'s');
+    showFloat(fx,fy,'⏳ '+Math.ceil(totalTime-elapsed)+'s');
   }
 }
 
-function startRecipe(bplotIdx,recipeIdx){
+function startRecipe(bplotIdx,recipeIdx,qty){
+  if(!qty)qty=1;
   var bp=state.bplots[bplotIdx];var bld=BUILDINGS[bp.buildingIdx];var rec=bld.recipes[recipeIdx];
-  if(!canMakeRecipe(rec))return false;
-  for(var k in rec.inputs)state.resources[k]-=rec.inputs[k];
-  bp.recipe=recipeIdx;bp.prodStart=Date.now();
+  for(var k in rec.inputs){if((state.resources[k]||0)<rec.inputs[k]*qty)return false;}
+  for(var k in rec.inputs)state.resources[k]-=rec.inputs[k]*qty;
+  bp.recipe=recipeIdx;bp.prodStart=Date.now();bp.qty=qty;
   updateResBar();updateBuildingVisuals();return true;
 }
 
@@ -1029,15 +1070,33 @@ function buildRecipeBar(){
   var hdr=document.createElement('div');hdr.style.cssText='width:100%;text-align:center;font-size:.75rem;font-weight:bold;color:#5d4037;padding:2px';
   hdr.textContent=bld.emoji+' '+bld.name+' — Recettes:';bar.appendChild(hdr);
   bld.recipes.forEach(function(rec,ri){
-    var ok=canMakeRecipe(rec);
-    var b=document.createElement('button');b.className='recipe-btn'+(ok?' can':' cant');
+    var ok=canMakeRecipe(rec);var maxQ=ok?getMaxQty(rec):0;
+    var d=document.createElement('div');d.className='recipe-btn'+(ok?' can':' cant');
     var ingTxt='';for(var k in rec.inputs)ingTxt+=rec.inputs[k]+RES_INFO[k].emoji+' ';
-    var outTxt=rec.output?'→'+RES_INFO[rec.output].emoji:'→'+fmtN(rec.sell)+'💰';
-    b.innerHTML='<span class="r-ico">'+rec.emoji+'</span><b>'+rec.name+'</b><span>'+ingTxt+'</span><span>⏱'+rec.time+'s '+outTxt+'</span>';
-    if(ok){(function(rIdx){b.addEventListener('click',function(){
-      if(startRecipe(idx,rIdx)){showFloat(innerWidth/2,innerHeight/2,'🔨 '+rec.name+'!');buildRecipeBar();}
-    });})(ri);}
-    bar.appendChild(b);
+    var timeStr=rec.time>=60?Math.ceil(rec.time/60)+'m':rec.time+'s';
+    var outTxt=rec.output?'\u2192'+RES_INFO[rec.output].emoji:'\u2192'+fmtN(rec.sell)+'\ud83d\udcb0';
+    d.innerHTML='<span class="r-ico">'+rec.emoji+'</span><b>'+rec.name+'</b><span>'+ingTxt+'</span><span>\u23f1'+timeStr+' '+outTxt+'</span>';
+    if(ok){(function(rIdx,mQ){
+      var qty=1;
+      if(mQ>1){
+        var qRow=document.createElement('div');qRow.className='qty-row';
+        var qMinus=document.createElement('button');qMinus.type='button';qMinus.className='qty-btn';qMinus.textContent='\u2212';
+        var qVal=document.createElement('span');qVal.className='qty-val';qVal.textContent='1';
+        var qPlus=document.createElement('button');qPlus.type='button';qPlus.className='qty-btn';qPlus.textContent='+';
+        var qInfo=document.createElement('span');qInfo.style.cssText='font-size:.6rem;color:#888';qInfo.textContent='(max '+mQ+')';
+        qMinus.addEventListener('click',function(e){e.stopPropagation();if(qty>1){qty--;qVal.textContent=qty;}});
+        qPlus.addEventListener('click',function(e){e.stopPropagation();if(qty<mQ){qty++;qVal.textContent=qty;}});
+        qRow.appendChild(qMinus);qRow.appendChild(qVal);qRow.appendChild(qPlus);qRow.appendChild(qInfo);
+        d.appendChild(qRow);
+      }
+      var mk=document.createElement('button');mk.type='button';
+      mk.style.cssText='margin-top:3px;padding:4px 12px;background:#4CAF50;color:#fff;border:none;border-radius:5px;font-size:.7rem;font-weight:bold;cursor:pointer';
+      mk.textContent='\ud83d\udd28 Fabriquer';
+      mk.addEventListener('click',function(e){e.stopPropagation();
+        if(startRecipe(idx,rIdx,qty)){showFloat(innerWidth/2,innerHeight/2,'\ud83d\udd28 '+rec.name+(qty>1?' \u00d7'+qty:'')+'!');buildRecipeBar();}
+      });d.appendChild(mk);
+    })(ri,maxQ);}
+    bar.appendChild(d);
   });
 }
 
@@ -1050,6 +1109,111 @@ function updateResBar(){
       d.innerHTML=RES_INFO[k].emoji+'<b>'+v+'</b>';d.title=RES_INFO[k].name;bar.appendChild(d);}
   });
   if(!hasAny)bar.innerHTML='<span style="font-size:.65rem;color:#888;text-align:center;padding:4px">R\u00e9colte tes cultures, arbres et animaux pour obtenir des ressources \ud83c\udf3e\ud83c\udf4e\ud83e\udd5b</span>';
+}
+
+// ===== RECETTES TAB =====
+function getResourceSources(resKey){
+  var sources=[];
+  for(var name in HARVEST_RES){
+    if(HARVEST_RES[name]===resKey){
+      for(var c=0;c<3;c++){for(var i=0;i<ITEMS[c].length;i++){
+        if(ITEMS[c][i][N]===name){sources.push({type:'harvest',cat:c,catName:CAT_NAMES[c],catIcon:CAT_ICONS[c],item:ITEMS[c][i]});break;}
+      }}
+    }
+  }
+  for(var bi=0;bi<BUILDINGS.length;bi++){var bld=BUILDINGS[bi];
+    for(var ri=0;ri<bld.recipes.length;ri++){var rec=bld.recipes[ri];
+      if(rec.output===resKey)sources.push({type:'recipe',building:bld,recipe:rec});
+    }
+  }
+  return sources;
+}
+function showIngredientInfo(resKey){
+  var modal=$('ing-modal');var content=$('ing-content');
+  var info=RES_INFO[resKey];if(!info)return;
+  var sources=getResourceSources(resKey);
+  var html='<h3>'+info.emoji+' '+info.name+'</h3>';
+  html+='<p style="text-align:center;font-size:.75rem;color:#888">Prix de vente: '+fmtN(RES_SELL[resKey]||0)+'\ud83d\udcb0 \u00b7 En stock: '+(state.resources[resKey]||0)+'</p>';
+  if(sources.length===0){
+    html+='<div class="src-item">\u2753 Ressource brute sans source de r\u00e9colte directe.<br>\u27a1\ufe0f V\u00e9rifie dans l\'onglet <b>Recettes</b> si un atelier la produit.</div>';
+  }else{
+    sources.forEach(function(src){
+      if(src.type==='harvest'){
+        html+='<div class="src-item">';
+        html+='<b>\ud83c\udf3e R\u00e9colte</b><br>';
+        html+=src.catIcon+' '+src.item[E]+' <b>'+src.item[N]+'</b> ('+src.catName+')<br>';
+        html+='\ud83d\udcb0 Co\u00fbt: '+fmtN(src.item[CO])+' \u00b7 \ud83d\udd12 Niveau '+src.item[RL]+'<br>';
+        html+='\u27a1\ufe0f Onglet <b>Ferme</b> \u2192 plante, arrose '+CAT_WATER[src.cat]+'\ud83d\udca7 puis r\u00e9colte';
+        html+='</div>';
+      }else{
+        html+='<div class="src-item">';
+        html+='<b>\ud83c\udfd7\ufe0f Atelier</b><br>';
+        html+=src.building.emoji+' <b>'+src.building.name+'</b> (Niv.'+src.building.reqLevel+', '+fmtN(src.building.cost)+'\ud83d\udcb0)<br>';
+        html+=src.recipe.emoji+' <b>'+src.recipe.name+'</b><br>';
+        html+='\ud83d\udce6 Ingr\u00e9dients: ';
+        for(var k in src.recipe.inputs)html+=RES_INFO[k].emoji+' '+RES_INFO[k].name+' \u00d7'+src.recipe.inputs[k]+' ';
+        html+='<br>\u23f1 '+src.recipe.time+'s';
+        html+='<br>\u27a1\ufe0f Onglet <b>Ateliers</b> \u2192 construis '+src.building.emoji+' '+src.building.name;
+        html+='</div>';
+      }
+    });
+  }
+  html+='<button class="close-btn" id="ing-close">Fermer</button>';
+  content.innerHTML=html;
+  modal.classList.remove('hidden');
+  $('ing-close').addEventListener('click',function(){modal.classList.add('hidden');});
+  modal.addEventListener('click',function(e){if(e.target===modal)modal.classList.add('hidden');});
+}
+function buildRecipeList(){
+  var list=$('recipe-list');if(!list)return;list.innerHTML='';
+  // Search bar
+  var searchDiv=document.createElement('div');searchDiv.style.cssText='padding:4px;text-align:center';
+  var searchInput=document.createElement('input');searchInput.type='text';searchInput.placeholder='\ud83d\udd0d Rechercher une recette...';
+  searchInput.style.cssText='width:90%;padding:6px 10px;border:2px solid #5d4037;border-radius:8px;font-size:.8rem';
+  searchDiv.appendChild(searchInput);list.appendChild(searchDiv);
+  var container=document.createElement('div');container.style.cssText='display:flex;flex-direction:column;gap:6px';
+  list.appendChild(container);
+  function renderRecipes(filter){
+    container.innerHTML='';
+    var f=filter?filter.toLowerCase():'';
+    BUILDINGS.forEach(function(bld){
+      var locked=bld.reqLevel>state.level;
+      bld.recipes.forEach(function(rec){
+        if(f){
+          var match=rec.name.toLowerCase().indexOf(f)>=0||bld.name.toLowerCase().indexOf(f)>=0;
+          if(!match){for(var k in rec.inputs){if(RES_INFO[k].name.toLowerCase().indexOf(f)>=0){match=true;break;}}}
+          if(!match)return;
+        }
+        var d=document.createElement('div');d.className='rcp-card';
+        if(locked)d.style.opacity='.5';
+        var ingHtml='';
+        for(var k in rec.inputs)ingHtml+='<span class="ing-tag" data-res="'+k+'">'+rec.inputs[k]+'\u00d7 '+RES_INFO[k].emoji+' '+RES_INFO[k].name+'</span>';
+        var outHtml='';
+        if(rec.output)outHtml='\u2192 '+RES_INFO[rec.output].emoji+' '+RES_INFO[rec.output].name+' ('+fmtN(RES_SELL[rec.output]||0)+'\ud83d\udcb0)';
+        else outHtml='\u2192 '+fmtN(rec.sell)+'\ud83d\udcb0';
+        outHtml+=' \u00b7 +'+rec.xp+'\u2b50 \u00b7 \u23f1'+(rec.time>=60?Math.ceil(rec.time/60)+'m':rec.time+'s');
+        d.innerHTML='<div class="rcp-hdr">'+rec.emoji+' '+rec.name+'<span class="rcp-bld">'+bld.emoji+' '+bld.name+(locked?' \ud83d\udd12Niv.'+bld.reqLevel:'')+'</span></div>'
+          +'<div class="rcp-ing">'+ingHtml+'</div>'
+          +'<div class="rcp-out">'+outHtml+'</div>';
+        d.querySelectorAll('.ing-tag').forEach(function(tag){
+          tag.addEventListener('click',function(){showIngredientInfo(tag.dataset.res);});
+        });
+        // Also allow clicking the output if it's a resource
+        if(rec.output){
+          var outTag=document.createElement('span');outTag.className='ing-tag';outTag.dataset.res=rec.output;
+          outTag.style.cssText='margin-top:3px;background:#d5e8d4;cursor:pointer';
+          outTag.innerHTML='\ud83d\udce6 '+RES_INFO[rec.output].emoji+' '+RES_INFO[rec.output].name+' \u2192 d\u00e9tails';
+          outTag.addEventListener('click',function(){showIngredientInfo(rec.output);});
+          d.querySelector('.rcp-out').appendChild(document.createElement('br'));
+          d.querySelector('.rcp-out').appendChild(outTag);
+        }
+        container.appendChild(d);
+      });
+    });
+    if(!container.children.length)container.innerHTML='<p style="text-align:center;color:#888;font-size:.8rem">Aucune recette trouv\u00e9e</p>';
+  }
+  renderRecipes('');
+  searchInput.addEventListener('input',function(){renderRecipes(searchInput.value);});
 }
 
 // ===== FLOAT =====
@@ -1081,6 +1245,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     if(btn.dataset.panel==='upgrades')buildUpgrades();
     if(btn.dataset.panel==='stats')buildStats();
     if(btn.dataset.panel==='buildings'){buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
+    if(btn.dataset.panel==='recipes')buildRecipeList();
     var isFarm=btn.dataset.panel==='farm';
     $('cat-bar').style.display=isFarm?'flex':'none';
     seedBar.style.display=isFarm?'flex':'none';
