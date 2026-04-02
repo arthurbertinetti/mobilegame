@@ -72,6 +72,40 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 #overlay h2{font-size:1.8rem;color:#ffd93d;margin-bottom:10px}
 #overlay p{color:#ddd;margin-bottom:14px;line-height:1.5;font-size:.9rem}
 #overlay button{padding:12px 36px;font-size:1.1rem;background:#4CAF50;border:none;border-radius:12px;color:#fff;font-weight:bold;cursor:pointer}
+#res-bar{display:flex;gap:3px;flex-wrap:wrap;padding:2px 4px;justify-content:center}
+.res-tag{display:flex;align-items:center;gap:2px;padding:2px 6px;background:rgba(255,255,255,.8);border-radius:5px;font-size:.65rem}
+.res-tag b{color:#5d4037}
+#bld-bar{display:flex;gap:3px;padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;white-space:nowrap;max-width:100%}
+.bld-btn{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 8px;border-radius:8px;border:2px solid transparent;background:rgba(255,255,255,.85);cursor:pointer;font-size:.55rem;min-width:54px;flex-shrink:0;-webkit-tap-highlight-color:transparent;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.bld-btn.active{border-color:#e67e22;background:#FFF3E0;box-shadow:0 2px 8px rgba(230,126,34,.3)}
+.bld-btn:disabled{opacity:.3}
+.bld-btn .b-ico{font-size:1.1rem}
+.bld-btn .b-name{font-size:.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50px;color:#5d4037}
+#bfarm{display:grid;gap:4px;padding:6px;background:rgba(180,140,100,.2);border-radius:12px;margin:4px auto}
+.bplot{width:100%;min-height:70px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:transform .1s;border:2px solid rgba(0,0,0,.08);font-size:1rem;overflow:hidden;padding:4px 2px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.bplot:active{transform:scale(.93)}
+.bplot.bempty{background:linear-gradient(145deg,#c8bfb0,#d4c9ba);border-style:dashed;border-color:rgba(0,0,0,.15)}
+.bplot.bbuilt{background:linear-gradient(145deg,#f5efe5,#ece3d5);border-color:rgba(230,126,34,.25);box-shadow:0 3px 10px rgba(139,90,43,.12)}
+.bplot.bprod{background:linear-gradient(145deg,#fff3e0,#ffe0b2);border-color:rgba(255,152,0,.35);animation:pulse-prod 1.5s infinite alternate}
+.bplot.bdone{background:linear-gradient(145deg,#c8e6c9,#a5d6a7);border-color:rgba(76,175,80,.4);animation:pulse-mature 1s infinite alternate}
+.bplot.locked{background:linear-gradient(145deg,#888,#999);opacity:.5;border-style:dashed}
+.bplot.locked.afford{opacity:.7;border-color:rgba(255,152,0,.5);border-style:solid}
+@keyframes pulse-prod{from{box-shadow:0 0 4px rgba(255,152,0,.3)}to{box-shadow:0 0 12px rgba(255,152,0,.6)}}
+.bplot .emoji{font-size:1.4em;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.2))}
+.bplot .bname{font-size:.55rem;font-weight:bold;color:#5d4037;margin-top:1px}
+.bplot .sub{position:absolute;bottom:0;font-size:.45rem;color:#fff;background:rgba(0,0,0,.6);padding:1px 4px;border-radius:0 0 8px 8px;width:100%;text-align:center;white-space:nowrap}
+.bplot .prog-bar{position:absolute;bottom:14px;left:6px;right:6px;height:4px;background:rgba(0,0,0,.15);border-radius:2px;overflow:hidden}
+.bplot .prog-fill{height:100%;background:linear-gradient(90deg,#ff9800,#4CAF50);border-radius:2px;transition:width .4s linear}
+#recipe-bar{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;padding:3px}
+.recipe-btn{display:flex;flex-direction:column;align-items:center;padding:4px 8px;border-radius:7px;border:2px solid transparent;background:rgba(255,255,255,.85);cursor:pointer;font-size:.6rem;min-width:60px;-webkit-tap-highlight-color:transparent}
+.recipe-btn.can{border-color:#4CAF50;background:#E8F5E9}
+.recipe-btn.cant{opacity:.5}
+.recipe-btn .r-ico{font-size:1rem}
+.sav-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;padding:2px}
+.sav-input{width:80px;padding:4px 6px;border:2px solid #2980b9;border-radius:6px;font-size:.8rem;text-align:center;background:rgba(255,255,255,.9)}
+.sav-pct{padding:3px 6px;border:1px solid #aaa;border-radius:5px;background:rgba(255,255,255,.7);font-size:.65rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sav-pct:active{background:#e0e0e0}
+.sav-act{padding:5px 12px;border:none;border-radius:6px;color:#fff;font-weight:bold;font-size:.75rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
 </style>
 </head>
 <body>
@@ -83,7 +117,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
     <span>🏅Niv.<b id="level">1</b></span>
   </div>
 </div>
-<div id="day-bar">📅 Jour <b id="day">1</b>, Mois <b id="month">1</b> &nbsp;|&nbsp; 🏠 Loyer: <b id="rent">25</b>💰<span id="debt-info"></span></div>
+<div id="day-bar">📅 Jour <b id="day">1</b>, Mois <b id="month">1</b> &nbsp;|&nbsp; 🏠 Loyer: <b id="rent">25</b>💰<span id="debt-info"></span><span id="savings-info"></span></div>
 <div id="main">
   <div id="cat-bar">
     <button class="cat-btn active" data-cat="0">🌱 Cultures</button>
@@ -99,19 +133,22 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div class="panel" id="panel-shop"><h3>🏪 Boutique</h3><div id="shop-list"></div></div>
   <div class="panel" id="panel-upgrades"><h3>⬆️ Améliorations</h3><div id="upg-list"></div></div>
   <div class="panel" id="panel-stats"><h3>📊 Statistiques</h3><div id="stats-list"></div></div>
+  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="res-bar"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
 </div>
 <div id="tabs">
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
   <button class="tab-btn" data-panel="shop"><span class="ico">🏪</span>Boutique</button>
   <button class="tab-btn" data-panel="upgrades"><span class="ico">⬆️</span>Amélio.</button>
   <button class="tab-btn" data-panel="stats"><span class="ico">📊</span>Stats</button>
+  <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
 </div>
 <div id="overlay">
   <h2>🌾 Farm Valley</h2>
   <p>Plante, arrose, récolte et agrandis ta ferme !<br>
   🌱 Cultures (3💧) · 🌳 Arbres (5💧) · 🐄 Animaux (10💧)<br>
   Choisis un objet, touche une parcelle, puis arrose !<br>
-  Attention au loyer mensuel ! 🏠</p>
+  Attention au loyer mensuel ! 🏠<br>
+  Faits avec amour pour ma petite femme ❤️</p>
   <button id="btn-start">🚜 Commencer</button>
 </div>
 <script src="leaderboard.js"></script>
@@ -150,19 +187,188 @@ var UPGRADES=[
 {id:'speed',name:'Engrais rapide',desc:'-5% temps/niv',icon:'⚡',base:30,mult:1.15,max:100},
 {id:'value',name:'Meilleur marché',desc:'+15% vente/niv',icon:'💎',base:40,mult:2.0,max:10},
 {id:'autoharvest',name:'Auto-récolte',desc:'Récolte auto (2-10 min)',icon:'🤖',base:300,mult:2.5,max:5},
-{id:'autowater',name:'Auto-arrosage',desc:'Arrose auto (1-5 min)',icon:'🚿',base:400,mult:2.5,max:5},
-{id:'watermax',name:'Réservoir',desc:'+10 eau max (→2000)',icon:'🪣',base:15,mult:1.03,max:190}];
+{id:'autowater',name:'Auto-arrosage',desc:'Arrose auto (1-10 min)',icon:'🚿',base:400,mult:2.5,max:10},
+{id:'watermax',name:'Réservoir',desc:'+10 eau max (→2000)',icon:'🪣',base:15,mult:1.03,max:190},
+{id:'savingsrate',name:'Taux d\'épargne',desc:'Intérêt mensuel: 1%→25%',icon:'🏦',base:10000,mult:2.2,max:20}];
 var WATER_PACKS=[[10,20,'10💧'],[30,50,'30💧'],[100,150,'100💧']];
 
+// ===== RESOURCES =====
+var RES_KEYS=[
+  // --- Bruts (r\u00e9colt\u00e9s) ---
+  'lait','ble','mais','oeuf','laine',
+  'pomme','fraise','lait_chevre','citron','miel','raisin','noix_coco','olive',
+  'tomate','carotte','oignon','patate','champignon','citrouille','cerise','fleur',
+  'poire','orange','banane','peche','mangue',
+  'viande_porc','viande_dinde','plume','fourrure',
+  // --- Transform\u00e9s ---
+  'beurre','creme','farine_ble','farine_mais','sucre','fromage','jus_pomme','confiture',
+  'vin','huile_olive','lait_coco','chocolat',
+  'sauce_tomate','soupe','jus_orange','smoothie','marmelade','cidre',
+  'charcuterie','saucisse','pizza','risotto','tarte_citrouille',
+  'parfum','bougie','coussin','roti_dinde','salade_composee'];
+var RES_INFO={
+  lait:{name:'Lait',emoji:'\ud83e\udd5b'},ble:{name:'Bl\u00e9',emoji:'\ud83c\udf3e'},mais:{name:'Ma\u00efs',emoji:'\ud83c\udf3d'},
+  oeuf:{name:'\u0152uf',emoji:'\ud83e\udd5a'},laine:{name:'Laine',emoji:'\ud83e\uddf6'},
+  pomme:{name:'Pomme',emoji:'\ud83c\udf4e'},fraise:{name:'Fraise',emoji:'\ud83c\udf53'},
+  lait_chevre:{name:'Lait ch\u00e8vre',emoji:'\ud83e\udd5b'},citron:{name:'Citron',emoji:'\ud83c\udf4b'},
+  miel:{name:'Miel',emoji:'\ud83c\udf6f'},raisin:{name:'Raisin',emoji:'\ud83c\udf47'},
+  noix_coco:{name:'Noix coco',emoji:'\ud83e\udd65'},olive:{name:'Olive',emoji:'\ud83e\uded2'},
+  tomate:{name:'Tomate',emoji:'\ud83c\udf45'},carotte:{name:'Carotte',emoji:'\ud83e\udd55'},
+  oignon:{name:'Oignon',emoji:'\ud83e\uddc5'},patate:{name:'Patate',emoji:'\ud83e\udd54'},
+  champignon:{name:'Champignon',emoji:'\ud83c\udf44'},citrouille:{name:'Citrouille',emoji:'\ud83c\udf83'},
+  cerise:{name:'Cerise',emoji:'\ud83c\udf52'},fleur:{name:'Fleur',emoji:'\ud83d\udc90'},
+  poire:{name:'Poire',emoji:'\ud83c\udf50'},orange:{name:'Orange',emoji:'\ud83c\udf4a'},
+  banane:{name:'Banane',emoji:'\ud83c\udf4c'},peche:{name:'P\u00eache',emoji:'\ud83c\udf51'},
+  mangue:{name:'Mangue',emoji:'\ud83e\udd6d'},
+  viande_porc:{name:'Porc',emoji:'\ud83e\udd69'},viande_dinde:{name:'Dinde',emoji:'\ud83c\udf57'},
+  plume:{name:'Plume',emoji:'\ud83e\udeb6'},fourrure:{name:'Fourrure',emoji:'\ud83d\udc30'},
+  beurre:{name:'Beurre',emoji:'\ud83e\uddc8'},creme:{name:'Cr\u00e8me',emoji:'\ud83c\udf66'},
+  farine_ble:{name:'Farine bl\u00e9',emoji:'\ud83e\uded3'},farine_mais:{name:'Farine ma\u00efs',emoji:'\ud83e\uded3'},
+  sucre:{name:'Sucre',emoji:'\ud83c\udf5a'},fromage:{name:'Fromage',emoji:'\ud83e\uddc0'},
+  jus_pomme:{name:'Jus pomme',emoji:'\ud83e\uddc3'},confiture:{name:'Confiture',emoji:'\ud83c\udf53'},
+  vin:{name:'Vin',emoji:'\ud83c\udf77'},huile_olive:{name:'Huile olive',emoji:'\ud83e\uded2'},
+  lait_coco:{name:'Lait coco',emoji:'\ud83e\udd65'},chocolat:{name:'Chocolat',emoji:'\ud83c\udf6b'},
+  sauce_tomate:{name:'Sauce tomate',emoji:'\ud83e\udd6b'},soupe:{name:'Soupe',emoji:'\ud83c\udf72'},
+  jus_orange:{name:'Jus orange',emoji:'\ud83e\uddc3'},smoothie:{name:'Smoothie',emoji:'\ud83e\udd64'},
+  marmelade:{name:'Marmelade',emoji:'\ud83c\udf4a'},cidre:{name:'Cidre',emoji:'\ud83c\udf7a'},
+  charcuterie:{name:'Charcuterie',emoji:'\ud83e\udd69'},saucisse:{name:'Saucisse',emoji:'\ud83c\udf2d'},
+  pizza:{name:'Pizza',emoji:'\ud83c\udf55'},risotto:{name:'Risotto',emoji:'\ud83c\udf5a'},
+  tarte_citrouille:{name:'Tarte citrouille',emoji:'\ud83e\udd67'},
+  parfum:{name:'Parfum',emoji:'\ud83c\udf38'},bougie:{name:'Bougie',emoji:'\ud83d\udd6f\ufe0f'},
+  coussin:{name:'Coussin',emoji:'\ud83d\udecb\ufe0f'},roti_dinde:{name:'R\u00f4ti dinde',emoji:'\ud83c\udf57'},
+  salade_composee:{name:'Salade',emoji:'\ud83e\udd57'}
+};
+var RES_SELL={lait:50,ble:30,mais:35,oeuf:60,laine:70,
+  pomme:40,fraise:55,lait_chevre:80,citron:50,miel:100,raisin:90,noix_coco:120,olive:110,
+  tomate:25,carotte:15,oignon:35,patate:30,champignon:80,citrouille:120,cerise:100,fleur:150,
+  poire:45,orange:50,banane:55,peche:60,mangue:80,
+  viande_porc:200,viande_dinde:250,plume:180,fourrure:160,
+  beurre:200,creme:300,farine_ble:120,farine_mais:130,sucre:180,fromage:350,jus_pomme:150,confiture:500,
+  vin:800,huile_olive:1000,lait_coco:900,chocolat:3000,
+  sauce_tomate:250,soupe:350,jus_orange:200,smoothie:600,marmelade:450,cidre:700,
+  charcuterie:800,saucisse:500,pizza:2500,risotto:2000,tarte_citrouille:1500,
+  parfum:5000,bougie:2500,coussin:1200,roti_dinde:3500,salade_composee:400};
+var HARVEST_RES={
+  'Bl\u00e9':'ble','Ma\u00efs':'mais','Poule':'oeuf','Vache':'lait','Mouton':'laine',
+  'Fraise':'fraise','Pommier':'pomme','Citronnier':'citron','Vigne':'raisin',
+  'Cocotier':'noix_coco','Olivier':'olive','Ch\u00e8vre':'lait_chevre','Abeille':'miel',
+  'Tomate':'tomate','Carotte':'carotte','Oignon':'oignon','P.de terre':'patate',
+  'Champignon':'champignon','Citrouille':'citrouille','Cerise':'cerise','Fleur dor\u00e9e':'fleur',
+  'Poirier':'poire','Oranger':'orange','Bananier':'banane','P\u00eacher':'peche','Manguier':'mangue',
+  'Cochon':'viande_porc','Dinde':'viande_dinde','Paon':'plume','Lapin':'fourrure'};
+
+// ===== BUILDINGS =====
+var BUILDINGS=[
+  // ─── Tier 1 : D\u00e9buts (lv3-5) ───
+  {id:'pressoir',name:'Pressoir',emoji:'\ud83c\udf4e',cost:2000,reqLevel:3,recipes:[
+    {name:'Jus pomme',emoji:'\ud83e\uddc3',inputs:{pomme:2},output:'jus_pomme',time:15,sell:150,xp:20},
+    {name:'Compote',emoji:'\ud83c\udf6f',inputs:{pomme:3},time:20,sell:250,xp:25}]},
+  {id:'potager',name:'Potager',emoji:'\ud83e\udd57',cost:2500,reqLevel:4,recipes:[
+    {name:'Soupe',emoji:'\ud83c\udf72',inputs:{patate:2,carotte:2,oignon:1},output:'soupe',time:20,sell:350,xp:30},
+    {name:'Salade',emoji:'\ud83e\udd57',inputs:{tomate:2,oeuf:1},output:'salade_composee',time:12,sell:400,xp:20}]},
+  {id:'moulin',name:'Moulin',emoji:'\ud83c\udfed',cost:3000,reqLevel:5,recipes:[
+    {name:'Farine bl\u00e9',emoji:'\ud83e\uded3',inputs:{ble:2},output:'farine_ble',time:20,sell:120,xp:30},
+    {name:'Farine ma\u00efs',emoji:'\ud83e\uded3',inputs:{mais:2},output:'farine_mais',time:25,sell:130,xp:35}]},
+  // ─── Tier 2 : Transformation (lv6-10) ───
+  {id:'cuisinette',name:'Cuisinette',emoji:'\ud83c\udf73',cost:3500,reqLevel:6,recipes:[
+    {name:'Sauce tomate',emoji:'\ud83e\udd6b',inputs:{tomate:3,oignon:1},output:'sauce_tomate',time:18,sell:250,xp:35},
+    {name:'Pur\u00e9e',emoji:'\ud83e\udd54',inputs:{patate:3,beurre:1},time:15,sell:500,xp:40},
+    {name:'Soupe citrouille',emoji:'\ud83c\udf83',inputs:{citrouille:2,creme:1},time:25,sell:900,xp:55}]},
+  {id:'lainerie',name:'Mag. laine',emoji:'\ud83e\uddf6',cost:4000,reqLevel:8,recipes:[
+    {name:'Pelote',emoji:'\ud83e\uddf6',inputs:{laine:2},time:30,sell:600,xp:40},
+    {name:'\u00c9charpe',emoji:'\ud83e\udde3',inputs:{laine:5},time:60,sell:1800,xp:120}]},
+  {id:'fromagerie',name:'Fromagerie',emoji:'\ud83e\uddc0',cost:5500,reqLevel:9,recipes:[
+    {name:'Fromage ch\u00e8vre',emoji:'\ud83e\uddc0',inputs:{lait_chevre:2},time:35,sell:800,xp:60},
+    {name:'Fromage',emoji:'\ud83e\uddc0',inputs:{lait:3},output:'fromage',time:40,sell:350,xp:55},
+    {name:'Fondue',emoji:'\ud83e\udd62',inputs:{fromage:3,lait:1},time:55,sell:3000,xp:150}]},
+  {id:'laiterie',name:'Laiterie',emoji:'\ud83e\udd5b',cost:5000,reqLevel:10,recipes:[
+    {name:'Beurre',emoji:'\ud83e\uddc8',inputs:{lait:2},output:'beurre',time:30,sell:200,xp:50},
+    {name:'Cr\u00e8me',emoji:'\ud83c\udf66',inputs:{lait:3},output:'creme',time:45,sell:300,xp:80}]},
+  // ─── Tier 3 : Production (lv11-14) ───
+  {id:'sucrerie',name:'Sucrerie',emoji:'\ud83c\udf6c',cost:7000,reqLevel:11,recipes:[
+    {name:'Sucre',emoji:'\ud83c\udf5a',inputs:{mais:3},output:'sucre',time:25,sell:180,xp:45},
+    {name:'Pop-corn',emoji:'\ud83c\udf7f',inputs:{mais:2,beurre:1},time:20,sell:700,xp:55}]},
+  {id:'boulangerie',name:'Boulangerie',emoji:'\ud83e\udd56',cost:8000,reqLevel:12,recipes:[
+    {name:'Pain',emoji:'\ud83c\udf5e',inputs:{farine_ble:2,beurre:1},time:40,sell:1500,xp:100},
+    {name:'G\u00e2teau',emoji:'\ud83c\udf82',inputs:{oeuf:3,farine_ble:2,beurre:2},time:60,sell:3000,xp:200},
+    {name:'Cr\u00eapes',emoji:'\ud83e\udd5e',inputs:{oeuf:2,farine_ble:1},time:25,sell:1000,xp:60},
+    {name:'Tortilla',emoji:'\ud83e\uded4',inputs:{farine_mais:2,fromage:1},time:35,sell:1800,xp:90}]},
+  {id:'boucherie',name:'Boucherie',emoji:'\ud83e\udd69',cost:10000,reqLevel:13,recipes:[
+    {name:'Charcuterie',emoji:'\ud83e\udd69',inputs:{viande_porc:2},output:'charcuterie',time:35,sell:800,xp:70},
+    {name:'Saucisse',emoji:'\ud83c\udf2d',inputs:{viande_porc:2,oignon:1},output:'saucisse',time:30,sell:500,xp:55},
+    {name:'R\u00f4ti dinde',emoji:'\ud83c\udf57',inputs:{viande_dinde:2,patate:2},output:'roti_dinde',time:45,sell:3500,xp:130},
+    {name:'P\u00e2t\u00e9',emoji:'\ud83e\udd6b',inputs:{viande_porc:3,oeuf:2,oignon:1},time:50,sell:3000,xp:150}]},
+  {id:'conserverie',name:'Conserverie',emoji:'\ud83e\udd6b',cost:12000,reqLevel:14,recipes:[
+    {name:'Confiture',emoji:'\ud83c\udf53',inputs:{fraise:3,sucre:1},output:'confiture',time:30,sell:500,xp:70},
+    {name:'Jus citron',emoji:'\ud83c\udf4b',inputs:{citron:2,sucre:1},time:25,sell:800,xp:65},
+    {name:'Gel\u00e9e',emoji:'\ud83c\udf4f',inputs:{jus_pomme:2,sucre:1},time:30,sell:900,xp:75},
+    {name:'Marmelade',emoji:'\ud83c\udf4a',inputs:{orange:3,sucre:1},output:'marmelade',time:30,sell:450,xp:65}]},
+  // ─── Tier 4 : Sp\u00e9cialit\u00e9s (lv15-20) ───
+  {id:'miellerie',name:'Miellerie',emoji:'\ud83c\udf6f',cost:15000,reqLevel:15,recipes:[
+    {name:'Bonbon miel',emoji:'\ud83c\udf6c',inputs:{miel:2,sucre:2},time:30,sell:2000,xp:100},
+    {name:'Nougat',emoji:'\ud83e\udd5c',inputs:{miel:3,oeuf:2,sucre:1},time:50,sell:4000,xp:180}]},
+  {id:'bar_jus',name:'Bar \u00e0 jus',emoji:'\ud83e\udd64',cost:18000,reqLevel:16,recipes:[
+    {name:'Jus orange',emoji:'\ud83e\uddc3',inputs:{orange:3},output:'jus_orange',time:15,sell:200,xp:40},
+    {name:'Smoothie',emoji:'\ud83e\udd64',inputs:{banane:2,fraise:2,mangue:1},output:'smoothie',time:25,sell:600,xp:80},
+    {name:'Cocktail',emoji:'\ud83c\udf79',inputs:{jus_pomme:1,jus_orange:1,citron:1},time:20,sell:1200,xp:100}]},
+  {id:'cidrerie',name:'Cidrerie',emoji:'\ud83c\udf7a',cost:20000,reqLevel:17,recipes:[
+    {name:'Cidre',emoji:'\ud83c\udf7a',inputs:{pomme:4,sucre:1},output:'cidre',time:40,sell:700,xp:90},
+    {name:'Confiture cerise',emoji:'\ud83c\udf52',inputs:{cerise:3,sucre:1},time:30,sell:1200,xp:85},
+    {name:'Smoothie p\u00eache',emoji:'\ud83c\udf51',inputs:{peche:3,banane:1,lait:1},time:25,sell:1500,xp:95}]},
+  {id:'cave',name:'Cave \u00e0 vin',emoji:'\ud83c\udf77',cost:22000,reqLevel:18,recipes:[
+    {name:'Vin',emoji:'\ud83c\udf77',inputs:{raisin:3},output:'vin',time:50,sell:800,xp:110},
+    {name:'Vinaigre',emoji:'\ud83e\udec7',inputs:{raisin:2,pomme:1},time:35,sell:700,xp:80},
+    {name:'Vin premium',emoji:'\ud83e\udd42',inputs:{raisin:5,miel:1},time:80,sell:5500,xp:280}]},
+  {id:'pizzeria',name:'Pizzeria',emoji:'\ud83c\udf55',cost:28000,reqLevel:19,recipes:[
+    {name:'Pizza',emoji:'\ud83c\udf55',inputs:{farine_ble:2,sauce_tomate:1,fromage:2},output:'pizza',time:30,sell:2500,xp:120},
+    {name:'Calzone',emoji:'\ud83e\uded4',inputs:{farine_ble:2,sauce_tomate:1,charcuterie:1,fromage:1},time:35,sell:3200,xp:150},
+    {name:'Risotto',emoji:'\ud83c\udf5a',inputs:{mais:3,champignon:2,fromage:1,beurre:1},output:'risotto',time:40,sell:2000,xp:110}]},
+  {id:'huilerie',name:'Huilerie',emoji:'\ud83e\uded2',cost:30000,reqLevel:20,recipes:[
+    {name:'Huile olive',emoji:'\ud83e\uded2',inputs:{olive:3},output:'huile_olive',time:40,sell:1000,xp:130},
+    {name:'Lait coco',emoji:'\ud83e\udd65',inputs:{noix_coco:2},output:'lait_coco',time:35,sell:900,xp:110},
+    {name:'Tapenade',emoji:'\ud83e\udee7',inputs:{olive:4,citron:1},time:50,sell:3500,xp:200}]},
+  // ─── Tier 5 : Luxe (lv22-28) ───
+  {id:'patisserie',name:'P\u00e2tisserie',emoji:'\ud83e\uddc1',cost:45000,reqLevel:22,recipes:[
+    {name:'Tarte fruits',emoji:'\ud83e\udd67',inputs:{farine_ble:2,beurre:2,confiture:1,oeuf:1},time:50,sell:5500,xp:300},
+    {name:'Croissant',emoji:'\ud83e\udd50',inputs:{farine_ble:3,beurre:3,creme:1},time:40,sell:4500,xp:250},
+    {name:'Macaron',emoji:'\ud83e\uddc1',inputs:{oeuf:4,sucre:3,creme:2},time:60,sell:7500,xp:400},
+    {name:'Tarte citrouille',emoji:'\ud83e\udd67',inputs:{citrouille:3,farine_ble:2,oeuf:2,sucre:1},output:'tarte_citrouille',time:55,sell:1500,xp:220}]},
+  {id:'atelier_luxe',name:'Atelier luxe',emoji:'\ud83c\udf38',cost:55000,reqLevel:24,recipes:[
+    {name:'Parfum',emoji:'\ud83c\udf38',inputs:{fleur:3,citron:2,miel:1},output:'parfum',time:60,sell:5000,xp:350},
+    {name:'Bougie',emoji:'\ud83d\udd6f\ufe0f',inputs:{miel:2,fleur:2,lait_coco:1},output:'bougie',time:45,sell:2500,xp:200},
+    {name:'Coussin',emoji:'\ud83d\udecb\ufe0f',inputs:{fourrure:3,plume:3,laine:2},output:'coussin',time:50,sell:1200,xp:180}]},
+  {id:'chocolaterie',name:'Chocolaterie',emoji:'\ud83c\udf6b',cost:70000,reqLevel:25,recipes:[
+    {name:'Chocolat',emoji:'\ud83c\udf6b',inputs:{lait_coco:2,sucre:3,beurre:2},output:'chocolat',time:50,sell:3000,xp:200},
+    {name:'Pralin\u00e9s',emoji:'\ud83c\udf6c',inputs:{chocolat:2,miel:2,creme:1},time:55,sell:9000,xp:500},
+    {name:'Truffes',emoji:'\ud83d\udfe4',inputs:{chocolat:3,creme:2,beurre:1},time:70,sell:13000,xp:650},
+    {name:'Fontaine choco',emoji:'\ud83e\udd62',inputs:{chocolat:4,lait_coco:2,sucre:2},time:90,sell:20000,xp:900}]},
+  {id:'rotisserie',name:'R\u00f4tisserie',emoji:'\ud83c\udf56',cost:90000,reqLevel:27,recipes:[
+    {name:'Poulet r\u00f4ti',emoji:'\ud83c\udf57',inputs:{oeuf:5,patate:3,oignon:2,beurre:1},time:60,sell:8000,xp:450},
+    {name:'Brochettes',emoji:'\ud83c\udf62',inputs:{viande_porc:3,oignon:2,champignon:2},time:50,sell:6500,xp:380},
+    {name:'Festin dinde',emoji:'\ud83e\udd83',inputs:{roti_dinde:2,sauce_tomate:1,fromage:2,citrouille:1},time:80,sell:18000,xp:800}]},
+  {id:'restaurant',name:'Restaurant',emoji:'\ud83c\udf7d\ufe0f',cost:120000,reqLevel:28,recipes:[
+    {name:'Menu gastro',emoji:'\ud83c\udf7d\ufe0f',inputs:{fromage:2,vin:1,huile_olive:1,farine_ble:2},time:70,sell:15000,xp:750},
+    {name:'Festin royal',emoji:'\ud83d\udc51',inputs:{chocolat:2,vin:2,fromage:2,creme:2},time:100,sell:28000,xp:1300},
+    {name:'Banquet',emoji:'\ud83c\udf89',inputs:{confiture:2,fromage:3,vin:2,chocolat:1,huile_olive:1},time:130,sell:45000,xp:2200}]},
+  // ─── Tier 6 : Endgame (lv30) ───
+  {id:'palace',name:'Palace \u00e9toil\u00e9',emoji:'\ud83c\udff0',cost:250000,reqLevel:30,recipes:[
+    {name:'D\u00eener royal',emoji:'\ud83d\udc51',inputs:{pizza:1,vin:2,chocolat:2,parfum:1,roti_dinde:1},time:120,sell:60000,xp:3000},
+    {name:'Buffet palace',emoji:'\ud83c\udf86',inputs:{risotto:2,smoothie:2,tarte_citrouille:1,charcuterie:2,vin:1},time:150,sell:80000,xp:4000},
+    {name:'Gala ultime',emoji:'\ud83c\udfc6',inputs:{chocolat:3,parfum:2,vin:3,pizza:2,coussin:1,cidre:2},time:200,sell:150000,xp:8000}]}
+];
+var BCOLS=5,BMAX=10,BTOTAL=50,BSTART=3;
+
 // ===== GRID =====
-var GCOLS=6,GMAX=9,GTOTAL=GCOLS*GMAX,GSTART=12;
+var GCOLS=5,GMAX=15,GTOTAL=GCOLS*GMAX,GSTART=12;
 
 // ===== STATE =====
 var SAVE_KEY='farmvalley_save';
-var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000];
-var state={version:3,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000,
+  58000,73000,90000,110000,135000,165000,200000,245000,300000,370000];
+var state={version:6,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
   selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
-  autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,
+  autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,savings:0,
+  resources:{},bplots:[],bgridBought:0,selBuilding:0,selBuildingPlot:-1,
   day:1,month:1,lastDayTick:0,lastWaterRegen:0,lastSave:0};
 
 // ===== DOM =====
@@ -181,15 +387,26 @@ function init(){
   if(!state.ahResets)state.ahResets=0;
   if(!state.awResets)state.awResets=0;
   if(!state.debt)state.debt=0;
+  if(state.savings===undefined)state.savings=0;
+  if(!state.resources)state.resources={};
+  RES_KEYS.forEach(function(k){if(state.resources[k]===undefined)state.resources[k]=0;});
+  if(!state.bplots)state.bplots=[];
+  if(!state.bgridBought)state.bgridBought=0;
+  if(state.selBuilding===undefined)state.selBuilding=0;
+  if(state.selBuildingPlot===undefined)state.selBuildingPlot=-1;
   state.maxWater=100+(state.upgrades.watermax||0)*10;
   while(state.plots.length<GTOTAL)state.plots.push({catIdx:-1,itemIdx:-1,wc:0,lw:0,locked:state.plots.length>=GSTART+state.gridBought});
   var unlocked=GSTART+state.gridBought;
   for(var i=0;i<state.plots.length;i++)state.plots[i].locked=i>=unlocked;
+  while(state.bplots.length<BTOTAL)state.bplots.push({buildingIdx:-1,recipe:-1,prodStart:0,locked:state.bplots.length>=BSTART+state.bgridBought});
+  var bunlocked=BSTART+state.bgridBought;
+  for(var i=0;i<state.bplots.length;i++)state.bplots[i].locked=i>=bunlocked;
   if(!state.lastDayTick)state.lastDayTick=Date.now();
   if(!state.lastWaterRegen)state.lastWaterRegen=Date.now();
   if(!state.lastSave)state.lastSave=Date.now();
   processOffline();
   buildSeedBar();buildFarm();buildShop();buildUpgrades();
+  buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();
   updateAuto();updateUI();
   setInterval(gameTick,500);
   setInterval(saveGame,5000);
@@ -210,6 +427,7 @@ function processOffline(){
     var mPassed=Math.floor(totalDays/30);
     state.day=totalDays%30+1;
     if(mPassed>0){state.month+=mPassed;var r=getRent()*mPassed;
+      if(state.savings>0&&getSavingsRate()>0){for(var si=0;si<mPassed;si++){state.savings+=Math.floor(state.savings*getSavingsRate())}}
       if(state.debt>0){for(var mi=0;mi<mPassed;mi++){var intR=getDebtRate();state.debt+=Math.ceil(state.debt*intR)}}
       if(state.coins>=r){state.coins-=r}else{state.debt+=(r-state.coins);state.coins=0}}
   }
@@ -218,7 +436,9 @@ function processOffline(){
     var end=Math.min(state.autoHarvestEnd,now);
     state.plots.forEach(function(p){
       if(p.catIdx<0||p.locked)return;var it=ITEMS[p.catIdx][p.itemIdx];
-      if(p.wc>=CAT_WATER[p.catIdx]){var sv=getSellVal(it);state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
+      if(p.wc>=CAT_WATER[p.catIdx]){var sv=getSellVal(it);state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
+        var rk=HARVEST_RES[it[N]];if(rk)state.resources[rk]=(state.resources[rk]||0)+1;
+        p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
     });
   }
   // Auto-water offline (approximate)
@@ -247,8 +467,9 @@ function getAutoWDur(){var l=state.upgrades.autowater||0;return l>0?l*60000:0}
 function getReactivateHCost(){var l=state.upgrades.autoharvest||0;return Math.floor(80*l*(l>=5?3:1))}
 function getReactivateWCost(){var l=state.upgrades.autowater||0;return Math.floor(60*l*(l>=5?3:1))}
 function getDebtRate(){return Math.min(0.05+state.debt/100000,0.30)}
+function getSavingsRate(){var lv=state.upgrades.savingsrate||0;if(lv<=0)return 0;return(1+(lv-1)*24/19)/100}
 function getVisibleRows(){var u=GSTART+state.gridBought;return Math.min(GMAX,Math.floor((u-1)/GCOLS)+2)}
-function xpFor(lv){return lv-1<XP_TABLE.length?XP_TABLE[lv-1]:45000+(lv-20)*10000}
+function xpFor(lv){return lv-1<XP_TABLE.length?XP_TABLE[lv-1]:370000+(lv-30)*50000}
 function checkLevelUp(){
   var ch=false;
   while(state.xp>=xpFor(state.level+1)){state.level++;ch=true;
@@ -346,6 +567,7 @@ function onPlot(e){
   if(isMature(p)){
     var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
     state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
+    var rk=HARVEST_RES[it[N]];if(rk){state.resources[rk]=(state.resources[rk]||0)+1;showFloat(fx,fy-40,'+1'+RES_INFO[rk].emoji);}
     showFloat(fx,fy,'+'+fmtN(sv)+'💰');showFloat(fx,fy-20,'+'+it[XP]+'⭐');
     p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0;
     checkLevelUp();updateUI()}
@@ -418,6 +640,74 @@ function buildShop(){
       list.appendChild(dd);
     });
   }
+  // Savings
+  var sLv=state.upgrades.savingsrate||0;
+  if(sLv>0){
+    var sh2=document.createElement('div');sh2.className='sect-hdr';sh2.textContent='🏦 Épargne ('+Math.round(getSavingsRate()*10000)/100+'%/mois)';list.appendChild(sh2);
+    var si2=document.createElement('div');si2.className='shop-item';
+    si2.innerHTML='<div class="icon">🏦</div><div class="info"><div class="name">Solde: '+fmtN(state.savings)+'💰</div><div class="desc">Intérêt versé chaque mois</div></div>';
+    list.appendChild(si2);
+    // Deposit
+    var depDiv=document.createElement('div');depDiv.className='shop-item';depDiv.style.flexWrap='wrap';
+    depDiv.innerHTML='<div class="icon">⬇️</div><div class="info"><div class="name">Déposer</div></div>';
+    var depRow=document.createElement('div');depRow.className='sav-row';
+    var depInput=document.createElement('input');depInput.type='number';depInput.className='sav-input';depInput.placeholder='Montant';depInput.min='1';
+    depRow.appendChild(depInput);
+    [10,25,50,75,100].forEach(function(pct){
+      var b=document.createElement('button');b.type='button';b.className='sav-pct';b.textContent=pct+'%';
+      (function(p,inp){b.addEventListener('click',function(){inp.value=p<100?Math.floor(state.coins*p/100):state.coins;});})(pct,depInput);
+      depRow.appendChild(b);
+    });
+    var depBtn=document.createElement('button');depBtn.type='button';depBtn.className='sav-act';depBtn.style.background='#2980b9';depBtn.textContent='OK';
+    (function(inp){depBtn.addEventListener('click',function(){
+      var a=parseInt(inp.value)||0;
+      if(a<1||a>state.coins){showFloat(innerWidth/2,innerHeight/2,'❌ Montant invalide');return;}
+      state.coins-=a;state.savings+=a;inp.value='';
+      showFloat(innerWidth/2,innerHeight/2,'🏦 +'+fmtN(a)+'💰');updateUI();buildShop();
+    });})(depInput);
+    depRow.appendChild(depBtn);depDiv.appendChild(depRow);list.appendChild(depDiv);
+    // Withdraw
+    var witDiv=document.createElement('div');witDiv.className='shop-item';witDiv.style.flexWrap='wrap';
+    witDiv.innerHTML='<div class="icon">⬆️</div><div class="info"><div class="name">Retirer</div></div>';
+    var witRow=document.createElement('div');witRow.className='sav-row';
+    var witInput=document.createElement('input');witInput.type='number';witInput.className='sav-input';witInput.placeholder='Montant';witInput.min='1';
+    witRow.appendChild(witInput);
+    [10,25,50,75,100].forEach(function(pct){
+      var b=document.createElement('button');b.type='button';b.className='sav-pct';b.textContent=pct+'%';
+      (function(p,inp){b.addEventListener('click',function(){inp.value=p<100?Math.floor(state.savings*p/100):state.savings;});})(pct,witInput);
+      witRow.appendChild(b);
+    });
+    var witBtn=document.createElement('button');witBtn.type='button';witBtn.className='sav-act';witBtn.style.background='#e67e22';witBtn.textContent='OK';
+    (function(inp){witBtn.addEventListener('click',function(){
+      var a=parseInt(inp.value)||0;
+      if(a<1||a>state.savings){showFloat(innerWidth/2,innerHeight/2,'❌ Montant invalide');return;}
+      state.savings-=a;state.coins+=a;inp.value='';
+      showFloat(innerWidth/2,innerHeight/2,'💰 +'+fmtN(a)+' retiré');updateUI();buildShop();
+    });})(witInput);
+    witRow.appendChild(witBtn);witDiv.appendChild(witRow);list.appendChild(witDiv);
+  }
+  // Sell resources
+  var hasRes=false;RES_KEYS.forEach(function(k){if((state.resources[k]||0)>0)hasRes=true;});
+  if(hasRes){
+    var rh=document.createElement('div');rh.className='sect-hdr';rh.textContent='📦 Vendre des ressources';list.appendChild(rh);
+    RES_KEYS.forEach(function(k){
+      var v=state.resources[k]||0;if(v<=0)return;
+      var sp=RES_SELL[k]||10;
+      var rd=document.createElement('div');rd.className='shop-item';
+      rd.innerHTML='<div class="icon">'+RES_INFO[k].emoji+'</div><div class="info"><div class="name">'+RES_INFO[k].name+' (×'+v+')</div><div class="desc">'+fmtN(sp)+'💰 / unité</div></div><button class="buy-btn" style="background:#e67e22">×1</button><button class="buy-btn" style="background:#c0392b;margin-left:3px">Tout</button>';
+      var btns=rd.querySelectorAll('.buy-btn');
+      (function(key,sellP){
+        btns[0].addEventListener('click',function(){
+          if((state.resources[key]||0)>=1){state.resources[key]--;state.coins+=sellP;state.totalEarned+=sellP;
+            showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(sellP)+'💰');updateUI();updateResBar();buildShop();}});
+        btns[1].addEventListener('click',function(){
+          var n=state.resources[key]||0;if(n<1)return;var total=n*sellP;
+          state.resources[key]=0;state.coins+=total;state.totalEarned+=total;
+          showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(total)+'💰');updateUI();updateResBar();buildShop();});
+      })(k,sp);
+      list.appendChild(rd);
+    });
+  }
   // Items by category
   for(var c=0;c<3;c++){
     var hdr=document.createElement('div');hdr.className='sect-hdr';hdr.textContent=CAT_ICONS[c]+' '+CAT_NAMES[c]+' ('+CAT_WATER[c]+'💧)';list.appendChild(hdr);
@@ -472,6 +762,7 @@ function buildUpgrades(){
     if(upg.id==='autoharvest'){if(lv>0)extra=' ('+lv*2+'min)';if(state.ahResets>0)extra+=' 🔄×'+state.ahResets}
     if(upg.id==='autowater'){if(lv>0)extra=' ('+lv+'min)';if(state.awResets>0)extra+=' 🔄×'+state.awResets}
     if(upg.id==='watermax')extra=' ('+state.maxWater+'/2000)';
+    if(upg.id==='savingsrate'){if(lv>0)extra=' ('+Math.round(getSavingsRate()*10000)/100+'%/mois)'};
     d.innerHTML='<div class="icon">'+upg.icon+'</div><div class="info"><div class="name">'+upg.name+' ('+lv+'/'+upg.max+')</div><div class="desc">'+upg.desc+extra+'</div></div><button class="buy-btn" '+(mx||state.coins<cost?'disabled':'')+'>'+(mx?'MAX':fmtN(cost)+'💰')+'</button>';
     if(!mx){d.querySelector('.buy-btn').addEventListener('click',function(){
       var rm2=1;if(upg.id==='autoharvest')rm2=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm2=Math.pow(1.25,state.awResets||0);
@@ -486,8 +777,12 @@ function buildUpgrades(){
   // Grid info
   var gi=document.createElement('div');gi.className='upg-item';
   var unlocked=GSTART+state.gridBought;
-  gi.innerHTML='<div class="icon">🔲</div><div class="info"><div class="name">Parcelles</div><div class="desc">'+unlocked+'/'+GTOTAL+' débloquées · Touche 🔒 sur la ferme</div></div><div style="font-size:.8rem;font-weight:bold">'+fmtN(getCellCost())+'💰</div>';
+  gi.innerHTML='<div class="icon">🔲</div><div class="info"><div class="name">Parcelles ferme</div><div class="desc">'+unlocked+'/'+GTOTAL+' débloquées · Touche 🔒 sur la ferme</div></div><div style="font-size:.8rem;font-weight:bold">'+fmtN(getCellCost())+'💰</div>';
   list.appendChild(gi);
+  var bi=document.createElement('div');bi.className='upg-item';
+  var bunlocked=BSTART+state.bgridBought;
+  bi.innerHTML='<div class="icon">🏗️</div><div class="info"><div class="name">Parcelles ateliers</div><div class="desc">'+bunlocked+'/'+BTOTAL+' débloquées · Touche 🔒 dans Ateliers</div></div><div style="font-size:.8rem;font-weight:bold">'+fmtN(getBCellCost())+'💰</div>';
+  list.appendChild(bi);
 }
 
 // ===== AUTO BUTTONS =====
@@ -544,9 +839,19 @@ function buildStats(){
     ['🤖 Auto-récolte',ahLv>0?'Niv.'+ahLv+' ('+ahLv*2+'min)':'Non'],
     ['🚿 Auto-arrosage',awLv>0?'Niv.'+awLv+' ('+awLv+'min)':'Non'],
     ['📅 Jour/Mois','J.'+state.day+' M.'+state.month],['🏠 Loyer',fmtN(getRent())+'💰/mois'],
-    ['💳 Crédit',state.debt>0?fmtN(state.debt)+'💰 ('+Math.round(getDebtRate()*100)+'%/mois)':'Aucun']];
+    ['💳 Crédit',state.debt>0?fmtN(state.debt)+'💰 ('+Math.round(getDebtRate()*100)+'%/mois)':'Aucun'],
+    ['🏦 \u00c9pargne',state.savings>0?fmtN(state.savings)+'💰 ('+Math.round(getSavingsRate()*10000)/100+'%/mois)':'Non d\u00e9bloqu\u00e9'],
+    ['🏗\ufe0f Ateliers',state.bgridBought>0?(BSTART+state.bgridBought)+'/'+BTOTAL+' parcelles':BSTART+'/'+BTOTAL+' parcelles']];
   rows.forEach(function(r){var d=document.createElement('div');d.className='stat-row';
     d.innerHTML='<span>'+r[0]+'</span><b>'+r[1]+'</b>';list.appendChild(d)});
+  // Resources
+  var hasR=false;RES_KEYS.forEach(function(k){if((state.resources[k]||0)>0)hasR=true;});
+  if(hasR){
+    var rh=document.createElement('div');rh.className='sect-hdr';rh.textContent='📦 Ressources';list.appendChild(rh);
+    RES_KEYS.forEach(function(k){var v=state.resources[k]||0;if(v<=0)return;
+      var d=document.createElement('div');d.className='stat-row';
+      d.innerHTML='<span>'+RES_INFO[k].emoji+' '+RES_INFO[k].name+'</span><b>'+v+'</b>';list.appendChild(d);});
+  }
 }
 
 // ===== UI =====
@@ -555,7 +860,8 @@ function updateUI(){
   levelEl.textContent=state.level;dayEl.textContent=state.day;monthEl.textContent=state.month;
   rentEl.textContent=fmtN(getRent());
   var debtInfo=$('debt-info');if(state.debt>0)debtInfo.innerHTML=' | 💳<b style="color:#e74c3c">'+fmtN(state.debt)+'</b>';else debtInfo.textContent='';
-  updateVisuals();
+  var savInfo=$('savings-info');if(state.savings>0)savInfo.innerHTML=' | 🏦<b style="color:#2980b9">'+fmtN(state.savings)+'</b>';else savInfo.textContent='';
+  updateVisuals();updateBuildingVisuals();
 }
 function fmtN(n){if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e4)return(n/1e3).toFixed(1)+'K';return n}
 
@@ -571,8 +877,10 @@ function gameTick(){
     state.lastDayTick+=dP*20000;
     for(var d=0;d<dP;d++){state.day++;
       if(state.day>30){state.day=1;state.month++;var rent=getRent();
-        if(state.debt>0){var interest=Math.ceil(state.debt*getDebtRate());state.debt+=interest;
-          showFloat(innerWidth/2,50,'💳 Intérêts: +'+fmtN(interest)+'💰')}
+        if(state.savings>0&&getSavingsRate()>0){var interest=Math.floor(state.savings*getSavingsRate());state.savings+=interest;
+          showFloat(innerWidth/2,20,'🏦 Intérêts: +'+fmtN(interest)+'💰')}
+        if(state.debt>0){var dInterest=Math.ceil(state.debt*getDebtRate());state.debt+=dInterest;
+          showFloat(innerWidth/2,50,'💳 Intérêts: +'+fmtN(dInterest)+'💰')}
         if(state.coins>=rent){state.coins-=rent}else{state.debt+=(rent-state.coins);state.coins=0}
         showFloat(innerWidth/2,80,'🏠 Loyer M.'+state.month+': -'+fmtN(rent)+'💰')}}
   }
@@ -590,11 +898,158 @@ function gameTick(){
       if(p.catIdx<0||p.locked)return;
       if(isMature(p)){var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
         state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
+        var rk=HARVEST_RES[it[N]];if(rk)state.resources[rk]=(state.resources[rk]||0)+1;
         showFloat(Math.random()*innerWidth*.6+innerWidth*.2,Math.random()*200+200,'+'+fmtN(sv)+'💰');
         p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
     });checkLevelUp();
   }
   updateAuto();updateUI();state.lastSave=now;
+}
+
+// ===== BUILDINGS =====
+function getBCellCost(){return Math.floor(200*Math.pow(1.25,state.bgridBought))}
+function getBVisibleRows(){var u=BSTART+state.bgridBought;return Math.min(Math.ceil(BTOTAL/3),Math.floor((u-1)/3)+2)}
+function canMakeRecipe(rec){for(var k in rec.inputs){if((state.resources[k]||0)<rec.inputs[k])return false;}return true;}
+
+function buildBuildingGrid(){
+  var bfarm=$('bfarm');if(!bfarm)return;
+  var rows=getBVisibleRows(),cols=3;
+  var ps=Math.min(Math.floor((innerWidth*0.95-16)/cols)-4,110);
+  bfarm.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  bfarm.innerHTML='';
+  var total=rows*cols;if(total>BTOTAL)total=BTOTAL;
+  for(var i=0;i<total;i++){
+    var d=document.createElement('div');d.className='bplot';
+    d.dataset.idx=i;d.addEventListener('click',onBPlot);bfarm.appendChild(d);
+  }
+  updateBuildingVisuals();
+}
+
+function updateBuildingVisuals(){
+  var bfarm=$('bfarm');if(!bfarm)return;
+  var now=Date.now(),cc=getBCellCost();
+  bfarm.querySelectorAll('.bplot').forEach(function(el,i){
+    if(i>=state.bplots.length){el.className='bplot bempty';el.innerHTML='<span style="font-size:.7rem;color:#999">+</span>';return;}
+    var bp=state.bplots[i];
+    if(bp.locked){el.className='bplot locked'+(state.coins>=cc?' afford':'');
+      el.innerHTML='\ud83d\udd12<span class="sub">'+fmtN(cc)+'\ud83d\udcb0</span>';return;}
+    if(bp.buildingIdx<0){el.className='bplot bempty';el.innerHTML='<span style="font-size:1.2rem;opacity:.3">\u2795</span>';return;}
+    var bld=BUILDINGS[bp.buildingIdx];
+    if(bp.recipe<0){
+      el.className='bplot bbuilt';
+      el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+bld.name+'</span><span class="sub">\ud83d\udc46 Choisir recette</span>';return;}
+    var rec=bld.recipes[bp.recipe];
+    var elapsed=(now-bp.prodStart)/1000;
+    if(elapsed>=rec.time){
+      el.className='bplot bdone';
+      el.innerHTML='<span class="emoji">'+rec.emoji+'</span><span class="bname">'+rec.name+'</span><span class="sub">\u2705 R\u00e9cup\u00e9rer!</span>';
+    }else{
+      el.className='bplot bprod';
+      var pct=Math.min(100,Math.floor(elapsed/rec.time*100));
+      var rem=Math.ceil(rec.time-elapsed);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
+      el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+rec.name+'</span>'
+        +'<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'
+        +'<span class="sub">\u23f3 '+ts+' ('+pct+'%)</span>';
+    }
+  });
+}
+
+function onBPlot(e){
+  var idx=+e.currentTarget.dataset.idx;
+  if(idx>=state.bplots.length)return;
+  var bp=state.bplots[idx];
+  var r=e.currentTarget.getBoundingClientRect(),fx=r.left+r.width/2,fy=r.top;
+  // Locked
+  if(bp.locked){var c=getBCellCost();
+    if(state.coins>=c){state.coins-=c;bp.locked=false;state.bgridBought++;
+      showFloat(fx,fy,'🔓 -'+fmtN(c));buildBuildingGrid();updateUI();}
+    else showFloat(fx,fy,'❌ '+fmtN(c)+'💰');return;}
+  // Empty → place selected building
+  if(bp.buildingIdx<0){
+    var bi=state.selBuilding||0;
+    if(bi<0||bi>=BUILDINGS.length)return;
+    var bld=BUILDINGS[bi];
+    if(bld.reqLevel>state.level){showFloat(fx,fy,'🔒 Niv.'+bld.reqLevel);return;}
+    if(state.coins<bld.cost){showFloat(fx,fy,'❌ '+fmtN(bld.cost)+'💰');return;}
+    state.coins-=bld.cost;bp.buildingIdx=bi;bp.recipe=-1;bp.prodStart=0;
+    showFloat(fx,fy,bld.emoji+' -'+fmtN(bld.cost));
+    state.selBuildingPlot=idx;buildRecipeBar();updateBuildingVisuals();updateUI();return;}
+  // Built & idle → select for recipes
+  if(bp.recipe<0){
+    state.selBuildingPlot=idx;buildRecipeBar();updateBuildingVisuals();return;}
+  // Check if production done
+  var bld=BUILDINGS[bp.buildingIdx],rec=bld.recipes[bp.recipe];
+  var elapsed=(Date.now()-bp.prodStart)/1000;
+  if(elapsed>=rec.time){
+    if(rec.output){
+      state.resources[rec.output]=(state.resources[rec.output]||0)+1;
+      showFloat(fx,fy,'+1 '+RES_INFO[rec.output].emoji);
+    }else{
+      state.coins+=rec.sell;state.totalEarned+=rec.sell;
+      showFloat(fx,fy,'+'+fmtN(rec.sell)+'💰');
+    }
+    state.xp+=rec.xp;
+    bp.recipe=-1;bp.prodStart=0;
+    checkLevelUp();updateResBar();updateBuildingVisuals();updateUI();
+    state.selBuildingPlot=idx;buildRecipeBar();
+  }else{
+    showFloat(fx,fy,'⏳ '+Math.ceil(rec.time-elapsed)+'s');
+  }
+}
+
+function startRecipe(bplotIdx,recipeIdx){
+  var bp=state.bplots[bplotIdx];var bld=BUILDINGS[bp.buildingIdx];var rec=bld.recipes[recipeIdx];
+  if(!canMakeRecipe(rec))return false;
+  for(var k in rec.inputs)state.resources[k]-=rec.inputs[k];
+  bp.recipe=recipeIdx;bp.prodStart=Date.now();
+  updateResBar();updateBuildingVisuals();return true;
+}
+
+function buildBldBar(){
+  var bar=$('bld-bar');if(!bar)return;bar.innerHTML='';
+  BUILDINGS.forEach(function(bld,i){
+    var ok=bld.reqLevel<=state.level;
+    var b=document.createElement('button');
+    b.className='bld-btn'+((state.selBuilding||0)===i?' active':'');
+    b.disabled=!ok;
+    b.innerHTML='<span class="b-ico">'+bld.emoji+'</span><span class="b-name">'+(ok?bld.name:'\ud83d\udd12 Niv.'+bld.reqLevel)+'</span><span style="font-size:.5rem;color:#888">'+(ok?fmtN(bld.cost)+'\ud83d\udcb0':'')+'</span>';
+    b.title=bld.name;
+    b.addEventListener('click',function(){state.selBuilding=i;buildBldBar();});
+    bar.appendChild(b);
+  });
+}
+
+function buildRecipeBar(){
+  var bar=$('recipe-bar');if(!bar)return;bar.innerHTML='';
+  var idx=state.selBuildingPlot;
+  if(idx<0||idx>=state.bplots.length)return;
+  var bp=state.bplots[idx];
+  if(bp.locked||bp.buildingIdx<0||bp.recipe>=0)return;
+  var bld=BUILDINGS[bp.buildingIdx];
+  var hdr=document.createElement('div');hdr.style.cssText='width:100%;text-align:center;font-size:.75rem;font-weight:bold;color:#5d4037;padding:2px';
+  hdr.textContent=bld.emoji+' '+bld.name+' — Recettes:';bar.appendChild(hdr);
+  bld.recipes.forEach(function(rec,ri){
+    var ok=canMakeRecipe(rec);
+    var b=document.createElement('button');b.className='recipe-btn'+(ok?' can':' cant');
+    var ingTxt='';for(var k in rec.inputs)ingTxt+=rec.inputs[k]+RES_INFO[k].emoji+' ';
+    var outTxt=rec.output?'→'+RES_INFO[rec.output].emoji:'→'+fmtN(rec.sell)+'💰';
+    b.innerHTML='<span class="r-ico">'+rec.emoji+'</span><b>'+rec.name+'</b><span>'+ingTxt+'</span><span>⏱'+rec.time+'s '+outTxt+'</span>';
+    if(ok){(function(rIdx){b.addEventListener('click',function(){
+      if(startRecipe(idx,rIdx)){showFloat(innerWidth/2,innerHeight/2,'🔨 '+rec.name+'!');buildRecipeBar();}
+    });})(ri);}
+    bar.appendChild(b);
+  });
+}
+
+function updateResBar(){
+  var bar=$('res-bar');if(!bar)return;bar.innerHTML='';
+  var hasAny=false;
+  RES_KEYS.forEach(function(k){
+    var v=state.resources[k]||0;if(v>0){hasAny=true;
+      var d=document.createElement('span');d.className='res-tag';
+      d.innerHTML=RES_INFO[k].emoji+'<b>'+v+'</b>';d.title=RES_INFO[k].name;bar.appendChild(d);}
+  });
+  if(!hasAny)bar.innerHTML='<span style="font-size:.65rem;color:#888;text-align:center;padding:4px">R\u00e9colte tes cultures, arbres et animaux pour obtenir des ressources \ud83c\udf3e\ud83c\udf4e\ud83e\udd5b</span>';
 }
 
 // ===== FLOAT =====
@@ -606,6 +1061,14 @@ function showFloat(x,y,t){var e=document.createElement('div');e.className='float
 function saveGame(){state.lastSave=Date.now();try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){}}
 function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.parse(d);
   if(!s.version||s.version<3){s.plots=[];s.upgrades={};s.gridBought=0;s.water=50;s.maxWater=100;s.day=1;s.month=1;s.lastDayTick=0;s.lastWaterRegen=0;s.version=3}
+  if(s.version<4){s.resources={};s.bplots=[];s.bgridBought=0;s.selBuilding=0;s.selBuildingPlot=-1;s.version=4}
+  if(s.version<5){var bmap={0:1,1:4,2:2,3:6};if(s.bplots)s.bplots.forEach(function(bp){
+    if(bp.buildingIdx>=0&&bmap[bp.buildingIdx]!==undefined)bp.buildingIdx=bmap[bp.buildingIdx];
+    bp.recipe=-1;bp.prodStart=0;});s.selBuilding=0;s.selBuildingPlot=-1;s.version=5}
+  if(s.version<6){var bm6={0:0,1:2,2:4,3:5,4:6,5:7,6:8,7:10,8:11,9:14,10:16,11:17,12:19,13:21};if(s.bplots)s.bplots.forEach(function(bp){
+    if(bp.buildingIdx>=0&&bm6[bp.buildingIdx]!==undefined)bp.buildingIdx=bm6[bp.buildingIdx];
+    else if(bp.buildingIdx>=0)bp.buildingIdx=-1;
+    bp.recipe=-1;bp.prodStart=0;});s.selBuilding=0;s.selBuildingPlot=-1;s.version=6}
   for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
 
 // ===== TABS =====
@@ -617,11 +1080,12 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     if(btn.dataset.panel==='shop')buildShop();
     if(btn.dataset.panel==='upgrades')buildUpgrades();
     if(btn.dataset.panel==='stats')buildStats();
+    if(btn.dataset.panel==='buildings'){buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
     var isFarm=btn.dataset.panel==='farm';
     $('cat-bar').style.display=isFarm?'flex':'none';
     seedBar.style.display=isFarm?'flex':'none';
     $('auto-bar').style.display=isFarm?'flex':'none';
-    $('day-bar').style.display=isFarm?'flex':'none';
+    $('day-bar').style.display=(isFarm||btn.dataset.panel==='buildings')?'flex':'none';
   });
 });
 
