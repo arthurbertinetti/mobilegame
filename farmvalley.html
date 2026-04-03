@@ -175,6 +175,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .gitem-btn:disabled{opacity:.3}
 .gitem-btn .gi-ico{font-size:1.3rem}
 .gitem-btn .gi-cost{color:#888;font-size:.55rem}
+#bmode-bar{display:flex;gap:4px;justify-content:center;padding:4px;flex-wrap:wrap}
 #garden-modes{display:flex;gap:4px;justify-content:center;padding:4px}
 .gmode-btn{padding:5px 14px;border-radius:8px;border:2px solid transparent;background:rgba(255,255,255,.7);cursor:pointer;font-size:.75rem;font-weight:bold}
 .gmode-btn.active{border-color:#e67e22;background:#FFF3E0}
@@ -187,6 +188,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div id="stats">
     <span>💰<b id="coins">20</b></span>
     <span>💧<b id="water">50</b>/<small id="maxw">100</small></span>
+    <span>🪵<b id="wood">0</b></span>
     <span>⭐<b id="stars">0</b></span>
     <span>🏅Niv.<b id="level">1</b></span>
   </div>
@@ -208,7 +210,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div class="panel" id="panel-upgrades"><h3>⬆️ Améliorations</h3><div id="upg-list"></div></div>
   <div class="panel" id="panel-stats"><h3>📊 Statistiques</h3><div id="stats-list"></div></div>
   <div class="panel" id="panel-resources"><h3>📦 Ressources</h3><div id="res-grid-container"></div></div>
-  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-aa">🏭 Atelier</button></div><div id="res-bar"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
+  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-aa">🏭 Atelier</button></div><div id="res-bar"></div><div id="bmode-bar"></div><div id="bmode-info" class="garden-info"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
   <div class="panel" id="panel-recipes"><h3>📖 Recettes</h3><div id="recipe-list"></div></div>
   <div class="panel" id="panel-well"><h3>🪣 Puits</h3><div id="well-container"></div></div>
   <div class="panel" id="panel-quests"><h3>🎯 Quêtes mensuelles</h3><div id="quest-list"></div></div>
@@ -216,15 +218,15 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 </div>
 <div id="tabs">
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
+  <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
+  <button class="tab-btn" data-panel="resources"><span class="ico">📦</span>Stock</button>
   <button class="tab-btn" data-panel="shop"><span class="ico">🏪</span>Boutique</button>
   <button class="tab-btn" data-panel="upgrades"><span class="ico">⬆️</span>Amélio.</button>
-  <button class="tab-btn" data-panel="stats"><span class="ico">📊</span>Stats</button>
-  <button class="tab-btn" data-panel="resources"><span class="ico">📦</span>Stock</button>
-  <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
-  <button class="tab-btn" data-panel="recipes"><span class="ico">📖</span>Recettes</button>
   <button class="tab-btn" data-panel="well"><span class="ico">🪣</span>Puits</button>
   <button class="tab-btn" data-panel="quests"><span class="ico">🎯</span>Quêtes</button>
+  <button class="tab-btn" data-panel="recipes"><span class="ico">📖</span>Recettes</button>
   <button class="tab-btn" data-panel="garden"><span class="ico">🌷</span>Jardin</button>
+  <button class="tab-btn" data-panel="stats"><span class="ico">📊</span>Stats</button>
 </div>
 <div id="overlay">
   <h2>🌾 Farm Valley</h2>
@@ -282,7 +284,7 @@ var WATER_PACKS=[[10,20,'10💧'],[30,50,'30💧'],[100,150,'100💧']];
 // ===== RESOURCES =====
 var RES_KEYS=[
   // --- Bruts (r\u00e9colt\u00e9s) ---
-  'lait','ble','mais','oeuf','laine',
+  'bois','lait','ble','mais','oeuf','laine',
   'pomme','fraise','lait_chevre','citron','miel','raisin','noix_coco','olive',
   'tomate','carotte','oignon','patate','champignon','citrouille','cerise','fleur',
   'poire','orange','banane','peche','mangue',
@@ -294,6 +296,7 @@ var RES_KEYS=[
   'charcuterie','saucisse','pizza','risotto','tarte_citrouille',
   'parfum','bougie','coussin','roti_dinde','salade_composee'];
 var RES_INFO={
+  bois:{name:'Bois',emoji:'🪵'},
   lait:{name:'Lait',emoji:'🥛'},ble:{name:'Blé',emoji:'🌾'},mais:{name:'Maïs',emoji:'🌽'},
   oeuf:{name:'Œuf',emoji:'🥚'},laine:{name:'Laine',emoji:'🧶'},
   pomme:{name:'Pomme',emoji:'🍎'},fraise:{name:'Fraise',emoji:'🍓'},
@@ -325,7 +328,7 @@ var RES_INFO={
   coussin:{name:'Coussin',emoji:'🛋️'},roti_dinde:{name:'Rôti dinde',emoji:'🍗'},
   salade_composee:{name:'Salade',emoji:'🥗'}
 };
-var RES_SELL={lait:50,ble:30,mais:35,oeuf:60,laine:70,
+var RES_SELL={bois:20,lait:50,ble:30,mais:35,oeuf:60,laine:70,
   pomme:40,fraise:55,lait_chevre:80,citron:50,miel:100,raisin:90,noix_coco:120,olive:110,
   tomate:25,carotte:15,oignon:35,patate:30,champignon:80,citrouille:120,cerise:100,fleur:150,
   poire:45,orange:50,banane:55,peche:60,mangue:80,
@@ -510,7 +513,7 @@ function init(){
   processOffline();
   if(state.questMonth!==state.month||state.quests.length!==10)generateQuests();
   buildSeedBar();buildFarm();buildShop();buildUpgrades();
-  buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();
+  buildBModeBar();buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();
   updateAuto();updateUI();
   setInterval(gameTick,500);
   setInterval(saveGame,5000);
@@ -533,7 +536,8 @@ function processOffline(){
     if(mPassed>0){state.month+=mPassed;var r=getRent()*mPassed;
       if(state.savings>0&&getSavingsRate()>0){for(var si=0;si<mPassed;si++){state.savings+=Math.floor(state.savings*getSavingsRate())}}
       if(state.debt>0){for(var mi=0;mi<mPassed;mi++){var intR=getDebtRate();state.debt+=Math.ceil(state.debt*intR)}}
-      if(state.coins>=r){state.coins-=r}else{state.debt+=(r-state.coins);state.coins=0}}
+      if(state.coins>=r){state.coins-=r}else{state.debt+=(r-state.coins);state.coins=0}
+      for(var gi=0;gi<mPassed;gi++)processGardenRewards();}
   }
   // Auto-harvest offline
   if((state.upgrades.autoharvest||0)>=1&&state.autoHarvestEnd>state.lastSave){
@@ -542,6 +546,7 @@ function processOffline(){
       if(p.catIdx<0||p.locked)return;var it=ITEMS[p.catIdx][p.itemIdx];
       if(p.wc>=CAT_WATER[p.catIdx]){var sv=getSellVal(it);state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
         var rk=HARVEST_RES[it[N]];if(rk)state.resources[rk]=(state.resources[rk]||0)+1;
+        if(p.catIdx===1)state.resources.bois=(state.resources.bois||0)+1;
         trackQuestHarvest(it[N]);
         p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
     });
@@ -568,6 +573,12 @@ function processOffline(){
 }
 
 // ===== HELPERS =====
+function holdBtn(el,fn){var tid=0,iid=0;
+  function start(e){e.preventDefault();e.stopPropagation();fn();tid=setTimeout(function(){iid=setInterval(fn,80);},400);}
+  function stop(e){if(e)e.stopPropagation();clearTimeout(tid);clearInterval(iid);tid=0;iid=0;}
+  el.addEventListener('mousedown',start);el.addEventListener('mouseup',stop);el.addEventListener('mouseleave',stop);
+  el.addEventListener('touchstart',start,{passive:false});el.addEventListener('touchend',stop);el.addEventListener('touchcancel',stop);
+}
 function getStageTime(it){return Math.max(it[ST]*1000*Math.pow(0.95,state.upgrades.speed||0),2000)}
 function getRecipeTime(rec){return Math.max(rec.time*Math.pow(0.95,state.upgrades.bspeed||0),2)}
 function getSellVal(it){return Math.floor(it[SV]*(1+(state.upgrades.value||0)*0.15))}
@@ -580,6 +591,33 @@ function getReactivateWCost(){var l=state.upgrades.autowater||0;return Math.floo
 function getAutoADur(){var l=state.upgrades.autoatelier||0;return l>0?l*60000:0}
 function getReactivateACost(){var l=state.upgrades.autoatelier||0;return Math.floor(70*l*(l>=5?3:1))}
 function getDebtRate(){return Math.min(0.05+state.debt/100000,0.30)}
+
+// Resource key lists for random rewards
+var BRUT_KEYS=['lait','ble','mais','oeuf','laine','pomme','fraise','lait_chevre','citron','miel','raisin','noix_coco','olive','tomate','carotte','oignon','patate','champignon','citrouille','cerise','fleur','poire','orange','banane','peche','mangue','viande_porc','viande_dinde','plume','fourrure'];
+var CROP_KEYS=['tomate','carotte','oignon','patate','fraise','champignon','citrouille','cerise','fleur','ble','mais'];
+var TRANSFO_KEYS=['beurre','creme','farine_ble','farine_mais','sucre','fromage','jus_pomme','confiture','vin','huile_olive','lait_coco','chocolat','sauce_tomate','soupe','jus_orange','smoothie','marmelade','cidre','charcuterie','saucisse','pizza','risotto','tarte_citrouille','parfum','bougie','coussin','roti_dinde','salade_composee'];
+function processGardenRewards(){
+  var totalCoins=0,totalStars=0,totalBois=0,resGiven={};
+  for(var i=0;i<state.gardenGrid.length;i++){
+    var g=state.gardenGrid[i];if(!g)continue;
+    var gItem=findGardenItem(g.id);if(!gItem||!gItem.states||!gItem.reward)continue;
+    var maxR=gItem.states.length-1;
+    if((g.stateIdx||0)<maxR)continue;// not fully renovated
+    var rw=gItem.reward;
+    if(rw.coins)totalCoins+=rw.coins;
+    if(rw.stars)totalStars+=rw.stars;
+    if(rw.bois)totalBois+=rw.bois;
+    if(rw.res){for(var k in rw.res){state.resources[k]=(state.resources[k]||0)+rw.res[k];resGiven[k]=(resGiven[k]||0)+rw.res[k];}}
+    if(rw.randomCrops){for(var rc=0;rc<rw.randomCrops;rc++){var rk=CROP_KEYS[Math.floor(Math.random()*CROP_KEYS.length)];state.resources[rk]=(state.resources[rk]||0)+1;resGiven[rk]=(resGiven[rk]||0)+1;}}
+    if(rw.randomBrut){for(var rb=0;rb<rw.randomBrut;rb++){var rk2=BRUT_KEYS[Math.floor(Math.random()*BRUT_KEYS.length)];state.resources[rk2]=(state.resources[rk2]||0)+1;resGiven[rk2]=(resGiven[rk2]||0)+1;}}
+    if(rw.randomTransfo){for(var rt=0;rt<rw.randomTransfo;rt++){var rk3=TRANSFO_KEYS[Math.floor(Math.random()*TRANSFO_KEYS.length)];state.resources[rk3]=(state.resources[rk3]||0)+1;resGiven[rk3]=(resGiven[rk3]||0)+1;}}
+  }
+  if(totalCoins>0){state.coins+=totalCoins;showFloat(innerWidth/2,120,'🏘️ Revenus jardin: +'+fmtN(totalCoins)+'💰');}
+  if(totalStars>0){state.stars+=totalStars;showFloat(innerWidth/2,150,'🏘️ +'+totalStars+'⭐');}
+  if(totalBois>0){state.resources.bois=(state.resources.bois||0)+totalBois;showFloat(innerWidth/2,180,'🏘️ +'+totalBois+'🪵');}
+  var resCount=0;for(var rr in resGiven)resCount+=resGiven[rr];
+  if(resCount>0)showFloat(innerWidth/2,210,'🏘️ +'+resCount+' ressources');
+}
 function getSavingsRate(){var lv=state.upgrades.savingsrate||0;if(lv<=0)return 0;return(1+(lv-1)*24/19)/100}
 function getVisibleRows(){var u=GSTART+state.gridBought;return Math.min(GMAX,Math.floor((u-1)/GCOLS)+2)}
 function xpFor(lv){return lv-1<XP_TABLE.length?XP_TABLE[lv-1]:370000+(lv-30)*50000}
@@ -617,6 +655,30 @@ function buildFarm(){
     var d=document.createElement('div');d.className='plot';d.style.width=ps+'px';
     d.dataset.idx=i;d.addEventListener('click',onPlot);farmEl.appendChild(d);
   }
+  // Swipe-to-plant
+  var _swipe=false,_planted={};
+  function swipePlant(touch){
+    var el=document.elementFromPoint(touch.clientX,touch.clientY);
+    if(!el)return;while(el&&!el.dataset.idx&&el!==farmEl)el=el.parentElement;
+    if(!el||!el.dataset.idx)return;
+    var idx=+el.dataset.idx;if(_planted[idx])return;
+    var p=state.plots[idx];if(!p||p.locked||p.catIdx>=0)return;
+    var cat=state.selCat,si=state.selItem;
+    if(cat<0||cat>2)return;var arr=ITEMS[cat];if(si<0||si>=arr.length)return;
+    var it=arr[si];
+    if(it[RL]>state.level&&cat!==0)return;
+    if(state.coins<it[CO])return;
+    state.coins-=it[CO];p.catIdx=cat;p.itemIdx=si;p.wc=0;p.lw=0;
+    _planted[idx]=true;updateVisuals();updateUI();
+  }
+  farmEl.addEventListener('touchstart',function(e){
+    if(e.touches.length===1){_swipe=true;_planted={};}
+  },{passive:true});
+  farmEl.addEventListener('touchmove',function(e){
+    if(_swipe&&e.touches.length===1){e.preventDefault();swipePlant(e.touches[0]);}
+  },{passive:false});
+  farmEl.addEventListener('touchend',function(){_swipe=false;_planted={};},{passive:true});
+  farmEl.addEventListener('touchcancel',function(){_swipe=false;_planted={};},{passive:true});
   updateVisuals();
 }
 function updateVisuals(){
@@ -681,6 +743,7 @@ function onPlot(e){
     var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
     state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
     var rk=HARVEST_RES[it[N]];if(rk){state.resources[rk]=(state.resources[rk]||0)+1;showFloat(fx,fy-40,'+1'+RES_INFO[rk].emoji);}
+    if(p.catIdx===1){state.resources.bois=(state.resources.bois||0)+1;showFloat(fx,fy-60,'+1🪵');}
     trackQuestHarvest(it[N]);
     showFloat(fx,fy,'+'+fmtN(sv)+'💰');showFloat(fx,fy-20,'+'+it[XP]+'⭐');
     p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0;
@@ -1047,6 +1110,7 @@ function updateUI(){
   levelEl.textContent=state.level;dayEl.textContent=state.day;monthEl.textContent=state.month;
   rentEl.textContent=fmtN(getRent());
   var starsEl=$('stars');if(starsEl)starsEl.textContent=state.stars||0;
+  var woodEl=$('wood');if(woodEl)woodEl.textContent=state.resources.bois||0;
   var debtInfo=$('debt-info');if(state.debt>0)debtInfo.innerHTML=' | 💳<b style="color:#e74c3c">'+fmtN(state.debt)+'</b>';else debtInfo.textContent='';
   var savInfo=$('savings-info');if(state.savings>0)savInfo.innerHTML=' | 🏦<b style="color:#2980b9">'+fmtN(state.savings)+'</b>';else savInfo.textContent='';
   updateVisuals();updateBuildingVisuals();
@@ -1070,7 +1134,8 @@ function gameTick(){
         if(state.debt>0){var dInterest=Math.ceil(state.debt*getDebtRate());state.debt+=dInterest;
           showFloat(innerWidth/2,50,'💳 Intérêts: +'+fmtN(dInterest)+'💰')}
         if(state.coins>=rent){state.coins-=rent}else{state.debt+=(rent-state.coins);state.coins=0}
-        showFloat(innerWidth/2,80,'🏠 Loyer M.'+state.month+': -'+fmtN(rent)+'💰')}}
+        showFloat(innerWidth/2,80,'🏠 Loyer M.'+state.month+': -'+fmtN(rent)+'💰');
+        processGardenRewards();}}
   }
   // Auto-water
   if((state.upgrades.autowater||0)>=1&&state.autoWaterEnd>now){
@@ -1087,6 +1152,7 @@ function gameTick(){
       if(isMature(p)){var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
         state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
         var rk=HARVEST_RES[it[N]];if(rk)state.resources[rk]=(state.resources[rk]||0)+1;
+        if(p.catIdx===1)state.resources.bois=(state.resources.bois||0)+1;
         trackQuestHarvest(it[N]);
         showFloat(Math.random()*innerWidth*.6+innerWidth*.2,Math.random()*200+200,'+'+fmtN(sv)+'💰');
         p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
@@ -1124,16 +1190,54 @@ function getBVisibleRows(){var u=BSTART+state.bgridBought;return Math.min(Math.c
 function canMakeRecipe(rec){for(var k in rec.inputs){if((state.resources[k]||0)<rec.inputs[k])return false;}return true;}
 function getMaxQty(rec){var m=Infinity;for(var k in rec.inputs){m=Math.min(m,Math.floor((state.resources[k]||0)/rec.inputs[k]));}return m===Infinity?0:m;}
 
+function buildBModeBar(){
+  var bar=$('bmode-bar');if(!bar)return;bar.innerHTML='';
+  var info=$('bmode-info');if(info)info.textContent='';
+  var modes=[{id:'normal',label:'🏗️ Normal'},{id:'add',label:'➕ Construire'},{id:'delete',label:'🗑️ Supprimer'},{id:'move',label:'↔️ Réorganiser'}];
+  modes.forEach(function(m){
+    var b=document.createElement('button');b.className='gmode-btn'+(bMode===m.id?' active':'');
+    b.textContent=m.label;
+    b.addEventListener('click',function(){bMode=m.id;bMoveSrc=-1;state.selBuildingPlot=-1;buildBModeBar();buildBuildingGrid();buildBldBar();buildRecipeBar();});
+    bar.appendChild(b);
+  });
+  if(info){
+    if(bMode==='delete')info.textContent='Touche un atelier pour le supprimer (pas de remboursement)';
+    else if(bMode==='move')info.textContent=bMoveSrc>=0?'Touche un autre atelier ou une case vide pour échanger':'Touche un atelier à déplacer';
+    else if(bMode==='add')info.textContent='Achète des parcelles ou place un atelier sur une case vide';
+    else info.textContent='';
+  }
+}
+
 function buildBuildingGrid(){
   var bfarm=$('bfarm');if(!bfarm)return;
-  var rows=getBVisibleRows(),cols=BCOLS;
-  var ps=Math.min(Math.floor((innerWidth*0.95-16)/cols)-4,110);
-  bfarm.style.gridTemplateColumns='repeat('+cols+',1fr)';
   bfarm.innerHTML='';
-  var total=rows*cols;if(total>BTOTAL)total=BTOTAL;
-  for(var i=0;i<total;i++){
-    var d=document.createElement('div');d.className='bplot';
-    d.dataset.idx=i;d.addEventListener('click',onBPlot);bfarm.appendChild(d);
+  if(bMode==='add'){
+    // In add mode, show ALL plots (locked + empty + built)
+    var rows=getBVisibleRows(),cols=BCOLS;
+    var ps=Math.min(Math.floor((innerWidth*0.95-16)/cols)-4,110);
+    bfarm.style.gridTemplateColumns='repeat('+cols+',1fr)';
+    var total=rows*cols;if(total>BTOTAL)total=BTOTAL;
+    for(var i=0;i<total;i++){
+      var d=document.createElement('div');d.className='bplot';
+      d.dataset.idx=i;d.addEventListener('click',onBPlot);bfarm.appendChild(d);
+    }
+  }else{
+    // Normal/delete/move: only show built ateliers (no locked, no empty)
+    var builtIdx=[];
+    for(var i=0;i<state.bplots.length;i++){
+      if(!state.bplots[i].locked&&state.bplots[i].buildingIdx>=0)builtIdx.push(i);
+    }
+    if(builtIdx.length===0){
+      bfarm.innerHTML='<div style="text-align:center;padding:16px;font-size:.8rem;color:#888">Aucun atelier construit.<br>Utilise ➕ Construire pour en ajouter!</div>';
+      return;
+    }
+    var cols=Math.min(BCOLS,builtIdx.length);
+    var ps=Math.min(Math.floor((innerWidth*0.95-16)/cols)-4,110);
+    bfarm.style.gridTemplateColumns='repeat('+cols+',1fr)';
+    for(var j=0;j<builtIdx.length;j++){
+      var d=document.createElement('div');d.className='bplot';
+      d.dataset.idx=builtIdx[j];d.addEventListener('click',onBPlot);bfarm.appendChild(d);
+    }
   }
   updateBuildingVisuals();
 }
@@ -1141,23 +1245,25 @@ function buildBuildingGrid(){
 function updateBuildingVisuals(){
   var bfarm=$('bfarm');if(!bfarm)return;
   var now=Date.now(),cc=getBCellCost();
-  bfarm.querySelectorAll('.bplot').forEach(function(el,i){
-    if(i>=state.bplots.length){el.className='bplot bempty';el.innerHTML='<span style="font-size:.7rem;color:#999">+</span>';return;}
+  bfarm.querySelectorAll('.bplot').forEach(function(el){
+    var i=+el.dataset.idx;
+    if(i>=state.bplots.length){el.className='bplot bempty';el.innerHTML='';return;}
     var bp=state.bplots[i];
     if(bp.locked){el.className='bplot locked'+(state.coins>=cc?' afford':'');
       el.innerHTML='\ud83d\udd12<span class="sub">'+fmtN(cc)+'\ud83d\udcb0</span>';return;}
     if(bp.buildingIdx<0){el.className='bplot bempty';el.innerHTML='<span style="font-size:1.2rem;opacity:.3">\u2795</span>';return;}
     var bld=BUILDINGS[bp.buildingIdx];
+    var selClass=(bMode==='move'&&bMoveSrc===i)?' gsel':'';
     if(bp.recipe<0){
-      el.className='bplot bbuilt';
+      el.className='bplot bbuilt'+selClass;
       el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+bld.name+'</span><span class="sub">\ud83d\udc46 Choisir recette</span>';return;}
-    var rec=bld.recipes[bp.recipe];var totalTime=rec.time*(bp.qty||1);
+    var rec=bld.recipes[bp.recipe];var totalTime=getRecipeTime(rec)*(bp.qty||1);
     var elapsed=(now-bp.prodStart)/1000;var qtyTxt=(bp.qty||1)>1?' \u00d7'+(bp.qty||1):'';
     if(elapsed>=totalTime){
-      el.className='bplot bdone';
+      el.className='bplot bdone'+selClass;
       el.innerHTML='<span class="emoji">'+rec.emoji+'</span><span class="bname">'+rec.name+qtyTxt+'</span><span class="sub">\u2705 R\u00e9cup\u00e9rer!</span>';
     }else{
-      el.className='bplot bprod';
+      el.className='bplot bprod'+selClass;
       var pct=Math.min(100,Math.floor(elapsed/totalTime*100));
       var rem=Math.ceil(totalTime-elapsed);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
       el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+rec.name+qtyTxt+'</span>'
@@ -1172,21 +1278,60 @@ function onBPlot(e){
   if(idx>=state.bplots.length)return;
   var bp=state.bplots[idx];
   var r=e.currentTarget.getBoundingClientRect(),fx=r.left+r.width/2,fy=r.top;
-  // Locked
-  if(bp.locked){var c=getBCellCost();
-    if(state.coins>=c){state.coins-=c;bp.locked=false;state.bgridBought++;
-      showFloat(fx,fy,'🔓 -'+fmtN(c));buildBuildingGrid();updateUI();}
-    else showFloat(fx,fy,'❌ '+fmtN(c)+'💰');return;}
-  // Empty → place selected building
-  if(bp.buildingIdx<0){
-    var bi=state.selBuilding||0;
-    if(bi<0||bi>=BUILDINGS.length)return;
-    var bld=BUILDINGS[bi];
-    if(bld.reqLevel>state.level){showFloat(fx,fy,'🔒 Niv.'+bld.reqLevel);return;}
-    if(state.coins<bld.cost){showFloat(fx,fy,'❌ '+fmtN(bld.cost)+'💰');return;}
-    state.coins-=bld.cost;bp.buildingIdx=bi;bp.recipe=-1;bp.prodStart=0;
-    showFloat(fx,fy,bld.emoji+' -'+fmtN(bld.cost));
-    state.selBuildingPlot=idx;buildRecipeBar();updateBuildingVisuals();updateUI();return;}
+
+  // === DELETE MODE ===
+  if(bMode==='delete'){
+    if(bp.locked||bp.buildingIdx<0)return;
+    var bld=BUILDINGS[bp.buildingIdx];
+    if(confirm('Supprimer '+bld.name+' ? (pas de remboursement)')){
+      bp.buildingIdx=-1;bp.recipe=-1;bp.prodStart=0;bp.qty=1;
+      state.selBuildingPlot=-1;
+      showFloat(fx,fy,'🗑️ Supprimé');
+      buildBuildingGrid();buildRecipeBar();updateUI();
+    }
+    return;
+  }
+
+  // === MOVE MODE ===
+  if(bMode==='move'){
+    if(bp.locked)return;
+    if(bMoveSrc<0){
+      if(bp.buildingIdx<0)return;// nothing to move
+      bMoveSrc=idx;updateBuildingVisuals();buildBModeBar();
+    }else{
+      // Swap
+      var tmp={buildingIdx:bp.buildingIdx,recipe:bp.recipe,prodStart:bp.prodStart,qty:bp.qty};
+      var src=state.bplots[bMoveSrc];
+      bp.buildingIdx=src.buildingIdx;bp.recipe=src.recipe;bp.prodStart=src.prodStart;bp.qty=src.qty;
+      src.buildingIdx=tmp.buildingIdx;src.recipe=tmp.recipe;src.prodStart=tmp.prodStart;src.qty=tmp.qty;
+      bMoveSrc=-1;state.selBuildingPlot=-1;
+      showFloat(fx,fy,'↔️ Échangé');
+      buildBuildingGrid();buildBModeBar();buildRecipeBar();updateUI();
+    }
+    return;
+  }
+
+  // === ADD MODE ===
+  if(bMode==='add'){
+    if(bp.locked){var c=getBCellCost();
+      if(state.coins>=c){state.coins-=c;bp.locked=false;state.bgridBought++;
+        showFloat(fx,fy,'🔓 -'+fmtN(c));buildBuildingGrid();updateUI();}
+      else showFloat(fx,fy,'❌ '+fmtN(c)+'💰');return;}
+    if(bp.buildingIdx<0){
+      var bi=state.selBuilding||0;
+      if(bi<0||bi>=BUILDINGS.length)return;
+      var bld=BUILDINGS[bi];
+      if(bld.reqLevel>state.level){showFloat(fx,fy,'🔒 Niv.'+bld.reqLevel);return;}
+      if(state.coins<bld.cost){showFloat(fx,fy,'❌ '+fmtN(bld.cost)+'💰');return;}
+      state.coins-=bld.cost;bp.buildingIdx=bi;bp.recipe=-1;bp.prodStart=0;
+      showFloat(fx,fy,bld.emoji+' -'+fmtN(bld.cost));
+      buildBuildingGrid();buildBldBar();updateUI();return;}
+    // Already built, just show info
+    showFloat(fx,fy,'Déjà occupé');return;
+  }
+
+  // === NORMAL MODE ===
+  if(bp.locked||bp.buildingIdx<0)return;
   // Built & idle → select for recipes
   if(bp.recipe<0){
     state.selBuildingPlot=idx;buildRecipeBar();updateBuildingVisuals();return;}
@@ -1223,12 +1368,17 @@ function startRecipe(bplotIdx,recipeIdx,qty){
 
 function buildBldBar(){
   var bar=$('bld-bar');if(!bar)return;bar.innerHTML='';
+  if(bMode!=='add')return;// Only show building catalog in add mode
+  // Count existing buildings
+  var bCount={};
+  for(var i=0;i<state.bplots.length;i++){var bi=state.bplots[i].buildingIdx;if(bi>=0)bCount[bi]=(bCount[bi]||0)+1;}
   BUILDINGS.forEach(function(bld,i){
     var ok=bld.reqLevel<=state.level;
+    var cnt=bCount[i]||0;
     var b=document.createElement('button');
     b.className='bld-btn'+((state.selBuilding||0)===i?' active':'');
     b.disabled=!ok;
-    b.innerHTML='<span class="b-ico">'+bld.emoji+'</span><span class="b-name">'+(ok?bld.name:'\ud83d\udd12 Niv.'+bld.reqLevel)+'</span><span style="font-size:.5rem;color:#888">'+(ok?fmtN(bld.cost)+'\ud83d\udcb0':'')+'</span>';
+    b.innerHTML='<span class="b-ico">'+bld.emoji+'</span><span class="b-name">'+(ok?bld.name:'\ud83d\udd12 Niv.'+bld.reqLevel)+'</span><span style="font-size:.5rem;color:#888">'+(ok?fmtN(bld.cost)+'\ud83d\udcb0':'')+(cnt>0?' (×'+cnt+')':'')+'</span>';
     b.title=bld.name;
     b.addEventListener('click',function(){state.selBuilding=i;buildBldBar();});
     bar.appendChild(b);
@@ -1237,6 +1387,7 @@ function buildBldBar(){
 
 function buildRecipeBar(){
   var bar=$('recipe-bar');if(!bar)return;bar.innerHTML='';
+  if(bMode!=='normal')return;// Only show recipes in normal mode
   var idx=state.selBuildingPlot;
   if(idx<0||idx>=state.bplots.length)return;
   var bp=state.bplots[idx];
@@ -1259,8 +1410,8 @@ function buildRecipeBar(){
         var qVal=document.createElement('span');qVal.className='qty-val';qVal.textContent='1';
         var qPlus=document.createElement('button');qPlus.type='button';qPlus.className='qty-btn';qPlus.textContent='+';
         var qInfo=document.createElement('span');qInfo.style.cssText='font-size:.6rem;color:#888';qInfo.textContent='(max '+mQ+')';
-        qMinus.addEventListener('click',function(e){e.stopPropagation();if(qty>1){qty--;qVal.textContent=qty;}});
-        qPlus.addEventListener('click',function(e){e.stopPropagation();if(qty<mQ){qty++;qVal.textContent=qty;}});
+        holdBtn(qMinus,function(){if(qty>1){qty--;qVal.textContent=qty;}});
+        holdBtn(qPlus,function(){if(qty<mQ){qty++;qVal.textContent=qty;}});
         qRow.appendChild(qMinus);qRow.appendChild(qVal);qRow.appendChild(qPlus);qRow.appendChild(qInfo);
         d.appendChild(qRow);
       }
@@ -1554,40 +1705,40 @@ function buildQuestUI(){
 var GARDEN_SIZE=16;
 var GARDEN_CATS=[
   {id:'batiment',name:'🏠 Bâtiments',items:[
-    {id:'maison',name:'Maison',emoji:'🏠',cost:30000,states:['🏚️','🏠','🏡']},
-    {id:'serre',name:'Serre',emoji:'🌿',cost:50000,states:['🏗️','🌿']},
-    {id:'cabane',name:'Cabane',emoji:'🛖',cost:20000,states:['🪵','🛖']},
-    {id:'grange',name:'Grange',emoji:'🏠',cost:80000,states:['🏗️','🏠','🏡']},
-    {id:'moulin_d',name:'Moulin',emoji:'🏭',cost:120000,states:['🏗️','🏭']},
-    {id:'eglise',name:'Chapelle',emoji:'⛪',cost:200000,states:['🏗️','⛪']},
-    {id:'chateau',name:'Château',emoji:'🏰',cost:500000,states:['🏗️','🏰']},
-    {id:'phare',name:'Phare',emoji:'🗼',cost:150000,states:['🏗️','🗼']},
-    {id:'hotel',name:'Hôtel',emoji:'🏨',cost:350000,states:['🏗️','🏨']},
-    {id:'ecole',name:'École',emoji:'🏫',cost:250000,states:['🏗️','🏫']},
-    {id:'bibliotheque',name:'Bibliothèque',emoji:'🏢',cost:180000,states:['🏗️','🏢']},
-    {id:'marche',name:'Marché',emoji:'🏪',cost:100000,states:['🏗️','🏪']},
-    {id:'cafe',name:'Café',emoji:'☕',cost:90000,states:['🏗️','☕']},
-    {id:'poste',name:'Poste',emoji:'🏣',cost:130000,states:['🏗️','🏣']}
+    {id:'maison',name:'Maison',emoji:'🏠',cost:30000,wood:20,states:['🏚️','🏠','🏡'],reward:{coins:10000},rewardDesc:'10 000💰/mois'},
+    {id:'serre',name:'Serre',emoji:'🌿',cost:50000,wood:30,states:['🏗️','🌿','🌱','🌲'],reward:{randomCrops:10},rewardDesc:'10 cultures aléa./mois'},
+    {id:'cabane',name:'Cabane',emoji:'🛖',cost:20000,wood:15,states:['🪵','🛖','🏕️','⛺','🏡'],reward:{bois:10},rewardDesc:'10🪵/mois'},
+    {id:'grange',name:'Grange',emoji:'🏠',cost:80000,wood:40,states:['🏗️','🏠','🏡','🏘️','🌾','🎪'],reward:{randomBrut:8},rewardDesc:'8 ressources brutes/mois'},
+    {id:'moulin_d',name:'Moulin',emoji:'🏭',cost:120000,wood:50,states:['🏗️','🏭','⚙️','🔧','🔩','💨','🌬️'],reward:{res:{farine_ble:4,farine_mais:4}},rewardDesc:'4 farine blé + 4 farine maïs/mois'},
+    {id:'eglise',name:'Chapelle',emoji:'⛪',cost:200000,wood:60,states:['🏗️','⛪','🕍','🛕','💒','🙏','✝️','⭐'],reward:{coins:20000,stars:1},rewardDesc:'20 000💰 + 1⭐/mois'},
+    {id:'chateau',name:'Château',emoji:'🏰',cost:500000,wood:100,states:['🏗️','🏰','🏯','👑','🗡️','🛡️','⚜️','🦁','💎'],reward:{coins:50000},rewardDesc:'50 000💰/mois'},
+    {id:'phare',name:'Phare',emoji:'🗼',cost:150000,wood:50,states:['🏗️','🗼','🔦','💡','🌟','✨','🔆','⚡','🌈','🎆'],reward:{coins:15000,randomBrut:3},rewardDesc:'15 000💰 + 3 ress./mois'},
+    {id:'hotel',name:'Hôtel',emoji:'🏨',cost:350000,wood:80,states:['🏗️','🏨','🏩','🛎️','🎩','💎','🌟','✨','🏆','👑','🎖️'],reward:{coins:35000},rewardDesc:'35 000💰/mois'},
+    {id:'ecole',name:'École',emoji:'🏫',cost:250000,wood:70,states:['🏗️','🏫','📚','🎓','🔬','🔭','🏅','📐','✏️','🎨','🧪','🏆'],reward:{coins:25000,randomBrut:5},rewardDesc:'25 000💰 + 5 ress./mois'},
+    {id:'bibliotheque',name:'Bibliothèque',emoji:'🏢',cost:180000,wood:55,states:['🏗️','🏢','📖','📚','📜','🔖','🏛️','📕','📗','📘','📙','🎭','🏆'],reward:{randomTransfo:5},rewardDesc:'5 ress. transformées/mois'},
+    {id:'marche',name:'Marché',emoji:'🏪',cost:100000,wood:45,states:['🏗️','🏪','🏬','🛒','🛍️','💰','🎪','🎡','🏟️','🎠','🎢','🎆','🌟','🏆'],reward:{randomCrops:5,randomBrut:5},rewardDesc:'5 cultures + 5 ress./mois'},
+    {id:'cafe',name:'Café',emoji:'☕',cost:90000,wood:35,states:['🏗️','☕','🍵','🧁','🎂','🍰','🍩','🍪','🫖','🥐','🍽️','⭐','🌟','✨','🏆'],reward:{randomTransfo:3,coins:8000},rewardDesc:'8 000💰 + 3 ress. transfo./mois'},
+    {id:'poste',name:'Poste',emoji:'🏣',cost:130000,wood:50,states:['🏗️','🏣','📮','📬','📫','📦','🏤','📨','💌','🎁','🚚','📡','🛰️','🌍','✨','🏆'],reward:{randomBrut:12},rewardDesc:'12 ressources/mois'}
   ]},
   {id:'deco',name:'🌳 Décorations',items:[
-    {id:'arbre_d',name:'Arbre',emoji:'🌳',cost:3000},
-    {id:'sapin',name:'Sapin',emoji:'🌲',cost:4000},
-    {id:'palmier',name:'Palmier',emoji:'🌴',cost:5000},
-    {id:'cerisier',name:'Cerisier',emoji:'🌸',cost:8000},
-    {id:'fleur_d',name:'Fleurs',emoji:'🌷',cost:2000},
-    {id:'tournesol',name:'Tournesol',emoji:'🌻',cost:2500},
-    {id:'rose',name:'Roses',emoji:'🌹',cost:3500},
-    {id:'cactus',name:'Cactus',emoji:'🌵',cost:4000},
-    {id:'champignon_d',name:'Champignon',emoji:'🍄',cost:3000},
-    {id:'bambou',name:'Bambou',emoji:'🎋',cost:6000},
-    {id:'bonsai',name:'Bonsaï',emoji:'🌾',cost:12000},
-    {id:'nenuphare',name:'Nénuphar',emoji:'🌺',cost:7000},
-    {id:'lierre',name:'Lierre',emoji:'🌿',cost:2500},
-    {id:'buisson',name:'Buisson',emoji:'☘️',cost:2000},
-    {id:'trefle',name:'Trèfle',emoji:'🍀',cost:5000},
-    {id:'herbe',name:'Herbe haute',emoji:'🌾',cost:1500},
-    {id:'souche',name:'Souche',emoji:'🪵',cost:1000},
-    {id:'pierre_deco',name:'Rocher',emoji:'🪨',cost:3000}
+    {id:'arbre_d',name:'Arbre',emoji:'🌳',cost:6000},
+    {id:'sapin',name:'Sapin',emoji:'🌲',cost:8000},
+    {id:'palmier',name:'Palmier',emoji:'🌴',cost:10000},
+    {id:'cerisier',name:'Cerisier',emoji:'🌸',cost:16000},
+    {id:'fleur_d',name:'Fleurs',emoji:'🌷',cost:4000},
+    {id:'tournesol',name:'Tournesol',emoji:'🌻',cost:5000},
+    {id:'rose',name:'Roses',emoji:'🌹',cost:7000},
+    {id:'cactus',name:'Cactus',emoji:'🌵',cost:8000},
+    {id:'champignon_d',name:'Champignon',emoji:'🍄',cost:6000},
+    {id:'bambou',name:'Bambou',emoji:'🎋',cost:12000},
+    {id:'bonsai',name:'Bonsaï',emoji:'🌾',cost:24000},
+    {id:'nenuphare',name:'Nénuphar',emoji:'🌺',cost:14000},
+    {id:'lierre',name:'Lierre',emoji:'🌿',cost:5000},
+    {id:'buisson',name:'Buisson',emoji:'☘️',cost:4000},
+    {id:'trefle',name:'Trèfle',emoji:'🍀',cost:10000},
+    {id:'herbe',name:'Herbe haute',emoji:'🌾',cost:3000},
+    {id:'souche',name:'Souche',emoji:'🪵',cost:2000},
+    {id:'pierre_deco',name:'Rocher',emoji:'🪨',cost:6000}
   ]},
   {id:'mobilier',name:'🪑 Mobilier',items:[
     {id:'fontaine',name:'Fontaine',emoji:'⛲',cost:50000},
@@ -1608,24 +1759,28 @@ var GARDEN_CATS=[
     {id:'horloge',name:'Horloge',emoji:'🕰️',cost:35000}
   ]},
   {id:'cloture',name:'🏗️ Clôtures',items:[
-    {id:'cloture_bois',name:'Clôture bois',emoji:'🪵',cost:2000},
-    {id:'haie',name:'Haie',emoji:'🌿',cost:3000},
+    {id:'cloture_bois',name:'Clôture bois',emoji:'🪵',cost:2000,wood:5},
+    {id:'haie',name:'Haie',emoji:'🌿',cost:3000,wood:3},
     {id:'mur_pierre',name:'Mur pierre',emoji:'🧱',cost:6000},
-    {id:'portail',name:'Portail',emoji:'🚪',cost:20000},
-    {id:'pont',name:'Pont',emoji:'🌉',cost:40000},
+    {id:'portail',name:'Portail',emoji:'🚪',cost:20000,wood:10},
+    {id:'pont',name:'Pont',emoji:'🌉',cost:40000,wood:20},
     {id:'chemin',name:'Chemin',emoji:'🟫',cost:1000},
     {id:'allee',name:'Allée pavée',emoji:'⬜',cost:3000},
-    {id:'arche',name:'Arche fleurie',emoji:'🎊',cost:25000},
+    {id:'arche',name:'Arche fleurie',emoji:'🎊',cost:25000,wood:15},
     {id:'barriere',name:'Barrière métal',emoji:'⛓️',cost:8000},
     {id:'muret',name:'Muret bas',emoji:'🧱',cost:4000},
-    {id:'escalier',name:'Escalier',emoji:'🪜',cost:15000},
-    {id:'passerelle',name:'Passerelle',emoji:'🌉',cost:30000}
+    {id:'escalier',name:'Escalier',emoji:'🪜',cost:15000,wood:8},
+    {id:'passerelle',name:'Passerelle',emoji:'🌉',cost:30000,wood:25}
   ]}
 ];
 var gardenMode='place';// place | move | delete | renovate
 var gardenSelCat=0;
 var gardenSelItem=-1;
 var gardenMoveSrc=-1;
+
+// Building modes: normal | add | delete | move
+var bMode='normal';
+var bMoveSrc=-1;
 
 function findGardenItem(id){
   for(var c=0;c<GARDEN_CATS.length;c++){
@@ -1639,7 +1794,7 @@ function buildGarden(){
   while(state.gardenGrid.length<GARDEN_SIZE*GARDEN_SIZE)state.gardenGrid.push(null);
   // Modes
   var modeDiv=$('garden-modes');modeDiv.innerHTML='';
-  var modes=[{id:'place',label:'➕ Placer'},{id:'move',label:'↔️ Déplacer'},{id:'delete',label:'🗑️ Supprimer'},{id:'renovate',label:'🔨 Rénover'}];
+  var modes=[{id:'place',label:'➕ Placer'},{id:'move',label:'↔️ Déplacer'},{id:'delete',label:'🗑️ Supprimer'},{id:'renovate',label:'🔨 Rénover'},{id:'guide',label:'📋 Guide'}];
   modes.forEach(function(m){
     var b=document.createElement('button');b.className='gmode-btn'+(gardenMode===m.id?' active':'');
     b.textContent=m.label;
@@ -1662,8 +1817,10 @@ function buildGarden(){
     var cat=GARDEN_CATS[gardenSelCat];
     cat.items.forEach(function(it,ii){
       var b=document.createElement('button');b.className='gitem-btn'+(gardenSelItem===ii?' active':'');
-      b.disabled=state.coins<it.cost;
-      b.innerHTML='<span class="gi-ico">'+it.emoji+'</span><span>'+it.name+'</span><span class="gi-cost">'+fmtN(it.cost)+'💰</span>';
+      var wc=it.wood||0;var bois=state.resources.bois||0;
+      b.disabled=state.coins<it.cost||(wc>0&&bois<wc);
+      var costTxt=fmtN(it.cost)+'💰'+(wc>0?' +'+wc+'🪵':'');
+      b.innerHTML='<span class="gi-ico">'+it.emoji+'</span><span>'+it.name+'</span><span class="gi-cost">'+costTxt+'</span>';
       b.addEventListener('click',function(){gardenSelItem=ii;buildGarden();});
       items.appendChild(b);
     });
@@ -1672,16 +1829,65 @@ function buildGarden(){
   var info=$('garden-info');
   if(gardenMode==='place'&&gardenSelItem>=0){
     var it=GARDEN_CATS[gardenSelCat].items[gardenSelItem];
-    info.textContent='Touche une case vide pour placer '+it.emoji+' '+it.name+' ('+fmtN(it.cost)+'💰)';
+    var wc2=it.wood||0;
+    var costInfo=fmtN(it.cost)+'💰'+(wc2>0?' + '+wc2+'🪵':'');
+    info.textContent='Touche une case vide pour placer '+it.emoji+' '+it.name+' ('+costInfo+')';
   }else if(gardenMode==='move'){
     info.textContent=gardenMoveSrc>=0?'Touche une case vide pour déplacer':'Touche un objet à déplacer';
   }else if(gardenMode==='delete'){
     info.textContent='Touche un objet pour le supprimer (remboursement 50%)';
   }else if(gardenMode==='renovate'){
-    info.textContent='Touche un bâtiment pour améliorer son état';
+    info.textContent='⭐ '+state.stars+' étoile(s) · Touche un bâtiment sur la grille pour le rénover';
+    // Show list of placed buildings with renovation info
+    var tb2=$('garden-toolbar');
+    var placedBlds=[];
+    for(var gi=0;gi<state.gardenGrid.length;gi++){
+      var g2=state.gardenGrid[gi];if(!g2)continue;
+      var gIt=findGardenItem(g2.id);if(!gIt||!gIt.states)continue;
+      placedBlds.push({idx:gi,g:g2,item:gIt});
+    }
+    if(placedBlds.length===0){
+      tb2.innerHTML='<div style="text-align:center;padding:8px;font-size:.8rem;color:#888">Aucun bâtiment placé</div>';
+    }else{
+      var listDiv=document.createElement('div');listDiv.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%;padding:4px';
+      placedBlds.forEach(function(pb){
+        var maxR=pb.item.states.length-1;
+        var curR=pb.g.stateIdx||0;
+        var remaining=maxR-curR;
+        var curEmoji=pb.item.states[curR];
+        var isMax=curR>=maxR;
+        var cost=isMax?0:(curR===maxR-1?2:1);
+        var d=document.createElement('div');
+        d.style.cssText='display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.9);padding:6px 8px;border-radius:8px;font-size:.75rem';
+        d.innerHTML='<span style="font-size:1.2rem">'+curEmoji+'</span>'
+          +'<b>'+pb.item.name+'</b>'
+          +'<span style="color:#888">'+curR+'/'+maxR+'</span>'
+          +(isMax?'<span style="color:#27ae60;font-weight:bold">✅ Max'+(pb.item.rewardDesc?' · 🎁 '+pb.item.rewardDesc:'')+'</span>':'<span style="color:#e67e22">'+remaining+' restante(s) · '+cost+'⭐</span>');
+        listDiv.appendChild(d);
+      });
+      tb2.appendChild(listDiv);
+    }
+  }else if(gardenMode==='guide'){
+    info.textContent='';
+    var tb2=$('garden-toolbar');tb2.innerHTML='';
+    var guideDiv=document.createElement('div');guideDiv.style.cssText='display:flex;flex-direction:column;gap:6px;width:100%;padding:4px';
+    var bldItems=GARDEN_CATS[0].items;
+    bldItems.forEach(function(it){
+      var maxR=it.states.length-1;
+      var starCost=0;for(var sr=0;sr<maxR;sr++)starCost+=(sr===maxR-1?2:1);
+      var d=document.createElement('div');
+      d.style.cssText='background:rgba(255,255,255,.92);border-radius:10px;padding:10px 12px;box-shadow:0 2px 6px rgba(0,0,0,.08)';
+      var costLine=fmtN(it.cost)+'💰'+(it.wood?' + '+it.wood+'🪵':'')+' + '+starCost+'⭐ (réno.)';
+      d.innerHTML='<div style="display:flex;align-items:center;gap:8px;font-size:.85rem"><span style="font-size:1.5rem">'+it.emoji+'</span><div><b>'+it.name+'</b><div style="font-size:.7rem;color:#888;margin-top:2px">'+costLine+'</div></div></div>'
+        +'<div style="margin-top:6px;padding:6px 8px;background:linear-gradient(145deg,#e8f5e9,#c8e6c9);border-radius:7px;font-size:.75rem"><span style="font-weight:bold;color:#2e7d32">🎁 Bonus max : </span>'+it.rewardDesc+'</div>';
+      guideDiv.appendChild(d);
+    });
+    tb2.appendChild(guideDiv);
   }else info.textContent='';
   // Grid
   var area=$('garden-area');
+  if(gardenMode==='guide'){area.innerHTML='';area.style.display='none';}else{
+  area.style.display='';
   var ps=Math.min(Math.floor((innerWidth*0.95-16)/GARDEN_SIZE)-2,50);
   area.style.gridTemplateColumns='repeat('+GARDEN_SIZE+','+ps+'px)';
   area.innerHTML='';
@@ -1704,6 +1910,7 @@ function buildGarden(){
     (function(idx){cell.addEventListener('click',function(){onGardenClick(idx);});})(i);
     area.appendChild(cell);
   }
+  }// end if not guide
 }
 
 function onGardenClick(idx){
@@ -1713,10 +1920,13 @@ function onGardenClick(idx){
     if(gardenSelItem<0)return;
     var cat=GARDEN_CATS[gardenSelCat];
     var it=cat.items[gardenSelItem];
-    if(state.coins<it.cost){showFloat(innerWidth/2,innerHeight/2,'❌ Pas assez!');return;}
+    var wc=it.wood||0;var bois=state.resources.bois||0;
+    if(state.coins<it.cost||(wc>0&&bois<wc)){showFloat(innerWidth/2,innerHeight/2,'❌ Pas assez!');return;}
     state.coins-=it.cost;
+    if(wc>0)state.resources.bois-=wc;
     state.gardenGrid[idx]={id:it.id,stateIdx:0};
-    showFloat(innerWidth/2,innerHeight/2,it.emoji+' -'+fmtN(it.cost)+'💰');
+    var msg=it.emoji+' -'+fmtN(it.cost)+'💰'+(wc>0?' -'+wc+'🪵':'');
+    showFloat(innerWidth/2,innerHeight/2,msg);
     updateUI();buildGarden();
   }else if(gardenMode==='move'){
     if(gardenMoveSrc<0){
@@ -1740,11 +1950,13 @@ function onGardenClick(idx){
     if(!g)return;
     var gItem=findGardenItem(g.id);
     if(!gItem||!gItem.states)return;
-    if(g.stateIdx>=gItem.states.length-1){showFloat(innerWidth/2,innerHeight/2,'✅ Déjà au max!');return;}
-    var renovCost=Math.floor(gItem.cost*0.4*(g.stateIdx+1));
-    if(state.coins<renovCost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(renovCost)+'💰 requis');return;}
-    state.coins-=renovCost;g.stateIdx++;
-    showFloat(innerWidth/2,innerHeight/2,'🔨 Rénové! -'+fmtN(renovCost)+'💰');
+    var maxR=gItem.states.length-1;
+    var curR=g.stateIdx||0;
+    if(curR>=maxR){showFloat(innerWidth/2,innerHeight/2,'✅ Déjà au max!');return;}
+    var starCost=(curR===maxR-1)?2:1;
+    if(state.stars<starCost){showFloat(innerWidth/2,innerHeight/2,'❌ '+starCost+'⭐ requis (tu as '+state.stars+')');return;}
+    state.stars-=starCost;g.stateIdx++;
+    showFloat(innerWidth/2,innerHeight/2,'🔨 Rénové! -'+starCost+'⭐');
     updateUI();buildGarden();
   }
 }
@@ -1781,7 +1993,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     if(btn.dataset.panel==='upgrades')buildUpgrades();
     if(btn.dataset.panel==='stats')buildStats();
     if(btn.dataset.panel==='resources')buildResourceGrid();
-    if(btn.dataset.panel==='buildings'){buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
+    if(btn.dataset.panel==='buildings'){buildBModeBar();buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
     if(btn.dataset.panel==='recipes')buildRecipeList();
     if(btn.dataset.panel==='well')buildWell();
     if(btn.dataset.panel==='quests')buildQuestUI();
