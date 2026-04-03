@@ -217,13 +217,13 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div class="panel" id="panel-garden"><h3>🌷 Jardin</h3><div id="garden-modes"></div><div id="garden-toolbar"></div><div id="garden-items"></div><div class="garden-info" id="garden-info"></div><div id="garden-area"></div></div>
 </div>
 <div id="tabs">
+  <button class="tab-btn" data-panel="quests"><span class="ico">🎯</span>Quêtes</button>
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
   <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
   <button class="tab-btn" data-panel="resources"><span class="ico">📦</span>Stock</button>
   <button class="tab-btn" data-panel="shop"><span class="ico">🏪</span>Boutique</button>
   <button class="tab-btn" data-panel="upgrades"><span class="ico">⬆️</span>Amélio.</button>
   <button class="tab-btn" data-panel="well"><span class="ico">🪣</span>Puits</button>
-  <button class="tab-btn" data-panel="quests"><span class="ico">🎯</span>Quêtes</button>
   <button class="tab-btn" data-panel="recipes"><span class="ico">📖</span>Recettes</button>
   <button class="tab-btn" data-panel="garden"><span class="ico">🌷</span>Jardin</button>
   <button class="tab-btn" data-panel="stats"><span class="ico">📊</span>Stats</button>
@@ -596,6 +596,7 @@ function getDebtRate(){return Math.min(0.05+state.debt/100000,0.30)}
 var BRUT_KEYS=['lait','ble','mais','oeuf','laine','pomme','fraise','lait_chevre','citron','miel','raisin','noix_coco','olive','tomate','carotte','oignon','patate','champignon','citrouille','cerise','fleur','poire','orange','banane','peche','mangue','viande_porc','viande_dinde','plume','fourrure'];
 var CROP_KEYS=['tomate','carotte','oignon','patate','fraise','champignon','citrouille','cerise','fleur','ble','mais'];
 var TRANSFO_KEYS=['beurre','creme','farine_ble','farine_mais','sucre','fromage','jus_pomme','confiture','vin','huile_olive','lait_coco','chocolat','sauce_tomate','soupe','jus_orange','smoothie','marmelade','cidre','charcuterie','saucisse','pizza','risotto','tarte_citrouille','parfum','bougie','coussin','roti_dinde','salade_composee'];
+var ANIMAL_KEYS=['lait','oeuf','laine','lait_chevre','miel','viande_porc','viande_dinde','plume','fourrure'];
 function processGardenRewards(){
   var totalCoins=0,totalStars=0,totalBois=0,resGiven={};
   for(var i=0;i<state.gardenGrid.length;i++){
@@ -611,6 +612,7 @@ function processGardenRewards(){
     if(rw.randomCrops){for(var rc=0;rc<rw.randomCrops;rc++){var rk=CROP_KEYS[Math.floor(Math.random()*CROP_KEYS.length)];state.resources[rk]=(state.resources[rk]||0)+1;resGiven[rk]=(resGiven[rk]||0)+1;}}
     if(rw.randomBrut){for(var rb=0;rb<rw.randomBrut;rb++){var rk2=BRUT_KEYS[Math.floor(Math.random()*BRUT_KEYS.length)];state.resources[rk2]=(state.resources[rk2]||0)+1;resGiven[rk2]=(resGiven[rk2]||0)+1;}}
     if(rw.randomTransfo){for(var rt=0;rt<rw.randomTransfo;rt++){var rk3=TRANSFO_KEYS[Math.floor(Math.random()*TRANSFO_KEYS.length)];state.resources[rk3]=(state.resources[rk3]||0)+1;resGiven[rk3]=(resGiven[rk3]||0)+1;}}
+    if(rw.randomAnimal){for(var ra=0;ra<rw.randomAnimal;ra++){var rk4=ANIMAL_KEYS[Math.floor(Math.random()*ANIMAL_KEYS.length)];state.resources[rk4]=(state.resources[rk4]||0)+1;resGiven[rk4]=(resGiven[rk4]||0)+1;}}
   }
   if(totalCoins>0){state.coins+=totalCoins;showFloat(innerWidth/2,120,'🏘️ Revenus jardin: +'+fmtN(totalCoins)+'💰');}
   if(totalStars>0){state.stars+=totalStars;showFloat(innerWidth/2,150,'🏘️ +'+totalStars+'⭐');}
@@ -1705,72 +1707,72 @@ function buildQuestUI(){
 var GARDEN_SIZE=16;
 var GARDEN_CATS=[
   {id:'batiment',name:'🏠 Bâtiments',items:[
+    {id:'cabane',name:'Cabane',emoji:'🛖',cost:20000,wood:15,states:['🪵','🛖','🏕️','⛺','🏡'],reward:{res:{oeuf:5}},rewardDesc:'5🥚/mois'},
     {id:'maison',name:'Maison',emoji:'🏠',cost:30000,wood:20,states:['🏚️','🏠','🏡'],reward:{coins:10000},rewardDesc:'10 000💰/mois'},
     {id:'serre',name:'Serre',emoji:'🌿',cost:50000,wood:30,states:['🏗️','🌿','🌱','🌲'],reward:{randomCrops:10},rewardDesc:'10 cultures aléa./mois'},
-    {id:'cabane',name:'Cabane',emoji:'🛖',cost:20000,wood:15,states:['🪵','🛖','🏕️','⛺','🏡'],reward:{bois:10},rewardDesc:'10🪵/mois'},
-    {id:'grange',name:'Grange',emoji:'🏠',cost:80000,wood:40,states:['🏗️','🏠','🏡','🏘️','🌾','🎪'],reward:{randomBrut:8},rewardDesc:'8 ressources brutes/mois'},
-    {id:'moulin_d',name:'Moulin',emoji:'🏭',cost:120000,wood:50,states:['🏗️','🏭','⚙️','🔧','🔩','💨','🌬️'],reward:{res:{farine_ble:4,farine_mais:4}},rewardDesc:'4 farine blé + 4 farine maïs/mois'},
-    {id:'eglise',name:'Chapelle',emoji:'⛪',cost:200000,wood:60,states:['🏗️','⛪','🕍','🛕','💒','🙏','✝️','⭐'],reward:{coins:20000,stars:1},rewardDesc:'20 000💰 + 1⭐/mois'},
-    {id:'chateau',name:'Château',emoji:'🏰',cost:500000,wood:100,states:['🏗️','🏰','🏯','👑','🗡️','🛡️','⚜️','🦁','💎'],reward:{coins:50000},rewardDesc:'50 000💰/mois'},
-    {id:'phare',name:'Phare',emoji:'🗼',cost:150000,wood:50,states:['🏗️','🗼','🔦','💡','🌟','✨','🔆','⚡','🌈','🎆'],reward:{coins:15000,randomBrut:3},rewardDesc:'15 000💰 + 3 ress./mois'},
-    {id:'hotel',name:'Hôtel',emoji:'🏨',cost:350000,wood:80,states:['🏗️','🏨','🏩','🛎️','🎩','💎','🌟','✨','🏆','👑','🎖️'],reward:{coins:35000},rewardDesc:'35 000💰/mois'},
-    {id:'ecole',name:'École',emoji:'🏫',cost:250000,wood:70,states:['🏗️','🏫','📚','🎓','🔬','🔭','🏅','📐','✏️','🎨','🧪','🏆'],reward:{coins:25000,randomBrut:5},rewardDesc:'25 000💰 + 5 ress./mois'},
-    {id:'bibliotheque',name:'Bibliothèque',emoji:'🏢',cost:180000,wood:55,states:['🏗️','🏢','📖','📚','📜','🔖','🏛️','📕','📗','📘','📙','🎭','🏆'],reward:{randomTransfo:5},rewardDesc:'5 ress. transformées/mois'},
-    {id:'marche',name:'Marché',emoji:'🏪',cost:100000,wood:45,states:['🏗️','🏪','🏬','🛒','🛍️','💰','🎪','🎡','🏟️','🎠','🎢','🎆','🌟','🏆'],reward:{randomCrops:5,randomBrut:5},rewardDesc:'5 cultures + 5 ress./mois'},
+    {id:'grange',name:'Grange',emoji:'🏠',cost:80000,wood:40,states:['🏗️','🏠','🏡','🏘️','🌾','🎪'],reward:{res:{lait:10}},rewardDesc:'10🥛/mois'},
     {id:'cafe',name:'Café',emoji:'☕',cost:90000,wood:35,states:['🏗️','☕','🍵','🧁','🎂','🍰','🍩','🍪','🫖','🥐','🍽️','⭐','🌟','✨','🏆'],reward:{randomTransfo:3,coins:8000},rewardDesc:'8 000💰 + 3 ress. transfo./mois'},
-    {id:'poste',name:'Poste',emoji:'🏣',cost:130000,wood:50,states:['🏗️','🏣','📮','📬','📫','📦','🏤','📨','💌','🎁','🚚','📡','🛰️','🌍','✨','🏆'],reward:{randomBrut:12},rewardDesc:'12 ressources/mois'}
+    {id:'marche',name:'Marché',emoji:'🏪',cost:100000,wood:45,states:['🏗️','🏪','🏬','🛒','🛍️','💰','🎪','🎡','🏟️','🎠','🎢','🎆','🌟','🏆'],reward:{randomAnimal:15},rewardDesc:'15 ress. animaux/mois'},
+    {id:'moulin_d',name:'Moulin',emoji:'🏭',cost:120000,wood:50,states:['🏗️','🏭','⚙️','🔧','🔩','💨','🌬️'],reward:{res:{farine_ble:4,farine_mais:4}},rewardDesc:'4 farine blé + 4 farine maïs/mois'},
+    {id:'poste',name:'Poste',emoji:'🏣',cost:130000,wood:50,states:['🏗️','🏣','📮','📬','📫','📦','🏤','📨','💌','🎁','🚚','📡','🛰️','🌍','✨','🏆'],reward:{randomBrut:12},rewardDesc:'12 ressources/mois'},
+    {id:'phare',name:'Phare',emoji:'🗼',cost:150000,wood:50,states:['🏗️','🗼','🔦','💡','🌟','✨','🔆','⚡','🌈','🎆'],reward:{coins:15000,randomBrut:3},rewardDesc:'15 000💰 + 3 ress./mois'},
+    {id:'bibliotheque',name:'Bibliothèque',emoji:'🏢',cost:180000,wood:55,states:['🏗️','🏢','📖','📚','📜','🔖','🏛️','📕','📗','📘','📙','🎭','🏆'],reward:{randomTransfo:5},rewardDesc:'5 ress. transformées/mois'},
+    {id:'eglise',name:'Chapelle',emoji:'⛪',cost:200000,wood:60,states:['🏗️','⛪','🕍','🛕','💒','🙏','✝️','⭐'],reward:{coins:20000,stars:1},rewardDesc:'20 000💰 + 1⭐/mois'},
+    {id:'ecole',name:'École',emoji:'🏫',cost:250000,wood:70,states:['🏗️','🏫','📚','🎓','🔬','🔭','🏅','📐','✏️','🎨','🧪','🏆'],reward:{coins:25000,randomBrut:5},rewardDesc:'25 000💰 + 5 ress./mois'},
+    {id:'hotel',name:'Hôtel',emoji:'🏨',cost:350000,wood:80,states:['🏗️','🏨','🏩','🛎️','🎩','💎','🌟','✨','🏆','👑','🎖️'],reward:{coins:35000},rewardDesc:'35 000💰/mois'},
+    {id:'chateau',name:'Château',emoji:'🏰',cost:500000,wood:100,states:['🏗️','🏰','🏯','👑','🗡️','🛡️','⚜️','🦁','💎'],reward:{coins:50000},rewardDesc:'50 000💰/mois'}
   ]},
   {id:'deco',name:'🌳 Décorations',items:[
-    {id:'arbre_d',name:'Arbre',emoji:'🌳',cost:6000},
-    {id:'sapin',name:'Sapin',emoji:'🌲',cost:8000},
-    {id:'palmier',name:'Palmier',emoji:'🌴',cost:10000},
-    {id:'cerisier',name:'Cerisier',emoji:'🌸',cost:16000},
-    {id:'fleur_d',name:'Fleurs',emoji:'🌷',cost:4000},
-    {id:'tournesol',name:'Tournesol',emoji:'🌻',cost:5000},
-    {id:'rose',name:'Roses',emoji:'🌹',cost:7000},
-    {id:'cactus',name:'Cactus',emoji:'🌵',cost:8000},
-    {id:'champignon_d',name:'Champignon',emoji:'🍄',cost:6000},
-    {id:'bambou',name:'Bambou',emoji:'🎋',cost:12000},
-    {id:'bonsai',name:'Bonsaï',emoji:'🌾',cost:24000},
-    {id:'nenuphare',name:'Nénuphar',emoji:'🌺',cost:14000},
-    {id:'lierre',name:'Lierre',emoji:'🌿',cost:5000},
-    {id:'buisson',name:'Buisson',emoji:'☘️',cost:4000},
-    {id:'trefle',name:'Trèfle',emoji:'🍀',cost:10000},
-    {id:'herbe',name:'Herbe haute',emoji:'🌾',cost:3000},
     {id:'souche',name:'Souche',emoji:'🪵',cost:2000},
-    {id:'pierre_deco',name:'Rocher',emoji:'🪨',cost:6000}
+    {id:'herbe',name:'Herbe haute',emoji:'🌾',cost:3000},
+    {id:'fleur_d',name:'Fleurs',emoji:'🌷',cost:4000},
+    {id:'buisson',name:'Buisson',emoji:'☘️',cost:4000},
+    {id:'lierre',name:'Lierre',emoji:'🌿',cost:5000},
+    {id:'tournesol',name:'Tournesol',emoji:'🌻',cost:5000},
+    {id:'arbre_d',name:'Arbre',emoji:'🌳',cost:6000},
+    {id:'champignon_d',name:'Champignon',emoji:'🍄',cost:6000},
+    {id:'pierre_deco',name:'Rocher',emoji:'🪨',cost:6000},
+    {id:'rose',name:'Roses',emoji:'🌹',cost:7000},
+    {id:'sapin',name:'Sapin',emoji:'🌲',cost:8000},
+    {id:'cactus',name:'Cactus',emoji:'🌵',cost:8000},
+    {id:'palmier',name:'Palmier',emoji:'🌴',cost:10000},
+    {id:'trefle',name:'Trèfle',emoji:'🍀',cost:10000},
+    {id:'bambou',name:'Bambou',emoji:'🎋',cost:12000},
+    {id:'nenuphare',name:'Nénuphar',emoji:'🌺',cost:14000},
+    {id:'cerisier',name:'Cerisier',emoji:'🌸',cost:16000},
+    {id:'bonsai',name:'Bonsaï',emoji:'🌾',cost:24000}
   ]},
   {id:'mobilier',name:'🪑 Mobilier',items:[
-    {id:'fontaine',name:'Fontaine',emoji:'⛲',cost:50000},
-    {id:'banc',name:'Banc',emoji:'🪑',cost:10000},
-    {id:'lampadaire',name:'Lampadaire',emoji:'🪔',cost:15000},
-    {id:'statue',name:'Statue',emoji:'🗿',cost:80000},
+    {id:'boite_lettre',name:'Boîte lettres',emoji:'📮',cost:5000},
     {id:'pot_fleur',name:'Pot de fleurs',emoji:'🪴',cost:6000},
     {id:'table',name:'Table',emoji:'🪵',cost:8000},
-    {id:'parasol',name:'Parasol',emoji:'⛱️',cost:20000},
-    {id:'boite_lettre',name:'Boîte lettres',emoji:'📮',cost:5000},
+    {id:'banc',name:'Banc',emoji:'🪑',cost:10000},
     {id:'hamac',name:'Hamac',emoji:'🛋️',cost:12000},
-    {id:'balancoire',name:'Balançoire',emoji:'🎠',cost:18000},
+    {id:'lampadaire',name:'Lampadaire',emoji:'🪔',cost:15000},
     {id:'barbecue',name:'Barbecue',emoji:'🔥',cost:15000},
-    {id:'jacuzzi',name:'Jacuzzi',emoji:'🛁',cost:100000},
+    {id:'balancoire',name:'Balançoire',emoji:'🎠',cost:18000},
+    {id:'parasol',name:'Parasol',emoji:'⛱️',cost:20000},
     {id:'toboggan',name:'Toboggan',emoji:'🛝',cost:25000},
     {id:'borne',name:'Borne arcade',emoji:'🎮',cost:30000},
+    {id:'horloge',name:'Horloge',emoji:'🕰️',cost:35000},
     {id:'telescope',name:'Télescope',emoji:'🔭',cost:40000},
-    {id:'horloge',name:'Horloge',emoji:'🕰️',cost:35000}
+    {id:'fontaine',name:'Fontaine',emoji:'⛲',cost:50000},
+    {id:'statue',name:'Statue',emoji:'🗿',cost:80000},
+    {id:'jacuzzi',name:'Jacuzzi',emoji:'🛁',cost:100000}
   ]},
   {id:'cloture',name:'🏗️ Clôtures',items:[
+    {id:'chemin',name:'Chemin',emoji:'🟫',cost:1000},
     {id:'cloture_bois',name:'Clôture bois',emoji:'🪵',cost:2000,wood:5},
     {id:'haie',name:'Haie',emoji:'🌿',cost:3000,wood:3},
-    {id:'mur_pierre',name:'Mur pierre',emoji:'🧱',cost:6000},
-    {id:'portail',name:'Portail',emoji:'🚪',cost:20000,wood:10},
-    {id:'pont',name:'Pont',emoji:'🌉',cost:40000,wood:20},
-    {id:'chemin',name:'Chemin',emoji:'🟫',cost:1000},
     {id:'allee',name:'Allée pavée',emoji:'⬜',cost:3000},
-    {id:'arche',name:'Arche fleurie',emoji:'🎊',cost:25000,wood:15},
-    {id:'barriere',name:'Barrière métal',emoji:'⛓️',cost:8000},
     {id:'muret',name:'Muret bas',emoji:'🧱',cost:4000},
+    {id:'mur_pierre',name:'Mur pierre',emoji:'🧱',cost:6000},
+    {id:'barriere',name:'Barrière métal',emoji:'⛓️',cost:8000},
     {id:'escalier',name:'Escalier',emoji:'🪜',cost:15000,wood:8},
-    {id:'passerelle',name:'Passerelle',emoji:'🌉',cost:30000,wood:25}
+    {id:'portail',name:'Portail',emoji:'🚪',cost:20000,wood:10},
+    {id:'arche',name:'Arche fleurie',emoji:'🎊',cost:25000,wood:15},
+    {id:'passerelle',name:'Passerelle',emoji:'🌉',cost:30000,wood:25},
+    {id:'pont',name:'Pont',emoji:'🌉',cost:40000,wood:20}
   ]}
 ];
 var gardenMode='place';// place | move | delete | renovate
