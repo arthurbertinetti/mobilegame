@@ -147,6 +147,19 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .well-btn:active{transform:scale(.93)}
 .well-water-display{font-size:1.5rem;font-weight:bold;color:#2196F3}
 .well-status{font-size:.75rem;color:#888;text-align:center}
+.quest-card{background:rgba(255,255,255,.9);border-radius:10px;padding:10px 12px;box-shadow:0 2px 6px rgba(0,0,0,.08);margin-bottom:6px}
+.quest-card.qdone{opacity:.55;background:rgba(200,230,200,.9)}
+.quest-hdr{display:flex;align-items:center;gap:6px;font-weight:bold;font-size:.85rem}
+.quest-hdr .q-ico{font-size:1.2rem}
+.quest-desc{font-size:.72rem;color:#666;margin-top:2px}
+.quest-prog{width:100%;height:8px;background:rgba(0,0,0,.1);border-radius:4px;overflow:hidden;margin-top:4px}
+.quest-prog-fill{height:100%;background:linear-gradient(90deg,#ff9800,#4CAF50);border-radius:4px;transition:width .3s}
+.quest-reward{font-size:.68rem;color:#5d4037;margin-top:3px}
+.quest-done-tag{font-size:.7rem;color:#27ae60;font-weight:bold}
+.quest-section{font-weight:bold;font-size:.85rem;color:#5d4037;padding:4px 8px;background:rgba(255,255,255,.5);border-radius:8px;text-align:center;margin:6px 0 3px}
+.quest-reset-btn{display:block;margin:10px auto;padding:8px 20px;background:#9b59b6;color:#fff;border:none;border-radius:8px;font-weight:bold;font-size:.8rem;cursor:pointer}
+.quest-reset-btn:active{background:#8e44ad}
+.quest-month-info{text-align:center;font-size:.78rem;color:#888;padding:4px}
 </style>
 </head>
 <body>
@@ -178,6 +191,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="res-bar"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
   <div class="panel" id="panel-recipes"><h3>📖 Recettes</h3><div id="recipe-list"></div></div>
   <div class="panel" id="panel-well"><h3>🪣 Puits</h3><div id="well-container"></div></div>
+  <div class="panel" id="panel-quests"><h3>🎯 Quêtes mensuelles</h3><div id="quest-list"></div></div>
 </div>
 <div id="tabs">
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
@@ -188,6 +202,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
   <button class="tab-btn" data-panel="recipes"><span class="ico">📖</span>Recettes</button>
   <button class="tab-btn" data-panel="well"><span class="ico">🪣</span>Puits</button>
+  <button class="tab-btn" data-panel="quests"><span class="ico">🎯</span>Quêtes</button>
 </div>
 <div id="overlay">
   <h2>🌾 Farm Valley</h2>
@@ -413,12 +428,14 @@ var GCOLS=6,GMAX=15,GTOTAL=GCOLS*GMAX,GSTART=12;
 var SAVE_KEY='farmvalley_save';
 var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000,
   58000,73000,90000,110000,135000,165000,200000,245000,300000,370000];
-var state={version:7,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+var DAY_MS=300000;// 5 minutes per day
+var state={version:8,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
   selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
   autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,savings:0,
   resources:{},bplots:[],bgridBought:0,selBuilding:0,selBuildingPlot:-1,
   day:1,month:1,lastDayTick:0,lastWaterRegen:0,lastSave:0,
-  wellRepairs:0,wellWater:0,lastWellTick:0};
+  wellRepairs:0,wellWater:0,lastWellTick:0,
+  quests:[],questMonth:0,questResets:0};
 
 // ===== DOM =====
 var $=document.getElementById.bind(document);
@@ -446,6 +463,9 @@ function init(){
   if(state.wellRepairs===undefined)state.wellRepairs=0;
   if(state.wellWater===undefined)state.wellWater=0;
   if(!state.lastWellTick)state.lastWellTick=0;
+  if(!state.quests)state.quests=[];
+  if(!state.questMonth)state.questMonth=0;
+  if(!state.questResets)state.questResets=0;
   state.maxWater=100+(state.upgrades.watermax||0)*10;
   while(state.plots.length<GTOTAL)state.plots.push({catIdx:-1,itemIdx:-1,wc:0,lw:0,locked:state.plots.length>=GSTART+state.gridBought});
   var unlocked=GSTART+state.gridBought;
@@ -457,6 +477,7 @@ function init(){
   if(!state.lastWaterRegen)state.lastWaterRegen=Date.now();
   if(!state.lastSave)state.lastSave=Date.now();
   processOffline();
+  if(state.questMonth!==state.month||state.quests.length!==10)generateQuests();
   buildSeedBar();buildFarm();buildShop();buildUpgrades();
   buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();
   updateAuto();updateUI();
@@ -472,9 +493,9 @@ function processOffline(){
   var wGain=Math.floor((now-state.lastWaterRegen)/30000);
   if(wGain>0){state.water=Math.min(state.maxWater,state.water+wGain);state.lastWaterRegen+=wGain*30000}
   // Day/rent offline
-  var dPassed=Math.floor((now-state.lastDayTick)/20000);
+  var dPassed=Math.floor((now-state.lastDayTick)/DAY_MS);
   if(dPassed>0){
-    state.lastDayTick+=dPassed*20000;
+    state.lastDayTick+=dPassed*DAY_MS;
     var totalDays=state.day+dPassed-1;
     var mPassed=Math.floor(totalDays/30);
     state.day=totalDays%30+1;
@@ -625,6 +646,7 @@ function onPlot(e){
     var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
     state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
     var rk=HARVEST_RES[it[N]];if(rk){state.resources[rk]=(state.resources[rk]||0)+1;showFloat(fx,fy-40,'+1'+RES_INFO[rk].emoji);}
+    trackQuestHarvest(it[N]);
     showFloat(fx,fy,'+'+fmtN(sv)+'💰');showFloat(fx,fy-20,'+'+it[XP]+'⭐');
     p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0;
     checkLevelUp();updateUI()}
@@ -979,11 +1001,11 @@ function gameTick(){
   var wG=Math.floor((now-state.lastWaterRegen)/30000);
   if(wG>0){state.water=Math.min(state.maxWater,state.water+wG);state.lastWaterRegen+=wG*30000}
   // Day/rent
-  var dP=Math.floor((now-state.lastDayTick)/20000);
+  var dP=Math.floor((now-state.lastDayTick)/DAY_MS);
   if(dP>0){
-    state.lastDayTick+=dP*20000;
+    state.lastDayTick+=dP*DAY_MS;
     for(var d=0;d<dP;d++){state.day++;
-      if(state.day>30){state.day=1;state.month++;var rent=getRent();
+      if(state.day>30){state.day=1;state.month++;generateQuests();var rent=getRent();
         if(state.savings>0&&getSavingsRate()>0){var interest=Math.floor(state.savings*getSavingsRate());state.savings+=interest;
           showFloat(innerWidth/2,20,'🏦 Intérêts: +'+fmtN(interest)+'💰')}
         if(state.debt>0){var dInterest=Math.ceil(state.debt*getDebtRate());state.debt+=dInterest;
@@ -1106,6 +1128,7 @@ function onBPlot(e){
       showFloat(fx,fy,'+'+fmtN(totalSell)+'💰');
     }
     state.xp+=rec.xp*pQty;
+    trackQuestRecipe(rec.name,pQty);
     bp.recipe=-1;bp.prodStart=0;bp.qty=1;
     checkLevelUp();updateResBar();updateBuildingVisuals();updateUI();
     state.selBuildingPlot=idx;buildRecipeBar();
@@ -1345,6 +1368,113 @@ function buildWell(){
   }
 }
 
+// ===== QUESTS =====
+function generateQuests(){
+  if(state.questMonth===state.month&&state.quests.length===10)return;
+  state.questMonth=state.month;state.quests=[];
+  var lv=state.level;
+  // 5 farm quests: harvest specific crops/trees/animals
+  var farmPool=[];
+  for(var c=0;c<3;c++){ITEMS[c].forEach(function(it,i){if(it[RL]<=lv)farmPool.push({cat:c,idx:i,name:it[N],emoji:it[E]});});}
+  shuffle(farmPool);
+  for(var q=0;q<5;q++){
+    var pick=farmPool[q%farmPool.length];
+    var need=Math.max(1,Math.floor((2+lv*0.5+q*0.8)*(1+Math.random()*0.5)));
+    var goldR=Math.floor(need*(pick.cat===0?80:pick.cat===1?250:500)*(1+lv*0.12));
+    var xpR=Math.floor(goldR*0.25);
+    state.quests.push({type:'farm',target:pick.name,emoji:pick.emoji,need:need,progress:0,gold:goldR,xp:xpR,claimed:false});
+  }
+  // 5 atelier quests: craft specific recipes
+  var recPool=[];
+  BUILDINGS.forEach(function(bld){if(bld.reqLevel<=lv){bld.recipes.forEach(function(rec){recPool.push({name:rec.name,emoji:rec.emoji,bld:bld.name});});}});
+  shuffle(recPool);
+  for(var q2=0;q2<5;q2++){
+    var pick2=recPool[q2%recPool.length];
+    var need2=Math.max(1,Math.floor((1+lv*0.3+q2*0.5)*(1+Math.random()*0.4)));
+    var goldR2=Math.floor(need2*300*(1+lv*0.15));
+    var xpR2=Math.floor(goldR2*0.25);
+    state.quests.push({type:'atelier',target:pick2.name,emoji:pick2.emoji,bld:pick2.bld,need:need2,progress:0,gold:goldR2,xp:xpR2,claimed:false});
+  }
+}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}}
+function trackQuestHarvest(itemName){
+  state.quests.forEach(function(q){if(q.type==='farm'&&q.target===itemName&&!q.claimed)q.progress=Math.min(q.progress+1,q.need);});
+}
+function trackQuestRecipe(recipeName,qty){
+  state.quests.forEach(function(q){if(q.type==='atelier'&&q.target===recipeName&&!q.claimed)q.progress=Math.min(q.progress+(qty||1),q.need);});
+}
+function getQuestResetCost(){
+  return Math.floor(500*Math.pow(1.5,state.questResets)*(1+state.level*0.2));
+}
+function buildQuestUI(){
+  var list=$('quest-list');if(!list)return;list.innerHTML='';
+  if(state.quests.length===0){list.innerHTML='<p style="text-align:center;color:#888;padding:20px">🎯 Aucune quête ce mois-ci</p>';return;}
+  var info=document.createElement('div');info.className='quest-month-info';
+  info.textContent='📅 Mois '+state.month+' — Jour '+state.day+'/30';
+  list.appendChild(info);
+  // Farm quests
+  var fh=document.createElement('div');fh.className='quest-section';fh.textContent='🌾 Quêtes Ferme';list.appendChild(fh);
+  state.quests.forEach(function(q,qi){
+    if(q.type!=='farm')return;
+    var done=q.progress>=q.need;
+    var card=document.createElement('div');card.className='quest-card'+(q.claimed?' qdone':'');
+    var pct=Math.min(100,Math.floor(q.progress/q.need*100));
+    card.innerHTML='<div class="quest-hdr"><span class="q-ico">'+q.emoji+'</span>Récolter '+q.need+' '+q.target+'</div>'
+      +'<div class="quest-desc">'+q.progress+'/'+q.need+(q.claimed?' — ✅ Terminée':'')+'</div>'
+      +'<div class="quest-prog"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐</div>';
+    if(done&&!q.claimed){
+      var cb=document.createElement('button');cb.style.cssText='margin-top:4px;padding:4px 14px;background:#4CAF50;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer';
+      cb.textContent='🎁 Réclamer';
+      (function(idx){cb.addEventListener('click',function(){
+        state.quests[idx].claimed=true;state.coins+=state.quests[idx].gold;state.xp+=state.quests[idx].xp;
+        state.totalEarned+=state.quests[idx].gold;
+        showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐');
+        checkLevelUp();updateUI();buildQuestUI();
+      });})(qi);
+      card.appendChild(cb);
+    }
+    list.appendChild(card);
+  });
+  // Atelier quests
+  var ah=document.createElement('div');ah.className='quest-section';ah.textContent='🏗️ Quêtes Atelier';list.appendChild(ah);
+  state.quests.forEach(function(q,qi){
+    if(q.type!=='atelier')return;
+    var done=q.progress>=q.need;
+    var card=document.createElement('div');card.className='quest-card'+(q.claimed?' qdone':'');
+    var pct=Math.min(100,Math.floor(q.progress/q.need*100));
+    card.innerHTML='<div class="quest-hdr"><span class="q-ico">'+q.emoji+'</span>Fabriquer '+q.need+' '+q.target+'</div>'
+      +'<div class="quest-desc">'+(q.bld?q.bld+' — ':'')+q.progress+'/'+q.need+(q.claimed?' — ✅ Terminée':'')+'</div>'
+      +'<div class="quest-prog"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐</div>';
+    if(done&&!q.claimed){
+      var cb=document.createElement('button');cb.style.cssText='margin-top:4px;padding:4px 14px;background:#4CAF50;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer';
+      cb.textContent='🎁 Réclamer';
+      (function(idx){cb.addEventListener('click',function(){
+        state.quests[idx].claimed=true;state.coins+=state.quests[idx].gold;state.xp+=state.quests[idx].xp;
+        state.totalEarned+=state.quests[idx].gold;
+        showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐');
+        checkLevelUp();updateUI();buildQuestUI();
+      });})(qi);
+      card.appendChild(cb);
+    }
+    list.appendChild(card);
+  });
+  // Check if all claimed → offer reset
+  var allClaimed=state.quests.every(function(q){return q.claimed;});
+  if(allClaimed){
+    var cost=getQuestResetCost();
+    var rb=document.createElement('button');rb.className='quest-reset-btn';
+    rb.textContent='🔄 Nouvelles quêtes ('+fmtN(cost)+'💰)';
+    rb.disabled=state.coins<cost;
+    rb.addEventListener('click',function(){
+      if(state.coins>=cost){state.coins-=cost;state.questResets++;state.questMonth=0;generateQuests();
+        showFloat(innerWidth/2,innerHeight/2,'🎯 Nouvelles quêtes!');updateUI();buildQuestUI();}
+    });
+    list.appendChild(rb);
+  }
+}
+
 // ===== FLOAT =====
 function showFloat(x,y,t){var e=document.createElement('div');e.className='float-text';e.textContent=t;
   e.style.left=Math.max(10,Math.min(x,innerWidth-130))+'px';e.style.top=y+'px';
@@ -1363,6 +1493,7 @@ function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.pa
     else if(bp.buildingIdx>=0)bp.buildingIdx=-1;
     bp.recipe=-1;bp.prodStart=0;});s.selBuilding=0;s.selBuildingPlot=-1;s.version=6}
   if(s.version<7){s.wellRepairs=0;s.wellWater=0;s.lastWellTick=0;s.version=7}
+  if(s.version<8){s.quests=[];s.questMonth=0;s.questResets=0;s.version=8}
   for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
 
 // ===== TABS =====
@@ -1378,6 +1509,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     if(btn.dataset.panel==='buildings'){buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
     if(btn.dataset.panel==='recipes')buildRecipeList();
     if(btn.dataset.panel==='well')buildWell();
+    if(btn.dataset.panel==='quests')buildQuestUI();
     var isFarm=btn.dataset.panel==='farm';
     $('cat-bar').style.display=isFarm?'flex':'none';
     seedBar.style.display=isFarm?'flex':'none';
