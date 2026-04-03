@@ -160,6 +160,25 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .quest-reset-btn{display:block;margin:10px auto;padding:8px 20px;background:#9b59b6;color:#fff;border:none;border-radius:8px;font-weight:bold;font-size:.8rem;cursor:pointer}
 .quest-reset-btn:active{background:#8e44ad}
 .quest-month-info{text-align:center;font-size:.78rem;color:#888;padding:4px}
+#garden-area{position:relative;display:inline-grid;gap:2px;padding:6px;background:linear-gradient(145deg,#b8e6b8,#8fce8f);border-radius:12px;margin:4px auto}
+.gcell{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;border:1px solid rgba(0,0,0,.08);transition:transform .1s,background .2s}
+.gcell.gempty{background:rgba(255,255,255,.25)}
+.gcell.gfilled{background:rgba(255,255,255,.6);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.gcell.gsel{border:2px solid #e74c3c;background:rgba(231,76,60,.15)}
+.gcell:active{transform:scale(.9)}
+#garden-toolbar{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding:4px}
+.gtool-cat{padding:5px 10px;border-radius:8px;border:2px solid transparent;background:rgba(255,255,255,.75);cursor:pointer;font-size:.72rem;font-weight:bold}
+.gtool-cat.active{border-color:#4CAF50;background:#E8F5E9}
+#garden-items{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding:4px}
+.gitem-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 8px;border-radius:9px;border:2px solid transparent;background:rgba(255,255,255,.9);cursor:pointer;font-size:.65rem;min-width:60px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.gitem-btn.active{border-color:#4CAF50;background:#E8F5E9}
+.gitem-btn:disabled{opacity:.3}
+.gitem-btn .gi-ico{font-size:1.3rem}
+.gitem-btn .gi-cost{color:#888;font-size:.55rem}
+#garden-modes{display:flex;gap:4px;justify-content:center;padding:4px}
+.gmode-btn{padding:5px 14px;border-radius:8px;border:2px solid transparent;background:rgba(255,255,255,.7);cursor:pointer;font-size:.75rem;font-weight:bold}
+.gmode-btn.active{border-color:#e67e22;background:#FFF3E0}
+.garden-info{text-align:center;font-size:.7rem;color:#666;padding:2px}
 </style>
 </head>
 <body>
@@ -168,6 +187,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div id="stats">
     <span>💰<b id="coins">20</b></span>
     <span>💧<b id="water">50</b>/<small id="maxw">100</small></span>
+    <span>⭐<b id="stars">0</b></span>
     <span>🏅Niv.<b id="level">1</b></span>
   </div>
 </div>
@@ -188,10 +208,11 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div class="panel" id="panel-upgrades"><h3>⬆️ Améliorations</h3><div id="upg-list"></div></div>
   <div class="panel" id="panel-stats"><h3>📊 Statistiques</h3><div id="stats-list"></div></div>
   <div class="panel" id="panel-resources"><h3>📦 Ressources</h3><div id="res-grid-container"></div></div>
-  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="res-bar"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
+  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-aa">🏭 Atelier</button></div><div id="res-bar"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
   <div class="panel" id="panel-recipes"><h3>📖 Recettes</h3><div id="recipe-list"></div></div>
   <div class="panel" id="panel-well"><h3>🪣 Puits</h3><div id="well-container"></div></div>
   <div class="panel" id="panel-quests"><h3>🎯 Quêtes mensuelles</h3><div id="quest-list"></div></div>
+  <div class="panel" id="panel-garden"><h3>🌷 Jardin</h3><div id="garden-modes"></div><div id="garden-toolbar"></div><div id="garden-items"></div><div class="garden-info" id="garden-info"></div><div id="garden-area"></div></div>
 </div>
 <div id="tabs">
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
@@ -203,6 +224,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <button class="tab-btn" data-panel="recipes"><span class="ico">📖</span>Recettes</button>
   <button class="tab-btn" data-panel="well"><span class="ico">🪣</span>Puits</button>
   <button class="tab-btn" data-panel="quests"><span class="ico">🎯</span>Quêtes</button>
+  <button class="tab-btn" data-panel="garden"><span class="ico">🌷</span>Jardin</button>
 </div>
 <div id="overlay">
   <h2>🌾 Farm Valley</h2>
@@ -248,9 +270,11 @@ function calcMysteryCosts(){for(var c=0;c<3;c++){var arr=ITEMS[c],sum=0;for(var 
 function getMysteryCost(cat){if(cat<0||cat>2)return MYSTERY_COSTS[0];return MYSTERY_COSTS[cat]}
 var UPGRADES=[
 {id:'speed',name:'Engrais rapide',desc:'-5% temps/niv',icon:'⚡',base:30,mult:1.15,max:100},
-{id:'value',name:'Meilleur marché',desc:'+15% vente/niv',icon:'💎',base:40,mult:2.0,max:10},
+{id:'bspeed',name:'Engrais atelier',desc:'-5% temps atelier/niv',icon:'🏭',base:30,mult:1.15,max:100},
+{id:'value',name:'Meilleur marché',desc:'+15% vente/niv',icon:'💎',base:40,mult:2.0,max:100},
 {id:'autoharvest',name:'Auto-récolte',desc:'Récolte auto (2-10 min)',icon:'🤖',base:300,mult:2.5,max:5},
 {id:'autowater',name:'Auto-arrosage',desc:'Arrose auto (1-10 min)',icon:'🚿',base:400,mult:2.5,max:10},
+{id:'autoatelier',name:'Auto-atelier',desc:'Récolte ateliers auto (1-10 min)',icon:'🛠️',base:400,mult:2.5,max:10},
 {id:'watermax',name:'Réservoir',desc:'+10 eau max (→100000)',icon:'🪣',base:15,mult:1.03,max:9990},
 {id:'savingsrate',name:'Taux d\'épargne',desc:'Intérêt mensuel: 1%→25%',icon:'🏦',base:10000,mult:2.2,max:20}];
 var WATER_PACKS=[[10,20,'10💧'],[30,50,'30💧'],[100,150,'100💧']];
@@ -429,20 +453,22 @@ var SAVE_KEY='farmvalley_save';
 var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000,
   58000,73000,90000,110000,135000,165000,200000,245000,300000,370000];
 var DAY_MS=300000;// 5 minutes per day
-var state={version:8,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+var state={version:9,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
   selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
   autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,savings:0,
   resources:{},bplots:[],bgridBought:0,selBuilding:0,selBuildingPlot:-1,
   day:1,month:1,lastDayTick:0,lastWaterRegen:0,lastSave:0,
   wellRepairs:0,wellWater:0,lastWellTick:0,
-  quests:[],questMonth:0,questResets:0};
+  quests:[],questMonth:0,questResets:0,stars:0,
+  autoAtelierEnd:0,aaResets:0,
+  gardenGrid:[]};
 
 // ===== DOM =====
 var $=document.getElementById.bind(document);
 var coinsEl=$('coins'),waterEl=$('water'),maxwEl=$('maxw'),levelEl=$('level');
 var dayEl=$('day'),monthEl=$('month'),rentEl=$('rent');
 var farmEl=$('farm'),seedBar=$('seed-bar'),overlay=$('overlay');
-var btnAH=$('btn-ah'),btnAW=$('btn-aw');
+var btnAH=$('btn-ah'),btnAW=$('btn-aw'),btnAA=$('btn-aa');
 
 // ===== INIT =====
 function init(){
@@ -466,6 +492,11 @@ function init(){
   if(!state.quests)state.quests=[];
   if(!state.questMonth)state.questMonth=0;
   if(!state.questResets)state.questResets=0;
+  if(state.stars===undefined)state.stars=0;
+  if(!state.autoAtelierEnd)state.autoAtelierEnd=0;
+  if(!state.aaResets)state.aaResets=0;
+  if(!state.gardenGrid)state.gardenGrid=[];
+  while(state.gardenGrid.length<GARDEN_SIZE*GARDEN_SIZE)state.gardenGrid.push(null);
   state.maxWater=100+(state.upgrades.watermax||0)*10;
   while(state.plots.length<GTOTAL)state.plots.push({catIdx:-1,itemIdx:-1,wc:0,lw:0,locked:state.plots.length>=GSTART+state.gridBought});
   var unlocked=GSTART+state.gridBought;
@@ -511,6 +542,7 @@ function processOffline(){
       if(p.catIdx<0||p.locked)return;var it=ITEMS[p.catIdx][p.itemIdx];
       if(p.wc>=CAT_WATER[p.catIdx]){var sv=getSellVal(it);state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
         var rk=HARVEST_RES[it[N]];if(rk)state.resources[rk]=(state.resources[rk]||0)+1;
+        trackQuestHarvest(it[N]);
         p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
     });
   }
@@ -537,6 +569,7 @@ function processOffline(){
 
 // ===== HELPERS =====
 function getStageTime(it){return Math.max(it[ST]*1000*Math.pow(0.95,state.upgrades.speed||0),2000)}
+function getRecipeTime(rec){return Math.max(rec.time*Math.pow(0.95,state.upgrades.bspeed||0),2)}
 function getSellVal(it){return Math.floor(it[SV]*(1+(state.upgrades.value||0)*0.15))}
 function getCellCost(){return Math.floor(50*Math.pow(1.18,state.gridBought))}
 function getRent(){return state.level*25}
@@ -544,6 +577,8 @@ function getAutoHDur(){var l=state.upgrades.autoharvest||0;return l>0?l*2*60000:
 function getAutoWDur(){var l=state.upgrades.autowater||0;return l>0?l*60000:0}
 function getReactivateHCost(){var l=state.upgrades.autoharvest||0;return Math.floor(80*l*(l>=5?3:1))}
 function getReactivateWCost(){var l=state.upgrades.autowater||0;return Math.floor(60*l*(l>=5?3:1))}
+function getAutoADur(){var l=state.upgrades.autoatelier||0;return l>0?l*60000:0}
+function getReactivateACost(){var l=state.upgrades.autoatelier||0;return Math.floor(70*l*(l>=5?3:1))}
 function getDebtRate(){return Math.min(0.05+state.debt/100000,0.30)}
 function getSavingsRate(){var lv=state.upgrades.savingsrate||0;if(lv<=0)return 0;return(1+(lv-1)*24/19)/100}
 function getVisibleRows(){var u=GSTART+state.gridBought;return Math.min(GMAX,Math.floor((u-1)/GCOLS)+2)}
@@ -880,17 +915,18 @@ function buildUpgrades(){
   var list=$('upg-list');list.innerHTML='';
   UPGRADES.forEach(function(upg){
     var lv=state.upgrades[upg.id]||0,mx=lv>=upg.max;
-    var rm=1;if(upg.id==='autoharvest')rm=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm=Math.pow(1.25,state.awResets||0);
+    var rm=1;if(upg.id==='autoharvest')rm=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm=Math.pow(1.25,state.awResets||0);if(upg.id==='autoatelier')rm=Math.pow(1.25,state.aaResets||0);
     var cost=Math.floor(upg.base*Math.pow(upg.mult,lv)*rm);
     var d=document.createElement('div');d.className='upg-item';
     var extra='';
     if(upg.id==='autoharvest'){if(lv>0)extra=' ('+lv*2+'min)';if(state.ahResets>0)extra+=' 🔄×'+state.ahResets}
     if(upg.id==='autowater'){if(lv>0)extra=' ('+lv+'min)';if(state.awResets>0)extra+=' 🔄×'+state.awResets}
+    if(upg.id==='autoatelier'){if(lv>0)extra=' ('+lv+'min)';if(state.aaResets>0)extra+=' 🔄×'+state.aaResets}
     if(upg.id==='watermax')extra=' ('+state.maxWater+'/2000)';
     if(upg.id==='savingsrate'){if(lv>0)extra=' ('+Math.round(getSavingsRate()*10000)/100+'%/mois)'};
     d.innerHTML='<div class="icon">'+upg.icon+'</div><div class="info"><div class="name">'+upg.name+' ('+lv+'/'+upg.max+')</div><div class="desc">'+upg.desc+extra+'</div></div><button class="buy-btn" '+(mx||state.coins<cost?'disabled':'')+'>'+(mx?'MAX':fmtN(cost)+'💰')+'</button>';
     if(!mx){d.querySelector('.buy-btn').addEventListener('click',function(){
-      var rm2=1;if(upg.id==='autoharvest')rm2=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm2=Math.pow(1.25,state.awResets||0);
+      var rm2=1;if(upg.id==='autoharvest')rm2=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm2=Math.pow(1.25,state.awResets||0);if(upg.id==='autoatelier')rm2=Math.pow(1.25,state.aaResets||0);
       var c=Math.floor(upg.base*Math.pow(upg.mult,state.upgrades[upg.id])*rm2);
       if(state.coins>=c){state.coins-=c;state.upgrades[upg.id]++;
         if(upg.id==='watermax'){state.maxWater=100+(state.upgrades.watermax)*10}
@@ -931,6 +967,15 @@ function updateAuto(){
       btnAW.className='auto-btn rdy';btnAW.textContent='💧 Réactiver '+fmtN(getReactivateWCost())+'💰';
     }else{btnAW.className='auto-btn rdy';btnAW.textContent='💧 Arrosage ('+awLv+'min)'}
   }else btnAW.className='auto-btn off';
+  // Atelier
+  var aaLv=state.upgrades.autoatelier||0;
+  if(aaLv>0){btnAA.classList.remove('off');
+    if(state.autoAtelierEnd>now){var r3=Math.ceil((state.autoAtelierEnd-now)/1000);var m3=Math.floor(r3/60),s3=r3%60;
+      btnAA.className='auto-btn on';btnAA.textContent='🏭 '+m3+':'+(s3<10?'0':'')+s3;
+    }else if(state.autoAtelierEnd>0){
+      btnAA.className='auto-btn rdy';btnAA.textContent='🏭 Réactiver '+fmtN(getReactivateACost())+'💰';
+    }else{btnAA.className='auto-btn rdy';btnAA.textContent='🏭 Atelier ('+aaLv+'min)'}
+  }else btnAA.className='auto-btn off';
 }
 btnAH.addEventListener('click',function(){
   var lv=state.upgrades.autoharvest||0;if(lv<=0)return;
@@ -950,19 +995,32 @@ btnAW.addEventListener('click',function(){
   }else{showFloat(innerWidth/2,innerHeight/2,'💧 Auto-arrosage activé!')}
   state.autoWaterEnd=now+getAutoWDur();updateAuto();updateUI();
 });
+btnAA.addEventListener('click',function(){
+  var lv=state.upgrades.autoatelier||0;if(lv<=0)return;
+  var now=Date.now();if(state.autoAtelierEnd>now)return;
+  if(state.autoAtelierEnd>0){var cost=getReactivateACost();
+    if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return}
+    state.coins-=cost;showFloat(innerWidth/2,innerHeight/2,'🏭 Réactivé! -'+fmtN(cost)+'💰');
+  }else{showFloat(innerWidth/2,innerHeight/2,'🏭 Auto-atelier activé!')}
+  state.autoAtelierEnd=now+getAutoADur();updateAuto();updateUI();
+});
 
 // ===== STATS =====
 function buildStats(){
   var list=$('stats-list');list.innerHTML='';
-  var ahLv=state.upgrades.autoharvest||0,awLv=state.upgrades.autowater||0;
+  var ahLv=state.upgrades.autoharvest||0,awLv=state.upgrades.autowater||0,aaLv=state.upgrades.autoatelier||0;
   var rows=[
     ['💰 Total gagné',fmtN(state.totalEarned)],['🌾 Récoltes',state.totalHarvested],
     ['🏅 Niveau',state.level],['⭐ XP',fmtN(state.xp)+' / '+fmtN(xpFor(state.level+1))],
+    ['⭐ Étoiles',state.stars||0],
     ['📏 Parcelles',(GSTART+state.gridBought)+'/'+GTOTAL],
     ['💧 Eau max',state.maxWater],
-    ['⚡ Engrais','Niv.'+(state.upgrades.speed||0)],['💎 Marché','Niv.'+(state.upgrades.value||0)],
+    ['⚡ Engrais ferme','Niv.'+(state.upgrades.speed||0)],
+    ['🏭 Engrais atelier','Niv.'+(state.upgrades.bspeed||0)],
+    ['💎 Marché','Niv.'+(state.upgrades.value||0)],
     ['🤖 Auto-récolte',ahLv>0?'Niv.'+ahLv+' ('+ahLv*2+'min)':'Non'],
     ['🚿 Auto-arrosage',awLv>0?'Niv.'+awLv+' ('+awLv+'min)':'Non'],
+    ['🛠️ Auto-atelier',aaLv>0?'Niv.'+aaLv+' ('+aaLv+'min)':'Non'],
     ['📅 Jour/Mois','J.'+state.day+' M.'+state.month],['🏠 Loyer',fmtN(getRent())+'💰/mois'],
     ['💳 Crédit',state.debt>0?fmtN(state.debt)+'💰 ('+Math.round(getDebtRate()*100)+'%/mois)':'Aucun'],
     ['🏦 \u00c9pargne',state.savings>0?fmtN(state.savings)+'💰 ('+Math.round(getSavingsRate()*10000)/100+'%/mois)':'Non d\u00e9bloqu\u00e9'],
@@ -988,6 +1046,7 @@ function updateUI(){
   coinsEl.textContent=fmtN(state.coins);waterEl.textContent=state.water;maxwEl.textContent=state.maxWater;
   levelEl.textContent=state.level;dayEl.textContent=state.day;monthEl.textContent=state.month;
   rentEl.textContent=fmtN(getRent());
+  var starsEl=$('stars');if(starsEl)starsEl.textContent=state.stars||0;
   var debtInfo=$('debt-info');if(state.debt>0)debtInfo.innerHTML=' | 💳<b style="color:#e74c3c">'+fmtN(state.debt)+'</b>';else debtInfo.textContent='';
   var savInfo=$('savings-info');if(state.savings>0)savInfo.innerHTML=' | 🏦<b style="color:#2980b9">'+fmtN(state.savings)+'</b>';else savInfo.textContent='';
   updateVisuals();updateBuildingVisuals();
@@ -1028,6 +1087,7 @@ function gameTick(){
       if(isMature(p)){var it=ITEMS[p.catIdx][p.itemIdx],sv=getSellVal(it);
         state.coins+=sv;state.xp+=it[XP];state.totalEarned+=sv;state.totalHarvested++;
         var rk=HARVEST_RES[it[N]];if(rk)state.resources[rk]=(state.resources[rk]||0)+1;
+        trackQuestHarvest(it[N]);
         showFloat(Math.random()*innerWidth*.6+innerWidth*.2,Math.random()*200+200,'+'+fmtN(sv)+'💰');
         p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0}
     });checkLevelUp();
@@ -1038,6 +1098,21 @@ function gameTick(){
       var wellG=Math.floor((now-state.lastWellTick)/20000);
       if(wellG>0){state.wellWater+=wellG*5;state.lastWellTick+=wellG*20000;}
     }
+  }
+  // Auto-atelier
+  if((state.upgrades.autoatelier||0)>=1&&state.autoAtelierEnd>now){
+    state.bplots.forEach(function(bp){
+      if(bp.locked||bp.buildingIdx<0||bp.recipe<0)return;
+      var bld=BUILDINGS[bp.buildingIdx],rec=bld.recipes[bp.recipe];
+      var pQty=bp.qty||1;var totalTime=getRecipeTime(rec)*pQty;
+      var elapsed=(now-bp.prodStart)/1000;
+      if(elapsed>=totalTime){
+        if(rec.output){state.resources[rec.output]=(state.resources[rec.output]||0)+pQty;}
+        else{var totalSell=rec.sell*pQty;state.coins+=totalSell;state.totalEarned+=totalSell;}
+        state.xp+=rec.xp*pQty;trackQuestRecipe(rec.name,pQty);
+        bp.recipe=-1;bp.prodStart=0;bp.qty=1;
+      }
+    });checkLevelUp();
   }
   var wellP=$('panel-well');if(wellP&&wellP.classList.contains('active'))buildWell();
   updateAuto();updateUI();state.lastSave=now;
@@ -1117,7 +1192,7 @@ function onBPlot(e){
     state.selBuildingPlot=idx;buildRecipeBar();updateBuildingVisuals();return;}
   // Check if production done
   var bld=BUILDINGS[bp.buildingIdx],rec=bld.recipes[bp.recipe];
-  var pQty=bp.qty||1;var totalTime=rec.time*pQty;
+  var pQty=bp.qty||1;var totalTime=getRecipeTime(rec)*pQty;
   var elapsed=(Date.now()-bp.prodStart)/1000;
   if(elapsed>=totalTime){
     if(rec.output){
@@ -1173,7 +1248,7 @@ function buildRecipeBar(){
     var ok=canMakeRecipe(rec);var maxQ=ok?getMaxQty(rec):0;
     var d=document.createElement('div');d.className='recipe-btn'+(ok?' can':' cant');
     var ingTxt='';for(var k in rec.inputs)ingTxt+=rec.inputs[k]+RES_INFO[k].emoji+' ';
-    var timeStr=rec.time>=60?Math.ceil(rec.time/60)+'m':rec.time+'s';
+    var timeStr=getRecipeTime(rec)>=60?Math.ceil(getRecipeTime(rec)/60)+'m':Math.round(getRecipeTime(rec))+'s';
     var outTxt=rec.output?'\u2192'+RES_INFO[rec.output].emoji:'\u2192'+fmtN(rec.sell)+'\ud83d\udcb0';
     d.innerHTML='<span class="r-ico">'+rec.emoji+'</span><b>'+rec.name+'</b><span>'+ingTxt+'</span><span>\u23f1'+timeStr+' '+outTxt+'</span>';
     if(ok){(function(rIdx,mQ){
@@ -1291,7 +1366,7 @@ function buildRecipeList(){
         var outHtml='';
         if(rec.output)outHtml='\u2192 '+RES_INFO[rec.output].emoji+' '+RES_INFO[rec.output].name+' ('+fmtN(RES_SELL[rec.output]||0)+'\ud83d\udcb0)';
         else outHtml='\u2192 '+fmtN(rec.sell)+'\ud83d\udcb0';
-        outHtml+=' \u00b7 +'+rec.xp+'\u2b50 \u00b7 \u23f1'+(rec.time>=60?Math.ceil(rec.time/60)+'m':rec.time+'s');
+        outHtml+=' \u00b7 +'+rec.xp+'\u2b50 \u00b7 \u23f1'+(getRecipeTime(rec)>=60?Math.ceil(getRecipeTime(rec)/60)+'m':Math.round(getRecipeTime(rec))+'s');
         d.innerHTML='<div class="rcp-hdr">'+rec.emoji+' '+rec.name+'<span class="rcp-bld">'+bld.emoji+' '+bld.name+(locked?' \ud83d\udd12Niv.'+bld.reqLevel:'')+'</span></div>'
           +'<div class="rcp-ing">'+ingHtml+'</div>'
           +'<div class="rcp-out">'+outHtml+'</div>';
@@ -1422,14 +1497,14 @@ function buildQuestUI(){
     card.innerHTML='<div class="quest-hdr"><span class="q-ico">'+q.emoji+'</span>Récolter '+q.need+' '+q.target+'</div>'
       +'<div class="quest-desc">'+q.progress+'/'+q.need+(q.claimed?' — ✅ Terminée':'')+'</div>'
       +'<div class="quest-prog"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'
-      +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐</div>';
+      +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐ + 1⭐'+'</div>';
     if(done&&!q.claimed){
       var cb=document.createElement('button');cb.style.cssText='margin-top:4px;padding:4px 14px;background:#4CAF50;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer';
       cb.textContent='🎁 Réclamer';
       (function(idx){cb.addEventListener('click',function(){
         state.quests[idx].claimed=true;state.coins+=state.quests[idx].gold;state.xp+=state.quests[idx].xp;
-        state.totalEarned+=state.quests[idx].gold;
-        showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐');
+        state.totalEarned+=state.quests[idx].gold;state.stars=(state.stars||0)+1;
+        showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐ +1⭐');
         checkLevelUp();updateUI();buildQuestUI();
       });})(qi);
       card.appendChild(cb);
@@ -1446,14 +1521,14 @@ function buildQuestUI(){
     card.innerHTML='<div class="quest-hdr"><span class="q-ico">'+q.emoji+'</span>Fabriquer '+q.need+' '+q.target+'</div>'
       +'<div class="quest-desc">'+(q.bld?q.bld+' — ':'')+q.progress+'/'+q.need+(q.claimed?' — ✅ Terminée':'')+'</div>'
       +'<div class="quest-prog"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'
-      +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐</div>';
+      +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐ + 1⭐'+'</div>';
     if(done&&!q.claimed){
       var cb=document.createElement('button');cb.style.cssText='margin-top:4px;padding:4px 14px;background:#4CAF50;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer';
       cb.textContent='🎁 Réclamer';
       (function(idx){cb.addEventListener('click',function(){
         state.quests[idx].claimed=true;state.coins+=state.quests[idx].gold;state.xp+=state.quests[idx].xp;
-        state.totalEarned+=state.quests[idx].gold;
-        showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐');
+        state.totalEarned+=state.quests[idx].gold;state.stars=(state.stars||0)+1;
+        showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐ +1⭐');
         checkLevelUp();updateUI();buildQuestUI();
       });})(qi);
       card.appendChild(cb);
@@ -1472,6 +1547,205 @@ function buildQuestUI(){
         showFloat(innerWidth/2,innerHeight/2,'🎯 Nouvelles quêtes!');updateUI();buildQuestUI();}
     });
     list.appendChild(rb);
+  }
+}
+
+// ===== GARDEN =====
+var GARDEN_SIZE=16;
+var GARDEN_CATS=[
+  {id:'batiment',name:'🏠 Bâtiments',items:[
+    {id:'maison',name:'Maison',emoji:'🏠',cost:30000,states:['🏚️','🏠','🏡']},
+    {id:'serre',name:'Serre',emoji:'🌿',cost:50000,states:['🏗️','🌿']},
+    {id:'cabane',name:'Cabane',emoji:'🛖',cost:20000,states:['🪵','🛖']},
+    {id:'grange',name:'Grange',emoji:'🏠',cost:80000,states:['🏗️','🏠','🏡']},
+    {id:'moulin_d',name:'Moulin',emoji:'🏭',cost:120000,states:['🏗️','🏭']},
+    {id:'eglise',name:'Chapelle',emoji:'⛪',cost:200000,states:['🏗️','⛪']},
+    {id:'chateau',name:'Château',emoji:'🏰',cost:500000,states:['🏗️','🏰']},
+    {id:'phare',name:'Phare',emoji:'🗼',cost:150000,states:['🏗️','🗼']},
+    {id:'hotel',name:'Hôtel',emoji:'🏨',cost:350000,states:['🏗️','🏨']},
+    {id:'ecole',name:'École',emoji:'🏫',cost:250000,states:['🏗️','🏫']},
+    {id:'bibliotheque',name:'Bibliothèque',emoji:'🏢',cost:180000,states:['🏗️','🏢']},
+    {id:'marche',name:'Marché',emoji:'🏪',cost:100000,states:['🏗️','🏪']},
+    {id:'cafe',name:'Café',emoji:'☕',cost:90000,states:['🏗️','☕']},
+    {id:'poste',name:'Poste',emoji:'🏣',cost:130000,states:['🏗️','🏣']}
+  ]},
+  {id:'deco',name:'🌳 Décorations',items:[
+    {id:'arbre_d',name:'Arbre',emoji:'🌳',cost:3000},
+    {id:'sapin',name:'Sapin',emoji:'🌲',cost:4000},
+    {id:'palmier',name:'Palmier',emoji:'🌴',cost:5000},
+    {id:'cerisier',name:'Cerisier',emoji:'🌸',cost:8000},
+    {id:'fleur_d',name:'Fleurs',emoji:'🌷',cost:2000},
+    {id:'tournesol',name:'Tournesol',emoji:'🌻',cost:2500},
+    {id:'rose',name:'Roses',emoji:'🌹',cost:3500},
+    {id:'cactus',name:'Cactus',emoji:'🌵',cost:4000},
+    {id:'champignon_d',name:'Champignon',emoji:'🍄',cost:3000},
+    {id:'bambou',name:'Bambou',emoji:'🎋',cost:6000},
+    {id:'bonsai',name:'Bonsaï',emoji:'🌾',cost:12000},
+    {id:'nenuphare',name:'Nénuphar',emoji:'🌺',cost:7000},
+    {id:'lierre',name:'Lierre',emoji:'🌿',cost:2500},
+    {id:'buisson',name:'Buisson',emoji:'☘️',cost:2000},
+    {id:'trefle',name:'Trèfle',emoji:'🍀',cost:5000},
+    {id:'herbe',name:'Herbe haute',emoji:'🌾',cost:1500},
+    {id:'souche',name:'Souche',emoji:'🪵',cost:1000},
+    {id:'pierre_deco',name:'Rocher',emoji:'🪨',cost:3000}
+  ]},
+  {id:'mobilier',name:'🪑 Mobilier',items:[
+    {id:'fontaine',name:'Fontaine',emoji:'⛲',cost:50000},
+    {id:'banc',name:'Banc',emoji:'🪑',cost:10000},
+    {id:'lampadaire',name:'Lampadaire',emoji:'🪔',cost:15000},
+    {id:'statue',name:'Statue',emoji:'🗿',cost:80000},
+    {id:'pot_fleur',name:'Pot de fleurs',emoji:'🪴',cost:6000},
+    {id:'table',name:'Table',emoji:'🪵',cost:8000},
+    {id:'parasol',name:'Parasol',emoji:'⛱️',cost:20000},
+    {id:'boite_lettre',name:'Boîte lettres',emoji:'📮',cost:5000},
+    {id:'hamac',name:'Hamac',emoji:'🛋️',cost:12000},
+    {id:'balancoire',name:'Balançoire',emoji:'🎠',cost:18000},
+    {id:'barbecue',name:'Barbecue',emoji:'🔥',cost:15000},
+    {id:'jacuzzi',name:'Jacuzzi',emoji:'🛁',cost:100000},
+    {id:'toboggan',name:'Toboggan',emoji:'🛝',cost:25000},
+    {id:'borne',name:'Borne arcade',emoji:'🎮',cost:30000},
+    {id:'telescope',name:'Télescope',emoji:'🔭',cost:40000},
+    {id:'horloge',name:'Horloge',emoji:'🕰️',cost:35000}
+  ]},
+  {id:'cloture',name:'🏗️ Clôtures',items:[
+    {id:'cloture_bois',name:'Clôture bois',emoji:'🪵',cost:2000},
+    {id:'haie',name:'Haie',emoji:'🌿',cost:3000},
+    {id:'mur_pierre',name:'Mur pierre',emoji:'🧱',cost:6000},
+    {id:'portail',name:'Portail',emoji:'🚪',cost:20000},
+    {id:'pont',name:'Pont',emoji:'🌉',cost:40000},
+    {id:'chemin',name:'Chemin',emoji:'🟫',cost:1000},
+    {id:'allee',name:'Allée pavée',emoji:'⬜',cost:3000},
+    {id:'arche',name:'Arche fleurie',emoji:'🎊',cost:25000},
+    {id:'barriere',name:'Barrière métal',emoji:'⛓️',cost:8000},
+    {id:'muret',name:'Muret bas',emoji:'🧱',cost:4000},
+    {id:'escalier',name:'Escalier',emoji:'🪜',cost:15000},
+    {id:'passerelle',name:'Passerelle',emoji:'🌉',cost:30000}
+  ]}
+];
+var gardenMode='place';// place | move | delete | renovate
+var gardenSelCat=0;
+var gardenSelItem=-1;
+var gardenMoveSrc=-1;
+
+function findGardenItem(id){
+  for(var c=0;c<GARDEN_CATS.length;c++){
+    for(var i=0;i<GARDEN_CATS[c].items.length;i++){
+      if(GARDEN_CATS[c].items[i].id===id)return GARDEN_CATS[c].items[i];
+    }
+  }return null;
+}
+
+function buildGarden(){
+  while(state.gardenGrid.length<GARDEN_SIZE*GARDEN_SIZE)state.gardenGrid.push(null);
+  // Modes
+  var modeDiv=$('garden-modes');modeDiv.innerHTML='';
+  var modes=[{id:'place',label:'➕ Placer'},{id:'move',label:'↔️ Déplacer'},{id:'delete',label:'🗑️ Supprimer'},{id:'renovate',label:'🔨 Rénover'}];
+  modes.forEach(function(m){
+    var b=document.createElement('button');b.className='gmode-btn'+(gardenMode===m.id?' active':'');
+    b.textContent=m.label;
+    b.addEventListener('click',function(){gardenMode=m.id;gardenMoveSrc=-1;buildGarden();});
+    modeDiv.appendChild(b);
+  });
+  // Toolbar cats
+  var tb=$('garden-toolbar');tb.innerHTML='';
+  if(gardenMode==='place'){
+    GARDEN_CATS.forEach(function(cat,ci){
+      var b=document.createElement('button');b.className='gtool-cat'+(gardenSelCat===ci?' active':'');
+      b.textContent=cat.name;
+      b.addEventListener('click',function(){gardenSelCat=ci;gardenSelItem=-1;buildGarden();});
+      tb.appendChild(b);
+    });
+  }
+  // Items
+  var items=$('garden-items');items.innerHTML='';
+  if(gardenMode==='place'){
+    var cat=GARDEN_CATS[gardenSelCat];
+    cat.items.forEach(function(it,ii){
+      var b=document.createElement('button');b.className='gitem-btn'+(gardenSelItem===ii?' active':'');
+      b.disabled=state.coins<it.cost;
+      b.innerHTML='<span class="gi-ico">'+it.emoji+'</span><span>'+it.name+'</span><span class="gi-cost">'+fmtN(it.cost)+'💰</span>';
+      b.addEventListener('click',function(){gardenSelItem=ii;buildGarden();});
+      items.appendChild(b);
+    });
+  }
+  // Info
+  var info=$('garden-info');
+  if(gardenMode==='place'&&gardenSelItem>=0){
+    var it=GARDEN_CATS[gardenSelCat].items[gardenSelItem];
+    info.textContent='Touche une case vide pour placer '+it.emoji+' '+it.name+' ('+fmtN(it.cost)+'💰)';
+  }else if(gardenMode==='move'){
+    info.textContent=gardenMoveSrc>=0?'Touche une case vide pour déplacer':'Touche un objet à déplacer';
+  }else if(gardenMode==='delete'){
+    info.textContent='Touche un objet pour le supprimer (remboursement 50%)';
+  }else if(gardenMode==='renovate'){
+    info.textContent='Touche un bâtiment pour améliorer son état';
+  }else info.textContent='';
+  // Grid
+  var area=$('garden-area');
+  var ps=Math.min(Math.floor((innerWidth*0.95-16)/GARDEN_SIZE)-2,50);
+  area.style.gridTemplateColumns='repeat('+GARDEN_SIZE+','+ps+'px)';
+  area.innerHTML='';
+  for(var i=0;i<GARDEN_SIZE*GARDEN_SIZE;i++){
+    var cell=document.createElement('div');
+    var g=state.gardenGrid[i];
+    if(g){
+      var gItem=findGardenItem(g.id);
+      var emoji=gItem?gItem.emoji:'❓';
+      if(gItem&&gItem.states&&g.stateIdx!==undefined&&g.stateIdx<gItem.states.length){
+        emoji=gItem.states[g.stateIdx];
+      }
+      cell.className='gcell gfilled'+(gardenMoveSrc===i?' gsel':'');
+      cell.innerHTML=emoji;
+    }else{
+      cell.className='gcell gempty';
+      cell.innerHTML='';
+    }
+    cell.style.width=ps+'px';
+    (function(idx){cell.addEventListener('click',function(){onGardenClick(idx);});})(i);
+    area.appendChild(cell);
+  }
+}
+
+function onGardenClick(idx){
+  var g=state.gardenGrid[idx];
+  if(gardenMode==='place'){
+    if(g)return;// cell occupied
+    if(gardenSelItem<0)return;
+    var cat=GARDEN_CATS[gardenSelCat];
+    var it=cat.items[gardenSelItem];
+    if(state.coins<it.cost){showFloat(innerWidth/2,innerHeight/2,'❌ Pas assez!');return;}
+    state.coins-=it.cost;
+    state.gardenGrid[idx]={id:it.id,stateIdx:0};
+    showFloat(innerWidth/2,innerHeight/2,it.emoji+' -'+fmtN(it.cost)+'💰');
+    updateUI();buildGarden();
+  }else if(gardenMode==='move'){
+    if(gardenMoveSrc<0){
+      if(!g)return;
+      gardenMoveSrc=idx;buildGarden();
+    }else{
+      if(g){gardenMoveSrc=-1;buildGarden();return;}// can't move to occupied
+      state.gardenGrid[idx]=state.gardenGrid[gardenMoveSrc];
+      state.gardenGrid[gardenMoveSrc]=null;
+      gardenMoveSrc=-1;buildGarden();
+    }
+  }else if(gardenMode==='delete'){
+    if(!g)return;
+    var gItem=findGardenItem(g.id);
+    var refund=gItem?Math.floor(gItem.cost*0.5):0;
+    state.gardenGrid[idx]=null;
+    state.coins+=refund;
+    showFloat(innerWidth/2,innerHeight/2,'🗑️ +'+fmtN(refund)+'💰');
+    updateUI();buildGarden();
+  }else if(gardenMode==='renovate'){
+    if(!g)return;
+    var gItem=findGardenItem(g.id);
+    if(!gItem||!gItem.states)return;
+    if(g.stateIdx>=gItem.states.length-1){showFloat(innerWidth/2,innerHeight/2,'✅ Déjà au max!');return;}
+    var renovCost=Math.floor(gItem.cost*0.4*(g.stateIdx+1));
+    if(state.coins<renovCost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(renovCost)+'💰 requis');return;}
+    state.coins-=renovCost;g.stateIdx++;
+    showFloat(innerWidth/2,innerHeight/2,'🔨 Rénové! -'+fmtN(renovCost)+'💰');
+    updateUI();buildGarden();
   }
 }
 
@@ -1494,6 +1768,7 @@ function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.pa
     bp.recipe=-1;bp.prodStart=0;});s.selBuilding=0;s.selBuildingPlot=-1;s.version=6}
   if(s.version<7){s.wellRepairs=0;s.wellWater=0;s.lastWellTick=0;s.version=7}
   if(s.version<8){s.quests=[];s.questMonth=0;s.questResets=0;s.version=8}
+  if(s.version<9){s.stars=0;s.autoAtelierEnd=0;s.aaResets=0;s.gardenGrid=[];s.version=9}
   for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
 
 // ===== TABS =====
@@ -1510,6 +1785,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     if(btn.dataset.panel==='recipes')buildRecipeList();
     if(btn.dataset.panel==='well')buildWell();
     if(btn.dataset.panel==='quests')buildQuestUI();
+    if(btn.dataset.panel==='garden')buildGarden();
     var isFarm=btn.dataset.panel==='farm';
     $('cat-bar').style.display=isFarm?'flex':'none';
     seedBar.style.display=isFarm?'flex':'none';
