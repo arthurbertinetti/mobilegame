@@ -96,6 +96,18 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .bplot .sub{position:absolute;bottom:0;font-size:.45rem;color:#fff;background:rgba(0,0,0,.6);padding:1px 4px;border-radius:0 0 8px 8px;width:100%;text-align:center;white-space:nowrap}
 .bplot .prog-bar{position:absolute;bottom:14px;left:6px;right:6px;height:4px;background:rgba(0,0,0,.15);border-radius:2px;overflow:hidden}
 .bplot .prog-fill{height:100%;background:linear-gradient(90deg,#ff9800,#4CAF50);border-radius:2px;transition:width .4s linear}
+.af-badge{position:absolute;top:1px;right:1px;font-size:.6rem;background:rgba(0,0,0,.45);color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;opacity:.7}
+.af-badge.af-on{background:rgba(76,175,80,.85);opacity:1}
+.farmer-card{background:rgba(255,255,255,.92);border-radius:10px;padding:8px 10px;margin:6px 4px;box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:4px}
+.farmer-header{display:flex;align-items:center;gap:6px}
+.farmer-emoji{font-size:1.4em}
+.farmer-name{flex:1;border:1px solid #ccc;border-radius:6px;padding:3px 6px;font-size:.8rem;font-weight:bold;color:#5d4037;background:#fff8f0}
+.farmer-lvl{font-size:.7rem;font-weight:bold;color:#fff;background:#8d6e63;padding:2px 6px;border-radius:8px}
+.farmer-info{display:flex;justify-content:space-between;font-size:.65rem;color:#666;padding:0 2px}
+.farmer-res{display:flex;align-items:center;gap:4px;font-size:.75rem}
+.farmer-res label{color:#795548;font-weight:bold}
+.farmer-res-sel{flex:1;border:1px solid #ccc;border-radius:6px;padding:2px 4px;font-size:.72rem;background:#fff}
+.farmer-hire-btn{padding:10px 20px;border-radius:10px;border:none;font-size:.85rem;font-weight:bold;cursor:pointer;color:#fff;background:linear-gradient(145deg,#66bb6a,#43a047);box-shadow:0 2px 8px rgba(76,175,80,.3);-webkit-tap-highlight-color:transparent}
 #recipe-bar{display:flex;gap:3px;flex-wrap:wrap;justify-content:center;padding:3px}
 .recipe-btn{display:flex;flex-direction:column;align-items:center;padding:8px 12px;border-radius:9px;border:2px solid transparent;background:rgba(255,255,255,.92);cursor:pointer;font-size:.78rem;min-width:100px;gap:3px;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .recipe-btn.can{border-color:#4CAF50;background:#E8F5E9}
@@ -195,15 +207,16 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 </div>
 <div id="day-bar">📅 Jour <b id="day">1</b>, Mois <b id="month">1</b> &nbsp;|&nbsp; 🏠 Loyer: <b id="rent">25</b>💰<span id="debt-info"></span><span id="savings-info"></span></div>
 <div id="main">
-  <div id="cat-bar">
-    <button class="cat-btn active" data-cat="0">🌱 Cultures</button>
-    <button class="cat-btn" data-cat="1">🌳 Arbres</button>
-  </div>
   <div id="farm-sub-tabs" class="sub-tab-bar">
     <button class="sub-tab-btn active" data-fsub="crops">🌱 Cultures / Arbres</button>
     <button class="sub-tab-btn" data-fsub="animals">🐄 Animaux</button>
+    <button class="sub-tab-btn" data-fsub="farmers">👨‍🌾 Fermiers</button>
   </div>
   <div id="farm-crops-area">
+    <div id="cat-bar">
+      <button class="cat-btn active" data-cat="0">🌱 Cultures</button>
+      <button class="cat-btn" data-cat="1">🌳 Arbres</button>
+    </div>
     <div id="seed-bar"></div>
     <div id="auto-bar">
       <button class="auto-btn off" id="btn-ah">🤖 Récolte</button>
@@ -212,9 +225,13 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
     <div class="panel active" id="panel-farm"><div id="farm"></div></div>
   </div>
   <div id="farm-animals-area" style="display:none;width:96%;max-width:400px">
-    <div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-af">🍽️ Alimentation</button></div>
     <div id="animal-seed-bar"></div>
+    <div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-af">🍽️ Alimentation</button></div>
     <div id="animal-farm"></div>
+  </div>
+  <div id="farm-farmers-area" style="display:none;width:96%;max-width:420px">
+    <div id="farmer-list"></div>
+    <div id="farmer-hire" style="text-align:center;padding:8px"></div>
   </div>
   <div class="panel" id="panel-shop"><h3>🏪 Boutique</h3><div id="shop-list"></div></div>
   <div class="panel" id="panel-resources"><h3>📦 Ressources</h3><div id="res-grid-container"></div></div>
@@ -277,18 +294,19 @@ var MYSTERY_COSTS=[0,0,0];
 function calcMysteryCosts(){for(var c=0;c<3;c++){var arr=ITEMS[c],sum=0;for(var i=0;i<arr.length;i++)sum+=arr[i][CO];MYSTERY_COSTS[c]=Math.round(sum/arr.length);}}
 function getMysteryCost(cat){if(cat<0||cat>2)return MYSTERY_COSTS[0];return MYSTERY_COSTS[cat]}
 var UPGRADES=[
-{id:'speed',name:'Engrais rapide',desc:'-5% temps/niv',icon:'⚡',base:30,mult:1.15,max:100},
-{id:'bspeed',name:'Engrais atelier',desc:'-5% temps atelier/niv',icon:'🏭',base:30,mult:1.15,max:100},
-{id:'value',name:'Meilleur marché',desc:'+15% vente/niv',icon:'💎',base:40,mult:2.0,max:100},
-{id:'autoharvest',name:'Auto-récolte',desc:'Récolte auto (2-10 min)',icon:'🤖',base:300,mult:2.5,max:5},
-{id:'autowater',name:'Auto-arrosage',desc:'Arrose auto (1-10 min)',icon:'🚿',base:400,mult:2.5,max:10},
-{id:'autoatelier',name:'Auto-atelier',desc:'Récolte ateliers auto (1-10 min)',icon:'🛠️',base:400,mult:2.5,max:10},
-{id:'watermax',name:'Réservoir',desc:'+10 eau max (→100000)',icon:'🪣',base:15,mult:1.03,max:9990},
-{id:'savingsrate',name:'Taux d\'épargne',desc:'Intérêt mensuel: 1%→25%',icon:'🏦',base:10000,mult:2.2,max:20},
-{id:'autofeed',name:'Auto-alimentation',desc:'Nourrit animaux auto (1-10 min)',icon:'🍽️',base:400,mult:2.5,max:10},
-{id:'animalslots',name:'Parcelles animaux',desc:'+2 emplacements animaux/niv',icon:'🐄',base:500,mult:1.3,max:24},
-{id:'animalspeed',name:'Engrais animaux',desc:'-5% temps animal/niv',icon:'🐾',base:30,mult:1.15,max:100},
-{id:'animalvalue',name:'Quantité animaux',desc:'+1 ressource animal/niv',icon:'🥚',base:50,mult:1.25,max:50}];
+{id:'speed',name:'Engrais rapide',desc:'-5% temps/niv',icon:'⚡',base:30,mult:1.15,max:100,group:'engrais'},
+{id:'bspeed',name:'Engrais atelier',desc:'-5% temps atelier/niv',icon:'🏭',base:30,mult:1.15,max:100,group:'engrais'},
+{id:'animalspeed',name:'Engrais animaux',desc:'-5% temps animal/niv',icon:'🐾',base:30,mult:1.15,max:100,group:'engrais'},
+{id:'autoharvest',name:'Auto-récolte',desc:'Récolte auto (2-10 min)',icon:'🤖',base:300,mult:2.5,max:5,group:'auto'},
+{id:'autowater',name:'Auto-arrosage',desc:'Arrose auto (1-10 min)',icon:'🚿',base:400,mult:2.5,max:10,group:'auto'},
+{id:'autoatelier',name:'Auto-atelier',desc:'Récolte ateliers auto (1-10 min)',icon:'🛠️',base:400,mult:2.5,max:10,group:'auto'},
+{id:'autofeed',name:'Auto-alimentation',desc:'Nourrit animaux auto (1-10 min)',icon:'🍽️',base:400,mult:2.5,max:10,group:'auto'},
+{id:'animalslots',name:'Parcelles animaux',desc:'+2 emplacements animaux/niv',icon:'🐄',base:500,mult:1.3,max:24,group:'parcelles'},
+{id:'watermax',name:'Réservoir',desc:'+10 eau max (→100000)',icon:'🪣',base:15,mult:1.03,max:9990,group:'parcelles'},
+{id:'value',name:'Meilleur marché',desc:'+15% vente/niv',icon:'💎',base:40,mult:2.0,max:100,group:'autre'},
+{id:'animalvalue',name:'Quantité animaux',desc:'+1 ressource animal/niv',icon:'🥚',base:80,mult:1.6,max:50,group:'autre'},
+{id:'savingsrate',name:'Taux d\'épargne',desc:'Intérêt mensuel: 1%→25%',icon:'🏦',base:10000,mult:2.2,max:20,group:'autre'}];
+var UPG_GROUPS=[{id:'engrais',label:'⚡ Engrais'},{id:'auto',label:'🤖 Automatisations'},{id:'parcelles',label:'🔲 Parcelles & Capacité'},{id:'autre',label:'💎 Autre'}];
 var WATER_PACKS=[[10,20,'10💧'],[30,50,'30💧'],[100,150,'100💧']];
 
 // ===== ANIMAL PEN =====
@@ -480,7 +498,7 @@ var SAVE_KEY='farmvalley_save';
 var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000,
   58000,73000,90000,110000,135000,165000,200000,245000,300000,370000];
 var DAY_MS=300000;// 5 minutes per day
-var state={version:10,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+var state={version:11,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
   selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
   autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,savings:0,
   resources:{},bplots:[],bgridBought:0,selBuilding:0,selBuildingPlot:-1,
@@ -489,7 +507,13 @@ var state={version:10,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,
   quests:[],questMonth:0,questResets:0,stars:0,
   autoAtelierEnd:0,aaResets:0,
   gardenGrid:[],
-  animalPlots:[],selAnimal:0,autoFeedEnd:0,afResets:0};
+  animalPlots:[],selAnimal:0,autoFeedEnd:0,afResets:0,farmers:[]};
+
+// Farmer system
+var FARMER_MAX=10;
+var FARMER_HARVEST_MS=60000;// 1 min
+function getFarmerCost(i){return i===0?10000:Math.floor(500000*Math.pow(1.15,Math.max(0,i-1)));}
+function getFarmerRent(){var r=0;state.farmers.forEach(function(f){r+=Math.floor(f.cost*0.1);});return r;}
 
 // ===== DOM =====
 var $=document.getElementById.bind(document);
@@ -532,8 +556,8 @@ function init(){
   if(!state.afResets)state.afResets=0;
   if(state.selCat>=2)state.selCat=0;// no more animals in farm
   var aSlots=ASTART+(state.upgrades.animalslots||0)*2;
-  while(state.animalPlots.length<ATOTAL)state.animalPlots.push({animalIdx:-1,feedStart:0,produced:0,locked:state.animalPlots.length>=aSlots});
-  for(var ai=0;ai<state.animalPlots.length;ai++)state.animalPlots[ai].locked=ai>=aSlots;
+  while(state.animalPlots.length<ATOTAL)state.animalPlots.push({animalIdx:-1,feedStart:0,produced:0,locked:state.animalPlots.length>=aSlots,autoFeed:false});
+  for(var ai=0;ai<state.animalPlots.length;ai++){state.animalPlots[ai].locked=ai>=aSlots;if(state.animalPlots[ai].autoFeed===undefined)state.animalPlots[ai].autoFeed=false;}
   state.maxWater=100+(state.upgrades.watermax||0)*10;
   while(state.plots.length<GTOTAL)state.plots.push({catIdx:-1,itemIdx:-1,wc:0,lw:0,locked:state.plots.length>=GSTART+state.gridBought});
   var unlocked=GSTART+state.gridBought;
@@ -632,7 +656,7 @@ function getStageTime(it){return Math.max(it[ST]*1000*Math.pow(0.95,state.upgrad
 function getRecipeTime(rec){return Math.max(rec.time*Math.pow(0.95,state.upgrades.bspeed||0),2)}
 function getSellVal(it){return Math.floor(it[SV]*(1+(state.upgrades.value||0)*0.15))}
 function getCellCost(){return Math.floor(50*Math.pow(1.18,state.gridBought))}
-function getRent(){return state.level*25}
+function getRent(){return state.level*25+getFarmerRent()}
 function getAutoHDur(){var l=state.upgrades.autoharvest||0;return l>0?l*2*60000:0}
 function getAutoWDur(){var l=state.upgrades.autowater||0;return l>0?l*60000:0}
 function getReactivateHCost(){var l=state.upgrades.autoharvest||0;return Math.floor(80*l*(l>=5?3:1))}
@@ -1036,34 +1060,41 @@ function buildShop(){
 // ===== UPGRADES =====
 function buildUpgrades(target){
   var list=target||$('upg-list');if(!list)return;list.innerHTML='';
-  UPGRADES.forEach(function(upg){
-    var lv=state.upgrades[upg.id]||0,mx=lv>=upg.max;
-    var rm=1;if(upg.id==='autoharvest')rm=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm=Math.pow(1.25,state.awResets||0);if(upg.id==='autoatelier')rm=Math.pow(1.25,state.aaResets||0);if(upg.id==='autofeed')rm=Math.pow(1.25,state.afResets||0);
-    var cost=Math.floor(upg.base*Math.pow(upg.mult,lv)*rm);
-    var d=document.createElement('div');d.className='upg-item';
-    var extra='';
-    if(upg.id==='autoharvest'){if(lv>0)extra=' ('+lv*2+'min)';if(state.ahResets>0)extra+=' 🔄×'+state.ahResets}
-    if(upg.id==='autowater'){if(lv>0)extra=' ('+lv+'min)';if(state.awResets>0)extra+=' 🔄×'+state.awResets}
-    if(upg.id==='autoatelier'){if(lv>0)extra=' ('+lv+'min)';if(state.aaResets>0)extra+=' 🔄×'+state.aaResets}
-    if(upg.id==='watermax')extra=' ('+state.maxWater+'/2000)';
-    if(upg.id==='savingsrate'){if(lv>0)extra=' ('+Math.round(getSavingsRate()*10000)/100+'%/mois)'};
-    if(upg.id==='autofeed'){if(lv>0)extra=' ('+lv+'min)';if(state.afResets>0)extra+=' 🔄×'+state.afResets}
-    if(upg.id==='animalslots'){extra=' ('+(ASTART+lv*2)+'/'+ATOTAL+' parcelles)'}
-    if(upg.id==='animalspeed'){extra=' (-'+(lv*5)+'%)'}
-    if(upg.id==='animalvalue'){extra=' (+'+(lv)+' ressource)'}
-    d.innerHTML='<div class="icon">'+upg.icon+'</div><div class="info"><div class="name">'+upg.name+' ('+lv+'/'+upg.max+')</div><div class="desc">'+upg.desc+extra+'</div></div><button class="buy-btn" '+(mx||state.coins<cost?'disabled':'')+'>'+(mx?'MAX':fmtN(cost)+'💰')+'</button>';
-    if(!mx){d.querySelector('.buy-btn').addEventListener('click',function(){
-      var rm2=1;if(upg.id==='autoharvest')rm2=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm2=Math.pow(1.25,state.awResets||0);if(upg.id==='autoatelier')rm2=Math.pow(1.25,state.aaResets||0);if(upg.id==='autofeed')rm2=Math.pow(1.25,state.afResets||0);
-      var c=Math.floor(upg.base*Math.pow(upg.mult,state.upgrades[upg.id])*rm2);
-      if(state.coins>=c){state.coins-=c;state.upgrades[upg.id]++;
-        if(upg.id==='watermax'){state.maxWater=100+(state.upgrades.watermax)*10}
-        if(upg.id==='animalslots'){var aS=ASTART+(state.upgrades.animalslots||0)*2;for(var ai=0;ai<state.animalPlots.length;ai++)state.animalPlots[ai].locked=ai>=aS;buildAnimalGrid();}
-        showFloat(innerWidth/2,innerHeight/2,'⬆️ '+upg.name+'!');
-        updateAuto();updateUI();buildShop()}
-    })}
-    list.appendChild(d);
+  UPG_GROUPS.forEach(function(grp){
+    var hdr=document.createElement('div');hdr.className='sect-hdr';hdr.textContent=grp.label;
+    list.appendChild(hdr);
+    UPGRADES.forEach(function(upg){
+      if(upg.group!==grp.id)return;
+      var lv=state.upgrades[upg.id]||0,mx=lv>=upg.max;
+      var rm=1;if(upg.id==='autoharvest')rm=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm=Math.pow(1.25,state.awResets||0);if(upg.id==='autoatelier')rm=Math.pow(1.25,state.aaResets||0);if(upg.id==='autofeed')rm=Math.pow(1.25,state.afResets||0);
+      var cost=Math.floor(upg.base*Math.pow(upg.mult,lv)*rm);
+      var d=document.createElement('div');d.className='upg-item';
+      var extra='';
+      if(upg.id==='autoharvest'){if(lv>0)extra=' ('+lv*2+'min)';if(state.ahResets>0)extra+=' 🔄×'+state.ahResets}
+      if(upg.id==='autowater'){if(lv>0)extra=' ('+lv+'min)';if(state.awResets>0)extra+=' 🔄×'+state.awResets}
+      if(upg.id==='autoatelier'){if(lv>0)extra=' ('+lv+'min)';if(state.aaResets>0)extra+=' 🔄×'+state.aaResets}
+      if(upg.id==='watermax')extra=' ('+state.maxWater+'/100000)';
+      if(upg.id==='savingsrate'){if(lv>0)extra=' ('+Math.round(getSavingsRate()*10000)/100+'%/mois)'};
+      if(upg.id==='autofeed'){if(lv>0)extra=' ('+lv+'min)';if(state.afResets>0)extra+=' 🔄×'+state.afResets}
+      if(upg.id==='animalslots'){extra=' ('+(ASTART+lv*2)+'/'+ATOTAL+' parcelles)'}
+      if(upg.id==='animalspeed'){extra=' (-'+(lv*5)+'%)'}
+      if(upg.id==='animalvalue'){extra=' (+'+(lv)+' ressource)'}
+      d.innerHTML='<div class="icon">'+upg.icon+'</div><div class="info"><div class="name">'+upg.name+' ('+lv+'/'+upg.max+')</div><div class="desc">'+upg.desc+extra+'</div></div><button class="buy-btn" '+(mx||state.coins<cost?'disabled':'')+'>'+(mx?'MAX':fmtN(cost)+'💰')+'</button>';
+      if(!mx){d.querySelector('.buy-btn').addEventListener('click',function(){
+        var rm2=1;if(upg.id==='autoharvest')rm2=Math.pow(1.25,state.ahResets||0);if(upg.id==='autowater')rm2=Math.pow(1.25,state.awResets||0);if(upg.id==='autoatelier')rm2=Math.pow(1.25,state.aaResets||0);if(upg.id==='autofeed')rm2=Math.pow(1.25,state.afResets||0);
+        var c=Math.floor(upg.base*Math.pow(upg.mult,state.upgrades[upg.id])*rm2);
+        if(state.coins>=c){state.coins-=c;state.upgrades[upg.id]++;
+          if(upg.id==='watermax'){state.maxWater=100+(state.upgrades.watermax)*10}
+          if(upg.id==='animalslots'){var aS=ASTART+(state.upgrades.animalslots||0)*2;for(var ai=0;ai<state.animalPlots.length;ai++)state.animalPlots[ai].locked=ai>=aS;buildAnimalGrid();}
+          showFloat(innerWidth/2,innerHeight/2,'⬆️ '+upg.name+'!');
+          updateAuto();updateUI();buildShop()}
+      })}
+      list.appendChild(d);
+    });
   });
   // Grid info
+  var phdr=document.createElement('div');phdr.className='sect-hdr';phdr.textContent='📏 Info parcelles';
+  list.appendChild(phdr);
   var gi=document.createElement('div');gi.className='upg-item';
   var unlocked=GSTART+state.gridBought;
   gi.innerHTML='<div class="icon">🔲</div><div class="info"><div class="name">Parcelles ferme</div><div class="desc">'+unlocked+'/'+GTOTAL+' débloquées · Touche 🔒 sur la ferme</div></div><div style="font-size:.8rem;font-weight:bold">'+fmtN(getCellCost())+'💰</div>';
@@ -1178,6 +1209,12 @@ function buildAnimalGrid(){
     var d=document.createElement('div');d.className='bplot';d.style.width='100%';d.style.minHeight='70px';
     d.dataset.idx=i;d.addEventListener('click',onAnimalPlot);aEl.appendChild(d);
   }
+  aEl.addEventListener('click',function(e){
+    var badge=e.target.closest('.af-badge');if(!badge)return;
+    e.stopPropagation();
+    var ai=+badge.dataset.afidx;var ap=state.animalPlots[ai];if(!ap||ap.animalIdx<0)return;
+    ap.autoFeed=!ap.autoFeed;updateAnimalVisuals();
+  });
   updateAnimalVisuals();
 }
 function updateAnimalVisuals(){
@@ -1195,6 +1232,7 @@ function updateAnimalVisuals(){
     if(ap.animalIdx<0){el.className='bplot bempty';el.innerHTML='';return;}
     var it=ANIMALS[ap.animalIdx];
     var af=ANIMAL_FEED[ap.animalIdx];
+    var afBadge=(state.upgrades.autofeed||0)>=1?'<span class="af-badge'+(ap.autoFeed?' af-on':'')+'" data-afidx="'+i+'">'+(ap.autoFeed?'🔄':'⏸️')+'</span>':'';
     if(ap.feedStart>0){
       var prodMs=getAnimalProdTime(ap.animalIdx)*1000;
       var elapsed=now-ap.feedStart;
@@ -1203,18 +1241,18 @@ function updateAnimalVisuals(){
         el.className='bplot bprod';
         var outTxt=af[AO]?RES_INFO[af[AO]].emoji:fmtN(af[AC])+'💰';
         var qty=getAnimalProdQty();
-        el.innerHTML='<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
+        el.innerHTML=afBadge+'<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
           +'<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'
           +'<span class="sub">'+qty+'× '+outTxt+'</span>';
       }else{
         el.className='bplot bdone';
-        el.innerHTML='<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
+        el.innerHTML=afBadge+'<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
           +'<span class="sub">🍽️ Nourrir</span>';
       }
     }else{
       el.className='bplot bbuilt';
       var feedTxt=af[AF]==='coins'?fmtN(af[AQ])+'💰':af[AQ]+RES_INFO[af[AF]].emoji;
-      el.innerHTML='<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
+      el.innerHTML=afBadge+'<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
         +'<span class="sub">🍽️ '+feedTxt+'</span>';
     }
   });
@@ -1271,6 +1309,98 @@ function onAnimalPlot(e){
     var af=ANIMAL_FEED[ap.animalIdx];
     var need=af[AF]==='coins'?fmtN(af[AQ])+'💰':af[AQ]+' '+RES_INFO[af[AF]].name;
     showFloat(innerWidth/2,innerHeight/2,'❌ Il faut '+need);
+  }
+}
+
+// ===== FERMIERS =====
+var FARMER_RES_KEYS=[];// harvestable raw resources for farmers
+(function(){var seen={};for(var k in HARVEST_RES){var rk=HARVEST_RES[k];if(!seen[rk]){seen[rk]=1;FARMER_RES_KEYS.push(rk);}}})();
+function buildFarmerUI(){
+  var list=$('farmer-list');var hire=$('farmer-hire');
+  if(!list||!hire)return;
+  list.innerHTML='';hire.innerHTML='';
+  // Render each farmer
+  state.farmers.forEach(function(f,fi){
+    var card=document.createElement('div');card.className='farmer-card';
+    var resInfo=f.assignedRes?RES_INFO[f.assignedRes]:null;
+    var resEmoji=resInfo?resInfo.emoji:'❓';
+    var resName=resInfo?resInfo.name:'Aucune';
+    var now=Date.now();
+    var nextH=f.lastHarvest>0?Math.max(0,Math.ceil((f.lastHarvest+FARMER_HARVEST_MS-now)/1000)):0;
+    var rentF=Math.floor(f.cost*0.1);
+    card.innerHTML='<div class="farmer-header">'
+      +'<span class="farmer-emoji">👨‍🌾</span>'
+      +'<input class="farmer-name" value="'+f.name.replace(/"/g,'&quot;')+'" data-fi="'+fi+'" maxlength="15">'
+      +'<span class="farmer-lvl">Niv.'+f.level+'</span>'
+      +'</div>'
+      +'<div class="farmer-info">'
+      +'<span>🏠 Loyer: '+fmtN(rentF)+'💰/mois</span>'
+      +'<span class="farmer-timer" data-fi="'+fi+'">⏱️ '+(nextH>0?nextH+'s':'Prêt!')+'</span>'
+      +'</div>'
+      +'<div class="farmer-res">'
+      +'<label>Récolte: </label>'
+      +'<select class="farmer-res-sel" data-fi="'+fi+'"><option value="">-- Choisir --</option>'
+      +FARMER_RES_KEYS.map(function(rk){return '<option value="'+rk+'"'+(f.assignedRes===rk?' selected':'')+'>'+RES_INFO[rk].emoji+' '+RES_INFO[rk].name+'</option>';}).join('')
+      +'</select>'
+      +'</div>';
+    list.appendChild(card);
+  });
+  // Name change handlers
+  list.querySelectorAll('.farmer-name').forEach(function(inp){
+    inp.addEventListener('change',function(){
+      var fi=+inp.dataset.fi;
+      var v=inp.value.trim();if(v.length>0&&v.length<=15)state.farmers[fi].name=v;
+      else inp.value=state.farmers[fi].name;
+    });
+  });
+  // Resource select handlers
+  list.querySelectorAll('.farmer-res-sel').forEach(function(sel){
+    sel.addEventListener('change',function(){
+      var fi=+sel.dataset.fi;state.farmers[fi].assignedRes=sel.value||null;
+    });
+  });
+  // Hire button
+  if(state.farmers.length<FARMER_MAX){
+    var cost=getFarmerCost(state.farmers.length);
+    var btn=document.createElement('button');
+    btn.className='farmer-hire-btn';
+    btn.style.opacity=state.coins>=cost?'1':'0.5';
+    btn.innerHTML='👨‍🌾 Engager fermier #'+(state.farmers.length+1)+' — '+fmtN(cost)+'💰';
+    btn.addEventListener('click',function(){hireFarmer();});
+    hire.appendChild(btn);
+    // Show cost info
+    var info=document.createElement('div');
+    info.style.cssText='font-size:.7rem;color:#666;padding:4px;text-align:center';
+    info.textContent='Loyer mensuel: '+fmtN(Math.floor(cost*0.1))+'💰 | Récolte: 1 ressource / min';
+    hire.appendChild(info);
+  }else{
+    hire.innerHTML='<div style="padding:8px;color:#888;font-size:.8rem">Maximum '+FARMER_MAX+' fermiers atteint.</div>';
+  }
+}
+function hireFarmer(){
+  var idx=state.farmers.length;
+  if(idx>=FARMER_MAX)return;
+  var cost=getFarmerCost(idx);
+  if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return;}
+  state.coins-=cost;
+  state.farmers.push({name:'Fermier '+(idx+1),level:1,assignedRes:null,lastHarvest:Date.now(),cost:cost});
+  showFloat(innerWidth/2,innerHeight/2,'👨‍🌾 Fermier engagé! -'+fmtN(cost)+'💰');
+  updateUI();buildFarmerUI();
+}
+function updateFarmerTimers(){
+  var now=Date.now();
+  var list=$('farmer-list');if(!list)return;
+  list.querySelectorAll('.farmer-timer').forEach(function(el){
+    var fi=+el.dataset.fi;var f=state.farmers[fi];if(!f)return;
+    var nextH=f.lastHarvest>0?Math.max(0,Math.ceil((f.lastHarvest+FARMER_HARVEST_MS-now)/1000)):0;
+    el.textContent='⏱️ '+(nextH>0?nextH+'s':'Prêt!');
+  });
+  // Update hire button opacity
+  var hire=$('farmer-hire');if(!hire)return;
+  var btn=hire.querySelector('.farmer-hire-btn');
+  if(btn&&state.farmers.length<FARMER_MAX){
+    var cost=getFarmerCost(state.farmers.length);
+    btn.style.opacity=state.coins>=cost?'1':'0.5';
   }
 }
 
@@ -1527,7 +1657,7 @@ function gameTick(){
   // Auto-feed animals
   if((state.upgrades.autofeed||0)>=1&&state.autoFeedEnd>now){
     state.animalPlots.forEach(function(ap,idx){
-      if(ap.animalIdx<0||ap.locked)return;
+      if(ap.animalIdx<0||ap.locked||!ap.autoFeed)return;
       if(ap.feedStart>0)return;// still producing
       if(ap.produced)ap.produced=0;// just finished
       if(canFeedAnimal(idx)){
@@ -1539,6 +1669,15 @@ function gameTick(){
     });
   }
   var animalArea=$('farm-animals-area');if(animalArea&&animalArea.style.display!=='none')updateAnimalVisuals();
+  // Farmer harvesting
+  state.farmers.forEach(function(f){
+    if(!f.assignedRes)return;
+    if(now-f.lastHarvest>=FARMER_HARVEST_MS){
+      state.resources[f.assignedRes]=(state.resources[f.assignedRes]||0)+1;
+      f.lastHarvest=now;
+    }
+  });
+  var farmerArea=$('farm-farmers-area');if(farmerArea&&farmerArea.style.display!=='none')updateFarmerTimers();
   var wellP=$('panel-well');if(wellP&&wellP.classList.contains('active'))buildWell();
   updateAuto();updateUI();state.lastSave=now;
 }
@@ -2344,6 +2483,7 @@ function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.pa
     // Migrate existing animals on farm to empty (they need to be re-placed in animal pen)
     if(s.plots)s.plots.forEach(function(p){if(p.catIdx===2){p.catIdx=-1;p.itemIdx=-1;p.wc=0;p.lw=0;}});
     if(s.selCat>=2)s.selCat=0;s.version=10}
+  if(s.version<11){s.farmers=[];s.version=11}
   for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
 
 // ===== TABS =====
@@ -2353,8 +2493,9 @@ function showFarmSub(sub){
   $('farm-sub-tabs').querySelectorAll('.sub-tab-btn').forEach(function(b){b.classList.toggle('active',b.dataset.fsub===sub);});
   $('farm-crops-area').style.display=sub==='crops'?'':'none';
   $('farm-animals-area').style.display=sub==='animals'?'':'none';
-  $('cat-bar').style.display=sub==='crops'?'flex':'none';
+  $('farm-farmers-area').style.display=sub==='farmers'?'':'none';
   if(sub==='animals'){buildAnimalSeedBar();buildAnimalGrid();}
+  if(sub==='farmers'){buildFarmerUI();}
 }
 $('farm-sub-tabs').querySelectorAll('.sub-tab-btn').forEach(function(btn){
   btn.addEventListener('click',function(){showFarmSub(btn.dataset.fsub);});
@@ -2371,18 +2512,15 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       $('farm-sub-tabs').style.display='flex';
       $('farm-crops-area').style.display=farmSubTab==='crops'?'':'none';
       $('farm-animals-area').style.display=farmSubTab==='animals'?'':'none';
-      $('cat-bar').style.display=farmSubTab==='crops'?'flex':'none';
-      seedBar.style.display=farmSubTab==='crops'?'flex':'none';
-      $('auto-bar').style.display=farmSubTab==='crops'?'flex':'none';
+      $('farm-farmers-area').style.display=farmSubTab==='farmers'?'':'none';
       if(farmSubTab==='animals'){buildAnimalSeedBar();buildAnimalGrid();}
+      if(farmSubTab==='farmers'){buildFarmerUI();}
     }else{
       $('panel-'+pnl).classList.add('active');
       $('farm-sub-tabs').style.display='none';
       $('farm-crops-area').style.display='none';
       $('farm-animals-area').style.display='none';
-      $('cat-bar').style.display='none';
-      seedBar.style.display='none';
-      $('auto-bar').style.display='none';
+      $('farm-farmers-area').style.display='none';
     }
     if(pnl==='shop')buildShop();
     if(pnl==='resources')buildResourceGrid();
