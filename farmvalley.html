@@ -4425,20 +4425,30 @@ function buildMarchePlay(c){
       var o=offers[idx];
       var gRI=RES_INFO[o.giveKey],rRI=RES_INFO[o.receiveKey];
       if(!gRI||!rRI)return;
+      var have=(state.resources[o.giveKey]||0);
+      var canAfford=have>=o.giveQty;
       var row=document.createElement('div');
       row.style.cssText='background:rgba(255,255,255,.9);border-radius:10px;padding:12px;margin:8px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)';
-      if(o.accepted){row.style.opacity='.5';}
+      if(o.accepted){row.style.opacity='.5';row.style.background='rgba(200,230,200,.9)';}
+      else if(!canAfford){row.style.opacity='.6';}
       var txt=document.createElement('div');
       txt.style.cssText='flex:1;font-size:.82rem;line-height:1.5';
-      txt.innerHTML='Donne <b>'+o.giveQty+' '+gRI.emoji+' '+gRI.name+'</b><br>Reçois <b>'+o.receiveQty+' '+rRI.emoji+' '+rRI.name+'</b>';
+      var haveColor=canAfford?'#27ae60':'#e74c3c';
+      txt.innerHTML='Donne <b>'+o.giveQty+' '+gRI.emoji+' '+gRI.name+'</b> <span style="font-size:.7rem;color:'+haveColor+'">('+have+')</span><br>Reçois <b>'+o.receiveQty+' '+rRI.emoji+' '+rRI.name+'</b>';
       row.appendChild(txt);
       if(!o.accepted){
         var accBtn=document.createElement('button');
-        accBtn.style.cssText='padding:8px 14px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:.78rem;font-weight:bold;cursor:pointer';
-        accBtn.textContent='✅';
+        if(canAfford){
+          accBtn.style.cssText='padding:8px 14px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:.78rem;font-weight:bold;cursor:pointer';
+          accBtn.textContent='✅ Échanger';
+        }else{
+          accBtn.style.cssText='padding:8px 14px;background:#ccc;color:#888;border:none;border-radius:8px;font-size:.78rem;font-weight:bold;cursor:default';
+          accBtn.textContent='❌ Manque';
+          accBtn.disabled=true;
+        }
         accBtn.addEventListener('click',function(){
-          var have=(state.resources[o.giveKey]||0);
-          if(have<o.giveQty){showFloat(innerWidth/2,100,'❌ Pas assez !');return;}
+          var h=(state.resources[o.giveKey]||0);
+          if(h<o.giveQty){showFloat(innerWidth/2,100,'❌ Pas assez !');return;}
           state.resources[o.giveKey]-=o.giveQty;
           state.resources[o.receiveKey]=(state.resources[o.receiveKey]||0)+o.receiveQty;
           o.accepted=true;state.marcheScore=(state.marcheScore||0)+1;
@@ -4449,7 +4459,7 @@ function buildMarchePlay(c){
       }else{
         var done=document.createElement('span');
         done.style.cssText='font-size:.8rem;color:#27ae60;font-weight:bold';
-        done.textContent='✅';
+        done.textContent='✅ Fait';
         row.appendChild(done);
       }
       c.appendChild(row);
@@ -4741,6 +4751,7 @@ function renderJustePrixQ(container,qIdx){
 
 // ===== COMBO CLICK =====
 var _comboTimer=null;var _comboClicks=0;var _comboTimeLeft=0;var _comboRunning=false;
+var _comboTimerEl=null;var _comboCounterEl=null;var _comboInterval=null;
 function buildComboPlay(c){
   var info=getQuizEventInfo();
   if(!info.active){_activeEvent=null;buildEvent();return;}
@@ -4748,25 +4759,39 @@ function buildComboPlay(c){
   hdr.style.cssText='text-align:center;padding:8px';
   hdr.innerHTML='<div style="font-size:2rem">👆</div><div style="font-size:1rem;font-weight:bold;color:#5d4037">Combo Click</div><div style="font-size:.72rem;color:#888;margin-top:2px">Parties : <b>'+(state.comboClickPlays||0)+'</b> — Record : <b>'+(state.comboClickBest||0)+' clics</b></div>';
   c.appendChild(hdr);
+  // Tiers info
+  var tiersDiv=document.createElement('div');
+  tiersDiv.style.cssText='text-align:center;font-size:.68rem;color:#999;padding:2px 8px;line-height:1.6';
+  tiersDiv.innerHTML='🏆 Paliers : 20→50💰 · 50→150💰 · 80→300💰 · 120→500💰 · 180→1000💰 · 250→2000💰 · 300→5000💰';
+  c.appendChild(tiersDiv);
   if(_comboRunning){
-    // Show timer and click zone
     var timerDiv=document.createElement('div');
     timerDiv.style.cssText='text-align:center;padding:8px;font-size:1.4rem;font-weight:bold;color:#e74c3c';
     timerDiv.textContent='⏱️ '+(_comboTimeLeft/1000).toFixed(1)+'s';
     c.appendChild(timerDiv);
+    _comboTimerEl=timerDiv;
     var counterDiv=document.createElement('div');
     counterDiv.style.cssText='text-align:center;padding:4px;font-size:2rem;font-weight:bold;color:#5d4037';
     counterDiv.textContent=_comboClicks+' 👆';
     c.appendChild(counterDiv);
+    _comboCounterEl=counterDiv;
     var clickZone=document.createElement('div');
-    clickZone.style.cssText='margin:12px auto;width:200px;height:200px;background:linear-gradient(145deg,#e91e63,#c2185b);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(233,30,99,.4);user-select:none;transition:transform .05s';
+    clickZone.style.cssText='margin:12px auto;width:200px;height:200px;background:linear-gradient(145deg,#e91e63,#c2185b);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(233,30,99,.4);user-select:none;transition:transform .05s;-webkit-tap-highlight-color:transparent';
     clickZone.innerHTML='<span style="font-size:3rem;color:#fff;pointer-events:none">👆</span>';
-    clickZone.addEventListener('click',function(){
+    clickZone.addEventListener('click',function(e){
+      e.preventDefault();
       _comboClicks++;
       clickZone.style.transform='scale(0.92)';
       setTimeout(function(){clickZone.style.transform='scale(1)';},50);
-      counterDiv.textContent=_comboClicks+' 👆';
+      if(_comboCounterEl)_comboCounterEl.textContent=_comboClicks+' 👆';
     });
+    clickZone.addEventListener('touchstart',function(e){
+      e.preventDefault();
+      _comboClicks++;
+      clickZone.style.transform='scale(0.92)';
+      setTimeout(function(){clickZone.style.transform='scale(1)';},50);
+      if(_comboCounterEl)_comboCounterEl.textContent=_comboClicks+' 👆';
+    },{passive:false});
     c.appendChild(clickZone);
   }else{
     var startBtn=document.createElement('button');
@@ -4777,30 +4802,30 @@ function buildComboPlay(c){
   }
 }
 function startComboClick(){
+  if(_comboInterval){clearInterval(_comboInterval);_comboInterval=null;}
   _comboClicks=0;_comboTimeLeft=10000;_comboRunning=true;
   buildEvent();
-  var interval=setInterval(function(){
+  _comboInterval=setInterval(function(){
     _comboTimeLeft-=100;
+    if(_comboTimerEl)_comboTimerEl.textContent='⏱️ '+(_comboTimeLeft/1000).toFixed(1)+'s';
     if(_comboTimeLeft<=0){
-      clearInterval(interval);
+      clearInterval(_comboInterval);_comboInterval=null;
       _comboRunning=false;
       state.comboClickPlays=(state.comboClickPlays||0)+1;
       if(_comboClicks>state.comboClickBest)state.comboClickBest=_comboClicks;
-      // Reward tiers
       var reward=0;
-      if(_comboClicks>=80)reward=500;
-      else if(_comboClicks>=60)reward=300;
-      else if(_comboClicks>=40)reward=150;
+      if(_comboClicks>=300)reward=5000;
+      else if(_comboClicks>=250)reward=2000;
+      else if(_comboClicks>=180)reward=1000;
+      else if(_comboClicks>=120)reward=500;
+      else if(_comboClicks>=80)reward=300;
+      else if(_comboClicks>=50)reward=150;
       else if(_comboClicks>=20)reward=50;
       else reward=10;
       state.coins+=reward;
       saveGame();updateUI();
       showFloat(innerWidth/2,100,_comboClicks+' clics → +'+reward+' 💰');
       setTimeout(function(){buildEvent();},1500);
-    }else{
-      // Update timer display
-      var td=document.querySelector('[style*="font-size:1.4rem"]');
-      if(td)td.textContent='⏱️ '+(_comboTimeLeft/1000).toFixed(1)+'s';
     }
   },100);
 }
