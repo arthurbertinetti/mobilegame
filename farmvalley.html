@@ -4405,10 +4405,22 @@ function buildMarchePlay(c){
     msg.style.cssText='text-align:center;padding:16px;font-size:.85rem;color:#888';
     msg.textContent=expired?'⏰ Les offres ont expiré !':allDone?'✅ Toutes les offres acceptées !':'Aucune offre en cours.';
     c.appendChild(msg);
+    if(allDone){
+      var reward=document.createElement('div');
+      reward.style.cssText='text-align:center;padding:10px;font-size:1rem;color:#e67e22;font-weight:bold';
+      reward.innerHTML='🏆 Bonus : +1 ⭐';
+      c.appendChild(reward);
+      if(!state._marcheStarGiven){
+        state.stars=(state.stars||0)+1;
+        state._marcheStarGiven=true;
+        saveGame();updateUI();
+        showFloat(innerWidth/2,100,'⭐ +1');
+      }
+    }
     var genBtn=document.createElement('button');
     genBtn.style.cssText='display:block;margin:12px auto;padding:12px 28px;background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:bold;cursor:pointer';
     genBtn.textContent='🔄 Nouvelles offres';
-    genBtn.addEventListener('click',function(){generateMarcheOffers();buildEvent();});
+    genBtn.addEventListener('click',function(){state._marcheStarGiven=false;generateMarcheOffers();buildEvent();});
     c.appendChild(genBtn);
     return;
   }
@@ -4478,13 +4490,13 @@ function buildWheelPlay(c){
   c.appendChild(hdr);
   // Wheel sectors
   var sectors=[
-    {label:'💰 50',type:'coins',qty:50,color:'#f1c40f'},
+    {label:'⭐ 1',type:'star',qty:1,color:'#f1c40f'},
     {label:'💧 20',type:'water',qty:20,color:'#3498db'},
     {label:'❌ Rien',type:'nothing',qty:0,color:'#95a5a6'},
     {label:'💰 200',type:'coins',qty:200,color:'#e67e22'},
     {label:'🪵 10',type:'wood',qty:10,color:'#8d6e63'},
     {label:'❌ Rien',type:'nothing',qty:0,color:'#bdc3c7'},
-    {label:'💰 100',type:'coins',qty:100,color:'#f39c12'},
+    {label:'⭐ 2',type:'star',qty:2,color:'#f39c12'},
     {label:'🎁 Ressource',type:'random',qty:5,color:'#9b59b6'},
     {label:'❌ Rien',type:'nothing',qty:0,color:'#95a5a6'},
     {label:'💰 500',type:'coins',qty:500,color:'#e74c3c'},
@@ -4555,7 +4567,8 @@ function buildWheelPlay(c){
         _wheelSpinning=false;
         // Apply reward
         var rewardText='';
-        if(win.type==='coins'){state.coins+=win.qty;rewardText='+'+win.qty+' 💰';}
+        if(win.type==='star'){state.stars=(state.stars||0)+win.qty;rewardText='+'+win.qty+' ⭐';}
+        else if(win.type==='coins'){state.coins+=win.qty;rewardText='+'+win.qty+' 💰';}
         else if(win.type==='water'){state.water=Math.min(state.maxWater,state.water+win.qty);rewardText='+'+win.qty+' 💧';}
         else if(win.type==='wood'){state.resources.bois=(state.resources.bois||0)+win.qty;rewardText='+'+win.qty+' 🪵';}
         else if(win.type==='random'){
