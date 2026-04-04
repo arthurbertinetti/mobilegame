@@ -175,10 +175,12 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .quest-reset-btn{display:block;margin:10px auto;padding:8px 20px;background:#9b59b6;color:#fff;border:none;border-radius:8px;font-weight:bold;font-size:.8rem;cursor:pointer}
 .quest-reset-btn:active{background:#8e44ad}
 .quest-month-info{text-align:center;font-size:.78rem;color:#888;padding:4px}
-#garden-area{position:relative;display:inline-grid;gap:2px;padding:6px;background:linear-gradient(145deg,#b8e6b8,#8fce8f);border-radius:12px;margin:4px auto}
-.gcell{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;border:1px solid rgba(0,0,0,.08);transition:transform .1s,background .2s}
-.gcell.gempty{background:rgba(255,255,255,.25)}
-.gcell.gfilled{background:rgba(255,255,255,.6);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+#garden-area{position:relative;display:inline-grid;gap:1px;padding:10px;background:linear-gradient(160deg,#6dbf67,#4a9e44,#3d8b37);border-radius:14px;margin:4px auto;box-shadow:0 8px 25px rgba(0,0,0,.25),inset 0 2px 8px rgba(255,255,255,.2);transform:perspective(600px) rotateX(12deg);transform-origin:center bottom}
+.gcell{aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;transition:transform .15s,box-shadow .2s;position:relative}
+.gcell.gempty{background:linear-gradient(145deg,rgba(139,195,74,.35),rgba(104,159,56,.25));border:1px solid rgba(0,0,0,.06);box-shadow:inset 0 1px 2px rgba(255,255,255,.15)}
+.gcell.gempty:hover{background:linear-gradient(145deg,rgba(139,195,74,.55),rgba(104,159,56,.45))}
+.gcell.gfilled{background:linear-gradient(160deg,rgba(255,255,255,.7),rgba(200,230,200,.6));box-shadow:0 3px 8px rgba(0,0,0,.18),0 1px 2px rgba(0,0,0,.12),inset 0 -2px 4px rgba(0,0,0,.06);border:1px solid rgba(255,255,255,.5);border-bottom:2px solid rgba(0,0,0,.15);text-shadow:0 2px 4px rgba(0,0,0,.2)}
+.gcell.gfilled:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.22),0 2px 4px rgba(0,0,0,.15)}
 .gcell.gsel{border:2px solid #e74c3c;background:rgba(231,76,60,.15)}
 .gcell:active{transform:scale(.9)}
 #garden-toolbar{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding:4px}
@@ -207,11 +209,55 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
 .mg-lvl-btn.mg-cur{border-color:#ff9800;background:#fff3e0}
 .mg-lvl-btn.mg-locked{opacity:.4;cursor:default}
 .mg-rules{padding:12px;font-size:.8rem;line-height:1.6;color:#5d4037;background:rgba(255,255,255,.9);border-radius:10px;margin:6px}
+.mm-grid{display:inline-grid;padding:4px;overflow:auto;max-height:70vh}
+.mm-card{aspect-ratio:1;border-radius:6px;cursor:pointer;transition:transform .2s,background .2s;border:1px solid rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#5c6bc0,#3949ab);color:#fff;user-select:none;overflow:hidden}
+.mm-card.mm-flip{background:linear-gradient(145deg,#fff,#e8eaf6);color:#333}
+.mm-card.mm-match{background:linear-gradient(145deg,#a5d6a7,#66bb6a);border-color:#4CAF50;cursor:default}
+.mm-card.mm-joker{background:linear-gradient(145deg,#fff9c4,#fff176);border-color:#fbc02d;cursor:default}
+.mm-card:active{transform:scale(.9)}
+.simon-pad{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:260px;margin:8px auto}
+.simon-btn{aspect-ratio:1;border-radius:16px;border:3px solid rgba(0,0,0,.2);cursor:pointer;transition:filter .15s,transform .1s;min-height:80px}
+.simon-btn.simon-flash{filter:brightness(1.8);transform:scale(1.05)}
+.simon-btn:active{transform:scale(.95)}
+.tq-grid{display:inline-grid;gap:2px;padding:4px}
+.tq-cell{border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:bold;transition:transform .15s;border:1px solid rgba(0,0,0,.15)}
+.tq-cell.tq-empty{background:transparent!important;border:1px dashed rgba(0,0,0,.15);cursor:default}
+.tq-cell:active{transform:scale(.92)}
+.fl-grid{display:inline-grid;gap:1px;padding:4px}
+.fl-cell{aspect-ratio:1;border-radius:3px;border:1px solid rgba(0,0,0,.1)}
+.fl-colors{display:flex;gap:6px;justify-content:center;padding:6px;flex-wrap:wrap}
+.fl-color-btn{width:40px;height:40px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .15s}
+.fl-color-btn.fl-active{border-color:#333;transform:scale(1.15)}
+.fl-color-btn:active{transform:scale(.9)}
+.mg-game-page{width:100%;display:flex;flex-direction:column;gap:4px}
+.mg-back-btn{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;background:#5d4037;color:#fff;border:none;border-radius:8px;font-size:.78rem;font-weight:bold;cursor:pointer;margin:4px}
+.mg-back-btn:active{background:#4e342e}
+.mg-nav-btns{display:flex;gap:8px;justify-content:center;padding:8px}
+.mg-nav-btn{padding:8px 20px;border:none;border-radius:8px;font-weight:bold;font-size:.8rem;cursor:pointer;color:#fff}
+.mg-nav-btn.prev{background:#5d4037}
+.mg-nav-btn.next{background:#4CAF50}
+.mg-tab-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding:8px}
+.mg-tab-btn{padding:10px 6px;border-radius:10px;border:2px solid rgba(0,0,0,.08);background:rgba(255,255,255,.9);cursor:pointer;font-size:.75rem;font-weight:bold;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.mg-tab-btn:active{transform:scale(.96);background:#E8F5E9}
+.wood-section{margin-top:20px;padding-top:16px;border-top:2px dashed rgba(0,0,0,.15);display:flex;flex-direction:column;align-items:center;gap:12px}
+.ouvrier-card{background:rgba(255,255,255,.92);border-radius:10px;padding:8px 10px;margin:6px 4px;box-shadow:0 2px 8px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:4px}
+#music-panel{display:none;position:fixed;top:42px;left:4px;z-index:100;background:rgba(78,52,46,.95);color:#fff;border-radius:0 0 12px 12px;padding:10px 14px;box-shadow:0 4px 16px rgba(0,0,0,.4);width:260px;font-size:.75rem}
+#music-panel.show{display:block}
+#music-panel label{display:flex;align-items:center;gap:6px;margin:6px 0;font-size:.7rem}
+#music-panel input[type=range]{flex:1;height:6px;accent-color:#4CAF50}
+.music-file-row{display:flex;align-items:center;gap:6px;margin:4px 0}
+.music-file-row span{min-width:60px;font-size:.7rem}
+.music-file-label{display:inline-flex;padding:3px 8px;background:#4CAF50;color:#fff;border-radius:6px;font-size:.65rem;cursor:pointer}
+.music-file-label:hover{background:#388E3C}
+.music-file-label input{display:none}
 </style>
 </head>
 <body>
 <div id="top-bar">
-  <a href="index.html" class="top-btn">🏠</a>
+  <div style="display:flex;gap:4px;align-items:center">
+    <a href="index.html" class="top-btn">🏠</a>
+    <button class="top-btn" id="music-btn">🔊</button>
+  </div>
   <div id="stats">
     <span>💰<b id="coins">20</b></span>
     <span>💧<b id="water">50</b>/<small id="maxw">100</small></span>
@@ -220,12 +266,23 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
     <span>🏅Niv.<b id="level">1</b></span>
   </div>
 </div>
+<div id="music-panel">
+  <div style="font-weight:bold;margin-bottom:6px">🎵 Musique</div>
+  <label>🔊 Volume <input type="range" id="music-volume" min="0" max="100" value="50"></label>
+  <hr style="border-color:rgba(255,255,255,.2);margin:6px 0">
+  <div class="music-file-row"><span>🌍 Global</span><label class="music-file-label">📁 Choisir<input type="file" accept="audio/*" data-track="global"></label><span id="music-name-global" style="font-size:.6rem;color:#aaa">—</span></div>
+  <div class="music-file-row"><span>🌾 Ferme</span><label class="music-file-label">📁 Choisir<input type="file" accept="audio/*" data-track="farm"></label><span id="music-name-farm" style="font-size:.6rem;color:#aaa">—</span></div>
+  <div class="music-file-row"><span>🏗️ Ateliers</span><label class="music-file-label">📁 Choisir<input type="file" accept="audio/*" data-track="buildings"></label><span id="music-name-buildings" style="font-size:.6rem;color:#aaa">—</span></div>
+  <div class="music-file-row"><span>🏪 Boutique</span><label class="music-file-label">📁 Choisir<input type="file" accept="audio/*" data-track="shop"></label><span id="music-name-shop" style="font-size:.6rem;color:#aaa">—</span></div>
+  <div class="music-file-row"><span>🌷 Jardin</span><label class="music-file-label">📁 Choisir<input type="file" accept="audio/*" data-track="garden"></label><span id="music-name-garden" style="font-size:.6rem;color:#aaa">—</span></div>
+</div>
 <div id="day-bar">📅 Jour <b id="day">1</b>, Mois <b id="month">1</b> &nbsp;|&nbsp; 🏠 Loyer: <b id="rent">25</b>💰<span id="debt-info"></span><span id="savings-info"></span></div>
 <div id="main">
   <div id="farm-sub-tabs" class="sub-tab-bar">
     <button class="sub-tab-btn active" data-fsub="crops">🌱 Cultures / Arbres</button>
     <button class="sub-tab-btn" data-fsub="animals">🐄 Animaux</button>
     <button class="sub-tab-btn" data-fsub="farmers">👨‍🌾 Fermiers</button>
+    <button class="sub-tab-btn" data-fsub="aide">📖 Aide</button>
   </div>
   <div id="farm-crops-area">
     <div id="cat-bar">
@@ -248,23 +305,27 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
     <div id="farmer-list"></div>
     <div id="farmer-hire" style="text-align:center;padding:8px"></div>
   </div>
+  <div id="farm-aide-area" style="display:none;width:96%;max-width:420px">
+    <div id="farm-aide-content"></div>
+  </div>
   <div class="panel" id="panel-shop"><h3>🏪 Boutique</h3><div id="shop-list"></div></div>
-  <div class="panel" id="panel-resources"><h3>📦 Ressources</h3><div id="res-grid-container"></div></div>
-  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-aa">🏭 Atelier</button></div><div id="res-bar"></div><div id="bmode-bar"></div><div id="bmode-info" class="garden-info"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div>
-  <div class="panel" id="panel-aides"><h3>📖 Aides</h3><div id="aides-tabs" class="sub-tab-bar"></div><div id="aides-content"></div></div>
-  <div class="panel" id="panel-well"><h3>🪣 Puits</h3><div id="well-container"></div></div>
-  <div class="panel" id="panel-quests"><h3>🎯 Quêtes mensuelles</h3><div id="quest-list"></div></div>
+  <div class="panel" id="panel-resources"><h3>📦 Stock</h3><div id="stock-sub-tabs" class="sub-tab-bar"></div><div id="res-grid-container"></div><div id="stock-aide-content" style="display:none"></div></div>
+  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="atelier-sub-tabs" class="sub-tab-bar"></div><div id="atelier-main"><div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-aa">🏭 Atelier</button></div><div id="res-bar"></div><div id="bmode-bar"></div><div id="bmode-info" class="garden-info"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div><div id="ouvrier-area" style="display:none"><div id="ouvrier-list"></div><div id="ouvrier-hire" style="text-align:center;padding:8px"></div></div><div id="atelier-aide-area" style="display:none"></div></div>
+
+  <div class="panel" id="panel-well"><h3>🪣 Puits & Bois</h3><div id="well-container"></div><div class="wood-section" id="wood-container"></div></div>
+  <div class="panel" id="panel-event"><h3>🎉 Événement</h3><div id="event-content"></div></div>
+  <div class="panel" id="panel-quests"><h3>🎯 Quêtes</h3><div id="quest-sub-tabs" class="sub-tab-bar"></div><div id="quest-list"></div><div id="trade-list" style="display:none"></div></div>
   <div class="panel" id="panel-garden"><h3>🌷 Jardin</h3><div id="garden-modes"></div><div id="garden-toolbar"></div><div id="garden-items"></div><div class="garden-info" id="garden-info"></div><div id="garden-area"></div></div>
   <div class="panel" id="panel-minigame"><h3>🎮 Mini-Jeu</h3><div id="mg-sub-tabs" class="sub-tab-bar"></div><div id="mg-content"></div></div>
 </div>
 <div id="tabs">
+  <button class="tab-btn" data-panel="event"><span class="ico">🎉</span>Event</button>
   <button class="tab-btn" data-panel="quests"><span class="ico">🎯</span>Quêtes</button>
   <button class="tab-btn active" data-panel="farm"><span class="ico">🌾</span>Ferme</button>
   <button class="tab-btn" data-panel="buildings"><span class="ico">🏗️</span>Ateliers</button>
   <button class="tab-btn" data-panel="resources"><span class="ico">📦</span>Stock</button>
   <button class="tab-btn" data-panel="shop"><span class="ico">🏪</span>Boutique</button>
   <button class="tab-btn" data-panel="well"><span class="ico">🪣</span>Puits</button>
-  <button class="tab-btn" data-panel="aides"><span class="ico">📖</span>Aides</button>
   <button class="tab-btn" data-panel="garden"><span class="ico">🌷</span>Jardin</button>
   <button class="tab-btn" data-panel="minigame"><span class="ico">🎮</span>Jeu</button>
 </div>
@@ -355,6 +416,7 @@ var RES_KEYS=[
   'charcuterie','saucisse','pizza','risotto','tarte_citrouille',
   'parfum','bougie','coussin','roti_dinde','salade_composee'];
 var RES_INFO={
+  eau:{name:'Eau',emoji:'💧'},
   bois:{name:'Bois',emoji:'🪵'},
   lait:{name:'Lait',emoji:'🥛'},ble:{name:'Blé',emoji:'🌾'},mais:{name:'Maïs',emoji:'🌽'},
   oeuf:{name:'Œuf',emoji:'🥚'},laine:{name:'Laine',emoji:'🧶'},
@@ -515,7 +577,7 @@ var SAVE_KEY='farmvalley_save';
 var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000,
   58000,73000,90000,110000,135000,165000,200000,245000,300000,370000];
 var DAY_MS=300000;// 5 minutes per day
-var state={version:12,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+var state={version:16,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
   selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
   autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,savings:0,
   resources:{},bplots:[],bgridBought:0,selBuilding:0,selBuildingPlot:-1,
@@ -524,15 +586,28 @@ var state={version:12,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,
   quests:[],questMonth:0,questResets:0,stars:0,
   autoAtelierEnd:0,aaResets:0,
   gardenGrid:[],
-  animalPlots:[],selAnimal:0,autoFeedEnd:0,afResets:0,farmers:[],mgLevel:1};
+  animalPlots:[],selAnimal:0,autoFeedEnd:0,afResets:0,farmers:[],mgLevel:1,mmLevel:1,
+  siLevel:1,tqLevel:1,flLevel:1,
+  snLevel:1,maLevel:1,ppLevel:1,cpLevel:1,rvLevel:1,
+  trades:[],tradeMonth:0,
+  woodRepairs:0,woodStock:0,lastWoodTick:0,
+  ouvriers:[],
+  quizAnswered:[],quizStars:0,quizLastEventStart:0};
 
 // Farmer system
 var FARMER_MAX=10;
 var FARMER_HARVEST_MS=60000;// 1 min
 var FARMER_MAX_LVL=50;
 function getFarmerCost(i){return i===0?10000:Math.floor(500000*Math.pow(1.15,Math.max(0,i-1)));}
-function getFarmerRent(){var r=0;state.farmers.forEach(function(f){r+=Math.floor(f.cost*0.1);});return r;}
+function getFarmerRent(){var r=0;state.farmers.forEach(function(f){var base=Math.floor(f.cost*0.1);r+=f.assignedRes==='repos'?Math.floor(base*0.5):base;});return r;}
 function getFarmerUpgCost(lv){return Math.floor(1000*Math.pow(1.35,lv-1));}
+// Ouvrier system
+var OUVRIER_MAX=10;
+var OUVRIER_PROD_MS=120000;// 2 min per craft
+var OUVRIER_MAX_LVL=50;
+function getOuvrierCost(i){return i===0?20000:Math.floor(800000*Math.pow(1.18,Math.max(0,i-1)));}
+function getOuvrierRent(){var r=0;state.ouvriers.forEach(function(o){var base=Math.floor(o.cost*0.12);r+=o.assignedRecipe==='repos'?Math.floor(base*0.5):base;});return r;}
+function getOuvrierUpgCost(lv){return Math.floor(2000*Math.pow(1.4,lv-1));}
 
 // ===== DOM =====
 var $=document.getElementById.bind(document);
@@ -587,6 +662,10 @@ function init(){
   if(!state.lastDayTick)state.lastDayTick=Date.now();
   if(!state.lastWaterRegen)state.lastWaterRegen=Date.now();
   if(!state.lastSave)state.lastSave=Date.now();
+  if(state.woodRepairs===undefined)state.woodRepairs=0;
+  if(state.woodStock===undefined)state.woodStock=0;
+  if(!state.lastWoodTick)state.lastWoodTick=0;
+  if(!state.ouvriers)state.ouvriers=[];
   processOffline();
   if(state.questMonth!==state.month||state.quests.length!==10)generateQuests();
   buildSeedBar();buildFarm();buildShop();
@@ -646,6 +725,11 @@ function processOffline(){
     var wellGain=Math.floor((now-state.lastWellTick)/20000);
     if(wellGain>0){state.wellWater+=wellGain*5;state.lastWellTick+=wellGain*20000;}
   }
+  // Wood offline accumulation
+  if(state.woodRepairs>=15&&state.lastWoodTick){
+    var woodGain=Math.floor((now-state.lastWoodTick)/20000);
+    if(woodGain>0){state.woodStock+=woodGain*3;state.lastWoodTick+=woodGain*20000;}
+  }
   // Animal production offline
   if(state.animalPlots){
     state.animalPlots.forEach(function(ap){
@@ -675,7 +759,7 @@ function getStageTime(it){return Math.max(it[ST]*1000*Math.pow(0.95,state.upgrad
 function getRecipeTime(rec){return Math.max(rec.time*Math.pow(0.95,state.upgrades.bspeed||0),2)}
 function getSellVal(it){return Math.floor(it[SV]*(1+(state.upgrades.value||0)*0.15))}
 function getCellCost(){return Math.floor(50*Math.pow(1.18,state.gridBought))}
-function getRent(){return state.level*25+getFarmerRent()}
+function getRent(){return state.level*25+getFarmerRent()+getOuvrierRent()}
 function getAutoHDur(){var l=state.upgrades.autoharvest||0;return l>0?l*2*60000:0}
 function getAutoWDur(){var l=state.upgrades.autowater||0;return l>0?l*60000:0}
 function getReactivateHCost(){var l=state.upgrades.autoharvest||0;return Math.floor(80*l*(l>=5?3:1))}
@@ -887,6 +971,7 @@ document.querySelectorAll('.cat-btn').forEach(function(btn){
 
 // ===== SHOP =====
 var _shopTab='acheter';
+var _achatSub='eau';
 function buildShop(){
   var list=$('shop-list');list.innerHTML='';
   var shopTab=_shopTab;
@@ -916,83 +1001,120 @@ function buildShop(){
     else renderAutre();
   }
   function renderAcheter(){
-    var h=document.createElement('div');h.className='sect-hdr';h.textContent='💧 Acheter de l\'eau';tabContent.appendChild(h);
-    WATER_PACKS.forEach(function(pk){
-      var d=document.createElement('div');d.className='shop-item';
-      d.innerHTML='<div class="icon">💧</div><div class="info"><div class="name">'+pk[2]+'</div><div class="desc">Recharge immédiate</div></div><button class="buy-btn water-btn" '+(state.coins>=pk[1]?'':'disabled')+'>'+fmtN(pk[1])+'💰</button>';
-      d.querySelector('.buy-btn').addEventListener('click',function(){
-        if(state.coins>=pk[1]){state.coins-=pk[1];state.water=Math.min(state.maxWater,state.water+pk[0]);
-          showFloat(innerWidth/2,innerHeight/2,'+'+pk[0]+'💧');updateUI();buildShop()}});
-      tabContent.appendChild(d);
+    var subBar=document.createElement('div');subBar.className='sub-tab-bar';subBar.style.fontSize='.7rem';
+    tabContent.appendChild(subBar);
+    var subCt=document.createElement('div');tabContent.appendChild(subCt);
+    var labels=['💧 Eau','🌱 Cultures','🌳 Arbres'];var keys=['eau','cultures','arbres'];
+    keys.forEach(function(k,i){
+      var b=document.createElement('button');b.className='sub-tab-btn'+(_achatSub===k?' active':'');b.textContent=labels[i];
+      b.addEventListener('click',function(){_achatSub=k;
+        subBar.querySelectorAll('.sub-tab-btn').forEach(function(bb,bi){bb.className='sub-tab-btn'+(keys[bi]===_achatSub?' active':'');});
+        renderAchatSub();});
+      subBar.appendChild(b);
     });
-    for(var c=0;c<2;c++){
-      var hdr=document.createElement('div');hdr.className='sect-hdr';hdr.textContent=CAT_ICONS[c]+' '+CAT_NAMES[c]+' ('+CAT_WATER[c]+'💧)';tabContent.appendChild(hdr);
-      ITEMS[c].forEach(function(it,i){
-        var ok=it[RL]<=state.level;
-        var d=document.createElement('div');d.className='shop-item'+(ok?'':' locked-item');d.style.flexWrap='wrap';
-        var stS=it[ST],wN=CAT_WATER[c],totalS=stS*wN;
-        var tStr=totalS>=60?Math.round(totalS/60)+'min':totalS+'s';
-        d.innerHTML='<div class="icon">'+it[E]+'</div><div class="info"><div class="name">'+it[N]+(ok?'':' 🔒Niv.'+it[RL])+'</div><div class="desc">⏱'+tStr+' | 💰'+fmtN(getSellVal(it))+' | ⭐+'+it[XP]+'</div></div>';
-        if(ok){
-          var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:3px;align-items:center';
-          var b1=document.createElement('button');b1.className='buy-btn';b1.disabled=state.coins<it[CO];b1.textContent='×1 '+fmtN(it[CO])+'💰';
-          var b10=document.createElement('button');b10.className='buy-btn';b10.style.background='#388E3C';b10.disabled=state.coins<it[CO];b10.textContent='×10';
-          var bC=document.createElement('button');bC.className='buy-btn';bC.style.background='#1976D2';bC.disabled=state.coins<it[CO];bC.textContent='✏️';
-          (function(cat,idx,item){
-            b1.addEventListener('click',function(){buyMultiple(cat,idx,item,1);});
-            b10.addEventListener('click',function(){buyMultiple(cat,idx,item,10);});
-            bC.addEventListener('click',function(){var q=prompt('Quantité ?','1');q=parseInt(q)||0;if(q>0)buyMultiple(cat,idx,item,q);});
-          })(c,i,it);
-          btnRow.appendChild(b1);btnRow.appendChild(b10);btnRow.appendChild(bC);d.appendChild(btnRow);
-        }
-        tabContent.appendChild(d);
+    function renderAchatSub(){
+      subCt.innerHTML='';
+      if(_achatSub==='eau'){
+        WATER_PACKS.forEach(function(pk){
+          var d=document.createElement('div');d.className='shop-item';
+          d.innerHTML='<div class="icon">💧</div><div class="info"><div class="name">'+pk[2]+'</div><div class="desc">Recharge immédiate</div></div><button class="buy-btn water-btn" '+(state.coins>=pk[1]?'':'disabled')+'>'+fmtN(pk[1])+'💰</button>';
+          d.querySelector('.buy-btn').addEventListener('click',function(){
+            if(state.coins>=pk[1]){state.coins-=pk[1];state.water=Math.min(state.maxWater,state.water+pk[0]);
+              showFloat(innerWidth/2,innerHeight/2,'+'+pk[0]+'💧');updateUI();buildShop()}});
+          subCt.appendChild(d);
+        });
+      } else {
+        var c=_achatSub==='cultures'?0:1;
+        ITEMS[c].forEach(function(it,i){
+          var ok=it[RL]<=state.level;
+          var d=document.createElement('div');d.className='shop-item'+(ok?'':' locked-item');d.style.flexWrap='wrap';
+          var stS=it[ST],wN=CAT_WATER[c],totalS=stS*wN;
+          var tStr=totalS>=60?Math.round(totalS/60)+'min':totalS+'s';
+          d.innerHTML='<div class="icon">'+it[E]+'</div><div class="info"><div class="name">'+it[N]+(ok?'':' 🔒Niv.'+it[RL])+'</div><div class="desc">⏱'+tStr+' | 💰'+fmtN(getSellVal(it))+' | ⭐+'+it[XP]+'</div></div>';
+          if(ok){
+            var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:3px;align-items:center';
+            var b1=document.createElement('button');b1.className='buy-btn';b1.disabled=state.coins<it[CO];b1.textContent='×1 '+fmtN(it[CO])+'💰';
+            var b10=document.createElement('button');b10.className='buy-btn';b10.style.background='#388E3C';b10.disabled=state.coins<it[CO];b10.textContent='×10';
+            var bC=document.createElement('button');bC.className='buy-btn';bC.style.background='#1976D2';bC.disabled=state.coins<it[CO];bC.textContent='✏️';
+            (function(cat,idx,item){
+              b1.addEventListener('click',function(){buyMultiple(cat,idx,item,1);});
+              b10.addEventListener('click',function(){buyMultiple(cat,idx,item,10);});
+              bC.addEventListener('click',function(){var q=prompt('Quantité ?','1');q=parseInt(q)||0;if(q>0)buyMultiple(cat,idx,item,q);});
+            })(c,i,it);
+            btnRow.appendChild(b1);btnRow.appendChild(b10);btnRow.appendChild(bC);d.appendChild(btnRow);
+          }
+          subCt.appendChild(d);
+        });
+        var mcost=getMysteryCost(c);
+        var md2=document.createElement('div');md2.className='shop-item';
+        md2.innerHTML='<div class="icon">❓</div><div class="info"><div class="name">Mystère '+CAT_NAMES[c]+'</div><div class="desc">'+CAT_ICONS[c]+' aléatoire</div></div><button class="buy-btn" '+(state.coins>=mcost?'':'disabled')+'>'+fmtN(mcost)+'💰</button>';
+        (function(myCat,myCost){
+          md2.querySelector('.buy-btn').addEventListener('click',function(){
+            if(state.coins>=myCost){
+              for(var j=0;j<state.plots.length;j++){
+                if(!state.plots[j].locked&&state.plots[j].catIdx<0){
+                  state.coins-=myCost;var ri=Math.floor(Math.random()*ITEMS[myCat].length);
+                  state.plots[j].catIdx=myCat;state.plots[j].itemIdx=ri;state.plots[j].wc=0;state.plots[j].lw=0;
+                  showFloat(innerWidth/2,innerHeight/2,'❓→'+ITEMS[myCat][ri][N]+'!');updateUI();buildShop();return}}
+              showFloat(innerWidth/2,innerHeight/2,'❌ Plus de place!')}
+          });
+        })(c,mcost);
+        subCt.appendChild(md2);
+      }
+    }
+    renderAchatSub();
+  }
+  var SELL_CULTURES=['ble','mais','tomate','carotte','oignon','patate','champignon','citrouille','fleur','fraise'];
+  var SELL_ARBRES=['bois','pomme','citron','raisin','noix_coco','olive','cerise','poire','orange','banane','peche','mangue'];
+  var SELL_ANIMAUX=['oeuf','lait','laine','lait_chevre','miel','viande_porc','viande_dinde','plume','fourrure'];
+  var _venteSub='cultures';
+  function renderVendre(){
+    var subBar=document.createElement('div');subBar.className='sub-tab-bar';subBar.style.fontSize='.7rem';
+    tabContent.appendChild(subBar);
+    var subCt=document.createElement('div');tabContent.appendChild(subCt);
+    var labels=['🌱 Cultures','🌳 Arbres','🐄 Animaux','🏭 Ateliers'];var keys=['cultures','arbres','animaux','ateliers'];
+    keys.forEach(function(k,i){
+      var b=document.createElement('button');b.className='sub-tab-btn'+(_venteSub===k?' active':'');b.textContent=labels[i];
+      b.addEventListener('click',function(){_venteSub=k;
+        subBar.querySelectorAll('.sub-tab-btn').forEach(function(bb,bi){bb.className='sub-tab-btn'+(keys[bi]===_venteSub?' active':'');});
+        renderVenteSub();});
+      subBar.appendChild(b);
+    });
+    function getSellKeys(){
+      if(_venteSub==='cultures')return SELL_CULTURES;
+      if(_venteSub==='arbres')return SELL_ARBRES;
+      if(_venteSub==='animaux')return SELL_ANIMAUX;
+      return TRADE_TRANSFO_KEYS;
+    }
+    function renderVenteSub(){
+      subCt.innerHTML='';
+      var sellKeys=getSellKeys();
+      var hasRes=false;sellKeys.forEach(function(k){if((state.resources[k]||0)>0)hasRes=true;});
+      if(!hasRes){subCt.innerHTML='<p style="text-align:center;color:#888;padding:20px;font-size:.85rem">📦 Aucune ressource à vendre</p>';return;}
+      sellKeys.forEach(function(k){
+        var v=state.resources[k]||0;if(v<=0)return;
+        var sp=RES_SELL[k]||10;
+        var rd=document.createElement('div');rd.className='shop-item';rd.style.flexWrap='wrap';
+        rd.innerHTML='<div class="icon">'+RES_INFO[k].emoji+'</div><div class="info"><div class="name">'+RES_INFO[k].name+' (×'+v+')</div><div class="desc">'+fmtN(sp)+'💰 / unité</div></div>';
+        var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:3px;align-items:center';
+        var s1=document.createElement('button');s1.className='buy-btn';s1.style.background='#e67e22';s1.textContent='×1';
+        var s10=document.createElement('button');s10.className='buy-btn';s10.style.background='#d35400';s10.textContent='×10';s10.disabled=v<10;
+        var sC=document.createElement('button');sC.className='buy-btn';sC.style.background='#1976D2';sC.textContent='✏️';
+        var sAll=document.createElement('button');sAll.className='buy-btn';sAll.style.background='#c0392b';sAll.textContent='Tout';
+        (function(key,sellP){
+          function sellN(n){var amt=Math.min(n,state.resources[key]||0);if(amt<1)return;
+            state.resources[key]-=amt;var total=amt*sellP;state.coins+=total;state.totalEarned+=total;
+            showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(total)+'💰');updateUI();updateResBar();buildShop();}
+          s1.addEventListener('click',function(){sellN(1);});
+          s10.addEventListener('click',function(){sellN(10);});
+          sC.addEventListener('click',function(){var q=prompt('Quantité ? (max '+(state.resources[key]||0)+')','1');q=parseInt(q)||0;if(q>0)sellN(q);});
+          sAll.addEventListener('click',function(){sellN(state.resources[key]||0);});
+        })(k,sp);
+        btnRow.appendChild(s1);btnRow.appendChild(s10);btnRow.appendChild(sC);btnRow.appendChild(sAll);
+        rd.appendChild(btnRow);subCt.appendChild(rd);
       });
     }
-    for(var mc2=0;mc2<2;mc2++){
-      var mhdr=document.createElement('div');mhdr.className='sect-hdr';mhdr.textContent='❓ Mystère '+CAT_NAMES[mc2];tabContent.appendChild(mhdr);
-      var mcost=getMysteryCost(mc2);
-      var md2=document.createElement('div');md2.className='shop-item';
-      md2.innerHTML='<div class="icon">❓</div><div class="info"><div class="name">Mystère '+CAT_NAMES[mc2]+'</div><div class="desc">'+CAT_ICONS[mc2]+' aléatoire</div></div><button class="buy-btn" '+(state.coins>=mcost?'':'disabled')+'>'+fmtN(mcost)+'💰</button>';
-      (function(myCat,myCost){
-        md2.querySelector('.buy-btn').addEventListener('click',function(){
-          if(state.coins>=myCost){
-            for(var j=0;j<state.plots.length;j++){
-              if(!state.plots[j].locked&&state.plots[j].catIdx<0){
-                state.coins-=myCost;var ri=Math.floor(Math.random()*ITEMS[myCat].length);
-                state.plots[j].catIdx=myCat;state.plots[j].itemIdx=ri;state.plots[j].wc=0;state.plots[j].lw=0;
-                showFloat(innerWidth/2,innerHeight/2,'❓→'+ITEMS[myCat][ri][N]+'!');updateUI();buildShop();return}}
-            showFloat(innerWidth/2,innerHeight/2,'❌ Plus de place!')}
-        });
-      })(mc2,mcost);
-      tabContent.appendChild(md2);
-    }
-  }
-  function renderVendre(){
-    var hasRes=false;RES_KEYS.forEach(function(k){if((state.resources[k]||0)>0)hasRes=true;});
-    if(!hasRes){tabContent.innerHTML='<p style="text-align:center;color:#888;padding:20px;font-size:.85rem">📦 Aucune ressource à vendre</p>';return;}
-    var rh=document.createElement('div');rh.className='sect-hdr';rh.textContent='📦 Vendre des ressources';tabContent.appendChild(rh);
-    RES_KEYS.forEach(function(k){
-      var v=state.resources[k]||0;if(v<=0)return;
-      var sp=RES_SELL[k]||10;
-      var rd=document.createElement('div');rd.className='shop-item';rd.style.flexWrap='wrap';
-      rd.innerHTML='<div class="icon">'+RES_INFO[k].emoji+'</div><div class="info"><div class="name">'+RES_INFO[k].name+' (×'+v+')</div><div class="desc">'+fmtN(sp)+'💰 / unité</div></div>';
-      var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:3px;align-items:center';
-      var s1=document.createElement('button');s1.className='buy-btn';s1.style.background='#e67e22';s1.textContent='×1';
-      var s10=document.createElement('button');s10.className='buy-btn';s10.style.background='#d35400';s10.textContent='×10';s10.disabled=v<10;
-      var sC=document.createElement('button');sC.className='buy-btn';sC.style.background='#1976D2';sC.textContent='✏️';
-      var sAll=document.createElement('button');sAll.className='buy-btn';sAll.style.background='#c0392b';sAll.textContent='Tout';
-      (function(key,sellP){
-        function sellN(n){var amt=Math.min(n,state.resources[key]||0);if(amt<1)return;
-          state.resources[key]-=amt;var total=amt*sellP;state.coins+=total;state.totalEarned+=total;
-          showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(total)+'💰');updateUI();updateResBar();buildShop();}
-        s1.addEventListener('click',function(){sellN(1);});
-        s10.addEventListener('click',function(){sellN(10);});
-        sC.addEventListener('click',function(){var q=prompt('Quantité ? (max '+(state.resources[key]||0)+')','1');q=parseInt(q)||0;if(q>0)sellN(q);});
-        sAll.addEventListener('click',function(){sellN(state.resources[key]||0);});
-      })(k,sp);
-      btnRow.appendChild(s1);btnRow.appendChild(s10);btnRow.appendChild(sC);btnRow.appendChild(sAll);
-      rd.appendChild(btnRow);tabContent.appendChild(rd);
-    });
+    renderVenteSub();
   }
   function renderAutre(){
     if(state.debt>0){
@@ -1358,7 +1480,7 @@ function buildFarmerUI(){
     var resName=resInfo?resInfo.name:'Aucune';
     var now=Date.now();
     var nextH=f.lastHarvest>0?Math.max(0,Math.ceil((f.lastHarvest+FARMER_HARVEST_MS-now)/1000)):0;
-    var rentF=Math.floor(f.cost*0.1);
+    var rentF=f.assignedRes==='repos'?Math.floor(Math.floor(f.cost*0.1)*0.5):Math.floor(f.cost*0.1);
     var upgCost=f.level<FARMER_MAX_LVL?getFarmerUpgCost(f.level):0;
     var canUpg=f.level<FARMER_MAX_LVL&&state.coins>=upgCost;
     card.innerHTML='<div class="farmer-header">'
@@ -1374,6 +1496,7 @@ function buildFarmerUI(){
       +'<div class="farmer-res">'
       +'<label>Récolte: </label>'
       +'<select class="farmer-res-sel" data-fi="'+fi+'"><option value="">-- Choisir --</option>'
+      +'<option value="repos"'+(f.assignedRes==='repos'?' selected':'')+'>😴 Repos</option>'
       +FARMER_RES_KEYS.map(function(rk){return '<option value="'+rk+'"'+(f.assignedRes===rk?' selected':'')+'>'+RES_INFO[rk].emoji+' '+RES_INFO[rk].name+'</option>';}).join('')
       +'</select>'
       +'</div>'
@@ -1446,6 +1569,143 @@ function updateFarmerTimers(){
   var btn=hire.querySelector('.farmer-hire-btn');
   if(btn&&state.farmers.length<FARMER_MAX){
     var cost=getFarmerCost(state.farmers.length);
+    btn.style.opacity=state.coins>=cost?'1':'0.5';
+  }
+}
+
+// ===== OUVRIERS =====
+var atelierSubTab='ateliers';
+function buildAtelierSubTabs(){
+  var stabs=$('atelier-sub-tabs');if(!stabs)return;stabs.innerHTML='';
+  var labels=['🏗️ Ateliers','👷 Ouvriers','📖 Aide'];var keys=['ateliers','ouvriers','aide'];
+  keys.forEach(function(k,i){
+    var b=document.createElement('button');b.className='sub-tab-btn'+(atelierSubTab===k?' active':'');b.textContent=labels[i];
+    b.addEventListener('click',function(){atelierSubTab=k;
+      stabs.querySelectorAll('.sub-tab-btn').forEach(function(bb,bi){bb.className='sub-tab-btn'+(keys[bi]===atelierSubTab?' active':'');});
+      $('atelier-main').style.display=k==='ateliers'?'':'none';
+      $('ouvrier-area').style.display=k==='ouvriers'?'':'none';
+      $('atelier-aide-area').style.display=k==='aide'?'':'none';
+      if(k==='ouvriers')buildOuvrierUI();
+      if(k==='aide')buildAtelierAide();
+    });
+    stabs.appendChild(b);
+  });
+  $('atelier-main').style.display=atelierSubTab==='ateliers'?'':'none';
+  $('ouvrier-area').style.display=atelierSubTab==='ouvriers'?'':'none';
+  $('atelier-aide-area').style.display=atelierSubTab==='aide'?'':'none';
+}
+function getAllRecipeList(){
+  var list=[];
+  BUILDINGS.forEach(function(bld){
+    if(bld.reqLevel<=state.level){
+      bld.recipes.forEach(function(rec){
+        if(rec.output)list.push({key:rec.output,name:rec.name,emoji:rec.emoji,inputs:rec.inputs,bld:bld.name});
+      });
+    }
+  });
+  return list;
+}
+function buildOuvrierUI(){
+  var list=$('ouvrier-list');var hire=$('ouvrier-hire');
+  if(!list||!hire)return;
+  list.innerHTML='';hire.innerHTML='';
+  var recipes=getAllRecipeList();
+  state.ouvriers.forEach(function(o,oi){
+    var card=document.createElement('div');card.className='ouvrier-card';
+    var recInfo=null;
+    if(o.assignedRecipe&&o.assignedRecipe!=='repos'){
+      for(var ri=0;ri<recipes.length;ri++){if(recipes[ri].key===o.assignedRecipe){recInfo=recipes[ri];break;}}
+    }
+    var recEmoji=o.assignedRecipe==='repos'?'😴':(recInfo?recInfo.emoji:'❓');
+    var recName=o.assignedRecipe==='repos'?'Repos':(recInfo?recInfo.name:'Aucune');
+    var now=Date.now();
+    var nextP=o.lastProd>0?Math.max(0,Math.ceil((o.lastProd+OUVRIER_PROD_MS-now)/1000)):0;
+    var rentO=o.assignedRecipe==='repos'?Math.floor(Math.floor(o.cost*0.12)*0.5):Math.floor(o.cost*0.12);
+    var upgCost=o.level<OUVRIER_MAX_LVL?getOuvrierUpgCost(o.level):0;
+    var canUpg=o.level<OUVRIER_MAX_LVL&&state.coins>=upgCost;
+    card.innerHTML='<div class="farmer-header">'
+      +'<span class="farmer-emoji">👷</span>'
+      +'<input class="farmer-name" value="'+o.name.replace(/"/g,'&quot;')+'" data-oi="'+oi+'" maxlength="15">'
+      +'<span class="farmer-lvl">Niv.'+o.level+'</span>'
+      +'</div>'
+      +'<div class="farmer-info">'
+      +'<span>🏠 '+fmtN(rentO)+'💰/mois</span>'
+      +'<span>📦 '+o.level+' craft/cycle</span>'
+      +'<span class="ouvrier-timer" data-oi="'+oi+'">⏱️ '+(nextP>0?nextP+'s':'Prêt!')+'</span>'
+      +'</div>'
+      +'<div class="farmer-res">'
+      +'<label>Recette: </label>'
+      +'<select class="ouvrier-rec-sel" data-oi="'+oi+'"><option value="">-- Choisir --</option>'
+      +'<option value="repos"'+(o.assignedRecipe==='repos'?' selected':'')+'>😴 Repos</option>'
+      +recipes.map(function(r){return '<option value="'+r.key+'"'+(o.assignedRecipe===r.key?' selected':'')+'>'+r.emoji+' '+r.name+'</option>';}).join('')
+      +'</select>'
+      +'</div>'
+      +(recInfo?'<div style="font-size:.6rem;color:#888;padding:0 2px">Ingrédients: '+Object.keys(recInfo.inputs).map(function(k){return (RES_INFO[k]?RES_INFO[k].emoji:'')+recInfo.inputs[k];}).join(' ')+'</div>':'')
+      +(o.level<OUVRIER_MAX_LVL?'<div style="text-align:center;margin-top:4px"><button class="farmer-upg-btn ouvrier-upg" data-oi="'+oi+'" style="opacity:'+(canUpg?'1':'0.5')+'">⬆️ Niv.'+(o.level+1)+' — '+fmtN(upgCost)+'💰</button></div>':'<div style="text-align:center;font-size:.65rem;color:#888;margin-top:2px">Niveau max atteint</div>');
+    list.appendChild(card);
+  });
+  // Name change
+  list.querySelectorAll('.farmer-name[data-oi]').forEach(function(inp){
+    inp.addEventListener('change',function(){
+      var oi=+inp.dataset.oi;var v=inp.value.trim();
+      if(v.length>0&&v.length<=15)state.ouvriers[oi].name=v;else inp.value=state.ouvriers[oi].name;
+    });
+  });
+  // Recipe select
+  list.querySelectorAll('.ouvrier-rec-sel').forEach(function(sel){
+    sel.addEventListener('change',function(){
+      var oi=+sel.dataset.oi;state.ouvriers[oi].assignedRecipe=sel.value||null;
+    });
+  });
+  // Upgrade
+  list.querySelectorAll('.ouvrier-upg').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var oi=+btn.dataset.oi;var o=state.ouvriers[oi];if(!o||o.level>=OUVRIER_MAX_LVL)return;
+      var cost=getOuvrierUpgCost(o.level);
+      if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return;}
+      state.coins-=cost;o.level++;
+      showFloat(innerWidth/2,innerHeight/2,'⬆️ '+o.name+' Niv.'+o.level+'! -'+fmtN(cost)+'💰');
+      updateUI();buildOuvrierUI();
+    });
+  });
+  // Hire button
+  if(state.ouvriers.length<OUVRIER_MAX){
+    var cost=getOuvrierCost(state.ouvriers.length);
+    var btn=document.createElement('button');
+    btn.className='farmer-hire-btn';
+    btn.style.opacity=state.coins>=cost?'1':'0.5';
+    btn.innerHTML='👷 Engager ouvrier #'+(state.ouvriers.length+1)+' — '+fmtN(cost)+'💰';
+    btn.addEventListener('click',function(){hireOuvrier();});
+    hire.appendChild(btn);
+    var info=document.createElement('div');
+    info.style.cssText='font-size:.7rem;color:#666;padding:4px;text-align:center';
+    info.textContent='Loyer: '+fmtN(Math.floor(cost*0.12))+'💰/mois | Produit niv. recettes / 2min';
+    hire.appendChild(info);
+  }else{
+    hire.innerHTML='<div style="padding:8px;color:#888;font-size:.8rem">Maximum '+OUVRIER_MAX+' ouvriers atteint.</div>';
+  }
+}
+function hireOuvrier(){
+  var idx=state.ouvriers.length;if(idx>=OUVRIER_MAX)return;
+  var cost=getOuvrierCost(idx);
+  if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return;}
+  state.coins-=cost;
+  state.ouvriers.push({name:'Ouvrier '+(idx+1),level:1,assignedRecipe:null,lastProd:Date.now(),cost:cost});
+  showFloat(innerWidth/2,innerHeight/2,'👷 Ouvrier engagé! -'+fmtN(cost)+'💰');
+  updateUI();buildOuvrierUI();
+}
+function updateOuvrierTimers(){
+  var now=Date.now();
+  var list=$('ouvrier-list');if(!list)return;
+  list.querySelectorAll('.ouvrier-timer').forEach(function(el){
+    var oi=+el.dataset.oi;var o=state.ouvriers[oi];if(!o)return;
+    var nextP=o.lastProd>0?Math.max(0,Math.ceil((o.lastProd+OUVRIER_PROD_MS-now)/1000)):0;
+    el.textContent='⏱️ '+(nextP>0?nextP+'s':'Prêt!');
+  });
+  var hire=$('ouvrier-hire');if(!hire)return;
+  var btn=hire.querySelector('.farmer-hire-btn');
+  if(btn&&state.ouvriers.length<OUVRIER_MAX){
+    var cost=getOuvrierCost(state.ouvriers.length);
     btn.style.opacity=state.coins>=cost?'1':'0.5';
   }
 }
@@ -1575,6 +1835,83 @@ function renderAideStats(ct){
     d.innerHTML='<span>'+r[0]+'</span><b>'+r[1]+'</b>';ct.appendChild(d)});
 }
 
+// ===== AIDE TABS IN FARM / ATELIERS / STOCK =====
+function buildFarmAide(){
+  var ct=$('farm-aide-content');if(!ct)return;ct.innerHTML='';
+  var tabs=document.createElement('div');tabs.className='sub-tab-bar';ct.appendChild(tabs);
+  var content=document.createElement('div');ct.appendChild(content);
+  var farmAideSub='cultures';
+  var labels=['🌱 Cultures','🌳 Arbres','🐄 Animaux','👨‍🌾 Fermiers'];var keys=['cultures','arbres','animaux','fermiers'];
+  function render(){
+    content.innerHTML='';
+    tabs.querySelectorAll('.sub-tab-btn').forEach(function(b,i){b.className='sub-tab-btn'+(keys[i]===farmAideSub?' active':'');});
+    if(farmAideSub==='cultures')renderAideCultures(content);
+    else if(farmAideSub==='arbres')renderAideArbres(content);
+    else if(farmAideSub==='animaux')renderAideAnimaux(content);
+    else renderAideFermiers(content);
+  }
+  keys.forEach(function(k,i){
+    var b=document.createElement('button');b.className='sub-tab-btn'+(i===0?' active':'');b.textContent=labels[i];
+    b.addEventListener('click',function(){farmAideSub=k;render();});
+    tabs.appendChild(b);
+  });
+  render();
+}
+function renderAideFermiers(ct){
+  ct.innerHTML='<div class="mg-rules" style="text-align:left;padding:10px">'
+    +'<h3 style="text-align:center;margin-bottom:8px">👨‍🌾 Guide des Fermiers</h3>'
+    +'<p><b>Comment ça marche ?</b></p>'
+    +'<p>Les fermiers récoltent automatiquement des ressources brutes pour vous toutes les <b>60 secondes</b>.</p>'
+    +'<hr style="margin:6px 0;border-color:rgba(0,0,0,.1)">'
+    +'<p>🛒 <b>Engager</b> — Achetez un fermier (max '+FARMER_MAX+'). Le coût augmente à chaque embauche.</p>'
+    +'<p>📦 <b>Assigner</b> — Choisissez la ressource qu\'il doit récolter (blé, lait, œufs, etc.).</p>'
+    +'<p>📦 <b>Production</b> — Chaque minute, il produit autant de ressources que son niveau.</p>'
+    +'<p>⬆️ <b>Améliorer</b> — Montez son niveau (max '+FARMER_MAX_LVL+') pour augmenter sa production.</p>'
+    +'<p>😴 <b>Repos</b> — Mettez-le en repos pour <b>diviser son loyer par 2</b> (mais il ne produit rien).</p>'
+    +'<p>🏠 <b>Loyer</b> — Chaque fermier coûte un loyer mensuel (10% de son coût d\'achat). Le repos réduit ce coût de moitié.</p>'
+    +'<p>✏️ <b>Renommer</b> — Touchez le nom pour le personnaliser (max 15 caractères).</p>'
+    +'</div>';
+}
+function buildAtelierAide(){
+  var ct=$('atelier-aide-area');if(!ct)return;ct.innerHTML='';
+  var tabs=document.createElement('div');tabs.className='sub-tab-bar';ct.appendChild(tabs);
+  var content=document.createElement('div');ct.appendChild(content);
+  var atelierAideSub='recettes';
+  var labels=['📖 Recettes','👷 Ouvriers'];var keys=['recettes','ouvriers'];
+  function render(){
+    content.innerHTML='';
+    tabs.querySelectorAll('.sub-tab-btn').forEach(function(b,i){b.className='sub-tab-btn'+(keys[i]===atelierAideSub?' active':'');});
+    if(atelierAideSub==='recettes')renderAideRecettes(content);
+    else renderAideOuvriers(content);
+  }
+  keys.forEach(function(k,i){
+    var b=document.createElement('button');b.className='sub-tab-btn'+(i===0?' active':'');b.textContent=labels[i];
+    b.addEventListener('click',function(){atelierAideSub=k;render();});
+    tabs.appendChild(b);
+  });
+  render();
+}
+function renderAideOuvriers(ct){
+  ct.innerHTML='<div class="mg-rules" style="text-align:left;padding:10px">'
+    +'<h3 style="text-align:center;margin-bottom:8px">👷 Guide des Ouvriers</h3>'
+    +'<p><b>Comment ça marche ?</b></p>'
+    +'<p>Les ouvriers fabriquent automatiquement des ressources transformées dans vos ateliers toutes les <b>2 minutes</b>.</p>'
+    +'<hr style="margin:6px 0;border-color:rgba(0,0,0,.1)">'
+    +'<p>🛒 <b>Engager</b> — Achetez un ouvrier (max '+OUVRIER_MAX+'). Le coût augmente à chaque embauche.</p>'
+    +'<p>📦 <b>Assigner</b> — Choisissez la recette qu\'il doit fabriquer parmi celles débloquées.</p>'
+    +'<p>🏭 <b>Production</b> — Toutes les 2 min, il fabrique la recette si vous avez les ingrédients en stock.</p>'
+    +'<p>⬆️ <b>Améliorer</b> — Montez son niveau (max '+OUVRIER_MAX_LVL+') pour augmenter sa quantité produite.</p>'
+    +'<p>😴 <b>Repos</b> — Mettez-le en repos pour <b>diviser son loyer par 2</b> (mais il ne produit rien).</p>'
+    +'<p>🏠 <b>Loyer</b> — Chaque ouvrier coûte un loyer mensuel (12% de son coût d\'achat). Le repos réduit ce coût de moitié.</p>'
+    +'<p>✏️ <b>Renommer</b> — Touchez le nom pour le personnaliser (max 15 caractères).</p>'
+    +'</div>';
+}
+function buildStockAide(mode){
+  var ct=$('stock-aide-content');if(!ct)return;ct.innerHTML='';
+  if(mode==='recettes')renderAideRecettes(ct);
+  else renderAideStats(ct);
+}
+
 // ===== STATS (legacy) =====
 function buildStats(){
   var list=$('stats-list');if(!list)return;list.innerHTML='';
@@ -1599,8 +1936,26 @@ function buildStats(){
     d.innerHTML='<span>'+r[0]+'</span><b>'+r[1]+'</b>';list.appendChild(d)});
 }
 
+var stockSubTab='ressources';
 function buildResourceGrid(){
   var container=$('res-grid-container');if(!container)return;container.innerHTML='';
+  // Build stock sub-tabs
+  var stabs=$('stock-sub-tabs');if(stabs){stabs.innerHTML='';
+    var labels=['📦 Ressources','📖 Recettes','📊 Stats'];var keys=['ressources','recettes','stats'];
+    keys.forEach(function(k,i){
+      var b=document.createElement('button');b.className='sub-tab-btn'+(stockSubTab===k?' active':'');b.textContent=labels[i];
+      b.addEventListener('click',function(){stockSubTab=k;buildResourceGrid();});
+      stabs.appendChild(b);
+    });
+  }
+  var aideArea=$('stock-aide-content');
+  if(stockSubTab!=='ressources'){
+    container.style.display='none';
+    if(aideArea){aideArea.style.display='';aideArea.innerHTML='';buildStockAide(stockSubTab);}
+    return;
+  }
+  container.style.display='';
+  if(aideArea)aideArea.style.display='none';
   var grid=document.createElement('div');grid.className='res-grid';
   RES_KEYS.forEach(function(k){
     var v=state.resources[k]||0;
@@ -1672,6 +2027,11 @@ function gameTick(){
       if(wellG>0){state.wellWater+=wellG*5;state.lastWellTick+=wellG*20000;}
     }
   }
+  // Wood accumulation
+  if(state.woodRepairs>=15&&state.lastWoodTick){
+    var woodG=Math.floor((now-state.lastWoodTick)/20000);
+    if(woodG>0){state.woodStock+=woodG*3;state.lastWoodTick+=woodG*20000;}
+  }
   // Auto-atelier
   if((state.upgrades.autoatelier||0)>=1&&state.autoAtelierEnd>now){
     state.bplots.forEach(function(bp){
@@ -1717,7 +2077,7 @@ function gameTick(){
   var animalArea=$('farm-animals-area');if(animalArea&&animalArea.style.display!=='none')updateAnimalVisuals();
   // Farmer harvesting
   state.farmers.forEach(function(f){
-    if(!f.assignedRes)return;
+    if(!f.assignedRes||f.assignedRes==='repos')return;
     if(now-f.lastHarvest>=FARMER_HARVEST_MS){
       var qty=f.level||1;
       state.resources[f.assignedRes]=(state.resources[f.assignedRes]||0)+qty;
@@ -1725,7 +2085,26 @@ function gameTick(){
     }
   });
   var farmerArea=$('farm-farmers-area');if(farmerArea&&farmerArea.style.display!=='none')updateFarmerTimers();
-  var wellP=$('panel-well');if(wellP&&wellP.classList.contains('active'))buildWell();
+  // Ouvrier production
+  var ouvrierRecipes=getAllRecipeList();
+  state.ouvriers.forEach(function(o){
+    if(!o.assignedRecipe||o.assignedRecipe==='repos')return;
+    if(now-o.lastProd>=OUVRIER_PROD_MS){
+      var recInfo=null;
+      for(var ri=0;ri<ouvrierRecipes.length;ri++){if(ouvrierRecipes[ri].key===o.assignedRecipe){recInfo=ouvrierRecipes[ri];break;}}
+      if(!recInfo)return;
+      // Check ingredients
+      var qty=o.level||1;var canMake=true;
+      for(var k in recInfo.inputs){if((state.resources[k]||0)<recInfo.inputs[k]*qty){canMake=false;break;}}
+      if(!canMake)return;
+      // Consume ingredients and produce
+      for(var k2 in recInfo.inputs)state.resources[k2]-=recInfo.inputs[k2]*qty;
+      state.resources[o.assignedRecipe]=(state.resources[o.assignedRecipe]||0)+qty;
+      o.lastProd=now;
+    }
+  });
+  var ouvrierArea=$('ouvrier-area');if(ouvrierArea&&ouvrierArea.style.display!=='none')updateOuvrierTimers();
+  var wellP=$('panel-well');if(wellP&&wellP.classList.contains('active')){buildWell();buildWood();}
   updateAuto();updateUI();state.lastSave=now;
 }
 
@@ -2140,6 +2519,51 @@ function buildWell(){
 }
 
 // ===== QUESTS =====
+function buildWood(){
+  var c=$('wood-container');if(!c)return;c.innerHTML='';
+  if(state.woodRepairs<15){
+    var pct=Math.floor(state.woodRepairs/15*100);
+    c.innerHTML='<div class="well-visual">🪵</div>'
+      +'<div class="well-info">Le tronc est abîmé ! Répare-le !</div>'
+      +'<div class="well-progress"><div class="well-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="well-info"><b>'+state.woodRepairs+'/15</b> réparations</div>'
+      +'<button class="well-btn repair" id="wood-repair-btn">🔧 Réparer</button>';
+    $('wood-repair-btn').addEventListener('click',function(){
+      state.woodRepairs++;
+      if(state.woodRepairs>=15){
+        state.lastWoodTick=Date.now();
+        showFloat(innerWidth/2,innerHeight/2,'🎉 Tronc réparé !');
+      }else{
+        showFloat(innerWidth/2,innerHeight/2,'🔧 '+state.woodRepairs+'/15');
+      }
+      buildWood();
+    });
+  }else{
+    var woodElapsed=Math.floor((Date.now()-state.lastWoodTick)/1000);
+    var nextIn=Math.max(0,20-(woodElapsed%20));
+    var statusTxt='🪵 +3 bois toutes les 20s (prochain dans '+nextIn+'s)';
+    c.innerHTML='<div class="well-visual" id="wood-tap" style="cursor:pointer">🪓</div>'
+      +'<div class="well-info">Tronc opérationnel — Touche le tronc pour +5🪵</div>'
+      +'<div class="well-info" style="font-size:1rem">🪵 Ton bois: <b>'+(state.resources.bois||0)+'</b></div>'
+      +'<div class="well-water-display">🪵 '+state.woodStock+' bois accumulé</div>'
+      +'<div class="well-status">'+statusTxt+'</div>'
+      +(state.woodStock>0?'<button class="well-btn collect" id="wood-collect-btn" style="background:linear-gradient(145deg,#8B4513,#D2691E)">🪵 Récupérer le bois</button>':'');
+    $('wood-tap').addEventListener('click',function(){
+      state.resources.bois=(state.resources.bois||0)+5;
+      showFloat(innerWidth/2,innerHeight/2,'+5🪵');
+      updateUI();buildWood();
+    });
+    if(state.woodStock>0){
+      $('wood-collect-btn').addEventListener('click',function(){
+        var amount=state.woodStock;
+        state.resources.bois=(state.resources.bois||0)+amount;
+        state.woodStock=0;
+        showFloat(innerWidth/2,innerHeight/2,'+'+amount+'🪵');
+        updateUI();buildWood();
+      });
+    }
+  }
+}
 function generateQuests(){
   if(state.questMonth===state.month&&state.quests.length===10)return;
   state.questMonth=state.month;state.quests=[];
@@ -2147,16 +2571,15 @@ function generateQuests(){
   // 5 farm quests: harvest crops/trees OR collect animal resources
   var farmPool=[];
   for(var c=0;c<2;c++){ITEMS[c].forEach(function(it,i){if(it[RL]<=lv)farmPool.push({cat:c,idx:i,name:it[N],emoji:it[E],isAnimal:false});});}
-  // Animal quests → track resource output
+  // Animal quests → track resource output (skip coin-only animals)
   ANIMALS.forEach(function(it,i){if(it[RL]<=lv){
     var af=ANIMAL_FEED[i];var resKey=af[AO];
     if(resKey){farmPool.push({cat:2,idx:i,name:RES_INFO[resKey].name,emoji:RES_INFO[resKey].emoji,isAnimal:true,resKey:resKey});}
-    else{farmPool.push({cat:2,idx:i,name:it[N],emoji:it[E],isAnimal:true,resKey:null});}
   }});
   shuffle(farmPool);
   for(var q=0;q<5;q++){
     var pick=farmPool[q%farmPool.length];
-    var need=Math.max(1,Math.floor((2+lv*0.5+q*0.8)*(1+Math.random()*0.5)));
+    var need=3+Math.floor(Math.random()*148);
     var goldR=Math.floor(need*(pick.cat===0?80:pick.cat===1?250:500)*(1+lv*0.12));
     var xpR=Math.floor(goldR*0.25);
     if(pick.isAnimal){
@@ -2171,7 +2594,7 @@ function generateQuests(){
   shuffle(recPool);
   for(var q2=0;q2<5;q2++){
     var pick2=recPool[q2%recPool.length];
-    var need2=Math.max(1,Math.floor((1+lv*0.3+q2*0.5)*(1+Math.random()*0.4)));
+    var need2=2+Math.floor(Math.random()*99);
     var goldR2=Math.floor(need2*300*(1+lv*0.15));
     var xpR2=Math.floor(goldR2*0.25);
     state.quests.push({type:'atelier',target:pick2.name,emoji:pick2.emoji,bld:pick2.bld,need:need2,progress:0,gold:goldR2,xp:xpR2,claimed:false});
@@ -2190,7 +2613,50 @@ function trackQuestAnimalRes(resKey,qty){
 function getQuestResetCost(){
   return Math.floor(500*Math.pow(1.5,state.questResets)*(1+state.level*0.2));
 }
+function regenerateOneQuest(qi){
+  var q=state.quests[qi];var lv=state.level;
+  if(q.type==='farm'||q.type==='animal'){
+    var farmPool=[];
+    for(var c=0;c<2;c++){ITEMS[c].forEach(function(it,i){if(it[RL]<=lv)farmPool.push({cat:c,idx:i,name:it[N],emoji:it[E],isAnimal:false});});}
+    ANIMALS.forEach(function(it,i){if(it[RL]<=lv){var af=ANIMAL_FEED[i];if(af[AO])farmPool.push({cat:2,idx:i,name:RES_INFO[af[AO]].name,emoji:RES_INFO[af[AO]].emoji,isAnimal:true,resKey:af[AO]});}});
+    shuffle(farmPool);var pick=farmPool[0];
+    var need=3+Math.floor(Math.random()*148);
+    var goldR=Math.floor(need*(pick.cat===0?80:pick.cat===1?250:500)*(1+lv*0.12));
+    var xpR=Math.floor(goldR*0.25);
+    if(pick.isAnimal){state.quests[qi]={type:'animal',target:pick.name,emoji:pick.emoji,resKey:pick.resKey,need:need,progress:0,gold:goldR,xp:xpR,claimed:false};}
+    else{state.quests[qi]={type:'farm',target:pick.name,emoji:pick.emoji,need:need,progress:0,gold:goldR,xp:xpR,claimed:false};}
+  }else{
+    var recPool=[];
+    BUILDINGS.forEach(function(bld){if(bld.reqLevel<=lv){bld.recipes.forEach(function(rec){recPool.push({name:rec.name,emoji:rec.emoji,bld:bld.name});});}});
+    shuffle(recPool);var pick2=recPool[0];
+    var need2=2+Math.floor(Math.random()*99);
+    var goldR2=Math.floor(need2*300*(1+lv*0.15));var xpR2=Math.floor(goldR2*0.25);
+    state.quests[qi]={type:'atelier',target:pick2.name,emoji:pick2.emoji,bld:pick2.bld,need:need2,progress:0,gold:goldR2,xp:xpR2,claimed:false};
+  }
+}
+var questSubTab='quetes';
 function buildQuestUI(){
+  // Sub-tabs
+  var stabs=$('quest-sub-tabs');
+  if(stabs){
+    stabs.innerHTML='';
+    var labels=['🎯 Quêtes','🤝 Marchander'];var keys=['quetes','marchander'];
+    keys.forEach(function(k,i){
+      var b=document.createElement('button');b.className='sub-tab-btn'+(questSubTab===k?' active':'');b.textContent=labels[i];
+      b.addEventListener('click',function(){questSubTab=k;
+        stabs.querySelectorAll('.sub-tab-btn').forEach(function(bb,bi){bb.className='sub-tab-btn'+(keys[bi]===questSubTab?' active':'');});
+        $('quest-list').style.display=k==='quetes'?'':'none';
+        $('trade-list').style.display=k==='marchander'?'':'none';
+        if(k==='quetes')renderQuests();else buildTradeUI();
+      });
+      stabs.appendChild(b);
+    });
+    $('quest-list').style.display=questSubTab==='quetes'?'':'none';
+    $('trade-list').style.display=questSubTab==='marchander'?'':'none';
+  }
+  if(questSubTab==='quetes')renderQuests();else buildTradeUI();
+}
+function renderQuests(){
   var list=$('quest-list');if(!list)return;list.innerHTML='';
   if(state.quests.length===0){list.innerHTML='<p style="text-align:center;color:#888;padding:20px">🎯 Aucune quête ce mois-ci</p>';return;}
   var info=document.createElement('div');info.className='quest-month-info';
@@ -2203,21 +2669,34 @@ function buildQuestUI(){
     var done=q.progress>=q.need;
     var card=document.createElement('div');card.className='quest-card'+(q.claimed?' qdone':'');
     var pct=Math.min(100,Math.floor(q.progress/q.need*100));
-    var label=q.type==='animal'?'Récolter '+q.need+' '+q.target:'Récolter '+q.need+' '+q.target;
+    var label='Récolter '+q.need+' '+q.target;
     card.innerHTML='<div class="quest-hdr"><span class="q-ico">'+q.emoji+'</span>'+label+'</div>'
       +'<div class="quest-desc">'+q.progress+'/'+q.need+(q.claimed?' — ✅ Terminée':'')+'</div>'
       +'<div class="quest-prog"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'
       +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐ + 1⭐'+'</div>';
-    if(done&&!q.claimed){
-      var cb=document.createElement('button');cb.style.cssText='margin-top:4px;padding:4px 14px;background:#4CAF50;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer';
-      cb.textContent='🎁 Réclamer';
-      (function(idx){cb.addEventListener('click',function(){
+    if(!q.claimed){
+      var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:6px;margin-top:4px;flex-wrap:wrap';
+      var cb=document.createElement('button');
+      cb.style.cssText='padding:4px 14px;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer;'
+        +(done?'background:#4CAF50;color:#fff':'background:#bbb;color:#666');
+      cb.textContent=done?'🎁 Réclamer':'❌ Pas terminée';
+      cb.disabled=!done;
+      if(done){(function(idx){cb.addEventListener('click',function(){
         state.quests[idx].claimed=true;state.coins+=state.quests[idx].gold;state.xp+=state.quests[idx].xp;
         state.totalEarned+=state.quests[idx].gold;state.stars=(state.stars||0)+1;
         showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐ +1⭐');
         checkLevelUp();updateUI();buildQuestUI();
+      });})(qi);}
+      btnRow.appendChild(cb);
+      var sb=document.createElement('button');
+      sb.style.cssText='padding:4px 10px;background:#9b59b6;color:#fff;border:none;border-radius:6px;font-size:.7rem;cursor:pointer';
+      sb.textContent='🔄 Passer';
+      (function(idx){sb.addEventListener('click',function(){
+        regenerateOneQuest(idx);
+        showFloat(innerWidth/2,innerHeight/2,'🔄 Nouvelle quête!');buildQuestUI();
       });})(qi);
-      card.appendChild(cb);
+      btnRow.appendChild(sb);
+      card.appendChild(btnRow);
     }
     list.appendChild(card);
   });
@@ -2232,32 +2711,161 @@ function buildQuestUI(){
       +'<div class="quest-desc">'+(q.bld?q.bld+' — ':'')+q.progress+'/'+q.need+(q.claimed?' — ✅ Terminée':'')+'</div>'
       +'<div class="quest-prog"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'
       +'<div class="quest-reward">🏆 '+fmtN(q.gold)+'💰 + '+fmtN(q.xp)+'⭐ + 1⭐'+'</div>';
-    if(done&&!q.claimed){
-      var cb=document.createElement('button');cb.style.cssText='margin-top:4px;padding:4px 14px;background:#4CAF50;color:#fff;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer';
-      cb.textContent='🎁 Réclamer';
-      (function(idx){cb.addEventListener('click',function(){
+    if(!q.claimed){
+      var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:6px;margin-top:4px;flex-wrap:wrap';
+      var cb=document.createElement('button');
+      cb.style.cssText='padding:4px 14px;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer;'
+        +(done?'background:#4CAF50;color:#fff':'background:#bbb;color:#666');
+      cb.textContent=done?'🎁 Réclamer':'❌ Pas terminée';
+      cb.disabled=!done;
+      if(done){(function(idx){cb.addEventListener('click',function(){
         state.quests[idx].claimed=true;state.coins+=state.quests[idx].gold;state.xp+=state.quests[idx].xp;
         state.totalEarned+=state.quests[idx].gold;state.stars=(state.stars||0)+1;
         showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(state.quests[idx].gold)+'💰 +'+fmtN(state.quests[idx].xp)+'⭐ +1⭐');
         checkLevelUp();updateUI();buildQuestUI();
+      });})(qi);}
+      btnRow.appendChild(cb);
+      var sb=document.createElement('button');
+      sb.style.cssText='padding:4px 10px;background:#9b59b6;color:#fff;border:none;border-radius:6px;font-size:.7rem;cursor:pointer';
+      sb.textContent='🔄 Passer';
+      (function(idx){sb.addEventListener('click',function(){
+        regenerateOneQuest(idx);
+        showFloat(innerWidth/2,innerHeight/2,'🔄 Nouvelle quête!');buildQuestUI();
       });})(qi);
-      card.appendChild(cb);
+      btnRow.appendChild(sb);
+      card.appendChild(btnRow);
     }
     list.appendChild(card);
   });
-  // Check if all claimed → offer reset
-  var allClaimed=state.quests.every(function(q){return q.claimed;});
-  if(allClaimed){
-    var cost=getQuestResetCost();
-    var rb=document.createElement('button');rb.className='quest-reset-btn';
-    rb.textContent='🔄 Nouvelles quêtes ('+fmtN(cost)+'💰)';
-    rb.disabled=state.coins<cost;
-    rb.addEventListener('click',function(){
-      if(state.coins>=cost){state.coins-=cost;state.questResets++;state.questMonth=0;generateQuests();
-        showFloat(innerWidth/2,innerHeight/2,'🎯 Nouvelles quêtes!');updateUI();buildQuestUI();}
-    });
-    list.appendChild(rb);
+  // Reset button — always available
+  var cost=getQuestResetCost();
+  var rb=document.createElement('button');rb.className='quest-reset-btn';
+  rb.textContent='🔄 Toutes nouvelles quêtes ('+fmtN(cost)+'💰)';
+  rb.disabled=state.coins<cost;
+  rb.addEventListener('click',function(){
+    if(state.coins>=cost){state.coins-=cost;state.questResets++;state.questMonth=0;generateQuests();
+      showFloat(innerWidth/2,innerHeight/2,'🎯 Nouvelles quêtes!');updateUI();buildQuestUI();}
+  });
+  list.appendChild(rb);
+}
+
+// ===== MARCHANDER (TRADING) =====
+var TRADE_NPCS=[
+  {name:'Agriculteur',emoji:'👨‍🌾'},{name:'Boulangère',emoji:'👩‍🍳'},{name:'Artisan',emoji:'🧑‍🔧'},
+  {name:'Cuisinier',emoji:'👨‍🍳'},{name:'Herboriste',emoji:'🧙'},{name:'Marchand',emoji:'🧑‍💼'},
+  {name:'Apiculteur',emoji:'🐝'},{name:'Berger',emoji:'🐑'},{name:'Fromager',emoji:'🧀'},
+  {name:'Pâtissier',emoji:'🧁'},{name:'Vigneron',emoji:'🍷'},{name:'Tisserand',emoji:'🧶'},
+  {name:'Épicier',emoji:'🛒'},{name:'Fermier',emoji:'🚜'},{name:'Chocolatier',emoji:'🍫'}
+];
+var TRADE_BRUT_KEYS=['eau','bois','lait','ble','mais','oeuf','laine','pomme','fraise','lait_chevre','citron','miel','raisin',
+  'noix_coco','olive','tomate','carotte','oignon','patate','champignon','citrouille','cerise','fleur',
+  'poire','orange','banane','peche','mangue','viande_porc','viande_dinde','plume','fourrure'];
+var TRADE_TRANSFO_KEYS=['beurre','creme','farine_ble','farine_mais','sucre','fromage','jus_pomme','confiture',
+  'vin','huile_olive','lait_coco','chocolat','sauce_tomate','soupe','jus_orange','smoothie','marmelade','cidre',
+  'charcuterie','saucisse','pizza','risotto','tarte_citrouille','parfum','bougie','coussin','roti_dinde','salade_composee'];
+function generateTrades(){
+  if(state.tradeMonth===state.month&&state.trades.length===9){
+    // Fix legacy trades: re-randomize all quantities to ensure proper randomness
+    var dirty=false;
+    state.trades.forEach(function(t,ti){if(t.done)return;
+      for(var rk in t.demands){
+        var mx=rk==='eau'?300:rk==='bois'?100:TRADE_BRUT_KEYS.indexOf(rk)>=0?100:50;
+        var nv=10+Math.floor(Math.random()*(mx-10+1));
+        if(t.demands[rk]!==nv){dirty=true;t.demands[rk]=nv;}
+      }});
+    if(dirty)saveGame();
+    return;
   }
+  state.tradeMonth=state.month;state.trades=[];
+  var lv=state.level;
+  var npcs=TRADE_NPCS.slice();shuffle(npcs);
+  for(var i=0;i<9;i++){state.trades.push(generateOneTrade(npcs[i%npcs.length],lv,i));}
+}
+function generateOneTrade(npc,lv,i){
+  if(!npc){var npcs=TRADE_NPCS.slice();shuffle(npcs);npc=npcs[0];}
+  if(!lv)lv=state.level;if(i===undefined)i=0;
+  var numDemands=2+Math.floor(Math.random()*3);
+  var demands={};
+  var allPool=TRADE_BRUT_KEYS.concat(TRADE_TRANSFO_KEYS);shuffle(allPool);
+  for(var d=0;d<numDemands;d++){
+    var rk=allPool[d];
+    var maxQty=rk==='eau'?300:rk==='bois'?100:TRADE_BRUT_KEYS.indexOf(rk)>=0?100:50;
+    var qty=10+Math.floor(Math.random()*(maxQty-10+1));
+    demands[rk]=qty;
+  }
+  var goldR=0;for(var rk2 in demands)goldR+=demands[rk2]*150;
+  goldR=Math.floor(goldR*(1+lv*0.1));
+  var xpR=Math.floor(goldR*0.3);
+  return{npc:npc.name,emoji:npc.emoji,demands:demands,gold:goldR,xp:xpR,done:false};
+}
+function regenerateOneTrade(ti){
+  var npcs=TRADE_NPCS.slice();shuffle(npcs);
+  state.trades[ti]=generateOneTrade(npcs[0],state.level,ti);
+}
+function buildTradeUI(){
+  var list=$('trade-list');if(!list)return;list.innerHTML='';
+  generateTrades();
+  var info=document.createElement('div');info.className='quest-month-info';
+  info.textContent='🤝 Marchander — Mois '+state.month;
+  list.appendChild(info);
+  var allDone=state.trades.every(function(t){return t.done;});
+  state.trades.forEach(function(tr,ti){
+    var card=document.createElement('div');card.className='quest-card'+(tr.done?' qdone':'');
+    var demHtml='';var canTrade=true;
+    for(var rk in tr.demands){
+      var have=rk==='eau'?state.water:rk==='bois'?(state.resources.bois||0):(state.resources[rk]||0);var need=tr.demands[rk];
+      var ri=RES_INFO[rk];
+      var ok=have>=need;if(!ok)canTrade=false;
+      demHtml+='<span style="display:inline-block;margin:2px 4px;padding:2px 6px;border-radius:6px;font-size:.75rem;'
+        +(ok?'background:#c8e6c9':'background:#ffcdd2')+'">'+ri.emoji+' '+need+' '+ri.name
+        +' <span style="font-size:.65rem;color:#666">('+have+')</span></span>';
+    }
+    card.innerHTML='<div class="quest-hdr"><span class="q-ico">'+tr.emoji+'</span>'+tr.npc+'</div>'
+      +'<div class="quest-desc" style="line-height:1.8">'+demHtml+'</div>'
+      +'<div class="quest-reward">🏆 '+fmtN(tr.gold)+'💰 + '+fmtN(tr.xp)+'⭐ + 1⭐</div>';
+    if(!tr.done){
+      var btnRow=document.createElement('div');btnRow.style.cssText='display:flex;gap:6px;margin-top:4px;flex-wrap:wrap';
+      var cb=document.createElement('button');
+      cb.style.cssText='padding:4px 14px;border:none;border-radius:6px;font-weight:bold;font-size:.75rem;cursor:pointer;'
+        +(canTrade?'background:#4CAF50;color:#fff':'background:#bbb;color:#666');
+      cb.textContent=canTrade?'📦 Échanger':'❌ Ressources insuffisantes';
+      cb.disabled=!canTrade;
+      (function(idx){cb.addEventListener('click',function(){
+        var t=state.trades[idx];if(t.done)return;
+        for(var rk in t.demands){var h=rk==='eau'?state.water:(state.resources[rk]||0);if(h<t.demands[rk])return;}
+        for(var rk2 in t.demands){if(rk2==='eau')state.water-=t.demands[rk2];else state.resources[rk2]-=t.demands[rk2];}
+        t.done=true;state.coins+=t.gold;state.totalEarned+=t.gold;state.xp+=t.xp;
+        state.stars=(state.stars||0)+1;
+        showFloat(innerWidth/2,innerHeight/2,'+'+fmtN(t.gold)+'💰 +'+fmtN(t.xp)+'⭐ +1⭐');
+        checkLevelUp();updateUI();
+        // Auto-renew all trades when all are done
+        if(state.trades.every(function(tt){return tt.done;})){
+          state.tradeMonth=0;generateTrades();
+          showFloat(innerWidth/2,innerHeight/3,'🔄 Nouvelles offres disponibles!');
+        }
+        buildTradeUI();
+      });})(ti);
+      btnRow.appendChild(cb);
+      var sb=document.createElement('button');
+      sb.style.cssText='padding:4px 10px;background:#9b59b6;color:#fff;border:none;border-radius:6px;font-size:.7rem;cursor:pointer';
+      sb.textContent='🔄 Passer';
+      (function(idx){sb.addEventListener('click',function(){
+        regenerateOneTrade(idx);
+        showFloat(innerWidth/2,innerHeight/2,'🔄 Nouveau marchand!');buildTradeUI();
+      });})(ti);
+      btnRow.appendChild(sb);
+      card.appendChild(btnRow);
+    }
+    list.appendChild(card);
+  });
+  // Reset button — always available
+  var rb=document.createElement('button');rb.className='quest-reset-btn';
+  rb.textContent='🔄 Tous nouveaux marchands (gratuit)';
+  rb.addEventListener('click',function(){
+    state.tradeMonth=0;generateTrades();
+    showFloat(innerWidth/2,innerHeight/2,'🤝 Nouveaux marchands!');buildTradeUI();
+  });
+  list.appendChild(rb);
 }
 
 // ===== GARDEN =====
@@ -2297,7 +2905,10 @@ var GARDEN_CATS=[
     {id:'bambou',name:'Bambou',emoji:'🎋',cost:12000},
     {id:'nenuphare',name:'Nénuphar',emoji:'🌺',cost:14000},
     {id:'cerisier',name:'Cerisier',emoji:'🌸',cost:16000},
-    {id:'bonsai',name:'Bonsaï',emoji:'🌾',cost:24000}
+    {id:'bonsai',name:'Bonsaï',emoji:'🌾',cost:24000},
+    {id:'lac',name:'Lac',emoji:'🏞️',cost:25000},
+    {id:'riviere',name:'Rivière',emoji:'🌊',cost:30000},
+    {id:'mare',name:'Mare',emoji:'💧',cost:15000}
   ]},
   {id:'mobilier',name:'🪑 Mobilier',items:[
     {id:'boite_lettre',name:'Boîte lettres',emoji:'📮',cost:5000},
@@ -2341,6 +2952,98 @@ var gardenMoveSrc=-1;
 var bMode='normal';
 var bMoveSrc=-1;
 
+// 2.5D visual rendering for garden items
+var GARDEN_VISUALS={
+  // Buildings
+  cabane:'linear-gradient(180deg,#8B4513 0%,#A0522D 40%,#654321 41%,#5C4033 100%)',
+  maison:'linear-gradient(180deg,#c0392b 0%,#e74c3c 35%,#f5f5dc 36%,#faf0e6 100%)',
+  serre:'linear-gradient(180deg,#81c784 0%,rgba(200,255,200,.6) 40%,rgba(220,255,220,.4) 100%)',
+  grange:'linear-gradient(180deg,#8B0000 0%,#B22222 35%,#DEB887 36%,#D2B48C 100%)',
+  cafe:'linear-gradient(180deg,#5D4037 0%,#795548 40%,#FFCC80 41%,#FFE0B2 100%)',
+  marche:'linear-gradient(180deg,#FF6F00 0%,#FFA726 35%,#FFF3E0 36%,#FFF8E1 100%)',
+  moulin_d:'linear-gradient(180deg,#78909C 0%,#B0BEC5 35%,#ECEFF1 36%,#F5F5F5 100%)',
+  poste:'linear-gradient(180deg,#1565C0 0%,#42A5F5 35%,#E3F2FD 36%,#BBDEFB 100%)',
+  phare:'linear-gradient(180deg,#FFF176 0%,#FFEE58 20%,#E0E0E0 21%,#BDBDBD 60%,#9E9E9E 100%)',
+  bibliotheque:'linear-gradient(180deg,#5D4037 0%,#795548 25%,#D7CCC8 26%,#EFEBE9 100%)',
+  eglise:'linear-gradient(180deg,#FFD700 0%,#FFC107 15%,#F5F5F5 16%,#E0E0E0 100%)',
+  ecole:'linear-gradient(180deg,#1976D2 0%,#42A5F5 30%,#FFF9C4 31%,#FFFDE7 100%)',
+  hotel:'linear-gradient(180deg,#7B1FA2 0%,#AB47BC 30%,#F3E5F5 31%,#FCE4EC 100%)',
+  chateau:'linear-gradient(180deg,#455A64 0%,#78909C 20%,#CFD8DC 21%,#B0BEC5 50%,#90A4AE 100%)',
+  // Decorations
+  souche:'radial-gradient(ellipse at 50% 60%,#8B4513,#654321)',
+  herbe:'linear-gradient(180deg,#66BB6A 0%,#43A047 50%,#2E7D32 100%)',
+  fleur_d:'radial-gradient(circle at 50% 40%,#E91E63,#F48FB1,#66BB6A 70%)',
+  buisson:'radial-gradient(ellipse at 50% 55%,#4CAF50,#2E7D32,#1B5E20)',
+  lierre:'linear-gradient(135deg,#4CAF50,#2E7D32,#1B5E20)',
+  tournesol:'radial-gradient(circle at 50% 35%,#FDD835,#F9A825,#4CAF50 65%)',
+  arbre_d:'radial-gradient(ellipse at 50% 35%,#43A047,#2E7D32 55%,#5D4037 56%,#4E342E 100%)',
+  champignon_d:'radial-gradient(ellipse at 50% 40%,#D32F2F,#B71C1C 50%,#EFEBE9 51%,#D7CCC8 100%)',
+  pierre_deco:'radial-gradient(ellipse at 45% 50%,#9E9E9E,#757575,#616161)',
+  rose:'radial-gradient(circle at 50% 40%,#E91E63,#C2185B,#388E3C 65%)',
+  sapin:'linear-gradient(180deg,#1B5E20 0%,#2E7D32 60%,#5D4037 61%,#4E342E 100%)',
+  cactus:'radial-gradient(ellipse at 50% 50%,#66BB6A,#388E3C,#2E7D32)',
+  palmier:'radial-gradient(ellipse at 50% 30%,#66BB6A,#43A047 45%,#8D6E63 46%,#795548 100%)',
+  trefle:'radial-gradient(circle at 50% 50%,#4CAF50,#2E7D32)',
+  bambou:'linear-gradient(90deg,#66BB6A 30%,#81C784 50%,#66BB6A 70%)',
+  nenuphare:'radial-gradient(circle at 50% 50%,#E91E63 20%,#4CAF50 21%,#2E7D32 60%,#1565C0 61%)',
+  cerisier:'radial-gradient(ellipse at 50% 35%,#F48FB1,#EC407A 50%,#795548 51%,#5D4037 100%)',
+  bonsai:'radial-gradient(ellipse at 50% 35%,#388E3C,#2E7D32 55%,#5D4037 56%)',
+  lac:'radial-gradient(ellipse at 50% 50%,#29B6F6,#0288D1,#01579B)',
+  riviere:'linear-gradient(135deg,#4FC3F7,#0288D1,#01579B)',
+  mare:'radial-gradient(ellipse at 50% 55%,#4FC3F7,#0288D1,#388E3C 85%)',
+  // Furniture
+  boite_lettre:'linear-gradient(180deg,#F44336 0%,#D32F2F 50%,#795548 51%,#5D4037 100%)',
+  pot_fleur:'radial-gradient(ellipse at 50% 40%,#4CAF50 30%,#FF7043 31%,#BF360C 100%)',
+  table:'linear-gradient(180deg,#8D6E63 0%,#6D4C41 40%,#5D4037 100%)',
+  banc:'linear-gradient(180deg,#8D6E63 0%,#5D4037 50%,#4E342E 100%)',
+  hamac:'linear-gradient(180deg,#29B6F6 20%,#F48FB1 50%,#29B6F6 80%)',
+  lampadaire:'linear-gradient(180deg,#FFF176 0%,#FFEE58 25%,#424242 26%,#616161 100%)',
+  barbecue:'linear-gradient(180deg,#FF5722 0%,#E64A19 40%,#424242 41%,#616161 100%)',
+  balancoire:'linear-gradient(180deg,#FF7043 0%,#8D6E63 40%,#5D4037 100%)',
+  parasol:'radial-gradient(ellipse at 50% 30%,#FF7043,#E64A19 50%,#795548 51%)',
+  toboggan:'linear-gradient(135deg,#42A5F5,#1976D2,#0D47A1)',
+  borne:'linear-gradient(180deg,#1A237E 0%,#283593 40%,#3F51B5 41%,#5C6BC0 100%)',
+  horloge:'radial-gradient(circle at 50% 50%,#FFF9C4,#F9A825,#5D4037 70%)',
+  telescope:'linear-gradient(160deg,#78909C,#546E7A,#37474F)',
+  fontaine:'radial-gradient(ellipse at 50% 60%,#4FC3F7,#0288D1,#BDBDBD 70%)',
+  statue:'radial-gradient(ellipse at 50% 40%,#BDBDBD,#9E9E9E,#757575)',
+  jacuzzi:'radial-gradient(ellipse at 50% 55%,#80DEEA,#26C6DA,#00838F)',
+  // Fences
+  chemin:'linear-gradient(145deg,#A1887F,#8D6E63,#6D4C41)',
+  cloture_bois:'linear-gradient(0deg,#8D6E63 0%,#A1887F 30%,transparent 31%,transparent 70%,#A1887F 71%,#8D6E63 100%)',
+  haie:'linear-gradient(0deg,#388E3C 0%,#4CAF50 30%,#43A047 50%,#4CAF50 70%,#388E3C 100%)',
+  allee:'linear-gradient(145deg,#E0E0E0,#BDBDBD,#9E9E9E)',
+  muret:'linear-gradient(180deg,#A1887F,#8D6E63,#795548)',
+  mur_pierre:'linear-gradient(180deg,#9E9E9E,#757575,#616161)',
+  barriere:'linear-gradient(0deg,#78909C 0%,#90A4AE 30%,transparent 31%,transparent 70%,#90A4AE 71%,#78909C 100%)',
+  escalier:'linear-gradient(180deg,#BDBDBD 25%,#9E9E9E 26%,#9E9E9E 50%,#757575 51%,#757575 75%,#616161 76%)',
+  portail:'linear-gradient(180deg,#5D4037 0%,#795548 40%,#4E342E 41%,#3E2723 100%)',
+  arche:'radial-gradient(ellipse at 50% 100%,transparent 40%,#F48FB1 41%,#E91E63 60%,#388E3C 61%)',
+  passerelle:'linear-gradient(90deg,#8D6E63,#A1887F,#8D6E63)',
+  pont:'linear-gradient(90deg,#795548,#8D6E63,#A1887F,#8D6E63,#795548)'
+};
+var GARDEN_SYMBOLS={
+  cabane:'⌂',maison:'⌂',serre:'◇',grange:'▣',cafe:'☕',marche:'⊞',moulin_d:'⊗',
+  poste:'✉',phare:'△',bibliotheque:'▤',eglise:'✝',ecole:'▥',hotel:'◈',chateau:'♜',
+  souche:'◎',herbe:'≋',fleur_d:'✿',buisson:'●',lierre:'≈',tournesol:'✻',
+  arbre_d:'♠',champignon_d:'Ω',pierre_deco:'◆',rose:'✿',sapin:'▲',cactus:'↑',
+  palmier:'⌘',trefle:'♣',bambou:'∥',nenuphare:'◉',cerisier:'❀',bonsai:'♤',
+  lac:'◯',riviere:'～',mare:'○',
+  boite_lettre:'✉',pot_fleur:'⚘',table:'▬',banc:'━',hamac:'⌒',lampadaire:'♨',
+  barbecue:'♨',balancoire:'∿',parasol:'☂',toboggan:'⌇',borne:'▣',horloge:'◷',
+  telescope:'⌕',fontaine:'⛲',statue:'♛',jacuzzi:'◎',
+  chemin:'═',cloture_bois:'┃',haie:'┃',allee:'▒',muret:'▬',mur_pierre:'▬',
+  barriere:'┃',escalier:'≡',portail:'⊞',arche:'∩',passerelle:'═',pont:'═'
+};
+function getGardenCellVisual(id,stateIdx){
+  var item=findGardenItem(id);
+  if(!item)return{emoji:'❓'};
+  if(item.states&&item.states.length>0){
+    var si=Math.min(stateIdx||0,item.states.length-1);
+    return{emoji:item.states[si]};
+  }
+  return{emoji:item.emoji||'❓'};
+}
 function findGardenItem(id){
   for(var c=0;c<GARDEN_CATS.length;c++){
     for(var i=0;i<GARDEN_CATS[c].items.length;i++){
@@ -2455,17 +3158,15 @@ function buildGarden(){
     var g=state.gardenGrid[i];
     if(g){
       var gItem=findGardenItem(g.id);
-      var emoji=gItem?gItem.emoji:'❓';
-      if(gItem&&gItem.states&&g.stateIdx!==undefined&&g.stateIdx<gItem.states.length){
-        emoji=gItem.states[g.stateIdx];
-      }
+      var vis=getGardenCellVisual(g.id,g.stateIdx||0);
       cell.className='gcell gfilled'+(gardenMoveSrc===i?' gsel':'');
-      cell.innerHTML=emoji;
+      cell.style.background='rgba(139,195,74,.18)';
+      cell.innerHTML='<span style="font-size:'+Math.max(ps*0.6,12)+'px;line-height:'+ps+'px;display:block;text-align:center">'+vis.emoji+'</span>';
     }else{
       cell.className='gcell gempty';
       cell.innerHTML='';
     }
-    cell.style.width=ps+'px';
+    cell.style.width=ps+'px';cell.style.height=ps+'px';
     (function(idx){cell.addEventListener('click',function(){onGardenClick(idx);});})(i);
     area.appendChild(cell);
   }
@@ -2520,165 +3221,587 @@ function onGardenClick(idx){
   }
 }
 
-// ===== MINI-JEU (Lights Out) =====
-var mgSubTab='jeu';
-var mgGrid=[];
-var mgSize=3;
-var mgMoves=0;
-var mgPlaying=false;
-
-function getMGSize(lv){
-  if(lv<=5)return 3;
-  if(lv<=12)return 4;
-  if(lv<=25)return 5;
-  if(lv<=38)return 6;
-  return 7;
-}
-function getMGClicks(lv){
-  // Number of random clicks to generate the puzzle
-  if(lv<=3)return lv+1;
-  if(lv<=10)return Math.floor(lv*0.8+2);
-  if(lv<=25)return Math.floor(lv*0.6+4);
-  return Math.floor(lv*0.5+8);
-}
-function mgToggle(grid,size,r,c){
-  grid[r*size+c]=1-grid[r*size+c];
-  if(r>0)grid[(r-1)*size+c]=1-grid[(r-1)*size+c];
-  if(r<size-1)grid[(r+1)*size+c]=1-grid[(r+1)*size+c];
-  if(c>0)grid[r*size+(c-1)]=1-grid[r*size+(c-1)];
-  if(c<size-1)grid[r*size+(c+1)]=1-grid[r*size+(c+1)];
-}
-function mgGenLevel(lv){
-  mgSize=getMGSize(lv);
-  var total=mgSize*mgSize;
-  mgGrid=[];for(var i=0;i<total;i++)mgGrid.push(0);
-  // Generate by applying random clicks (guarantees solvability)
-  var clicks=getMGClicks(lv);
-  var used={};
-  for(var c=0;c<clicks;c++){
-    var pos;
-    do{pos=Math.floor(Math.random()*total);}while(used[pos]);
-    used[pos]=1;
-    mgToggle(mgGrid,mgSize,Math.floor(pos/mgSize),pos%mgSize);
-  }
-  // Ensure at least one light is on
-  if(mgGrid.every(function(v){return v===0;})){
-    var p=Math.floor(Math.random()*total);
-    mgToggle(mgGrid,mgSize,Math.floor(p/mgSize),p%mgSize);
-  }
-  mgMoves=0;
-  mgPlaying=true;
-}
-function mgCheckWin(){
-  return mgGrid.every(function(v){return v===0;});
-}
-function buildMiniGame(){
-  var tabs=$('mg-sub-tabs');var content=$('mg-content');
-  if(!tabs||!content)return;
-  tabs.innerHTML='';content.innerHTML='';
-  var labels=['🎮 Jeu','📖 Règles'];
-  var keys=['jeu','regles'];
-  keys.forEach(function(k,i){
-    var b=document.createElement('button');b.className='sub-tab-btn'+(mgSubTab===k?' active':'');b.textContent=labels[i];
-    b.addEventListener('click',function(){mgSubTab=k;
-      tabs.querySelectorAll('.sub-tab-btn').forEach(function(bb,bi){bb.className='sub-tab-btn'+(keys[bi]===mgSubTab?' active':'');});
-      renderMG();});
-    tabs.appendChild(b);
-  });
-  function renderMG(){
-    content.innerHTML='';
-    if(mgSubTab==='regles'){renderMGRules(content);return;}
-    // Level select
-    var selDiv=document.createElement('div');
-    selDiv.className='mg-lvl-grid';
-    for(var lv=1;lv<=50;lv++){
-      var btn=document.createElement('button');
-      var done=lv<state.mgLevel;
-      var cur=lv===state.mgLevel||(mgPlaying&&lv===state.mgLevel);
-      var locked=lv>state.mgLevel;
-      btn.className='mg-lvl-btn'+(done?' mg-done':'')+(cur?' mg-cur':'')+(locked?' mg-locked':'');
-      btn.textContent=(done?'✅ ':'')+lv;
-      btn.disabled=locked;
-      (function(l){btn.addEventListener('click',function(){
-        if(l>state.mgLevel)return;
-        mgGenLevel(l);mgPlaying=true;mgPlayingLv=l;renderMG();
-      });})(lv);
-      selDiv.appendChild(btn);
-    }
-    content.appendChild(selDiv);
-    // Game area
-    if(mgPlaying){
-      var info=document.createElement('div');
-      info.className='mg-info';
-      info.innerHTML='🎯 Niveau '+(mgPlayingLv||state.mgLevel)+' — Grille '+mgSize+'×'+mgSize+' — Coups: '+mgMoves;
-      content.appendChild(info);
-      var area=document.createElement('div');
-      area.className='mg-grid';
-      area.style.gridTemplateColumns='repeat('+mgSize+',50px)';
-      area.style.display='inline-grid';
-      for(var i=0;i<mgSize*mgSize;i++){
-        var cell=document.createElement('div');
-        cell.className='mg-cell'+(mgGrid[i]?' mg-on':' mg-off');
-        cell.dataset.idx=i;
-        cell.textContent=mgGrid[i]?'💡':'';
-        (function(idx){cell.addEventListener('click',function(){
-          if(!mgPlaying)return;
-          var r=Math.floor(idx/mgSize),c=idx%mgSize;
-          mgToggle(mgGrid,mgSize,r,c);
-          mgMoves++;
-          if(mgCheckWin()){
-            mgPlaying=false;
-            if(mgPlayingLv>=state.mgLevel&&state.mgLevel<=50){
-              state.mgLevel=Math.min(51,state.mgLevel+1);
-              state.stars=(state.stars||0)+1;
-              showFloat(innerWidth/2,innerHeight/2,'🎉 Niveau réussi! +1⭐');
-              updateUI();saveGame();
-            }else{
-              showFloat(innerWidth/2,innerHeight/2,'🎉 Bravo! (déjà complété)');
-            }
-          }
-          renderMG();
-        });})(i);
-        area.appendChild(cell);
-      }
-      var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);
-      content.appendChild(wrap);
-      if(!mgPlaying){
-        var winMsg=document.createElement('div');
-        winMsg.style.cssText='text-align:center;font-size:1.2rem;font-weight:bold;color:#4CAF50;padding:10px';
-        winMsg.textContent='🎉 Félicitations! Terminé en '+mgMoves+' coups!';
-        content.appendChild(winMsg);
-      }
-      // Reset button
-      var resetBtn=document.createElement('button');
-      resetBtn.style.cssText='display:block;margin:8px auto;padding:8px 20px;background:#e74c3c;color:#fff;border:none;border-radius:8px;font-weight:bold;font-size:.8rem;cursor:pointer';
-      resetBtn.textContent='🔄 Recommencer';
-      resetBtn.addEventListener('click',function(){mgGenLevel(mgPlayingLv||state.mgLevel);renderMG();});
-      content.appendChild(resetBtn);
-    }
-  }
-  renderMG();
-}
+// ===== MINI-JEU =====
+var mgSubTab='menu';
+var mgGamePage=false;
+// --- Lights Out ---
+var mgGrid=[],mgSize=3,mgMoves=0,mgPlaying=false;
+function getMGSize(lv){if(lv<=5)return 3;if(lv<=15)return 4;if(lv<=30)return 5;if(lv<=50)return 6;if(lv<=75)return 7;return 8;}
+function getMGClicks(lv){if(lv<=3)return lv+1;if(lv<=10)return Math.floor(lv*0.8+2);if(lv<=30)return Math.floor(lv*0.6+4);return Math.floor(lv*0.5+8);}
+function mgToggle(grid,size,r,c){grid[r*size+c]=1-grid[r*size+c];if(r>0)grid[(r-1)*size+c]=1-grid[(r-1)*size+c];if(r<size-1)grid[(r+1)*size+c]=1-grid[(r+1)*size+c];if(c>0)grid[r*size+(c-1)]=1-grid[r*size+(c-1)];if(c<size-1)grid[r*size+(c+1)]=1-grid[r*size+(c+1)];}
+function mgGenLevel(lv){mgSize=getMGSize(lv);var total=mgSize*mgSize;mgGrid=[];for(var i=0;i<total;i++)mgGrid.push(0);var clicks=getMGClicks(lv);var used={};for(var c=0;c<clicks;c++){var pos;do{pos=Math.floor(Math.random()*total);}while(used[pos]);used[pos]=1;mgToggle(mgGrid,mgSize,Math.floor(pos/mgSize),pos%mgSize);}if(mgGrid.every(function(v){return v===0;})){var p=Math.floor(Math.random()*total);mgToggle(mgGrid,mgSize,Math.floor(p/mgSize),p%mgSize);}mgMoves=0;mgPlaying=true;}
+function mgCheckWin(){return mgGrid.every(function(v){return v===0;});}
 var mgPlayingLv=1;
-function renderMGRules(ct){
-  ct.innerHTML='<div class="mg-rules">'
-    +'<h3 style="text-align:center;margin-bottom:8px">📖 Règles — Lights Out</h3>'
-    +'<p>🎯 <b>Objectif:</b> Éteindre toutes les lumières (💡) de la grille.</p>'
-    +'<p>👆 <b>Comment jouer:</b> Touchez une case pour changer son état (allumé/éteint). '
-    +'Les 4 cases adjacentes (haut, bas, gauche, droite) changent aussi d\'état!</p>'
-    +'<p>🧩 <b>Niveaux:</b> 50 niveaux de difficulté croissante:</p>'
-    +'<ul style="margin:4px 0 4px 16px">'
-    +'<li>Niv. 1-5: Grille 3×3 (facile)</li>'
-    +'<li>Niv. 6-12: Grille 4×4</li>'
-    +'<li>Niv. 13-25: Grille 5×5</li>'
-    +'<li>Niv. 26-38: Grille 6×6</li>'
-    +'<li>Niv. 39-50: Grille 7×7 (expert)</li>'
-    +'</ul>'
-    +'<p>⭐ <b>Récompense:</b> Chaque niveau complété rapporte <b>1 étoile</b>!</p>'
-    +'<p>💡 <b>Astuce:</b> Commencez par éteindre les lumières du haut, puis résolvez la dernière rangée.</p>'
-    +'</div>';
+// --- Memory ---
+var MM_EMOJIS=['🍎','🍌','🍇','🍒','🍓','🌻','🌸','🍄','🎃','🌽','🥕','🍑','🍋','🫐','🥝','🍉','🥭','🍐','🌹','🪻',
+'🐝','🦋','🐞','🐸','🐧','🐶','🐱','🐰','🐷','🐮','🐔','🐴','🐺','🐍','🐢','🐙','🦈','🐬','🐳','🐘',
+'🦁','🐯','🐻','🐼','🐨','🦊','🐹','🐭','🦉','🦅','🦆','🐦','🐤','🦜','🦢','🦩','🦚','🐓','🦃','🐗',
+'🐑','🐐','🦌','🦙','🐩','🐕','🐈','🐇','🦝','🦦','🦥','🦔','🐿','🦎','🐊','🦏','🐪','🐫','🦒','🦘',
+'🍔','🍟','🌭','🍕','🥪','🌮','🌯','🥗','🥘','🍲','🍛','🍜','🍝','🍣','🍱','🥟','🍤','🍙','🍚','🍘',
+'🍥','🍡','🍧','🍨','🍦','🥧','🧁','🍰','🎂','🍮','🍭','🍬','🍫','🍩','🍪','🧇','🥞','🍳','🥚','🥓',
+'🥩','🍗','🍖','🧀','🥐','🍿','🥤','🍵','☕','🧃','🍶','🍷','🍸','🍹','🍺','🥂','🥃','🧊','🍼','🫖',
+'⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥊','🎯','🏹','🎣','🥌','🛹','🎿','⛸','🏄','🏊',
+'🚗','🚕','🚙','🚌','🏎','🚓','🚑','🚒','🛻','🚚','🚜','🏍','🛵','🚲','🛴','🚂','🚀','🛸','🚁','⛵',
+'🚤','🛶','🛥','🚢','✈','🛩','🚡','🚠','🚟','🚃','🚋','🚞','🚝','🚄','🚅','🚈','🚆','🚊','🛺','🚍',
+'❤','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🔶',
+'🔷','🔸','🔹','🔺','🔻','💠','🔘','♠','♥','♦','♣','🃏','🎲','♟','🧩','🎮','🕹','🎰','🎪','🎭',
+'🎨','🧵','🧶','🎀','🎁','🎈','🎉','🎊','✨','🏆','🥇','🥈','🥉','💎','🔮','👑','💍','⚙','🔧','🔨',
+'🔩','🧲','💡','🔦','🕯','📱','💻','⌨','📷','📸','🎥','📹','📺','📻','🎵','🎶','🎼','🎹','🎸','🎺',
+'🎻','🥁','🎤','🎧','🪈','🪗','🪕','🪘','📯','🔔','📣','📢','💌','📜','📋','📁','📌','📍','🗝','🛠',
+'🌍','🌎','🌏','🗺','🏔','🌋','⛰','🏝','🏖','🏜','🗻','☀','🌤','🌈','⛅','🌊','💧','🔥','❄','⛄',
+'🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏨','🏩','🏪','🏫','🏬','🏭','🏯','🏰','⛪','🕌','🛕','🕍','⛩',
+'🗼','🗽','🗿','⛲','🎡','🎢','🎠','⛱','🏟','🌃','🌉','🌁','🌄','🌅','🌆','🌇','🌌','🎆','🎇','🧨',
+'👀','👋','🤚','✋','🖐','✌','🤞','🤟','🤘','🤙','👈','👉','👆','👇','👍','👎','✊','👊','🤛','🤜',
+'😀','😃','😄','😁','😆','😅','🤣','😂','🙂','😉','😊','😇','🥰','😍','🤩','😘','😗','😋','😛','😜',
+'🌙','⭐','🌟','💫','🪐','☄','🌠','🏏','🔭','🧭','⏰','⌛','🧿','🪬','📿','🧸','🪆','🎋','🎍','🎎',
+'🎏','🎐','🧧','🎑','🏮','📦','📫','📮','🗳','📝','📰','🗞','📖','📚','🔖','🏷','💰','💴','💵','💶',
+'🪙','💳','🧾','💹','🛒','🛍','🎒','🧳','👜','👝','🪄','🏏'];
+var mmCards=[],mmFlipped=[],mmMatched=0,mmMoves=0,mmPlaying=false,mmSize=0,mmPairs=0,mmBusy=false,mmPlayingLv=1;
+function mmGetSize(lv){if(lv<=10)return[5,5];if(lv<=20)return[10,10];if(lv<=40)return[20,20];if(lv<=70)return[25,25];return[30,30];}
+function mmGenLevel(lv){var sz=mmGetSize(lv);mmSize=sz;var total=sz[0]*sz[1];var hasJoker=total%2!==0;mmPairs=Math.floor(total/2);var pool=MM_EMOJIS.slice();shuffle(pool);var chosen=pool.slice(0,mmPairs);mmCards=chosen.concat(chosen);if(hasJoker)mmCards.push('⭐');shuffle(mmCards);mmFlipped=[];mmMatched=0;mmMoves=0;mmPlaying=true;mmBusy=false;mmPlayingLv=lv;}
+// --- Simon ---
+var SIMON_COLORS=['#e74c3c','#3498db','#2ecc71','#f1c40f'];
+var siSeq=[],siInput=[],siPlaying=false,siShowing=false,siPlayingLv=1;
+function siGenLevel(lv){var len=lv+2;siSeq=[];for(var i=0;i<len;i++)siSeq.push(Math.floor(Math.random()*4));siInput=[];siPlaying=true;siShowing=true;siPlayingLv=lv;}
+// --- Taquin ---
+var tqGrid=[],tqSize=0,tqEmpty=0,tqMoves=0,tqPlaying=false,tqPlayingLv=1;
+function tqGetSize(lv){if(lv<=10)return 3;if(lv<=30)return 4;if(lv<=55)return 5;if(lv<=80)return 6;return 7;}
+function tqGenLevel(lv){tqSize=tqGetSize(lv);var total=tqSize*tqSize;tqGrid=[];for(var i=0;i<total-1;i++)tqGrid.push(i+1);tqGrid.push(0);tqEmpty=total-1;var shuffles=50+lv*10;for(var s=0;s<shuffles;s++){var moves=tqGetMoves();if(moves.length>0){var pick=moves[Math.floor(Math.random()*moves.length)];tqSwap(pick);}}tqMoves=0;tqPlaying=true;tqPlayingLv=lv;}
+function tqGetMoves(){var r=Math.floor(tqEmpty/tqSize),c=tqEmpty%tqSize,m=[];if(r>0)m.push(tqEmpty-tqSize);if(r<tqSize-1)m.push(tqEmpty+tqSize);if(c>0)m.push(tqEmpty-1);if(c<tqSize-1)m.push(tqEmpty+1);return m;}
+function tqSwap(idx){tqGrid[tqEmpty]=tqGrid[idx];tqGrid[idx]=0;tqEmpty=idx;}
+function tqCheckWin(){for(var i=0;i<tqGrid.length-1;i++)if(tqGrid[i]!==i+1)return false;return tqGrid[tqGrid.length-1]===0;}
+// --- Flood ---
+var FL_COLORS=['#e74c3c','#3498db','#2ecc71','#f1c40f','#9b59b6','#e67e22','#1abc9c'];
+var flGrid=[],flSize=0,flNumColors=0,flMoves=0,flMaxMoves=0,flPlaying=false,flPlayingLv=1;
+function flGetParams(lv){if(lv<=10)return{size:6,colors:4,moves:14};if(lv<=25)return{size:8,colors:5,moves:18};if(lv<=45)return{size:10,colors:5,moves:22};if(lv<=70)return{size:12,colors:6,moves:28};if(lv<=90)return{size:14,colors:6,moves:32};return{size:16,colors:7,moves:38};}
+function flGenLevel(lv){var p=flGetParams(lv);flSize=p.size;flNumColors=p.colors;flMaxMoves=p.moves;flGrid=[];var total=flSize*flSize;for(var i=0;i<total;i++)flGrid.push(Math.floor(Math.random()*flNumColors));flMoves=0;flPlaying=true;flPlayingLv=lv;}
+function flFlood(color){if(!flPlaying||color===flGrid[0])return;var oldColor=flGrid[0];var visited={};var queue=[0];while(queue.length>0){var pos=queue.shift();if(visited[pos])continue;visited[pos]=true;if(flGrid[pos]!==oldColor)continue;flGrid[pos]=color;var r=Math.floor(pos/flSize),c=pos%flSize;if(r>0)queue.push(pos-flSize);if(r<flSize-1)queue.push(pos+flSize);if(c>0)queue.push(pos-1);if(c<flSize-1)queue.push(pos+1);}flMoves++;}
+// --- Snake ---
+var snGrid=[],snSize=0,snSnake=[],snDir=0,snFood=-1,snEaten=0,snTarget=0,snPlaying=false,snPlayingLv=1,snAlive=true;
+function snGetParams(lv){if(lv<=15)return{size:6,target:3+lv};if(lv<=40)return{size:8,target:4+lv};if(lv<=70)return{size:10,target:5+lv};return{size:12,target:6+lv};}
+function snGenLevel(lv){var p=snGetParams(lv);snSize=p.size;snTarget=p.target;snGrid=[];for(var i=0;i<snSize*snSize;i++)snGrid.push(0);var mid=Math.floor(snSize/2)*snSize+Math.floor(snSize/2);snSnake=[mid];snGrid[mid]=1;snDir=1;snEaten=0;snAlive=true;snPlaying=true;snPlayingLv=lv;snPlaceFood();}
+function snPlaceFood(){var free=[];for(var i=0;i<snGrid.length;i++)if(snGrid[i]===0)free.push(i);if(free.length===0)return;snFood=free[Math.floor(Math.random()*free.length)];snGrid[snFood]=2;}
+function snMove(){if(!snPlaying||!snAlive)return;var head=snSnake[0];var r=Math.floor(head/snSize),c=head%snSize;var dirs=[[-1,0],[0,1],[1,0],[0,-1]];var nr=r+dirs[snDir][0],nc=c+dirs[snDir][1];if(nr<0||nr>=snSize||nc<0||nc>=snSize){snAlive=false;snPlaying=false;return;}var npos=nr*snSize+nc;if(snGrid[npos]===1){snAlive=false;snPlaying=false;return;}var ate=npos===snFood;snSnake.unshift(npos);snGrid[npos]=1;if(ate){snEaten++;if(snEaten>=snTarget){snPlaying=false;return;}snPlaceFood();}else{var tail=snSnake.pop();snGrid[tail]=0;}}
+// --- Maze ---
+var maGrid=[],maSize=0,maPlayer=0,maExit=0,maMoves=0,maPlaying=false,maPlayingLv=1;
+function maGetSize(lv){if(lv<=10)return 5;if(lv<=25)return 7;if(lv<=45)return 9;if(lv<=70)return 11;if(lv<=90)return 13;return 15;}
+function maGenLevel(lv){maSize=maGetSize(lv);var w=maSize*2+1;maGrid=[];for(var i=0;i<w*w;i++)maGrid.push(1);var visited={};function carve(r,c){visited[r+','+c]=true;maGrid[(r*2+1)*w+(c*2+1)]=0;var dirs=[[0,1],[0,-1],[1,0],[-1,0]];shuffle(dirs);for(var d=0;d<dirs.length;d++){var nr=r+dirs[d][0],nc=c+dirs[d][1];if(nr>=0&&nr<maSize&&nc>=0&&nc<maSize&&!visited[nr+','+nc]){maGrid[(r*2+1+dirs[d][0])*w+(c*2+1+dirs[d][1])]=0;carve(nr,nc);}}}carve(0,0);maPlayer=1*w+1;maExit=(w-2)*w+(w-2);maMoves=0;maPlaying=true;maPlayingLv=lv;}
+// --- Démineur (Minesweeper) ---
+var msGrid=[],msRevealed=[],msFlagged=[],msSize=0,msMines=0,msPlaying=false,msPlayingLv=1,msWon=false,msFirstClick=true;
+function msGetParams(lv){if(lv<=10)return{size:6,mines:5+lv};if(lv<=25)return{size:8,mines:8+lv};if(lv<=50)return{size:10,mines:12+lv};if(lv<=75)return{size:12,mines:16+lv};return{size:14,mines:20+lv};}
+function msGenLevel(lv){var p=msGetParams(lv);msSize=p.size;msMines=Math.min(p.mines,Math.floor(msSize*msSize*0.35));var total=msSize*msSize;msGrid=[];msRevealed=[];msFlagged=[];for(var i=0;i<total;i++){msGrid.push(0);msRevealed.push(false);msFlagged.push(false);}msPlaying=true;msWon=false;msFirstClick=true;msPlayingLv=lv;}
+function msPlaceMines(safeIdx){var total=msSize*msSize;var placed=0;while(placed<msMines){var pos=Math.floor(Math.random()*total);if(pos===safeIdx||msGrid[pos]===-1)continue;var sr=Math.floor(safeIdx/msSize),sc=safeIdx%msSize,pr=Math.floor(pos/msSize),pc=pos%msSize;if(Math.abs(sr-pr)<=1&&Math.abs(sc-pc)<=1)continue;msGrid[pos]=-1;placed++;}for(var i=0;i<total;i++){if(msGrid[i]===-1)continue;var r=Math.floor(i/msSize),c=i%msSize,cnt=0;for(var dr=-1;dr<=1;dr++)for(var dc=-1;dc<=1;dc++){var nr=r+dr,nc=c+dc;if(nr>=0&&nr<msSize&&nc>=0&&nc<msSize&&msGrid[nr*msSize+nc]===-1)cnt++;}msGrid[i]=cnt;}}
+function msReveal(idx){if(!msPlaying||msRevealed[idx]||msFlagged[idx])return;if(msFirstClick){msFirstClick=false;msPlaceMines(idx);}if(msGrid[idx]===-1){msPlaying=false;msWon=false;for(var i=0;i<msGrid.length;i++)msRevealed[i]=true;return;}msRevealed[idx]=true;if(msGrid[idx]===0){var queue=[idx];var visited={};visited[idx]=true;while(queue.length>0){var p=queue.shift();var r=Math.floor(p/msSize),c=p%msSize;for(var dr=-1;dr<=1;dr++)for(var dc=-1;dc<=1;dc++){var nr=r+dr,nc=c+dc;if(nr>=0&&nr<msSize&&nc>=0&&nc<msSize){var ni=nr*msSize+nc;if(!visited[ni]&&!msRevealed[ni]&&!msFlagged[ni]){msRevealed[ni]=true;visited[ni]=true;if(msGrid[ni]===0)queue.push(ni);}}}}}msCheckWin();}
+function msCheckWin(){var total=msSize*msSize;var revealed=0;for(var i=0;i<total;i++)if(msRevealed[i])revealed++;if(revealed===total-msMines){msPlaying=false;msWon=true;}}
+function msToggleFlag(idx){if(!msPlaying||msRevealed[idx])return;msFlagged[idx]=!msFlagged[idx];}
+// --- Color Pattern ---
+var cpGrid=[],cpTarget=[],cpSize=0,cpMoves=0,cpPlaying=false,cpShowing=false,cpPlayingLv=1,cpNumColors=0;
+var CP_COLORS=['#e74c3c','#3498db','#2ecc71','#f1c40f','#9b59b6','#e67e22'];
+function cpGetParams(lv){if(lv<=10)return{size:3,colors:3,filled:3+lv};if(lv<=30)return{size:4,colors:4,filled:5+lv};if(lv<=60)return{size:5,colors:5,filled:6+lv};return{size:6,colors:6,filled:8+lv};}
+function cpGenLevel(lv){var p=cpGetParams(lv);cpSize=p.size;cpNumColors=p.colors;var total=cpSize*cpSize;cpTarget=[];cpGrid=[];for(var i=0;i<total;i++){cpTarget.push(0);cpGrid.push(0);}var filled=Math.min(p.filled,total);var positions=[];for(var i=0;i<total;i++)positions.push(i);shuffle(positions);for(var f=0;f<filled;f++){cpTarget[positions[f]]=1+Math.floor(Math.random()*cpNumColors);}cpMoves=0;cpPlaying=true;cpShowing=true;cpPlayingLv=lv;}
+function cpCheckWin(){for(var i=0;i<cpTarget.length;i++)if(cpGrid[i]!==cpTarget[i])return false;return true;}
+// --- 2048 ---
+var rvGrid=[],rvSize=4,rvScore=0,rvTarget=0,rvPlaying=false,rvPlayingLv=1,rvWon=false;
+function rvGetTarget(lv){if(lv<=5)return 64;if(lv<=15)return 128;if(lv<=30)return 256;if(lv<=50)return 512;if(lv<=75)return 1024;return 2048;}
+function rvGenLevel(lv){rvSize=4;rvTarget=rvGetTarget(lv);rvGrid=[];for(var i=0;i<rvSize*rvSize;i++)rvGrid.push(0);rvAddTile();rvAddTile();rvScore=0;rvPlaying=true;rvWon=false;rvPlayingLv=lv;}
+function rvAddTile(){var free=[];for(var i=0;i<rvGrid.length;i++)if(rvGrid[i]===0)free.push(i);if(free.length===0)return;rvGrid[free[Math.floor(Math.random()*free.length)]]=Math.random()<0.9?2:4;}
+function rvSlide(dir){var moved=false;function getRC(r,c){return r*rvSize+c;}if(dir===0){for(var c=0;c<rvSize;c++){var col=[];for(var r=0;r<rvSize;r++)col.push(rvGrid[getRC(r,c)]);var merged=rvMerge(col);for(var r=0;r<rvSize;r++){if(rvGrid[getRC(r,c)]!==merged[r])moved=true;rvGrid[getRC(r,c)]=merged[r];}}}else if(dir===2){for(var c=0;c<rvSize;c++){var col=[];for(var r=rvSize-1;r>=0;r--)col.push(rvGrid[getRC(r,c)]);var merged=rvMerge(col);for(var r=rvSize-1;r>=0;r--){if(rvGrid[getRC(r,c)]!==merged[rvSize-1-r])moved=true;rvGrid[getRC(r,c)]=merged[rvSize-1-r];}}}else if(dir===3){for(var r=0;r<rvSize;r++){var row=[];for(var c=0;c<rvSize;c++)row.push(rvGrid[getRC(r,c)]);var merged=rvMerge(row);for(var c=0;c<rvSize;c++){if(rvGrid[getRC(r,c)]!==merged[c])moved=true;rvGrid[getRC(r,c)]=merged[c];}}}else{for(var r=0;r<rvSize;r++){var row=[];for(var c=rvSize-1;c>=0;c--)row.push(rvGrid[getRC(r,c)]);var merged=rvMerge(row);for(var c=rvSize-1;c>=0;c--){if(rvGrid[getRC(r,c)]!==merged[rvSize-1-c])moved=true;rvGrid[getRC(r,c)]=merged[rvSize-1-c];}}}if(moved)rvAddTile();return moved;}
+function rvMerge(arr){var filtered=arr.filter(function(v){return v>0;});var result=[];for(var i=0;i<filtered.length;i++){if(i<filtered.length-1&&filtered[i]===filtered[i+1]){result.push(filtered[i]*2);rvScore+=filtered[i]*2;i++;}else{result.push(filtered[i]);}}while(result.length<rvSize)result.push(0);return result;}
+function rvCheckGameOver(){for(var i=0;i<rvGrid.length;i++){if(rvGrid[i]===0)return false;var r=Math.floor(i/rvSize),c=i%rvSize;if(r<rvSize-1&&rvGrid[i]===rvGrid[(r+1)*rvSize+c])return false;if(c<rvSize-1&&rvGrid[i]===rvGrid[r*rvSize+c+1])return false;}return true;}
+
+// ===== MG GAME LIST =====
+var MG_GAMES=[
+{key:'lightsout',label:'🔦 Lights Out',stateKey:'mgLevel'},
+{key:'memory',label:'🧠 Mémoire',stateKey:'mmLevel'},
+{key:'simon',label:'🎵 Simon',stateKey:'siLevel'},
+{key:'taquin',label:'🧩 Taquin',stateKey:'tqLevel'},
+{key:'flood',label:'🎨 Flood',stateKey:'flLevel'},
+{key:'snake',label:'🐍 Snake',stateKey:'snLevel'},
+{key:'maze',label:'🏁 Labyrinthe',stateKey:'maLevel'},
+{key:'minesweeper',label:'💣 Démineur',stateKey:'ppLevel'},
+{key:'pattern',label:'🎯 Pattern',stateKey:'cpLevel'},
+{key:'2048',label:'🔢 2048',stateKey:'rvLevel'}
+];
+function mgGetLevel(game){return state[game.stateKey]||1;}
+function mgSetLevel(game,lv){state[game.stateKey]=lv;}
+function mgWinLevel(gameKey){
+var game=null;for(var i=0;i<MG_GAMES.length;i++)if(MG_GAMES[i].key===gameKey){game=MG_GAMES[i];break;}
+if(!game)return;
+var cur=mgGetLevel(game);
+if(mgPlayingLv>=cur&&cur<=100){
+mgSetLevel(game,Math.min(101,cur+1));
+state.stars=(state.stars||0)+1;
+showFloat(innerWidth/2,innerHeight/2,'🎉 Niveau réussi! +1⭐');updateUI();saveGame();
+}else{showFloat(innerWidth/2,innerHeight/2,'🎉 Bravo! (déjà complété)');}
 }
 
+function buildMiniGame(){
+var tabs=$('mg-sub-tabs');var content=$('mg-content');
+if(!tabs||!content)return;
+tabs.innerHTML='';content.innerHTML='';
+if(mgSubTab==='menu'){
+var grid=document.createElement('div');grid.className='mg-tab-grid';
+MG_GAMES.forEach(function(g){
+var btn=document.createElement('button');btn.className='mg-tab-btn';
+var curLv=mgGetLevel(g);
+btn.innerHTML=g.label+'<br><span style="font-size:.55rem;color:#888">Niv.'+Math.min(curLv,100)+'/100</span>';
+btn.addEventListener('click',function(){mgSubTab=g.key;mgGamePage=false;buildMiniGame();});
+grid.appendChild(btn);
+});
+content.appendChild(grid);
+var rulesBtn=document.createElement('button');
+rulesBtn.className='mg-tab-btn';rulesBtn.style.cssText='margin:8px auto;display:block;width:90%;max-width:300px';
+rulesBtn.textContent='📖 Règles';
+rulesBtn.addEventListener('click',function(){mgSubTab='regles';buildMiniGame();});
+content.appendChild(rulesBtn);
+return;
+}
+if(mgSubTab==='regles'){
+var backBtn=document.createElement('button');backBtn.className='mg-back-btn';backBtn.textContent='⬅️ Retour';
+backBtn.addEventListener('click',function(){mgSubTab='menu';buildMiniGame();});
+var rulesDiv=document.createElement('div');
+renderMGRules(rulesDiv);
+content.appendChild(backBtn);
+content.appendChild(rulesDiv);
+return;
+}
+var curGame=null;for(var i=0;i<MG_GAMES.length;i++)if(MG_GAMES[i].key===mgSubTab){curGame=MG_GAMES[i];break;}
+if(!curGame){mgSubTab='menu';buildMiniGame();return;}
+var backBtn=document.createElement('button');backBtn.className='mg-back-btn';
+backBtn.textContent='⬅️ Retour';
+backBtn.addEventListener('click',function(){
+if(mgGamePage){mgGamePage=false;buildMiniGame();}
+else{mgSubTab='menu';buildMiniGame();}
+});
+content.appendChild(backBtn);
+if(!mgGamePage){
+var title=document.createElement('div');title.className='mg-info';title.innerHTML='<b>'+curGame.label+'</b>';content.appendChild(title);
+var selDiv=document.createElement('div');selDiv.className='mg-lvl-grid';
+var maxLv=mgGetLevel(curGame);
+for(var lv=1;lv<=100;lv++){
+var btn=document.createElement('button');
+var done=lv<maxLv;var cur=lv===maxLv;var locked=lv>maxLv;
+btn.className='mg-lvl-btn'+(done?' mg-done':'')+(cur?' mg-cur':'')+(locked?' mg-locked':'');
+btn.textContent=(done?'✅ ':'')+lv;btn.disabled=locked;
+(function(l){btn.addEventListener('click',function(){
+if(l>mgGetLevel(curGame))return;
+mgPlayingLv=l;mgGamePage=true;mgStartGame(curGame.key,l);buildMiniGame();
+});})(lv);
+selDiv.appendChild(btn);
+}
+content.appendChild(selDiv);
+}else{
+renderGamePage(content,curGame);
+}
+}
+function mgStartGame(key,lv){
+mgPlayingLv=lv;
+if(key==='lightsout'){mgGenLevel(lv);mgPlaying=true;}
+else if(key==='memory'){mmGenLevel(lv);}
+else if(key==='simon'){siGenLevel(lv);}
+else if(key==='taquin'){tqGenLevel(lv);}
+else if(key==='flood'){flGenLevel(lv);}
+else if(key==='snake'){snGenLevel(lv);}
+else if(key==='maze'){maGenLevel(lv);}
+else if(key==='minesweeper'){msGenLevel(lv);}
+else if(key==='pattern'){cpGenLevel(lv);}
+else if(key==='2048'){rvGenLevel(lv);}
+}
+function renderGamePage(ct,game){
+var key=game.key;
+if(key==='lightsout')renderLightsOutGame(ct,game);
+else if(key==='memory')renderMemoryGamePage(ct,game);
+else if(key==='simon')renderSimonGamePage(ct,game);
+else if(key==='taquin')renderTaquinGamePage(ct,game);
+else if(key==='flood')renderFloodGamePage(ct,game);
+else if(key==='snake')renderSnakeGamePage(ct,game);
+else if(key==='maze')renderMazeGamePage(ct,game);
+else if(key==='minesweeper')renderMinesweeperGamePage(ct,game);
+else if(key==='pattern')renderPatternGamePage(ct,game);
+else if(key==='2048')render2048GamePage(ct,game);
+}
+function mgNavBtns(ct,game){
+var nav=document.createElement('div');nav.className='mg-nav-btns';
+var menuBtn=document.createElement('button');menuBtn.className='mg-nav-btn prev';menuBtn.textContent='⬅️ Menu';
+menuBtn.addEventListener('click',function(){mgGamePage=false;buildMiniGame();});
+nav.appendChild(menuBtn);
+var nextLv=mgPlayingLv+1;
+if(nextLv<=mgGetLevel(game)&&nextLv<=100){
+var nextBtn=document.createElement('button');nextBtn.className='mg-nav-btn next';nextBtn.textContent='➡️ Suivant';
+nextBtn.addEventListener('click',function(){mgPlayingLv=nextLv;mgStartGame(game.key,nextLv);buildMiniGame();});
+nav.appendChild(nextBtn);
+}
+ct.appendChild(nav);
+}
+function mgResetBtn(ct,game){
+var resetBtn=document.createElement('button');
+resetBtn.style.cssText='display:block;margin:6px auto;padding:6px 16px;background:#e74c3c;color:#fff;border:none;border-radius:8px;font-weight:bold;font-size:.78rem;cursor:pointer';
+resetBtn.textContent='🔄 Recommencer';
+resetBtn.addEventListener('click',function(){mgStartGame(game.key,mgPlayingLv);buildMiniGame();});
+ct.appendChild(resetBtn);
+}
+
+// ===== RENDER EACH GAME =====
+function renderLightsOutGame(ct,game){
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🔦 Niveau '+mgPlayingLv+' — Grille '+mgSize+'×'+mgSize+' — Coups: '+mgMoves;ct.appendChild(info);
+var area=document.createElement('div');area.className='mg-grid';
+area.style.gridTemplateColumns='repeat('+mgSize+',50px)';area.style.display='inline-grid';
+for(var i=0;i<mgSize*mgSize;i++){
+var cell=document.createElement('div');cell.className='mg-cell'+(mgGrid[i]?' mg-on':' mg-off');
+cell.textContent=mgGrid[i]?'💡':'';cell.dataset.idx=i;
+(function(idx){cell.addEventListener('click',function(){
+if(!mgPlaying)return;var r=Math.floor(idx/mgSize),c=idx%mgSize;
+mgToggle(mgGrid,mgSize,r,c);mgMoves++;
+if(mgCheckWin()){mgPlaying=false;mgWinLevel('lightsout');}
+buildMiniGame();
+});})(i);
+area.appendChild(cell);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+if(!mgPlaying){
+var win=document.createElement('div');win.style.cssText='text-align:center;font-size:1.1rem;font-weight:bold;color:#4CAF50;padding:8px';
+win.textContent='🎉 Terminé en '+mgMoves+' coups!';ct.appendChild(win);
+mgNavBtns(ct,game);
+}
+mgResetBtn(ct,game);
+}
+function renderMemoryGamePage(ct,game){
+if(!mmPlaying&&mmMatched<mmPairs&&mmMoves===0){mmGenLevel(mgPlayingLv);}
+var cols=mmSize[1],rows=mmSize[0],total=rows*cols;
+var cardPx=cols<=5?55:cols<=10?30:cols<=20?16:cols<=25?13:11;
+var gapPx=cols<=5?6:cols<=10?3:1;
+var fontSize=cols<=5?'1.4rem':cols<=10?'.85rem':cols<=20?'.5rem':cols<=25?'.4rem':'.33rem';
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🧠 Niveau '+mmPlayingLv+' — '+rows+'×'+cols+' — Coups: '+mmMoves+' — Paires: '+mmMatched+'/'+mmPairs;ct.appendChild(info);
+var area=document.createElement('div');area.className='mm-grid';
+area.style.gridTemplateColumns='repeat('+cols+','+cardPx+'px)';area.style.gap=gapPx+'px';area.style.display='inline-grid';
+for(var i=0;i<total;i++){
+var card=document.createElement('div');var isJoker=mmCards[i]==='⭐';var isFlipped=mmFlipped.indexOf(i)>=0;var isMatched=mmCards[i]===null;
+card.className='mm-card'+(isFlipped?' mm-flip':'')+(isMatched?' mm-match':'')+(isJoker?' mm-joker':'');
+card.style.width=cardPx+'px';card.style.height=cardPx+'px';card.style.fontSize=fontSize;
+card.textContent=isJoker?'⭐':(isFlipped||isMatched)?(mmCards[i]||(isMatched?'✅':'')):'?';
+if(!isMatched&&!isFlipped&&!isJoker){(function(idx){card.addEventListener('click',function(){
+if(mmBusy||!mmPlaying)return;if(mmFlipped.indexOf(idx)>=0)return;
+mmFlipped.push(idx);mmMoves++;
+if(mmFlipped.length===2){mmBusy=true;var a=mmFlipped[0],b=mmFlipped[1];
+buildMiniGame();
+if(mmCards[a]===mmCards[b]){setTimeout(function(){mmCards[a]=null;mmCards[b]=null;mmMatched++;mmFlipped=[];mmBusy=false;
+if(mmMatched>=mmPairs){mmPlaying=false;mgWinLevel('memory');}buildMiniGame();},500);
+}else{setTimeout(function(){mmFlipped=[];mmBusy=false;buildMiniGame();},800);}
+}else{buildMiniGame();}
+});})(i);}
+area.appendChild(card);
+}
+var wrap=document.createElement('div');wrap.style.cssText='text-align:center;overflow:auto;max-height:65vh';wrap.appendChild(area);ct.appendChild(wrap);
+if(!mmPlaying&&mmMatched>=mmPairs){
+var win=document.createElement('div');win.style.cssText='text-align:center;font-size:1.1rem;font-weight:bold;color:#4CAF50;padding:8px';
+win.textContent='🎉 Terminé en '+mmMoves+' coups!';ct.appendChild(win);
+mgNavBtns(ct,game);
+}
+mgResetBtn(ct,game);
+}
+function renderSimonGamePage(ct,game){
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🎵 Niveau '+siPlayingLv+' — Séquence: '+siSeq.length+' — '+(siShowing?'👀 Observez...':'👆 '+siInput.length+'/'+siSeq.length);ct.appendChild(info);
+var pad=document.createElement('div');pad.className='simon-pad';
+for(var c=0;c<4;c++){
+var btn=document.createElement('div');btn.className='simon-btn';btn.dataset.color=c;btn.style.background=SIMON_COLORS[c];btn.id='simon-btn-'+c;
+if(!siShowing){(function(ci){btn.addEventListener('click',function(){
+if(!siPlaying||siShowing)return;siInput.push(ci);
+var el=document.getElementById('simon-btn-'+ci);if(el){el.classList.add('simon-flash');setTimeout(function(){el.classList.remove('simon-flash');},300);}
+if(siInput[siInput.length-1]!==siSeq[siInput.length-1]){siPlaying=false;showFloat(innerWidth/2,innerHeight/2,'❌ Raté!');setTimeout(function(){buildMiniGame();},800);return;}
+if(siInput.length===siSeq.length){siPlaying=false;mgWinLevel('simon');setTimeout(function(){buildMiniGame();},800);}
+else{var infoEl=ct.querySelector('.mg-info');if(infoEl)infoEl.innerHTML='🎵 Niveau '+siPlayingLv+' — Séquence: '+siSeq.length+' — 👆 '+siInput.length+'/'+siSeq.length;}
+});})(c);}
+pad.appendChild(btn);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(pad);ct.appendChild(wrap);
+if(siShowing){setTimeout(function(){siShowSequence(ct);},600);}
+if(!siPlaying&&siInput.length===siSeq.length&&siInput.length>0){mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+function siShowSequence(ct){siShowing=true;siInput=[];var i=0;
+function flashNext(){if(i>=siSeq.length){siShowing=false;var infoEl=ct.querySelector('.mg-info');if(infoEl)infoEl.innerHTML='🎵 Niveau '+siPlayingLv+' — Séquence: '+siSeq.length+' — 👆 0/'+siSeq.length;return;}
+var el=document.getElementById('simon-btn-'+siSeq[i]);if(el){el.classList.add('simon-flash');setTimeout(function(){el.classList.remove('simon-flash');i++;setTimeout(flashNext,300);},500);}else{i++;setTimeout(flashNext,300);}}flashNext();}
+function renderTaquinGamePage(ct,game){
+var cellPx=tqSize<=3?70:tqSize<=4?55:tqSize<=5?46:tqSize<=6?38:32;
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🧩 Niveau '+tqPlayingLv+' — '+tqSize+'×'+tqSize+' — Coups: '+tqMoves;ct.appendChild(info);
+var area=document.createElement('div');area.className='tq-grid';
+area.style.gridTemplateColumns='repeat('+tqSize+','+cellPx+'px)';area.style.display='inline-grid';
+for(var i=0;i<tqSize*tqSize;i++){
+var cell=document.createElement('div');cell.className='tq-cell'+(tqGrid[i]===0?' tq-empty':'');
+cell.style.width=cellPx+'px';cell.style.height=cellPx+'px';cell.style.fontSize=(cellPx>50?'1.1rem':'.85rem');
+if(tqGrid[i]!==0){cell.textContent=tqGrid[i];cell.style.background='linear-gradient(145deg,#42a5f5,#1976d2)';cell.style.color='#fff';
+(function(idx){cell.addEventListener('click',function(){if(!tqPlaying)return;var moves=tqGetMoves();if(moves.indexOf(idx)<0)return;tqSwap(idx);tqMoves++;
+if(tqCheckWin()){tqPlaying=false;mgWinLevel('taquin');}buildMiniGame();});})(i);}
+area.appendChild(cell);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+if(!tqPlaying&&tqCheckWin()){var win=document.createElement('div');win.style.cssText='text-align:center;font-size:1.1rem;font-weight:bold;color:#4CAF50;padding:8px';win.textContent='🎉 Terminé en '+tqMoves+' coups!';ct.appendChild(win);mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+function renderFloodGamePage(ct,game){
+var cellPx=flSize<=6?40:flSize<=8?32:flSize<=10?26:flSize<=12?22:flSize<=14?18:15;
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🎨 Niveau '+flPlayingLv+' — '+flSize+'×'+flSize+' — Coups: '+flMoves+'/'+flMaxMoves;ct.appendChild(info);
+var area=document.createElement('div');area.className='fl-grid';
+area.style.gridTemplateColumns='repeat('+flSize+','+cellPx+'px)';area.style.display='inline-grid';
+for(var i=0;i<flSize*flSize;i++){var cell=document.createElement('div');cell.className='fl-cell';cell.style.width=cellPx+'px';cell.style.height=cellPx+'px';cell.style.background=FL_COLORS[flGrid[i]];area.appendChild(cell);}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+if(flPlaying){
+var colorsDiv=document.createElement('div');colorsDiv.className='fl-colors';
+for(var c=0;c<flNumColors;c++){var cb=document.createElement('div');cb.className='fl-color-btn'+(flGrid[0]===c?' fl-active':'');cb.style.background=FL_COLORS[c];
+(function(ci){cb.addEventListener('click',function(){flFlood(ci);
+var won=flGrid.every(function(v){return v===flGrid[0];});
+if(won){flPlaying=false;mgWinLevel('flood');}
+else if(flMoves>=flMaxMoves){flPlaying=false;showFloat(innerWidth/2,innerHeight/2,'❌ Plus de coups!');}
+buildMiniGame();});})(c);colorsDiv.appendChild(cb);}
+ct.appendChild(colorsDiv);
+}
+if(!flPlaying){var won=flGrid.every(function(v){return v===flGrid[0];});var msg=document.createElement('div');msg.style.cssText='text-align:center;font-size:1rem;font-weight:bold;padding:8px;color:'+(won?'#4CAF50':'#e74c3c');msg.textContent=won?'🎉 Terminé en '+flMoves+' coups!':'❌ Raté!';ct.appendChild(msg);
+if(won)mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+function renderSnakeGamePage(ct,game){
+var cellPx=snSize<=6?45:snSize<=8?35:snSize<=10?28:22;
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🐍 Niveau '+snPlayingLv+' — '+snSize+'×'+snSize+' — Mangé: '+snEaten+'/'+snTarget;ct.appendChild(info);
+var area=document.createElement('div');area.style.cssText='display:inline-grid;gap:1px;padding:4px;background:rgba(0,0,0,.15);border-radius:8px';
+area.style.gridTemplateColumns='repeat('+snSize+','+cellPx+'px)';
+for(var i=0;i<snSize*snSize;i++){
+var cell=document.createElement('div');cell.style.cssText='width:'+cellPx+'px;height:'+cellPx+'px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:'+(cellPx>30?'1rem':'.7rem');
+if(i===snSnake[0])cell.style.background='#27ae60';
+else if(snGrid[i]===1)cell.style.background='#2ecc71';
+else if(snGrid[i]===2){cell.style.background='#e74c3c';cell.textContent='🍎';}
+else cell.style.background='#ddd';
+area.appendChild(cell);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+if(snPlaying&&snAlive){
+var dirs=document.createElement('div');dirs.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px';
+var row1=document.createElement('div');
+var upBtn=document.createElement('button');upBtn.className='mg-nav-btn prev';upBtn.textContent='⬆️';upBtn.style.cssText='padding:10px 20px;font-size:1.2rem;background:#5d4037;color:#fff;border:none;border-radius:8px;cursor:pointer';
+upBtn.addEventListener('click',function(){if(snDir!==2){snDir=0;snMove();if(!snAlive){showFloat(innerWidth/2,innerHeight/2,'❌ Perdu!');}else if(!snPlaying&&snEaten>=snTarget){mgWinLevel('snake');}buildMiniGame();}});
+row1.appendChild(upBtn);dirs.appendChild(row1);
+var row2=document.createElement('div');row2.style.cssText='display:flex;gap:8px';
+var leftBtn=document.createElement('button');leftBtn.textContent='⬅️';leftBtn.style.cssText='padding:10px 20px;font-size:1.2rem;background:#5d4037;color:#fff;border:none;border-radius:8px;cursor:pointer';
+leftBtn.addEventListener('click',function(){if(snDir!==1){snDir=3;snMove();if(!snAlive){showFloat(innerWidth/2,innerHeight/2,'❌ Perdu!');}else if(!snPlaying&&snEaten>=snTarget){mgWinLevel('snake');}buildMiniGame();}});
+var downBtn=document.createElement('button');downBtn.textContent='⬇️';downBtn.style.cssText='padding:10px 20px;font-size:1.2rem;background:#5d4037;color:#fff;border:none;border-radius:8px;cursor:pointer';
+downBtn.addEventListener('click',function(){if(snDir!==0){snDir=2;snMove();if(!snAlive){showFloat(innerWidth/2,innerHeight/2,'❌ Perdu!');}else if(!snPlaying&&snEaten>=snTarget){mgWinLevel('snake');}buildMiniGame();}});
+var rightBtn=document.createElement('button');rightBtn.textContent='➡️';rightBtn.style.cssText='padding:10px 20px;font-size:1.2rem;background:#5d4037;color:#fff;border:none;border-radius:8px;cursor:pointer';
+rightBtn.addEventListener('click',function(){if(snDir!==3){snDir=1;snMove();if(!snAlive){showFloat(innerWidth/2,innerHeight/2,'❌ Perdu!');}else if(!snPlaying&&snEaten>=snTarget){mgWinLevel('snake');}buildMiniGame();}});
+row2.appendChild(leftBtn);row2.appendChild(downBtn);row2.appendChild(rightBtn);dirs.appendChild(row2);
+ct.appendChild(dirs);
+}
+if(!snPlaying){var msg=document.createElement('div');msg.style.cssText='text-align:center;font-size:1rem;font-weight:bold;padding:8px;color:'+(snEaten>=snTarget?'#4CAF50':'#e74c3c');msg.textContent=snEaten>=snTarget?'🎉 Niveau réussi!':'❌ Perdu!';ct.appendChild(msg);
+if(snEaten>=snTarget)mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+function renderMazeGamePage(ct,game){
+var w=maSize*2+1;var cellPx=maSize<=5?22:maSize<=7?16:maSize<=9?13:maSize<=11?11:maSize<=13?9:8;
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🏁 Niveau '+maPlayingLv+' — '+maSize+'×'+maSize+' — Mouvements: '+maMoves;ct.appendChild(info);
+var dirDiv=document.createElement('div');dirDiv.style.cssText='display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding:4px';
+['⬆️','⬇️','⬅️','➡️'].forEach(function(label,di){
+  var dirs=[[0,-1],[0,1],[-1,0],[1,0]];
+  var b=document.createElement('button');b.textContent=label;
+  b.style.cssText='padding:8px 16px;font-size:1.2rem;background:#5d4037;color:#fff;border:none;border-radius:8px;cursor:pointer;min-width:44px';
+  b.addEventListener('click',function(){
+    if(!maPlaying)return;
+    var pr=Math.floor(maPlayer/w),pc=maPlayer%w;
+    var nr=pr+dirs[di][1],nc=pc+dirs[di][0];
+    if(nr<0||nr>=w||nc<0||nc>=w)return;
+    var nidx=nr*w+nc;
+    if(maGrid[nidx]===1)return;
+    maPlayer=nidx;maMoves++;
+    if(maPlayer===maExit){maPlaying=false;mgWinLevel('maze');}
+    buildMiniGame();
+  });
+  dirDiv.appendChild(b);
+});
+ct.appendChild(dirDiv);
+var area=document.createElement('div');area.style.cssText='display:inline-grid;gap:0;padding:2px;background:#333;border-radius:4px';
+area.style.gridTemplateColumns='repeat('+w+','+cellPx+'px)';
+for(var i=0;i<w*w;i++){
+var cell=document.createElement('div');cell.style.cssText='width:'+cellPx+'px;height:'+cellPx+'px;';
+if(i===maPlayer)cell.style.background='#2ecc71';
+else if(i===maExit)cell.style.background='#e74c3c';
+else if(maGrid[i]===1)cell.style.background='#333';
+else cell.style.background='#ecf0f1';
+area.appendChild(cell);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+// Touch swipe on grid
+var touchStartX=0,touchStartY=0;
+wrap.addEventListener('touchstart',function(e){touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;},{passive:true});
+wrap.addEventListener('touchend',function(e){
+  if(!maPlaying)return;
+  var dx=e.changedTouches[0].clientX-touchStartX;
+  var dy=e.changedTouches[0].clientY-touchStartY;
+  if(Math.abs(dx)<15&&Math.abs(dy)<15)return;
+  var pr=Math.floor(maPlayer/w),pc=maPlayer%w,nr,nc;
+  if(Math.abs(dx)>Math.abs(dy)){nr=pr;nc=pc+(dx>0?1:-1);}
+  else{nr=pr+(dy>0?1:-1);nc=pc;}
+  if(nr<0||nr>=w||nc<0||nc>=w)return;
+  var nidx=nr*w+nc;
+  if(maGrid[nidx]===1)return;
+  maPlayer=nidx;maMoves++;
+  if(maPlayer===maExit){maPlaying=false;mgWinLevel('maze');}
+  buildMiniGame();
+});
+if(!maPlaying&&maPlayer===maExit){var win=document.createElement('div');win.style.cssText='text-align:center;font-size:1rem;font-weight:bold;color:#4CAF50;padding:8px';win.textContent='🎉 Terminé en '+maMoves+' mouvements!';ct.appendChild(win);mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+function renderMinesweeperGamePage(ct,game){
+var cellPx=msSize<=6?38:msSize<=8?32:msSize<=10?26:msSize<=12?22:18;
+var flagCount=0;for(var fi=0;fi<msFlagged.length;fi++)if(msFlagged[fi])flagCount++;
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='💣 Niveau '+msPlayingLv+' — '+msSize+'×'+msSize+' — 💣 '+(msMines-flagCount)+' restante(s) · 🚩 '+flagCount;ct.appendChild(info);
+var msMode='reveal';
+var modeBar=document.createElement('div');modeBar.style.cssText='display:flex;gap:6px;justify-content:center;padding:4px';
+var revBtn=document.createElement('button');revBtn.style.cssText='padding:6px 14px;border:none;border-radius:6px;font-size:.8rem;font-weight:bold;cursor:pointer;background:#4CAF50;color:#fff';revBtn.textContent='👆 Révéler';
+var flagBtn=document.createElement('button');flagBtn.style.cssText='padding:6px 14px;border:none;border-radius:6px;font-size:.8rem;font-weight:bold;cursor:pointer;background:#bbb;color:#333';flagBtn.textContent='🚩 Drapeau';
+revBtn.addEventListener('click',function(){msMode='reveal';revBtn.style.background='#4CAF50';revBtn.style.color='#fff';flagBtn.style.background='#bbb';flagBtn.style.color='#333';});
+flagBtn.addEventListener('click',function(){msMode='flag';flagBtn.style.background='#e67e22';flagBtn.style.color='#fff';revBtn.style.background='#bbb';revBtn.style.color='#333';});
+modeBar.appendChild(revBtn);modeBar.appendChild(flagBtn);ct.appendChild(modeBar);
+var area=document.createElement('div');area.style.cssText='display:inline-grid;gap:1px;padding:4px;background:rgba(0,0,0,.15);border-radius:8px';
+area.style.gridTemplateColumns='repeat('+msSize+','+cellPx+'px)';
+var MS_NUM_COLORS=['','#1976D2','#388E3C','#D32F2F','#7B1FA2','#FF8F00','#00838F','#333','#888'];
+for(var i=0;i<msSize*msSize;i++){
+var cell=document.createElement('div');
+cell.style.cssText='width:'+cellPx+'px;height:'+cellPx+'px;display:flex;align-items:center;justify-content:center;border-radius:3px;cursor:pointer;font-size:'+(cellPx>30?'.8rem':'.6rem')+';font-weight:bold';
+if(msRevealed[i]){
+  if(msGrid[i]===-1){cell.style.background='#e74c3c';cell.textContent='💣';}
+  else{cell.style.background='#e8e8e8';if(msGrid[i]>0){cell.textContent=msGrid[i];cell.style.color=MS_NUM_COLORS[msGrid[i]]||'#333';}else cell.style.background='#d5d5d5';}
+}else if(msFlagged[i]){cell.style.background='#fff3e0';cell.textContent='🚩';}
+else{cell.style.background='linear-gradient(145deg,#90CAF9,#64B5F6)';}
+if(msPlaying&&!msRevealed[i]){(function(idx){cell.addEventListener('click',function(){
+  if(!msPlaying)return;
+  if(msMode==='flag'){msToggleFlag(idx);}
+  else{msReveal(idx);if(!msPlaying&&msWon)mgWinLevel('minesweeper');if(!msPlaying&&!msWon)showFloat(innerWidth/2,innerHeight/2,'💥 Boom!');}
+  buildMiniGame();
+});})(i);}
+area.appendChild(cell);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+if(!msPlaying){var msg=document.createElement('div');msg.style.cssText='text-align:center;font-size:1rem;font-weight:bold;padding:8px;color:'+(msWon?'#4CAF50':'#e74c3c');msg.textContent=msWon?'🎉 Déminé!':'💥 Boom! Perdu!';ct.appendChild(msg);
+if(msWon)mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+function renderPatternGamePage(ct,game){
+var cellPx=cpSize<=3?55:cpSize<=4?46:cpSize<=5?38:32;
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🎯 Niveau '+cpPlayingLv+' — '+cpSize+'×'+cpSize+(cpShowing?' — 👀 Mémorisez!':' — 👆 Reproduisez!');ct.appendChild(info);
+var area=document.createElement('div');area.style.cssText='display:inline-grid;gap:3px;padding:4px;background:rgba(0,0,0,.1);border-radius:8px';
+area.style.gridTemplateColumns='repeat('+cpSize+','+cellPx+'px)';
+var displayGrid=cpShowing?cpTarget:cpGrid;
+for(var i=0;i<cpSize*cpSize;i++){
+var cell=document.createElement('div');
+cell.style.cssText='width:'+cellPx+'px;height:'+cellPx+'px;border-radius:6px;cursor:pointer;border:2px solid rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center';
+cell.style.background=displayGrid[i]>0?CP_COLORS[displayGrid[i]-1]:'#eee';
+if(!cpShowing&&cpPlaying){
+(function(idx){cell.addEventListener('click',function(){
+if(!cpPlaying||cpShowing)return;
+cpGrid[idx]=(cpGrid[idx]+1)%(cpNumColors+1);cpMoves++;
+if(cpCheckWin()){cpPlaying=false;mgWinLevel('pattern');}
+buildMiniGame();
+});})(i);
+}
+area.appendChild(cell);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+if(cpShowing){setTimeout(function(){cpShowing=false;buildMiniGame();},2000+cpPlayingLv*30);}
+if(!cpShowing&&cpPlaying){
+var legend=document.createElement('div');legend.style.cssText='text-align:center;font-size:.65rem;color:#888;padding:4px';
+legend.textContent='Touche une case pour changer sa couleur ('+cpNumColors+' couleurs + vide)';ct.appendChild(legend);
+var hintCost=100+cpPlayingLv*20;
+var hintBtn=document.createElement('button');
+hintBtn.style.cssText='display:block;margin:6px auto;padding:6px 16px;background:'+(state.coins>=hintCost?'#e67e22':'#bbb')+';color:#fff;border:none;border-radius:8px;font-size:.75rem;font-weight:bold;cursor:pointer';
+hintBtn.textContent='💡 Indice ('+fmtN(hintCost)+'💰)';
+hintBtn.disabled=state.coins<hintCost;
+hintBtn.addEventListener('click',function(){
+  if(state.coins<hintCost)return;
+  state.coins-=hintCost;updateUI();
+  cpShowing=true;buildMiniGame();
+  setTimeout(function(){cpShowing=false;buildMiniGame();},1500);
+});
+ct.appendChild(hintBtn);
+}
+if(!cpPlaying&&cpCheckWin()){var win=document.createElement('div');win.style.cssText='text-align:center;font-size:1rem;font-weight:bold;color:#4CAF50;padding:8px';win.textContent='🎉 Pattern réussi!';ct.appendChild(win);mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+function render2048GamePage(ct,game){
+var cellPx=50;
+var info=document.createElement('div');info.className='mg-info';
+info.innerHTML='🔢 Niveau '+rvPlayingLv+' — Objectif: '+rvTarget+' — Score: '+rvScore;ct.appendChild(info);
+var area=document.createElement('div');area.style.cssText='display:inline-grid;gap:4px;padding:6px;background:#bbada0;border-radius:8px';
+area.style.gridTemplateColumns='repeat('+rvSize+','+cellPx+'px)';
+var colorMap={0:'#cdc1b4',2:'#eee4da',4:'#ede0c8',8:'#f2b179',16:'#f59563',32:'#f67c5f',64:'#f65e3b',128:'#edcf72',256:'#edcc61',512:'#edc850',1024:'#edc53f',2048:'#edc22e'};
+for(var i=0;i<rvSize*rvSize;i++){
+var cell=document.createElement('div');var val=rvGrid[i];
+cell.style.cssText='width:'+cellPx+'px;height:'+cellPx+'px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-weight:bold;font-size:'+(val>99?'.7rem':'.9rem')+';color:'+(val<=4?'#776e65':'#fff')+';background:'+(colorMap[val]||'#3c3a32');
+if(val>0)cell.textContent=val;
+area.appendChild(cell);
+}
+var wrap=document.createElement('div');wrap.style.textAlign='center';wrap.appendChild(area);ct.appendChild(wrap);
+if(rvPlaying&&!rvWon){
+var dirDiv=document.createElement('div');dirDiv.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px';
+function mkDirBtn(label,dir){
+var b=document.createElement('button');b.textContent=label;b.style.cssText='padding:10px 20px;font-size:1.2rem;background:#8f7a66;color:#fff;border:none;border-radius:8px;cursor:pointer';
+b.addEventListener('click',function(){
+rvSlide(dir);
+if(rvGrid.some(function(v){return v>=rvTarget;})){rvPlaying=false;rvWon=true;mgWinLevel('2048');}
+else if(rvCheckGameOver()){rvPlaying=false;showFloat(innerWidth/2,innerHeight/2,'❌ Game Over!');}
+buildMiniGame();
+});return b;
+}
+var r1=document.createElement('div');r1.appendChild(mkDirBtn('⬆️',0));dirDiv.appendChild(r1);
+var r2=document.createElement('div');r2.style.cssText='display:flex;gap:8px';
+r2.appendChild(mkDirBtn('⬅️',3));r2.appendChild(mkDirBtn('⬇️',2));r2.appendChild(mkDirBtn('➡️',1));
+dirDiv.appendChild(r2);ct.appendChild(dirDiv);
+}
+if(!rvPlaying){var msg=document.createElement('div');msg.style.cssText='text-align:center;font-size:1rem;font-weight:bold;padding:8px;color:'+(rvWon?'#4CAF50':'#e74c3c');msg.textContent=rvWon?'🎉 '+rvTarget+' atteint!':'❌ Game Over!';ct.appendChild(msg);
+if(rvWon)mgNavBtns(ct,game);}
+mgResetBtn(ct,game);
+}
+
+function renderMGRules(ct){
+ct.innerHTML+='<div class="mg-rules">'
++'<h3 style="text-align:center;margin-bottom:8px">📖 Règles des Mini-Jeux</h3>'
++'<h4>🔦 Lights Out</h4>'
++'<p>Éteindre toutes les lumières. Toucher une case change son état et les 4 adjacentes.</p>'
++'<p>100 niveaux — grilles de 3×3 à 8×8. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🧠 Mémoire</h4>'
++'<p>Retrouver les paires de cartes identiques. 100 niveaux, grilles de 5×5 à 30×30. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🎵 Simon</h4>'
++'<p>Reproduire la séquence de couleurs montrée. 100 niveaux, séquences de 3 à 102. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🧩 Taquin</h4>'
++'<p>Remettre les numéros dans l\'ordre en glissant les tuiles. 100 niveaux, 3×3 à 7×7. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🎨 Flood</h4>'
++'<p>Remplir la grille d\'une seule couleur en nombre limité de coups. 100 niveaux. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🐍 Snake</h4>'
++'<p>Diriger le serpent pour manger les pommes. Ne toucher ni les murs ni son corps! 100 niveaux. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🏁 Labyrinthe</h4>'
++'<p>Trouver la sortie (case rouge) du labyrinthe. Toucher les cases adjacentes pour se déplacer. 100 niveaux. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>� Démineur</h4>'
++'<p>Révélez toutes les cases sans mines! Les chiffres indiquent combien de mines sont adjacentes. Utilisez les drapeaux pour marquer les mines. 100 niveaux. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🎯 Pattern</h4>'
++'<p>Un motif coloré est montré brièvement. Reproduisez-le de mémoire! Toucher pour changer la couleur. 100 niveaux. +1⭐/niveau.</p>'
++'<hr style="margin:8px 0;border-color:rgba(0,0,0,.1)">'
++'<h4>🔢 2048</h4>'
++'<p>Glissez les tuiles pour fusionner les nombres identiques. Atteignez l\'objectif! 100 niveaux. +1⭐/niveau.</p>'
++'</div>';
+}
 // ===== FLOAT =====
 function showFloat(x,y,t){var e=document.createElement('div');e.className='float-text';e.textContent=t;
   e.style.left=Math.max(10,Math.min(x,innerWidth-130))+'px';e.style.top=y+'px';
@@ -2705,6 +3828,10 @@ function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.pa
     if(s.selCat>=2)s.selCat=0;s.version=10}
   if(s.version<11){s.farmers=[];s.version=11}
   if(s.version<12){s.mgLevel=1;s.version=12}
+  if(s.version<13){s.mmLevel=1;s.trades=[];s.tradeMonth=0;s.version=13}
+  if(s.version<14){s.siLevel=1;s.tqLevel=1;s.flLevel=1;s.version=14}
+  if(s.version<15){s.snLevel=1;s.maLevel=1;s.ppLevel=1;s.cpLevel=1;s.rvLevel=1;s.woodRepairs=0;s.woodStock=0;s.lastWoodTick=0;s.ouvriers=[];s.version=15}
+  if(s.version<16){s.quizAnswered=[];s.quizStars=0;s.quizLastEventStart=0;s.version=16}
   for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
 
 // ===== TABS =====
@@ -2715,8 +3842,10 @@ function showFarmSub(sub){
   $('farm-crops-area').style.display=sub==='crops'?'':'none';
   $('farm-animals-area').style.display=sub==='animals'?'':'none';
   $('farm-farmers-area').style.display=sub==='farmers'?'':'none';
+  $('farm-aide-area').style.display=sub==='aide'?'':'none';
   if(sub==='animals'){buildAnimalSeedBar();buildAnimalGrid();}
   if(sub==='farmers'){buildFarmerUI();}
+  if(sub==='aide'){buildFarmAide();}
 }
 $('farm-sub-tabs').querySelectorAll('.sub-tab-btn').forEach(function(btn){
   btn.addEventListener('click',function(){showFarmSub(btn.dataset.fsub);});
@@ -2734,30 +3863,529 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       $('farm-crops-area').style.display=farmSubTab==='crops'?'':'none';
       $('farm-animals-area').style.display=farmSubTab==='animals'?'':'none';
       $('farm-farmers-area').style.display=farmSubTab==='farmers'?'':'none';
+      $('farm-aide-area').style.display=farmSubTab==='aide'?'':'none';
       if(farmSubTab==='animals'){buildAnimalSeedBar();buildAnimalGrid();}
       if(farmSubTab==='farmers'){buildFarmerUI();}
+      if(farmSubTab==='aide'){buildFarmAide();}
     }else{
       $('panel-'+pnl).classList.add('active');
       $('farm-sub-tabs').style.display='none';
       $('farm-crops-area').style.display='none';
       $('farm-animals-area').style.display='none';
       $('farm-farmers-area').style.display='none';
+      $('farm-aide-area').style.display='none';
     }
     if(pnl==='shop')buildShop();
     if(pnl==='resources')buildResourceGrid();
-    if(pnl==='buildings'){buildBModeBar();buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
-    if(pnl==='aides')buildAides();
-    if(pnl==='well')buildWell();
+    if(pnl==='buildings'){buildAtelierSubTabs();buildBModeBar();buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();}
+
+    if(pnl==='well'){buildWell();buildWood();}
     if(pnl==='quests')buildQuestUI();
     if(pnl==='garden')buildGarden();
     if(pnl==='minigame')buildMiniGame();
+    if(pnl==='event')buildEvent();
     $('day-bar').style.display=(pnl==='farm'||pnl==='buildings')?'flex':'none';
+    // Music tab switching
+    var tabMusicMap={farm:'farm',buildings:'buildings',shop:'shop',garden:'garden'};
+    currentTab=tabMusicMap[pnl]||'global';
+    updateMusic();
   });
 });
+
+// ===== QUIZZ PARTY EVENT =====
+var QUIZ_EVENT_DURATION=5;// lasts 5 months
+var QUIZ_EVENT_COOLDOWN=1;// comes back every 1 month after ending
+var QUIZ_QUESTIONS=[
+// Vrai/Faux questions (type:'vf')
+{q:'La Carotte est la première culture disponible dès le niveau 1.',a:true,type:'vf'},
+{q:'Le Blé se débloque au niveau 2.',a:false,type:'vf',hint:'Niveau 3'},
+{q:'La Fleur dorée est la culture la plus chère du jeu.',a:true,type:'vf'},
+{q:'Les arbres nécessitent plus d\'eau que les cultures.',a:true,type:'vf'},
+{q:'Le Pommier est le premier arbre disponible au niveau 3.',a:true,type:'vf'},
+{q:'L\'Olivier est l\'arbre le plus cher du jeu.',a:true,type:'vf'},
+{q:'La Poule est le premier animal disponible au niveau 3.',a:false,type:'vf',hint:'Niveau 5'},
+{q:'La Licorne est l\'animal le plus cher du jeu.',a:true,type:'vf'},
+{q:'Le Cochon produit de la viande de porc.',a:true,type:'vf'},
+{q:'L\'Abeille produit du lait.',a:false,type:'vf',hint:'Du miel'},
+{q:'Le Cheval produit des pièces d\'or directement.',a:true,type:'vf'},
+{q:'L\'amélioration Auto-récolte peut monter jusqu\'au niveau 5.',a:true,type:'vf'},
+{q:'L\'amélioration Engrais rapide réduit le temps de 10% par niveau.',a:false,type:'vf',hint:'5% par niveau'},
+{q:'Le Réservoir augmente l\'eau max de 10 par niveau.',a:true,type:'vf'},
+{q:'On peut avoir un maximum de 10 fermiers.',a:true,type:'vf'},
+{q:'Les fermiers récoltent automatiquement les cultures mûres.',a:true,type:'vf'},
+{q:'Un jour dans le jeu dure 5 minutes en temps réel.',a:true,type:'vf'},
+{q:'Chaque mois dure 30 jours dans le jeu.',a:true,type:'vf'},
+{q:'Le loyer augmente avec le niveau du joueur.',a:true,type:'vf'},
+{q:'On peut emprunter de l\'argent dans le jeu via la dette.',a:true,type:'vf'},
+{q:'Le Pressoir est le premier atelier disponible au niveau 3.',a:true,type:'vf'},
+{q:'La Boulangerie permet de fabriquer du Pain.',a:true,type:'vf'},
+{q:'Le Palace étoilé est disponible dès le niveau 25.',a:false,type:'vf',hint:'Niveau 30'},
+{q:'Le jardin fait 16×16 cases.',a:true,type:'vf'},
+{q:'On peut rénover les bâtiments du jardin.',a:true,type:'vf'},
+{q:'Il y a 10 mini-jeux différents dans le jeu.',a:true,type:'vf'},
+{q:'Chaque mini-jeu a 100 niveaux.',a:true,type:'vf'},
+{q:'Le mini-jeu Snake est disponible dans le jeu.',a:true,type:'vf'},
+{q:'Le puits produit de l\'eau automatiquement.',a:true,type:'vf'},
+{q:'Le bois peut être coupé dans la section Puits & Bois.',a:true,type:'vf'},
+{q:'Le Canard produit des œufs.',a:false,type:'vf',hint:'Des plumes'},
+{q:'L\'amélioration Meilleur marché augmente les prix de vente de 15% par niveau.',a:true,type:'vf'},
+{q:'Le taux d\'épargne peut monter jusqu\'à 25%.',a:true,type:'vf'},
+{q:'La grille de cultures commence avec 12 emplacements.',a:true,type:'vf'},
+{q:'Les animaux commencent avec 3 emplacements.',a:true,type:'vf'},
+{q:'Les quêtes se régénèrent chaque mois.',a:true,type:'vf'},
+{q:'Le système de marchander propose 9 échanges par mois.',a:true,type:'vf'},
+{q:'La Fromagerie nécessite le niveau 9.',a:true,type:'vf'},
+{q:'Il y a 4 catégories d\'objets de jardin.',a:true,type:'vf'},
+{q:'La Fraise se débloque au niveau 5.',a:false,type:'vf',hint:'Niveau 7'},
+{q:'Le Melon coûte 110 pièces à planter.',a:true,type:'vf'},
+{q:'Le Bananier est disponible au niveau 11.',a:true,type:'vf'},
+{q:'L\'Auto-arrosage peut monter jusqu\'au niveau 10.',a:true,type:'vf'},
+{q:'La Citrouille se débloque au niveau 20.',a:false,type:'vf',hint:'Niveau 18'},
+{q:'Le Paon se débloque au niveau 15.',a:true,type:'vf'},
+{q:'Un Gala ultime nécessite du Parfum.',a:true,type:'vf'},
+{q:'La Pizza nécessite de la Farine de blé.',a:true,type:'vf'},
+{q:'Le Chocolat se fabrique à la Boulangerie.',a:false,type:'vf',hint:'À la Chocolaterie'},
+{q:'On peut placer des fontaines dans le jardin.',a:true,type:'vf'},
+// Questions à choix (type:'choice')
+{q:'Combien de cultures différentes existe-t-il ?',opts:['20','15'],a:0,type:'choice'},
+{q:'Combien d\'arbres différents peut-on planter ?',opts:['10','8'],a:0,type:'choice'},
+{q:'Combien d\'animaux différents y a-t-il ?',opts:['20','15'],a:0,type:'choice'},
+{q:'À quel niveau se débloque le Maïs ?',opts:['Niveau 4','Niveau 3'],a:0,type:'choice'},
+{q:'Quel est le coût de la Tomate ?',opts:['8 💰','12 💰'],a:0,type:'choice'},
+{q:'Que produit la Chèvre ?',opts:['Lait de chèvre','Fromage'],a:0,type:'choice'},
+{q:'Quel atelier fabrique le Beurre ?',opts:['Laiterie','Fromagerie'],a:0,type:'choice'},
+{q:'Combien d\'eau faut-il pour arroser une culture ?',opts:['3 💧','5 💧'],a:0,type:'choice'},
+{q:'Combien d\'eau faut-il pour un arbre ?',opts:['4 💧','3 💧'],a:0,type:'choice'},
+{q:'Combien d\'eau faut-il pour un animal ?',opts:['5 💧','4 💧'],a:0,type:'choice'},
+{q:'Quel est le prix de la Poule ?',opts:['800 💰','500 💰'],a:0,type:'choice'},
+{q:'Quel est le premier atelier du jeu ?',opts:['Pressoir','Moulin'],a:0,type:'choice'},
+{q:'Combien de recettes a la Boulangerie ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Quel animal produit du Miel ?',opts:['Abeille','Papillon'],a:0,type:'choice'},
+{q:'Quel atelier fabrique le Fromage ?',opts:['Fromagerie','Laiterie'],a:0,type:'choice'},
+{q:'Combien coûte le Restaurant ?',opts:['120 000 💰','100 000 💰'],a:0,type:'choice'},
+{q:'Le Cocotier se débloque à quel niveau ?',opts:['Niveau 19','Niveau 17'],a:0,type:'choice'},
+{q:'Que fabrique-t-on avec des Olives à l\'Huilerie ?',opts:['Huile d\'olive','Vinaigre'],a:0,type:'choice'},
+{q:'Combien de fermiers peut-on recruter au maximum ?',opts:['10','8'],a:0,type:'choice'},
+{q:'Combien d\'ouvriers peut-on recruter ?',opts:['10','5'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu « 💣 » ?',opts:['Démineur','Bomberman'],a:0,type:'choice'},
+{q:'La Vigne se débloque à quel niveau ?',opts:['Niveau 17','Niveau 15'],a:0,type:'choice'},
+{q:'Le Champignon se débloque à quel niveau ?',opts:['Niveau 14','Niveau 12'],a:0,type:'choice'},
+{q:'Quel est le coût du Château dans le jardin ?',opts:['500 000 💰','300 000 💰'],a:0,type:'choice'},
+{q:'Combien de catégories de jardin existe-t-il ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Le Dinde se débloque à quel niveau ?',opts:['Niveau 13','Niveau 11'],a:0,type:'choice'},
+{q:'Quel atelier est de Tier 6 (Endgame) ?',opts:['Palace étoilé','Restaurant'],a:0,type:'choice'},
+{q:'La Saucisse se fabrique à quel atelier ?',opts:['Boucherie','Cuisinette'],a:0,type:'choice'},
+{q:'Combien de niveaux max a l\'Engrais rapide ?',opts:['100','50'],a:0,type:'choice'},
+{q:'Quel est le bonus de Quantité animaux ?',opts:['+1 ressource/niv','×2 ressource/niv'],a:0,type:'choice'},
+{q:'Que produit le Lapin ?',opts:['Fourrure','Laine'],a:0,type:'choice'},
+{q:'Combien de grilles de cultures peut-on avoir au maximum ?',opts:['15 lignes','12 lignes'],a:0,type:'choice'},
+{q:'Le Pêcher coûte combien ?',opts:['1 100 💰','900 💰'],a:0,type:'choice'},
+{q:'L\'Alpaga se débloque à quel niveau ?',opts:['Niveau 14','Niveau 12'],a:0,type:'choice'},
+{q:'Quel est le prix du Manguier ?',opts:['1 500 💰','2 000 💰'],a:0,type:'choice'},
+{q:'Le Cidre se fabrique à quel atelier ?',opts:['Cidrerie','Cave à vin'],a:0,type:'choice'},
+{q:'Que nécessite le Vin ?',opts:['Raisin','Cerise'],a:0,type:'choice'},
+{q:'Combien de parcelles animaux donne l\'amélioration (par niveau) ?',opts:['+2','+1'],a:0,type:'choice'},
+{q:'L\'Huilerie se débloque à quel niveau ?',opts:['Niveau 20','Niveau 18'],a:0,type:'choice'},
+{q:'Le Smoothie nécessite quel fruit tropical ?',opts:['Mangue','Ananas'],a:0,type:'choice'},
+{q:'Combien d\'étoiles gagne-t-on par bonne réponse au Quizz ?',opts:['1 ⭐','2 ⭐'],a:0,type:'choice'},
+{q:'Quel bâtiment de jardin rapporte des œufs ?',opts:['Cabane','Grange'],a:0,type:'choice'},
+{q:'Le Perroquet se débloque à quel niveau ?',opts:['Niveau 18','Niveau 16'],a:0,type:'choice'},
+{q:'Que donne la Chapelle comme récompense mensuelle ?',opts:['20 000💰 + 1⭐','10 000💰 + 2⭐'],a:0,type:'choice'},
+{q:'Combien coûte la Fontaine du jardin ?',opts:['50 000 💰','30 000 💰'],a:0,type:'choice'},
+{q:'Quel est le prix du Panda ?',opts:['52 000 💰','45 000 💰'],a:0,type:'choice'},
+{q:'L\'Aubergine nécessite quel niveau ?',opts:['Niveau 5','Niveau 4'],a:0,type:'choice'},
+{q:'Le Dauphin se débloque au niveau…',opts:['Niveau 19','Niveau 17'],a:0,type:'choice'},
+{q:'Que fabrique le Bar à jus ?',opts:['Smoothie','Cidre'],a:0,type:'choice'},
+{q:'Quel est le prix de la Salade ?',opts:['12 💰','8 💰'],a:0,type:'choice'},
+{q:'Le Poivron se débloque à quel niveau ?',opts:['Niveau 2','Niveau 3'],a:0,type:'choice'},
+{q:'Combien coûte le Concombre ?',opts:['25 💰','20 💰'],a:0,type:'choice'},
+{q:'Quel est le temps de pousse du Piment ?',opts:['110 secondes','90 secondes'],a:0,type:'choice'},
+{q:'Le Brocoli rapporte combien de XP ?',opts:['92','75'],a:0,type:'choice'},
+{q:'Quel est le coût du Citronnier ?',opts:['600 💰','450 💰'],a:0,type:'choice'},
+{q:'Combien de recettes a la Fromagerie ?',opts:['3','2'],a:0,type:'choice'},
+{q:'Quel est le premier animal avec un coût supérieur à 10 000 ?',opts:['Paon','Alpaga'],a:0,type:'choice'},
+{q:'La Conserverie se débloque à quel niveau ?',opts:['Niveau 14','Niveau 12'],a:0,type:'choice'},
+{q:'Que produit le Mouton ?',opts:['Laine','Lait'],a:0,type:'choice'},
+{q:'Combien de recettes a le Restaurant ?',opts:['3','4'],a:0,type:'choice'},
+{q:'La Cuisinette se débloque à quel niveau ?',opts:['Niveau 6','Niveau 5'],a:0,type:'choice'},
+{q:'Combien coûte le Cygne ?',opts:['13 000 💰','10 000 💰'],a:0,type:'choice'},
+{q:'Quel atelier fabrique la Confiture ?',opts:['Conserverie','Sucrerie'],a:0,type:'choice'},
+{q:'Le Flamant rose se débloque à quel niveau ?',opts:['Niveau 17','Niveau 16'],a:0,type:'choice'},
+{q:'Combien coûte la Chocolaterie ?',opts:['70 000 💰','50 000 💰'],a:0,type:'choice'},
+{q:'Le Hibou se débloque à quel niveau ?',opts:['Niveau 18','Niveau 16'],a:0,type:'choice'},
+{q:'Quel est le coût de la Tortue ?',opts:['31 000 💰','25 000 💰'],a:0,type:'choice'},
+{q:'Combien de recettes a la Pâtisserie ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Quel atelier fabrique le Sucre ?',opts:['Sucrerie','Moulin'],a:0,type:'choice'},
+{q:'La Miellerie se débloque à quel niveau ?',opts:['Niveau 15','Niveau 13'],a:0,type:'choice'},
+{q:'Que nécessite la Pizza comme base ?',opts:['Farine de blé','Farine de maïs'],a:0,type:'choice'},
+{q:'Combien coûte la Rôtisserie ?',opts:['90 000 💰','75 000 💰'],a:0,type:'choice'},
+{q:'Quel est le prix de vente du Beurre ?',opts:['200 💰','150 💰'],a:0,type:'choice'},
+{q:'L\'Ail se débloque à quel niveau ?',opts:['Niveau 16','Niveau 14'],a:0,type:'choice'},
+{q:'Combien d\'eau coûte un arrosage d\'arbre ?',opts:['4 💧','3 💧'],a:0,type:'choice'},
+{q:'La Pastèque se débloque à quel niveau ?',opts:['Niveau 12','Niveau 10'],a:0,type:'choice'},
+{q:'Combien de catégories d\'améliorations existe-t-il ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Les Crêpes se fabriquent à quel atelier ?',opts:['Boulangerie','Cuisinette'],a:0,type:'choice'},
+{q:'Quel est le coût de la Cave à vin ?',opts:['22 000 💰','18 000 💰'],a:0,type:'choice'},
+{q:'Le Banquet du Restaurant rapporte combien d\'XP ?',opts:['2 200','1 500'],a:0,type:'choice'},
+{q:'Quel bâtiment de jardin rapporte du Lait ?',opts:['Grange','Cabane'],a:0,type:'choice'},
+{q:'Le Jacuzzi du jardin coûte combien ?',opts:['100 000 💰','80 000 💰'],a:0,type:'choice'},
+{q:'Combien de bois faut-il pour le Pont du jardin ?',opts:['20','15'],a:0,type:'choice'},
+{q:'La Statue du jardin coûte combien ?',opts:['80 000 💰','50 000 💰'],a:0,type:'choice'},
+{q:'L\'Atelier luxe se débloque à quel niveau ?',opts:['Niveau 24','Niveau 22'],a:0,type:'choice'},
+{q:'Combien de recettes a la Boucherie ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Le Vin premium nécessite combien de Raisin ?',opts:['5','3'],a:0,type:'choice'},
+{q:'Combien de colonnes a la grille de cultures ?',opts:['6','8'],a:0,type:'choice'},
+{q:'L\'amélioration Auto-alimentation concerne quoi ?',opts:['Les animaux','Les cultures'],a:0,type:'choice'},
+{q:'Quel est le prix du Flamant ?',opts:['16 000 💰','12 000 💰'],a:0,type:'choice'},
+{q:'Le Mag. laine se débloque à quel niveau ?',opts:['Niveau 8','Niveau 7'],a:0,type:'choice'},
+{q:'Combien coûte la Pizzeria ?',opts:['28 000 💰','22 000 💰'],a:0,type:'choice'},
+{q:'Quel mini-jeu utilise l\'icône 🎵 ?',opts:['Simon','Mémoire'],a:0,type:'choice'},
+{q:'Combien coûte la Cabane du jardin ?',opts:['20 000 💰','15 000 💰'],a:0,type:'choice'},
+{q:'Le Café du jardin nécessite combien de bois ?',opts:['35','25'],a:0,type:'choice'},
+{q:'À combien d\'états de rénovation le Café peut-il monter ?',opts:['15','10'],a:0,type:'choice'},
+{q:'Le Dîner royal du Palace nécessite du Parfum.',opts:['Oui','Non'],a:0,type:'choice'},
+{q:'Combien coûte le Palace étoilé ?',opts:['250 000 💰','200 000 💰'],a:0,type:'choice'},
+{q:'La P.de terre se débloque à quel niveau ?',opts:['Niveau 6','Niveau 5'],a:0,type:'choice'},
+{q:'Combien coûte le Potager ?',opts:['2 500 💰','2 000 💰'],a:0,type:'choice'},
+{q:'Le Pressoir fabrique quel jus ?',opts:['Jus de pomme','Jus d\'orange'],a:0,type:'choice'},
+{q:'La Laiterie se débloque à quel niveau ?',opts:['Niveau 10','Niveau 8'],a:0,type:'choice'},
+{q:'Combien de Lait faut-il pour faire du Beurre ?',opts:['2','3'],a:0,type:'choice'},
+{q:'Le Moulin fabrique quoi avec du Blé ?',opts:['Farine de blé','Pain'],a:0,type:'choice'},
+{q:'Combien de recettes a le Pressoir ?',opts:['2','3'],a:0,type:'choice'},
+{q:'Quel est le temps de pousse de la Carotte ?',opts:['3 secondes','5 secondes'],a:0,type:'choice'},
+{q:'Le Poirier se débloque à quel niveau ?',opts:['Niveau 5','Niveau 4'],a:0,type:'choice'},
+{q:'Que produit le Canard ?',opts:['Plumes','Oeufs'],a:0,type:'choice'},
+{q:'Combien coûte la Vache ?',opts:['3 500 💰','2 800 💰'],a:0,type:'choice'},
+{q:'Le Cochon nécessite quel aliment ?',opts:['Patate','Blé'],a:0,type:'choice'},
+{q:'Combien de recettes a la Conserverie ?',opts:['4','3'],a:0,type:'choice'},
+{q:'La Sauce tomate se fabrique où ?',opts:['Cuisinette','Conserverie'],a:0,type:'choice'},
+{q:'Quel ingrédient faut-il pour la Fondue ?',opts:['Fromage','Beurre'],a:0,type:'choice'},
+{q:'Combien coûte le Moulin ?',opts:['3 000 💰','2 500 💰'],a:0,type:'choice'},
+{q:'La Compote se fabrique à quel atelier ?',opts:['Pressoir','Cuisinette'],a:0,type:'choice'},
+{q:'Le Pop-corn nécessite quel ingrédient principal ?',opts:['Maïs','Blé'],a:0,type:'choice'},
+{q:'Combien de Tomates faut-il pour la Sauce tomate ?',opts:['3','2'],a:0,type:'choice'},
+{q:'La Pelote se fabrique au Mag. laine avec combien de Laine ?',opts:['2','3'],a:0,type:'choice'},
+{q:'L\'Écharpe nécessite combien de Laine ?',opts:['5','3'],a:0,type:'choice'},
+{q:'Combien coûte le Mag. laine ?',opts:['4 000 💰','3 000 💰'],a:0,type:'choice'},
+{q:'La Purée nécessite quel ingrédient spécial ?',opts:['Beurre','Crème'],a:0,type:'choice'},
+{q:'Le Nougat se fabrique à quel atelier ?',opts:['Miellerie','Sucrerie'],a:0,type:'choice'},
+{q:'Combien de Miel faut-il pour le Nougat ?',opts:['3','2'],a:0,type:'choice'},
+{q:'Le Cocktail nécessite combien d\'ingrédients différents ?',opts:['3','2'],a:0,type:'choice'},
+{q:'Quel est le prix de vente du Pain ?',opts:['1 500 💰','1 000 💰'],a:0,type:'choice'},
+{q:'Le Gâteau nécessite combien d\'Oeufs ?',opts:['3','2'],a:0,type:'choice'},
+{q:'La Tortilla se fabrique avec quelle farine ?',opts:['Farine de maïs','Farine de blé'],a:0,type:'choice'},
+{q:'Combien coûte la Boulangerie ?',opts:['8 000 💰','6 000 💰'],a:0,type:'choice'},
+{q:'Le Pâté nécessite quel type de viande ?',opts:['Viande de porc','Viande de dinde'],a:0,type:'choice'},
+{q:'Combien coûte la Boucherie ?',opts:['10 000 💰','8 000 💰'],a:0,type:'choice'},
+{q:'La Gelée se fabrique avec quel jus ?',opts:['Jus de pomme','Jus d\'orange'],a:0,type:'choice'},
+{q:'Le Vinaigre nécessite du Raisin et quoi d\'autre ?',opts:['Pomme','Citron'],a:0,type:'choice'},
+{q:'Combien coûte la Cidrerie ?',opts:['20 000 💰','15 000 💰'],a:0,type:'choice'},
+{q:'La Tapenade nécessite combien d\'Olives ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Le Croissant nécessite combien de Beurre ?',opts:['3','2'],a:0,type:'choice'},
+{q:'Combien coûte la Sucrerie ?',opts:['7 000 💰','5 000 💰'],a:0,type:'choice'},
+{q:'Les Truffes se fabriquent à quel atelier ?',opts:['Chocolaterie','Pâtisserie'],a:0,type:'choice'},
+{q:'Le Macaron nécessite combien d\'Oeufs ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Combien coûte le Bar à jus ?',opts:['18 000 💰','15 000 💰'],a:0,type:'choice'},
+{q:'La Fontaine choco nécessite combien de Chocolat ?',opts:['4','3'],a:0,type:'choice'},
+{q:'Le Festin dinde nécessite quel produit transformé ?',opts:['Rôti dinde','Charcuterie'],a:0,type:'choice'},
+{q:'Le Menu gastro se fabrique où ?',opts:['Restaurant','Palace étoilé'],a:0,type:'choice'},
+{q:'Le Festin royal nécessite combien de Vin ?',opts:['2','3'],a:0,type:'choice'},
+{q:'Combien de recettes a le Palace étoilé ?',opts:['3','4'],a:0,type:'choice'},
+{q:'Le Buffet palace nécessite du Risotto ?',opts:['Oui','Non'],a:0,type:'choice'},
+{q:'L\'Oranger se débloque à quel niveau ?',opts:['Niveau 7','Niveau 6'],a:0,type:'choice'},
+{q:'Le Lapin se débloque à quel niveau ?',opts:['Niveau 6','Niveau 5'],a:0,type:'choice'},
+{q:'Combien coûte la Chèvre ?',opts:['2 200 💰','1 700 💰'],a:0,type:'choice'},
+{q:'Le Chemin du jardin coûte combien ?',opts:['1 000 💰','500 💰'],a:0,type:'choice'},
+{q:'Combien de bois faut-il pour la Clôture bois ?',opts:['5','3'],a:0,type:'choice'},
+{q:'L\'Arche fleurie du jardin nécessite combien de bois ?',opts:['15','10'],a:0,type:'choice'},
+{q:'Le Portail du jardin coûte combien ?',opts:['20 000 💰','15 000 💰'],a:0,type:'choice'},
+{q:'Le Bonsaï du jardin coûte combien ?',opts:['24 000 💰','18 000 💰'],a:0,type:'choice'},
+{q:'Le Lac du jardin coûte combien ?',opts:['25 000 💰','20 000 💰'],a:0,type:'choice'},
+{q:'La Rivière du jardin coûte combien ?',opts:['30 000 💰','20 000 💰'],a:0,type:'choice'},
+{q:'Le Télescope du jardin coûte combien ?',opts:['40 000 💰','30 000 💰'],a:0,type:'choice'},
+{q:'L\'Hôtel du jardin coûte combien ?',opts:['350 000 💰','250 000 💰'],a:0,type:'choice'},
+{q:'L\'École du jardin se rénove en combien d\'états ?',opts:['12','8'],a:0,type:'choice'},
+{q:'Le Phare du jardin nécessite combien de bois ?',opts:['50','40'],a:0,type:'choice'},
+{q:'La Bibliothèque du jardin coûte combien ?',opts:['180 000 💰','150 000 💰'],a:0,type:'choice'},
+{q:'Le Marché du jardin rapporte quoi chaque mois ?',opts:['Ressources animaux','Pièces d\'or'],a:0,type:'choice'},
+{q:'Quel animal produit directement des pièces d\'or ?',opts:['Cheval','Vache'],a:0,type:'choice'},
+{q:'La Poule nécessite quel aliment ?',opts:['Maïs','Blé'],a:0,type:'choice'},
+{q:'L\'Abeille nécessite quel aliment ?',opts:['Fleur','Miel'],a:0,type:'choice'},
+{q:'Le Dauphin nécessite quel type d\'alimentation ?',opts:['Pièces d\'or','Poisson'],a:0,type:'choice'},
+{q:'Combien coûte l\'Alpaga ?',opts:['8 500 💰','6 800 💰'],a:0,type:'choice'},
+{q:'Le Perroquet coûte combien ?',opts:['20 000 💰','16 000 💰'],a:0,type:'choice'},
+{q:'La Licorne coûte combien ?',opts:['70 000 💰','52 000 💰'],a:0,type:'choice'},
+{q:'Le temps de production du Panda est de combien de secondes ?',opts:['530','470'],a:0,type:'choice'},
+{q:'Le Canard coûte combien ?',opts:['1 000 💰','800 💰'],a:0,type:'choice'},
+{q:'L\'amélioration Parcelles animaux coûte combien au niveau 1 ?',opts:['500 💰','300 💰'],a:0,type:'choice'},
+{q:'L\'amélioration Réservoir augmente de combien l\'eau max ?',opts:['+10 par niveau','+20 par niveau'],a:0,type:'choice'},
+{q:'Quel est le max de l\'amélioration Réservoir ?',opts:['9 990 niveaux','5 000 niveaux'],a:0,type:'choice'},
+{q:'Le Cactus du jardin coûte combien ?',opts:['8 000 💰','6 000 💰'],a:0,type:'choice'},
+{q:'Le Palmier du jardin coûte combien ?',opts:['10 000 💰','8 000 💰'],a:0,type:'choice'},
+{q:'Le Sapin du jardin coûte combien ?',opts:['8 000 💰','6 000 💰'],a:0,type:'choice'},
+{q:'La Borne arcade du jardin coûte combien ?',opts:['30 000 💰','20 000 💰'],a:0,type:'choice'},
+{q:'L\'Horloge du jardin coûte combien ?',opts:['35 000 💰','25 000 💰'],a:0,type:'choice'},
+{q:'Le Hamac du jardin coûte combien ?',opts:['12 000 💰','8 000 💰'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🧩 ?',opts:['Taquin','Puzzle'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🎨 ?',opts:['Flood','Peinture'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🔦 ?',opts:['Lights Out','Lampe'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🧠 ?',opts:['Mémoire','Réflexion'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🏁 ?',opts:['Labyrinthe','Course'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🔢 ?',opts:['2048','Sudoku'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🎯 ?',opts:['Pattern','Cible'],a:0,type:'choice'},
+{q:'Quel est le mini-jeu 🐍 ?',opts:['Snake','Serpent'],a:0,type:'choice'},
+{q:'Le Smoothie pêche se fabrique où ?',opts:['Cidrerie','Bar à jus'],a:0,type:'choice'},
+{q:'Le Jus citron se fabrique où ?',opts:['Conserverie','Bar à jus'],a:0,type:'choice'},
+{q:'La Marmelade nécessite quel fruit ?',opts:['Orange','Citron'],a:0,type:'choice'},
+{q:'Le Calzone nécessite de la Charcuterie ?',opts:['Oui','Non'],a:0,type:'choice'},
+{q:'Combien de recettes a la Pizzeria ?',opts:['3','4'],a:0,type:'choice'},
+{q:'Le Risotto nécessite du Champignon ?',opts:['Oui','Non'],a:0,type:'choice'},
+{q:'L\'Huile d\'olive nécessite combien d\'Olives ?',opts:['3','2'],a:0,type:'choice'},
+{q:'Le Lait de coco nécessite combien de Noix de coco ?',opts:['2','3'],a:0,type:'choice'},
+{q:'Le Parfum nécessite combien de Fleurs ?',opts:['3','2'],a:0,type:'choice'},
+{q:'La Bougie nécessite du Lait de coco ?',opts:['Oui','Non'],a:0,type:'choice'},
+{q:'Le Coussin nécessite de la Fourrure et quoi d\'autre ?',opts:['Plumes et Laine','Lait et Oeufs'],a:0,type:'choice'},
+{q:'Combien coûte la Maison du jardin ?',opts:['30 000 💰','20 000 💰'],a:0,type:'choice'}
+];
+function isQuizEventActive(){
+  // Event cycle: 5 months active, 2 months cooldown, repeating
+  // Based on state.month: months 1-5 active, 6-7 cooldown, 8-12 active, 13-14 cooldown, etc.
+  var cycle=((state.month-1)%(QUIZ_EVENT_DURATION+QUIZ_EVENT_COOLDOWN));
+  return cycle<QUIZ_EVENT_DURATION;
+}
+function getQuizEventInfo(){
+  var cycle=(state.month-1)%(QUIZ_EVENT_DURATION+QUIZ_EVENT_COOLDOWN);
+  if(cycle<QUIZ_EVENT_DURATION){
+    var remaining=QUIZ_EVENT_DURATION-cycle;
+    return{active:true,remaining:remaining};
+  }else{
+    var until=QUIZ_EVENT_DURATION+QUIZ_EVENT_COOLDOWN-cycle;
+    return{active:false,until:until};
+  }
+}
+var _quizCurrent=-1;
+function buildEvent(){
+  var c=$('event-content');if(!c)return;c.innerHTML='';
+  var info=getQuizEventInfo();
+  // Header
+  var hdr=document.createElement('div');
+  hdr.style.cssText='text-align:center;padding:12px;';
+  hdr.innerHTML='<div style="font-size:2.5rem;margin-bottom:6px">🧠</div><div style="font-size:1.1rem;font-weight:bold;color:#5d4037">Quizz Party</div>';
+  c.appendChild(hdr);
+  if(!info.active){
+    var wait=document.createElement('div');
+    wait.style.cssText='text-align:center;padding:40px 20px;color:#888;font-size:.9rem;line-height:1.8';
+    wait.innerHTML='🕐 L\'événement revient dans <b>'+info.until+' mois</b><br><span style="font-size:.75rem">Réponds à des questions sur Farm Valley pour gagner des ⭐</span>';
+    c.appendChild(wait);
+    // Show stats
+    var answered=(state.quizAnswered||[]).length;
+    var stars=state.quizStars||0;
+    var st=document.createElement('div');
+    st.style.cssText='text-align:center;padding:10px;font-size:.8rem;color:#666';
+    st.innerHTML='📊 Questions répondues : <b>'+answered+'/'+QUIZ_QUESTIONS.length+'</b> — ⭐ Étoiles gagnées : <b>'+stars+'</b>';
+    c.appendChild(st);
+    return;
+  }
+  // Active event
+  var statusDiv=document.createElement('div');
+  statusDiv.style.cssText='text-align:center;padding:6px;font-size:.78rem;color:#27ae60;font-weight:bold';
+  statusDiv.textContent='🟢 Événement actif — '+info.remaining+' mois restant'+(info.remaining>1?'s':'');
+  c.appendChild(statusDiv);
+  var answered=(state.quizAnswered||[]).length;
+  var stars=state.quizStars||0;
+  var statsDiv=document.createElement('div');
+  statsDiv.style.cssText='display:flex;justify-content:center;gap:16px;padding:8px;font-size:.82rem';
+  statsDiv.innerHTML='<span>📊 <b>'+answered+'</b>/'+QUIZ_QUESTIONS.length+' répondues</span><span>⭐ <b>'+stars+'</b> étoiles</span>';
+  c.appendChild(statsDiv);
+  // If all answered
+  if(answered>=QUIZ_QUESTIONS.length){
+    var done=document.createElement('div');
+    done.style.cssText='text-align:center;padding:30px;font-size:1rem;color:#e67e22;font-weight:bold';
+    done.innerHTML='🏆 Bravo ! Tu as répondu aux '+QUIZ_QUESTIONS.length+' questions !<br><span style="font-size:.8rem;color:#666;font-weight:normal">Score : '+stars+' ⭐ — Le quizz recommence !</span>';
+    c.appendChild(done);
+    var resetBtn=document.createElement('button');
+    resetBtn.style.cssText='display:block;margin:16px auto;padding:12px 28px;background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:bold;cursor:pointer';
+    resetBtn.textContent='🔄 Recommencer le Quizz';
+    resetBtn.addEventListener('click',function(){
+      state.quizAnswered=[];_quizCurrent=-1;saveGame();buildEvent();
+    });
+    c.appendChild(resetBtn);
+    return;
+  }
+  // Show question or play button
+  if(_quizCurrent<0){
+    var playBtn=document.createElement('button');
+    playBtn.style.cssText='display:block;margin:20px auto;padding:14px 36px;background:linear-gradient(145deg,#9b59b6,#8e44ad);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(155,89,182,.3)';
+    playBtn.textContent='🎯 Question suivante';
+    playBtn.addEventListener('click',function(){
+      // Pick a random unanswered question
+      var avail=[];
+      for(var i=0;i<QUIZ_QUESTIONS.length;i++){
+        if((state.quizAnswered||[]).indexOf(i)<0)avail.push(i);
+      }
+      if(avail.length===0)return;
+      shuffle(avail);
+      _quizCurrent=avail[0];
+      buildEvent();
+    });
+    c.appendChild(playBtn);
+  }else{
+    renderQuizQuestion(c,_quizCurrent);
+  }
+}
+function renderQuizQuestion(container,qIdx){
+  var qq=QUIZ_QUESTIONS[qIdx];
+  var card=document.createElement('div');
+  card.style.cssText='background:rgba(255,255,255,.95);border-radius:14px;padding:16px;margin:8px;box-shadow:0 4px 16px rgba(0,0,0,.12)';
+  // Question number
+  var num=document.createElement('div');
+  num.style.cssText='text-align:center;font-size:.7rem;color:#999;margin-bottom:6px';
+  num.textContent='Question #'+((state.quizAnswered||[]).length+1)+' / '+QUIZ_QUESTIONS.length;
+  card.appendChild(num);
+  // Question text
+  var qtxt=document.createElement('div');
+  qtxt.style.cssText='text-align:center;font-size:.92rem;font-weight:bold;color:#333;padding:12px 8px;line-height:1.5';
+  qtxt.textContent=qq.q;
+  card.appendChild(qtxt);
+  // Answers
+  var ansDiv=document.createElement('div');
+  ansDiv.style.cssText='display:flex;flex-direction:column;gap:8px;padding:8px 0';
+  if(qq.type==='vf'){
+    var btnV=createQuizBtn('✅ Vrai',true===qq.a,qIdx,ansDiv);
+    var btnF=createQuizBtn('❌ Faux',false===qq.a,qIdx,ansDiv);
+    ansDiv.appendChild(btnV);
+    ansDiv.appendChild(btnF);
+  }else{
+    // Shuffle display order but track correct
+    var order=[0,1];
+    if(Math.random()>0.5){order=[1,0];}
+    for(var oi=0;oi<order.length;oi++){
+      var isCorrect=order[oi]===qq.a;
+      var btn=createQuizBtn(qq.opts[order[oi]],isCorrect,qIdx,ansDiv);
+      ansDiv.appendChild(btn);
+    }
+  }
+  card.appendChild(ansDiv);
+  container.appendChild(card);
+}
+function createQuizBtn(label,isCorrect,qIdx,ansDiv){
+  var btn=document.createElement('button');
+  btn.style.cssText='padding:12px 16px;border:2px solid rgba(0,0,0,.1);border-radius:10px;background:rgba(255,255,255,.9);font-size:.88rem;font-weight:bold;cursor:pointer;transition:all .2s;text-align:center';
+  btn.textContent=label;
+  btn.addEventListener('click',function(){
+    // Disable all buttons
+    var btns=ansDiv.querySelectorAll('button');
+    for(var i=0;i<btns.length;i++){btns[i].disabled=true;btns[i].style.cursor='default';btns[i].style.opacity='.7';}
+    if(isCorrect){
+      btn.style.background='#c8e6c9';btn.style.borderColor='#4CAF50';btn.style.opacity='1';
+      state.quizStars=(state.quizStars||0)+1;
+      state.stars=(state.stars||0)+1;
+      showFloat(innerWidth/2,100,'⭐ +1');
+    }else{
+      btn.style.background='#ffcdd2';btn.style.borderColor='#e74c3c';btn.style.opacity='1';
+      // Highlight correct answer
+      for(var j=0;j<btns.length;j++){if(btns[j]!==btn){btns[j].style.background='#c8e6c9';btns[j].style.borderColor='#4CAF50';btns[j].style.opacity='1';}}
+    }
+    if(!state.quizAnswered)state.quizAnswered=[];
+    state.quizAnswered.push(qIdx);
+    _quizCurrent=-1;
+    saveGame();
+    updateUI();
+    // Auto-advance after delay
+    setTimeout(function(){buildEvent();},1200);
+  });
+  return btn;
+}
 
 // ===== START =====
 $('btn-start').addEventListener('click',function(){overlay.classList.add('hidden');init()});
 if(localStorage.getItem(SAVE_KEY)){overlay.classList.add('hidden');init()}
+
+// ===== MUSIC SYSTEM =====
+var musicTracks={global:'global.mp3',farm:'global.mp3',buildings:'atelier.mp3',shop:'boutique.mp3',garden:'global.mp3'};
+var musicNames={global:'global.mp3',farm:'global.mp3',buildings:'atelier.mp3',shop:'boutique.mp3',garden:'global.mp3'};
+var musicAudio=new Audio();
+musicAudio.loop=true;
+musicAudio.volume=0.5;
+var musicEnabled=true;
+var currentTrack='global';
+var currentTab='farm';
+var _currentMusicFile='';
+
+function toggleMusicPanel(){
+  var p=$('music-panel');
+  p.classList.toggle('show');
+}
+
+// Init music panel name displays
+['global','farm','buildings','shop','garden'].forEach(function(k){
+  var el=$('music-name-'+k);
+  if(el&&musicNames[k])el.textContent=musicNames[k];
+});
+
+$('music-volume').addEventListener('input',function(){
+  musicAudio.volume=this.value/100;
+});
+
+document.querySelectorAll('#music-panel input[type=file]').forEach(function(inp){
+  inp.addEventListener('change',function(){
+    var track=inp.dataset.track;
+    if(inp.files&&inp.files[0]){
+      var file=inp.files[0];
+      var url=URL.createObjectURL(file);
+      musicTracks[track]=url;
+      musicNames[track]=file.name.length>20?file.name.substring(0,18)+'…':file.name;
+      var nameEl=$('music-name-'+track);
+      if(nameEl)nameEl.textContent=musicNames[track];
+      // If this track is the one that should play, play it
+      updateMusic();
+    }
+  });
+});
+
+function updateMusic(){
+  var tabTrack=musicTracks[currentTab];
+  var globalTrack=musicTracks.global;
+  var trackToPlay=tabTrack||globalTrack;
+  if(!trackToPlay){
+    return;// no track, keep current playing
+  }
+  if(!musicEnabled){
+    return;
+  }
+  // Only change src if the actual file key is different
+  if(_currentMusicFile!==trackToPlay){
+    _currentMusicFile=trackToPlay;
+    musicAudio.src=trackToPlay;
+    musicAudio.play().catch(function(){});
+  }
+  $('music-btn').textContent='🔊';
+}
+
+$('music-btn').addEventListener('click',function(e){
+  e.preventDefault();
+  if(musicAudio.src&&musicAudio.src!==''){
+    if(musicAudio.paused){
+      musicEnabled=true;
+      musicAudio.play().catch(function(){});
+      $('music-btn').textContent='🔊';
+    }else{
+      musicEnabled=false;
+      musicAudio.pause();
+      $('music-btn').textContent='🔇';
+    }
+  }
+  toggleMusicPanel();
+});
+
+// Close music panel when clicking outside
+document.addEventListener('click',function(e){
+  var panel=$('music-panel');
+  var btn=$('music-btn');
+  if(panel.classList.contains('show')&&!panel.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){
+    panel.classList.remove('show');
+  }
+});
 </script>
 </body>
 </html>
