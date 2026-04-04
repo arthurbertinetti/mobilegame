@@ -577,7 +577,7 @@ var SAVE_KEY='farmvalley_save';
 var XP_TABLE=[0,30,80,160,300,500,800,1200,1800,2600,3600,5000,7000,9500,13000,17000,22000,28000,35000,45000,
   58000,73000,90000,110000,135000,165000,200000,245000,300000,370000];
 var DAY_MS=300000;// 5 minutes per day
-var state={version:16,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
+var state={version:17,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,totalHarvested:0,
   selCat:0,selItem:0,plots:[],upgrades:{},gridBought:0,
   autoHarvestEnd:0,autoWaterEnd:0,ahResets:0,awResets:0,debt:0,savings:0,
   resources:{},bplots:[],bgridBought:0,selBuilding:0,selBuildingPlot:-1,
@@ -592,7 +592,12 @@ var state={version:16,coins:20,water:50,maxWater:100,xp:0,level:1,totalEarned:0,
   trades:[],tradeMonth:0,
   woodRepairs:0,woodStock:0,lastWoodTick:0,
   ouvriers:[],
-  quizAnswered:[],quizStars:0,quizLastEventStart:0};
+  quizAnswered:[],quizStars:0,quizLastEventStart:0,
+  marcheOffers:[],marcheExpiry:0,marcheScore:0,
+  wheelSpins:0,wheelLastSpin:0,
+  memoryBest:0,memoryPlays:0,
+  justePrixAnswered:[],justePrixScore:0,
+  comboClickBest:0,comboClickPlays:0};
 
 // Farmer system
 var FARMER_MAX=10;
@@ -3832,6 +3837,7 @@ function loadGame(){try{var d=localStorage.getItem(SAVE_KEY);if(d){var s=JSON.pa
   if(s.version<14){s.siLevel=1;s.tqLevel=1;s.flLevel=1;s.version=14}
   if(s.version<15){s.snLevel=1;s.maLevel=1;s.ppLevel=1;s.cpLevel=1;s.rvLevel=1;s.woodRepairs=0;s.woodStock=0;s.lastWoodTick=0;s.ouvriers=[];s.version=15}
   if(s.version<16){s.quizAnswered=[];s.quizStars=0;s.quizLastEventStart=0;s.version=16}
+  if(s.version<17){s.marcheOffers=[];s.marcheExpiry=0;s.marcheScore=0;s.wheelSpins=0;s.wheelLastSpin=0;s.memoryBest=0;s.memoryPlays=0;s.justePrixAnswered=[];s.justePrixScore=0;s.comboClickBest=0;s.comboClickPlays=0;s.version=17}
   for(var k in s)if(s.hasOwnProperty(k))state[k]=s[k]}}catch(e){}}
 
 // ===== TABS =====
@@ -4164,69 +4170,145 @@ function getQuizEventInfo(){
   }
 }
 var _quizCurrent=-1;
+var _activeEvent=null;// null=card list, 'quiz','marche','wheel','memory','justeprix','combo'
+
+// ===== JUSTE PRIX QUESTIONS (generated from game data) =====
+var JUSTE_PRIX_QUESTIONS=[];
+(function(){
+  var sk=Object.keys(RES_SELL);
+  for(var i=0;i<sk.length;i++){
+    var k=sk[i],ri=RES_INFO[k];if(!ri)continue;
+    var p=RES_SELL[k];
+    var w1=Math.max(1,Math.round(p*(0.4+(i%5)*0.1)));
+    var w2=Math.round(p*(1.6+(i%4)*0.4));
+    if(w1===p)w1=Math.max(1,p-5);if(w2===p)w2=p+10;
+    JUSTE_PRIX_QUESTIONS.push({q:'Combien se vend '+ri.emoji+' '+ri.name+' ?',opts:[p+' 💰',w1+' 💰',w2+' 💰'],a:0});
+  }
+  for(var c=0;c<CROPS.length;c++){
+    var cr=CROPS[c],cost=cr[CO];
+    var cw1=Math.max(1,Math.round(cost*(0.5+(c%3)*0.1)));
+    var cw2=Math.round(cost*(1.8+(c%4)*0.3));
+    if(cw1===cost)cw1=Math.max(1,cost-2);if(cw2===cost)cw2=cost+5;
+    JUSTE_PRIX_QUESTIONS.push({q:'Combien coûte '+cr[E]+' '+cr[N]+' à planter ?',opts:[cost+' 💰',cw1+' 💰',cw2+' 💰'],a:0});
+  }
+  for(var t=0;t<TREES.length;t++){
+    var tr=TREES[t],tcost=tr[CO];
+    var tw1=Math.max(10,Math.round(tcost*(0.4+(t%3)*0.15)));
+    var tw2=Math.round(tcost*(1.5+(t%4)*0.5));
+    if(tw1===tcost)tw1=tcost-20;if(tw2===tcost)tw2=tcost+50;
+    JUSTE_PRIX_QUESTIONS.push({q:'Combien coûte '+tr[E]+' '+tr[N]+' à planter ?',opts:[tcost+' 💰',tw1+' 💰',tw2+' 💰'],a:0});
+  }
+  for(var a=0;a<ANIMALS.length;a++){
+    var an=ANIMALS[a],acost=an[CO];
+    var aw1=Math.max(100,Math.round(acost*(0.3+(a%5)*0.1)));
+    var aw2=Math.round(acost*(1.4+(a%3)*0.5));
+    if(aw1===acost)aw1=acost-50;if(aw2===acost)aw2=acost+100;
+    JUSTE_PRIX_QUESTIONS.push({q:'Combien coûte '+an[E]+' '+an[N]+' ?',opts:[acost+' 💰',aw1+' 💰',aw2+' 💰'],a:0});
+  }
+  // Comparison questions
+  for(var ci=0;ci<sk.length-1;ci+=3){
+    var kA=sk[ci],kB=sk[Math.min(ci+2,sk.length-1)];
+    var rA=RES_INFO[kA],rB=RES_INFO[kB];if(!rA||!rB||kA===kB)continue;
+    var pA=RES_SELL[kA],pB=RES_SELL[kB];
+    var winner=pA>=pB?rA.emoji+' '+rA.name:rB.emoji+' '+rB.name;
+    var loser=pA>=pB?rB.emoji+' '+rB.name:rA.emoji+' '+rA.name;
+    JUSTE_PRIX_QUESTIONS.push({q:'Quel produit se vend le plus cher ?',opts:[winner,loser],a:0});
+  }
+})();
+
+// ===== EVENT CARD SYSTEM =====
 function buildEvent(){
   var c=$('event-content');if(!c)return;c.innerHTML='';
-  var info=getQuizEventInfo();
-  // Header
-  var hdr=document.createElement('div');
-  hdr.style.cssText='text-align:center;padding:12px;';
-  hdr.innerHTML='<div style="font-size:2.5rem;margin-bottom:6px">🧠</div><div style="font-size:1.1rem;font-weight:bold;color:#5d4037">Quizz Party</div>';
-  c.appendChild(hdr);
-  if(!info.active){
-    var wait=document.createElement('div');
-    wait.style.cssText='text-align:center;padding:40px 20px;color:#888;font-size:.9rem;line-height:1.8';
-    wait.innerHTML='🕐 L\'événement revient dans <b>'+info.until+' mois</b><br><span style="font-size:.75rem">Réponds à des questions sur Farm Valley pour gagner des ⭐</span>';
-    c.appendChild(wait);
-    // Show stats
-    var answered=(state.quizAnswered||[]).length;
-    var stars=state.quizStars||0;
-    var st=document.createElement('div');
-    st.style.cssText='text-align:center;padding:10px;font-size:.8rem;color:#666';
-    st.innerHTML='📊 Questions répondues : <b>'+answered+'/'+QUIZ_QUESTIONS.length+'</b> — ⭐ Étoiles gagnées : <b>'+stars+'</b>';
-    c.appendChild(st);
+  if(_activeEvent){
+    buildEventBack(c);
+    if(_activeEvent==='quiz')buildQuizPlay(c);
+    else if(_activeEvent==='marche')buildMarchePlay(c);
+    else if(_activeEvent==='wheel')buildWheelPlay(c);
+    else if(_activeEvent==='memory')buildMemoryPlay(c);
+    else if(_activeEvent==='justeprix')buildJustePrixPlay(c);
+    else if(_activeEvent==='combo')buildComboPlay(c);
     return;
   }
-  // Active event
+  var info=getQuizEventInfo();
   var statusDiv=document.createElement('div');
-  statusDiv.style.cssText='text-align:center;padding:6px;font-size:.78rem;color:#27ae60;font-weight:bold';
-  statusDiv.textContent='🟢 Événement actif — '+info.remaining+' mois restant'+(info.remaining>1?'s':'');
+  statusDiv.style.cssText='text-align:center;padding:8px 12px 14px;font-size:.82rem;color:'+(info.active?'#27ae60':'#888')+';font-weight:bold';
+  statusDiv.innerHTML=info.active?'🟢 Événements actifs — '+info.remaining+' mois restant'+(info.remaining>1?'s':''):'🕐 Prochains événements dans <b>'+info.until+' mois</b>';
   c.appendChild(statusDiv);
+  var evts=[
+    {id:'quiz',emoji:'🧠',name:'Quizz Party',rules:'Réponds à des questions sur Farm Valley pour gagner des ⭐',color:'#9b59b6'},
+    {id:'marche',emoji:'🤪',name:'Marché Fou',rules:'Un marchand propose des offres absurdes ! Accepte ou refuse avant qu\'elles expirent.',color:'#e67e22'},
+    {id:'wheel',emoji:'🎰',name:'Roue de la Chance',rules:'Tourne la roue pour gagner des ressources, des 💰 ou de l\'eau !',color:'#e74c3c'},
+    {id:'memory',emoji:'🃏',name:'Memory Farm',rules:'Retourne les cartes et trouve les paires d\'émojis ferme !',color:'#2ecc71'},
+    {id:'justeprix',emoji:'💰',name:'Le Juste Prix',rules:'Connais-tu les prix du marché ? Trouve le bon prix de vente !',color:'#3498db'},
+    {id:'combo',emoji:'👆',name:'Combo Click',rules:'Clique le plus vite possible en 10 secondes !',color:'#e91e63'}
+  ];
+  for(var i=0;i<evts.length;i++){
+    (function(ev){
+      var card=document.createElement('div');
+      card.style.cssText='background:rgba(255,255,255,.95);border-radius:14px;padding:14px;margin:0 8px 12px;box-shadow:0 4px 16px rgba(0,0,0,.1);border-left:4px solid '+ev.color;
+      var hdr=document.createElement('div');
+      hdr.style.cssText='display:flex;align-items:center;gap:10px;margin-bottom:6px';
+      hdr.innerHTML='<span style="font-size:1.8rem">'+ev.emoji+'</span><div style="flex:1"><div style="font-size:1rem;font-weight:bold;color:#5d4037">'+ev.name+'</div><div style="font-size:.72rem;color:#888;line-height:1.4;margin-top:2px">'+ev.rules+'</div></div>';
+      card.appendChild(hdr);
+      if(info.active){
+        var btn=document.createElement('button');
+        btn.style.cssText='display:block;width:100%;margin-top:8px;padding:10px;background:linear-gradient(145deg,'+ev.color+','+ev.color+'cc);color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:bold;cursor:pointer';
+        btn.textContent='▶ Jouer';
+        btn.addEventListener('click',function(){_activeEvent=ev.id;buildEvent();});
+        card.appendChild(btn);
+      }else{
+        var off=document.createElement('div');
+        off.style.cssText='text-align:center;padding:6px;font-size:.75rem;color:#aaa;font-style:italic';
+        off.textContent='Disponible dans '+info.until+' mois';
+        card.appendChild(off);
+      }
+      c.appendChild(card);
+    })(evts[i]);
+  }
+}
+function buildEventBack(c){
+  var btn=document.createElement('button');
+  btn.style.cssText='display:inline-flex;align-items:center;gap:4px;padding:8px 14px;margin:8px;background:rgba(0,0,0,.06);border:none;border-radius:8px;font-size:.82rem;color:#5d4037;cursor:pointer;font-weight:bold';
+  btn.textContent='← Retour';
+  btn.addEventListener('click',function(){_activeEvent=null;_quizCurrent=-1;buildEvent();});
+  c.appendChild(btn);
+}
+
+// ===== QUIZZ PARTY =====
+function buildQuizPlay(c){
+  var info=getQuizEventInfo();
+  if(!info.active){_activeEvent=null;buildEvent();return;}
+  var hdr=document.createElement('div');
+  hdr.style.cssText='text-align:center;padding:8px';
+  hdr.innerHTML='<div style="font-size:2rem">🧠</div><div style="font-size:1rem;font-weight:bold;color:#5d4037">Quizz Party</div>';
+  c.appendChild(hdr);
   var answered=(state.quizAnswered||[]).length;
   var stars=state.quizStars||0;
   var statsDiv=document.createElement('div');
-  statsDiv.style.cssText='display:flex;justify-content:center;gap:16px;padding:8px;font-size:.82rem';
-  statsDiv.innerHTML='<span>📊 <b>'+answered+'</b>/'+QUIZ_QUESTIONS.length+' répondues</span><span>⭐ <b>'+stars+'</b> étoiles</span>';
+  statsDiv.style.cssText='display:flex;justify-content:center;gap:16px;padding:6px;font-size:.82rem';
+  statsDiv.innerHTML='<span>📊 <b>'+answered+'</b>/'+QUIZ_QUESTIONS.length+'</span><span>⭐ <b>'+stars+'</b></span>';
   c.appendChild(statsDiv);
-  // If all answered
   if(answered>=QUIZ_QUESTIONS.length){
     var done=document.createElement('div');
-    done.style.cssText='text-align:center;padding:30px;font-size:1rem;color:#e67e22;font-weight:bold';
-    done.innerHTML='🏆 Bravo ! Tu as répondu aux '+QUIZ_QUESTIONS.length+' questions !<br><span style="font-size:.8rem;color:#666;font-weight:normal">Score : '+stars+' ⭐ — Le quizz recommence !</span>';
+    done.style.cssText='text-align:center;padding:20px;font-size:1rem;color:#e67e22;font-weight:bold';
+    done.innerHTML='🏆 Bravo ! Toutes les '+QUIZ_QUESTIONS.length+' questions répondues !<br><span style="font-size:.8rem;color:#666;font-weight:normal">Score : '+stars+' ⭐</span>';
     c.appendChild(done);
     var resetBtn=document.createElement('button');
-    resetBtn.style.cssText='display:block;margin:16px auto;padding:12px 28px;background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:bold;cursor:pointer';
-    resetBtn.textContent='🔄 Recommencer le Quizz';
-    resetBtn.addEventListener('click',function(){
-      state.quizAnswered=[];_quizCurrent=-1;saveGame();buildEvent();
-    });
+    resetBtn.style.cssText='display:block;margin:12px auto;padding:12px 28px;background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:bold;cursor:pointer';
+    resetBtn.textContent='🔄 Recommencer';
+    resetBtn.addEventListener('click',function(){state.quizAnswered=[];_quizCurrent=-1;saveGame();buildEvent();});
     c.appendChild(resetBtn);
     return;
   }
-  // Show question or play button
   if(_quizCurrent<0){
     var playBtn=document.createElement('button');
-    playBtn.style.cssText='display:block;margin:20px auto;padding:14px 36px;background:linear-gradient(145deg,#9b59b6,#8e44ad);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(155,89,182,.3)';
+    playBtn.style.cssText='display:block;margin:16px auto;padding:14px 36px;background:linear-gradient(145deg,#9b59b6,#8e44ad);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(155,89,182,.3)';
     playBtn.textContent='🎯 Question suivante';
     playBtn.addEventListener('click',function(){
-      // Pick a random unanswered question
       var avail=[];
-      for(var i=0;i<QUIZ_QUESTIONS.length;i++){
-        if((state.quizAnswered||[]).indexOf(i)<0)avail.push(i);
-      }
+      for(var i=0;i<QUIZ_QUESTIONS.length;i++){if((state.quizAnswered||[]).indexOf(i)<0)avail.push(i);}
       if(avail.length===0)return;
-      shuffle(avail);
-      _quizCurrent=avail[0];
-      buildEvent();
+      shuffle(avail);_quizCurrent=avail[0];buildEvent();
     });
     c.appendChild(playBtn);
   }else{
@@ -4237,64 +4319,490 @@ function renderQuizQuestion(container,qIdx){
   var qq=QUIZ_QUESTIONS[qIdx];
   var card=document.createElement('div');
   card.style.cssText='background:rgba(255,255,255,.95);border-radius:14px;padding:16px;margin:8px;box-shadow:0 4px 16px rgba(0,0,0,.12)';
-  // Question number
   var num=document.createElement('div');
   num.style.cssText='text-align:center;font-size:.7rem;color:#999;margin-bottom:6px';
   num.textContent='Question #'+((state.quizAnswered||[]).length+1)+' / '+QUIZ_QUESTIONS.length;
   card.appendChild(num);
-  // Question text
   var qtxt=document.createElement('div');
   qtxt.style.cssText='text-align:center;font-size:.92rem;font-weight:bold;color:#333;padding:12px 8px;line-height:1.5';
   qtxt.textContent=qq.q;
   card.appendChild(qtxt);
-  // Answers
   var ansDiv=document.createElement('div');
   ansDiv.style.cssText='display:flex;flex-direction:column;gap:8px;padding:8px 0';
   if(qq.type==='vf'){
-    var btnV=createQuizBtn('✅ Vrai',true===qq.a,qIdx,ansDiv);
-    var btnF=createQuizBtn('❌ Faux',false===qq.a,qIdx,ansDiv);
-    ansDiv.appendChild(btnV);
-    ansDiv.appendChild(btnF);
+    ansDiv.appendChild(createQuizBtn('✅ Vrai',true===qq.a,qIdx,ansDiv));
+    ansDiv.appendChild(createQuizBtn('❌ Faux',false===qq.a,qIdx,ansDiv));
   }else{
-    // Shuffle display order but track correct
-    var order=[0,1];
-    if(Math.random()>0.5){order=[1,0];}
+    var order=[0,1];if(Math.random()>0.5)order=[1,0];
     for(var oi=0;oi<order.length;oi++){
-      var isCorrect=order[oi]===qq.a;
-      var btn=createQuizBtn(qq.opts[order[oi]],isCorrect,qIdx,ansDiv);
-      ansDiv.appendChild(btn);
+      ansDiv.appendChild(createQuizBtn(qq.opts[order[oi]],order[oi]===qq.a,qIdx,ansDiv));
     }
   }
-  card.appendChild(ansDiv);
-  container.appendChild(card);
+  card.appendChild(ansDiv);container.appendChild(card);
 }
 function createQuizBtn(label,isCorrect,qIdx,ansDiv){
   var btn=document.createElement('button');
   btn.style.cssText='padding:12px 16px;border:2px solid rgba(0,0,0,.1);border-radius:10px;background:rgba(255,255,255,.9);font-size:.88rem;font-weight:bold;cursor:pointer;transition:all .2s;text-align:center';
   btn.textContent=label;
   btn.addEventListener('click',function(){
-    // Disable all buttons
     var btns=ansDiv.querySelectorAll('button');
     for(var i=0;i<btns.length;i++){btns[i].disabled=true;btns[i].style.cursor='default';btns[i].style.opacity='.7';}
     if(isCorrect){
       btn.style.background='#c8e6c9';btn.style.borderColor='#4CAF50';btn.style.opacity='1';
-      state.quizStars=(state.quizStars||0)+1;
-      state.stars=(state.stars||0)+1;
+      state.quizStars=(state.quizStars||0)+1;state.stars=(state.stars||0)+1;
       showFloat(innerWidth/2,100,'⭐ +1');
     }else{
       btn.style.background='#ffcdd2';btn.style.borderColor='#e74c3c';btn.style.opacity='1';
-      // Highlight correct answer
       for(var j=0;j<btns.length;j++){if(btns[j]!==btn){btns[j].style.background='#c8e6c9';btns[j].style.borderColor='#4CAF50';btns[j].style.opacity='1';}}
     }
     if(!state.quizAnswered)state.quizAnswered=[];
-    state.quizAnswered.push(qIdx);
-    _quizCurrent=-1;
-    saveGame();
-    updateUI();
-    // Auto-advance after delay
+    state.quizAnswered.push(qIdx);_quizCurrent=-1;saveGame();updateUI();
     setTimeout(function(){buildEvent();},1200);
   });
   return btn;
+}
+
+// ===== MARCHÉ FOU =====
+function generateMarcheOffers(){
+  var allKeys=BRUT_KEYS.concat(TRANSFO_KEYS);
+  shuffle(allKeys);
+  var count=3+Math.floor(Math.random()*3);// 3-5 offers
+  var offers=[];
+  for(var i=0;i<count&&i<allKeys.length-1;i++){
+    var giveKey=allKeys[i],receiveKey=allKeys[(i+count)%allKeys.length];
+    if(giveKey===receiveKey)continue;
+    var giveRI=RES_INFO[giveKey],recRI=RES_INFO[receiveKey];
+    if(!giveRI||!recRI)continue;
+    // Absurd ratios: sometimes amazing deal, sometimes terrible
+    var isGood=Math.random()>0.5;
+    var giveQty,recQty;
+    if(isGood){
+      giveQty=1+Math.floor(Math.random()*3);
+      recQty=10+Math.floor(Math.random()*40);
+    }else{
+      giveQty=10+Math.floor(Math.random()*30);
+      recQty=1+Math.floor(Math.random()*3);
+    }
+    offers.push({giveKey:giveKey,giveQty:giveQty,receiveKey:receiveKey,receiveQty:recQty,accepted:false});
+  }
+  state.marcheOffers=offers;
+  state.marcheExpiry=Date.now()+3*DAY_MS;
+  saveGame();
+}
+function buildMarchePlay(c){
+  var info=getQuizEventInfo();
+  if(!info.active){_activeEvent=null;buildEvent();return;}
+  var hdr=document.createElement('div');
+  hdr.style.cssText='text-align:center;padding:8px';
+  hdr.innerHTML='<div style="font-size:2rem">🤪</div><div style="font-size:1rem;font-weight:bold;color:#5d4037">Marché Fou</div><div style="font-size:.72rem;color:#888;margin-top:2px">Score total : <b>'+(state.marcheScore||0)+' échanges</b></div>';
+  c.appendChild(hdr);
+  // Check if offers expired or empty
+  var offers=state.marcheOffers||[];
+  var expired=state.marcheExpiry&&Date.now()>state.marcheExpiry;
+  var allDone=offers.length>0&&offers.every(function(o){return o.accepted;});
+  if(offers.length===0||expired||allDone){
+    var msg=document.createElement('div');
+    msg.style.cssText='text-align:center;padding:16px;font-size:.85rem;color:#888';
+    msg.textContent=expired?'⏰ Les offres ont expiré !':allDone?'✅ Toutes les offres acceptées !':'Aucune offre en cours.';
+    c.appendChild(msg);
+    var genBtn=document.createElement('button');
+    genBtn.style.cssText='display:block;margin:12px auto;padding:12px 28px;background:linear-gradient(145deg,#e67e22,#d35400);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:bold;cursor:pointer';
+    genBtn.textContent='🔄 Nouvelles offres';
+    genBtn.addEventListener('click',function(){generateMarcheOffers();buildEvent();});
+    c.appendChild(genBtn);
+    return;
+  }
+  // Timer
+  var remaining=Math.max(0,state.marcheExpiry-Date.now());
+  var mins=Math.floor(remaining/60000);var secs=Math.floor((remaining%60000)/1000);
+  var timer=document.createElement('div');
+  timer.style.cssText='text-align:center;padding:6px;font-size:.78rem;color:#e74c3c;font-weight:bold';
+  timer.textContent='⏱️ Expire dans '+mins+'m '+secs+'s';
+  c.appendChild(timer);
+  // Offers
+  for(var i=0;i<offers.length;i++){
+    (function(idx){
+      var o=offers[idx];
+      var gRI=RES_INFO[o.giveKey],rRI=RES_INFO[o.receiveKey];
+      if(!gRI||!rRI)return;
+      var row=document.createElement('div');
+      row.style.cssText='background:rgba(255,255,255,.9);border-radius:10px;padding:12px;margin:8px;display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.08)';
+      if(o.accepted){row.style.opacity='.5';}
+      var txt=document.createElement('div');
+      txt.style.cssText='flex:1;font-size:.82rem;line-height:1.5';
+      txt.innerHTML='Donne <b>'+o.giveQty+' '+gRI.emoji+' '+gRI.name+'</b><br>Reçois <b>'+o.receiveQty+' '+rRI.emoji+' '+rRI.name+'</b>';
+      row.appendChild(txt);
+      if(!o.accepted){
+        var accBtn=document.createElement('button');
+        accBtn.style.cssText='padding:8px 14px;background:#27ae60;color:#fff;border:none;border-radius:8px;font-size:.78rem;font-weight:bold;cursor:pointer';
+        accBtn.textContent='✅';
+        accBtn.addEventListener('click',function(){
+          var have=(state.resources[o.giveKey]||0);
+          if(have<o.giveQty){showFloat(innerWidth/2,100,'❌ Pas assez !');return;}
+          state.resources[o.giveKey]-=o.giveQty;
+          state.resources[o.receiveKey]=(state.resources[o.receiveKey]||0)+o.receiveQty;
+          o.accepted=true;state.marcheScore=(state.marcheScore||0)+1;
+          saveGame();updateUI();buildEvent();
+          showFloat(innerWidth/2,100,'+'+o.receiveQty+' '+rRI.emoji);
+        });
+        row.appendChild(accBtn);
+      }else{
+        var done=document.createElement('span');
+        done.style.cssText='font-size:.8rem;color:#27ae60;font-weight:bold';
+        done.textContent='✅';
+        row.appendChild(done);
+      }
+      c.appendChild(row);
+    })(i);
+  }
+}
+
+// ===== ROUE DE LA CHANCE =====
+var _wheelSpinning=false;
+function buildWheelPlay(c){
+  var info=getQuizEventInfo();
+  if(!info.active){_activeEvent=null;buildEvent();return;}
+  var hdr=document.createElement('div');
+  hdr.style.cssText='text-align:center;padding:8px';
+  hdr.innerHTML='<div style="font-size:2rem">🎰</div><div style="font-size:1rem;font-weight:bold;color:#5d4037">Roue de la Chance</div><div style="font-size:.72rem;color:#888;margin-top:2px">Tours joués : <b>'+(state.wheelSpins||0)+'</b></div>';
+  c.appendChild(hdr);
+  // Wheel sectors
+  var sectors=[
+    {label:'💰 50',type:'coins',qty:50,color:'#f1c40f'},
+    {label:'💧 20',type:'water',qty:20,color:'#3498db'},
+    {label:'❌ Rien',type:'nothing',qty:0,color:'#95a5a6'},
+    {label:'💰 200',type:'coins',qty:200,color:'#e67e22'},
+    {label:'🪵 10',type:'wood',qty:10,color:'#8d6e63'},
+    {label:'❌ Rien',type:'nothing',qty:0,color:'#bdc3c7'},
+    {label:'💰 100',type:'coins',qty:100,color:'#f39c12'},
+    {label:'🎁 Ressource',type:'random',qty:5,color:'#9b59b6'},
+    {label:'❌ Rien',type:'nothing',qty:0,color:'#95a5a6'},
+    {label:'💰 500',type:'coins',qty:500,color:'#e74c3c'},
+    {label:'💧 50',type:'water',qty:50,color:'#2980b9'},
+    {label:'🎁 Ressource',type:'random',qty:10,color:'#8e44ad'}
+  ];
+  // Canvas wheel
+  var canvas=document.createElement('canvas');
+  canvas.width=280;canvas.height=280;
+  canvas.style.cssText='display:block;margin:10px auto;';
+  var ctx=canvas.getContext('2d');
+  var cx=140,cy=140,r=130;
+  var sliceAngle=2*Math.PI/sectors.length;
+  var rotation=0;
+  function drawWheel(rot){
+    ctx.clearRect(0,0,280,280);
+    for(var s=0;s<sectors.length;s++){
+      var start=rot+s*sliceAngle;
+      ctx.beginPath();ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,r,start,start+sliceAngle);
+      ctx.closePath();ctx.fillStyle=sectors[s].color;ctx.fill();
+      ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+      // Label
+      ctx.save();ctx.translate(cx,cy);ctx.rotate(start+sliceAngle/2);
+      ctx.fillStyle='#fff';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillText(sectors[s].label,r*0.62,4);
+      ctx.restore();
+    }
+    // Center
+    ctx.beginPath();ctx.arc(cx,cy,18,0,2*Math.PI);ctx.fillStyle='#fff';ctx.fill();
+    ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.stroke();
+    // Arrow
+    ctx.beginPath();ctx.moveTo(cx+r+5,cy-8);ctx.lineTo(cx+r+5,cy+8);ctx.lineTo(cx+r-10,cy);ctx.closePath();
+    ctx.fillStyle='#e74c3c';ctx.fill();
+  }
+  drawWheel(0);
+  c.appendChild(canvas);
+  // Cost to spin
+  var costDiv=document.createElement('div');
+  costDiv.style.cssText='text-align:center;font-size:.78rem;color:#888;margin:4px 0';
+  costDiv.textContent='Coût : 50 💰 par tour';
+  c.appendChild(costDiv);
+  // Spin button
+  var spinBtn=document.createElement('button');
+  spinBtn.style.cssText='display:block;margin:10px auto;padding:12px 32px;background:linear-gradient(145deg,#e74c3c,#c0392b);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer';
+  spinBtn.textContent='🎰 Tourner (50 💰)';
+  if(_wheelSpinning)spinBtn.disabled=true;
+  spinBtn.addEventListener('click',function(){
+    if(_wheelSpinning)return;
+    if(state.coins<50){showFloat(innerWidth/2,100,'❌ Pas assez de 💰 !');return;}
+    state.coins-=50;_wheelSpinning=true;spinBtn.disabled=true;
+    state.wheelSpins=(state.wheelSpins||0)+1;
+    var target=Math.floor(Math.random()*sectors.length);
+    var totalRotation=2*Math.PI*6+target*sliceAngle+Math.random()*sliceAngle*0.8;// 6 full turns + target
+    var startTime=Date.now();var duration=3000;
+    function animSpin(){
+      var elapsed=Date.now()-startTime;
+      var t=Math.min(1,elapsed/duration);
+      var ease=1-Math.pow(1-t,3);// ease out cubic
+      rotation=ease*totalRotation;
+      drawWheel(-rotation);
+      if(t<1){requestAnimationFrame(animSpin);}
+      else{
+        // Determine winning sector (sector at right = arrow position)
+        var finalAngle=(rotation%(2*Math.PI));
+        var winIdx=Math.floor(finalAngle/sliceAngle)%sectors.length;
+        var win=sectors[winIdx];
+        _wheelSpinning=false;
+        // Apply reward
+        var rewardText='';
+        if(win.type==='coins'){state.coins+=win.qty;rewardText='+'+win.qty+' 💰';}
+        else if(win.type==='water'){state.water=Math.min(state.maxWater,state.water+win.qty);rewardText='+'+win.qty+' 💧';}
+        else if(win.type==='wood'){state.resources.bois=(state.resources.bois||0)+win.qty;rewardText='+'+win.qty+' 🪵';}
+        else if(win.type==='random'){
+          var pool=BRUT_KEYS.concat(CROP_KEYS);
+          var rk=pool[Math.floor(Math.random()*pool.length)];
+          state.resources[rk]=(state.resources[rk]||0)+win.qty;
+          var ri=RES_INFO[rk];
+          rewardText=ri?'+'+win.qty+' '+ri.emoji:'+ ressource';
+        }
+        else{rewardText='❌ Rien !';}
+        saveGame();updateUI();
+        showFloat(innerWidth/2,100,rewardText);
+        setTimeout(function(){buildEvent();},1500);
+      }
+    }
+    animSpin();
+  });
+  c.appendChild(spinBtn);
+}
+
+// ===== MEMORY FARM =====
+var _memoryCards=[];var _memoryFlipped=[];var _memoryMatched=[];var _memoryLocked=false;var _memoryMoves=0;
+function buildMemoryPlay(c){
+  var info=getQuizEventInfo();
+  if(!info.active){_activeEvent=null;buildEvent();return;}
+  var hdr=document.createElement('div');
+  hdr.style.cssText='text-align:center;padding:8px';
+  hdr.innerHTML='<div style="font-size:2rem">🃏</div><div style="font-size:1rem;font-weight:bold;color:#5d4037">Memory Farm</div><div style="font-size:.72rem;color:#888;margin-top:2px">Parties jouées : <b>'+(state.memoryPlays||0)+'</b> — Meilleur : <b>'+(state.memoryBest||'—')+' coups</b></div>';
+  c.appendChild(hdr);
+  // Start new game if no cards
+  if(_memoryCards.length===0){
+    var startBtn=document.createElement('button');
+    startBtn.style.cssText='display:block;margin:16px auto;padding:14px 36px;background:linear-gradient(145deg,#2ecc71,#27ae60);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer';
+    startBtn.textContent='🃏 Nouvelle partie';
+    startBtn.addEventListener('click',function(){startMemoryGame();buildEvent();});
+    c.appendChild(startBtn);
+    return;
+  }
+  // Stats
+  var statDiv=document.createElement('div');
+  statDiv.style.cssText='text-align:center;padding:4px;font-size:.8rem;color:#666';
+  statDiv.textContent='Coups : '+_memoryMoves+' — Paires : '+_memoryMatched.length+'/'+(_memoryCards.length/2);
+  c.appendChild(statDiv);
+  // Grid 4x4
+  var grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px;max-width:300px;margin:0 auto';
+  for(var i=0;i<_memoryCards.length;i++){
+    (function(idx){
+      var cardDiv=document.createElement('div');
+      var isFlipped=_memoryFlipped.indexOf(idx)>=0;
+      var isMatched=_memoryMatched.indexOf(_memoryCards[idx])>=0;
+      cardDiv.style.cssText='aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:1.6rem;border-radius:10px;cursor:pointer;transition:all .3s;user-select:none;'
+        +(isFlipped||isMatched?'background:#e8f5e9;box-shadow:0 2px 8px rgba(0,0,0,.1);':'background:linear-gradient(145deg,#5d4037,#795548);box-shadow:0 2px 8px rgba(0,0,0,.15);');
+      cardDiv.textContent=isFlipped||isMatched?_memoryCards[idx]:'❓';
+      if(!isFlipped&&!isMatched){
+        cardDiv.addEventListener('click',function(){flipMemoryCard(idx);});
+      }
+      grid.appendChild(cardDiv);
+    })(i);
+  }
+  c.appendChild(grid);
+  // Check win
+  if(_memoryMatched.length>=_memoryCards.length/2){
+    var winDiv=document.createElement('div');
+    winDiv.style.cssText='text-align:center;padding:16px;font-size:1rem;color:#27ae60;font-weight:bold';
+    winDiv.innerHTML='🏆 Bravo ! Terminé en '+_memoryMoves+' coups !';
+    c.appendChild(winDiv);
+    // Reward
+    var reward=Math.max(10,50-_memoryMoves*2);
+    state.coins+=reward;state.memoryPlays=(state.memoryPlays||0)+1;
+    if(state.memoryBest===0||_memoryMoves<state.memoryBest)state.memoryBest=_memoryMoves;
+    _memoryCards=[];_memoryFlipped=[];_memoryMatched=[];_memoryMoves=0;
+    saveGame();updateUI();
+    showFloat(innerWidth/2,100,'+'+reward+' 💰');
+    var replayBtn=document.createElement('button');
+    replayBtn.style.cssText='display:block;margin:12px auto;padding:12px 28px;background:linear-gradient(145deg,#2ecc71,#27ae60);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:bold;cursor:pointer';
+    replayBtn.textContent='🔄 Rejouer';
+    replayBtn.addEventListener('click',function(){startMemoryGame();buildEvent();});
+    c.appendChild(replayBtn);
+  }
+}
+function startMemoryGame(){
+  var emojis=['🥕','🍅','🌾','🥚','🍎','🍓','🍋','🍇'];
+  _memoryCards=emojis.concat(emojis);// 8 pairs = 16 cards
+  shuffle(_memoryCards);
+  _memoryFlipped=[];_memoryMatched=[];_memoryMoves=0;_memoryLocked=false;
+}
+function flipMemoryCard(idx){
+  if(_memoryLocked||_memoryFlipped.indexOf(idx)>=0||_memoryMatched.indexOf(_memoryCards[idx])>=0)return;
+  _memoryFlipped.push(idx);
+  if(_memoryFlipped.length===2){
+    _memoryMoves++;_memoryLocked=true;
+    var a=_memoryFlipped[0],b=_memoryFlipped[1];
+    if(_memoryCards[a]===_memoryCards[b]){
+      _memoryMatched.push(_memoryCards[a]);
+      _memoryFlipped=[];_memoryLocked=false;
+      buildEvent();
+    }else{
+      buildEvent();
+      setTimeout(function(){_memoryFlipped=[];_memoryLocked=false;buildEvent();},800);
+    }
+  }else{buildEvent();}
+}
+
+// ===== LE JUSTE PRIX =====
+var _justePrixCurrent=-1;
+function buildJustePrixPlay(c){
+  var info=getQuizEventInfo();
+  if(!info.active){_activeEvent=null;buildEvent();return;}
+  var hdr=document.createElement('div');
+  hdr.style.cssText='text-align:center;padding:8px';
+  hdr.innerHTML='<div style="font-size:2rem">💰</div><div style="font-size:1rem;font-weight:bold;color:#5d4037">Le Juste Prix</div>';
+  c.appendChild(hdr);
+  var answered=(state.justePrixAnswered||[]).length;
+  var score=state.justePrixScore||0;
+  var statsDiv=document.createElement('div');
+  statsDiv.style.cssText='display:flex;justify-content:center;gap:16px;padding:6px;font-size:.82rem';
+  statsDiv.innerHTML='<span>📊 <b>'+answered+'</b>/'+JUSTE_PRIX_QUESTIONS.length+'</span><span>✅ <b>'+score+'</b> bonnes</span>';
+  c.appendChild(statsDiv);
+  if(answered>=JUSTE_PRIX_QUESTIONS.length){
+    var done=document.createElement('div');
+    done.style.cssText='text-align:center;padding:20px;font-size:1rem;color:#3498db;font-weight:bold';
+    done.innerHTML='🏆 Toutes les '+JUSTE_PRIX_QUESTIONS.length+' questions répondues !<br><span style="font-size:.8rem;color:#666;font-weight:normal">Score : '+score+'/'+JUSTE_PRIX_QUESTIONS.length+'</span>';
+    c.appendChild(done);
+    var resetBtn=document.createElement('button');
+    resetBtn.style.cssText='display:block;margin:12px auto;padding:12px 28px;background:linear-gradient(145deg,#3498db,#2980b9);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:bold;cursor:pointer';
+    resetBtn.textContent='🔄 Recommencer';
+    resetBtn.addEventListener('click',function(){state.justePrixAnswered=[];_justePrixCurrent=-1;saveGame();buildEvent();});
+    c.appendChild(resetBtn);
+    return;
+  }
+  if(_justePrixCurrent<0){
+    var playBtn=document.createElement('button');
+    playBtn.style.cssText='display:block;margin:16px auto;padding:14px 36px;background:linear-gradient(145deg,#3498db,#2980b9);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(52,152,219,.3)';
+    playBtn.textContent='🎯 Question suivante';
+    playBtn.addEventListener('click',function(){
+      var avail=[];
+      for(var i=0;i<JUSTE_PRIX_QUESTIONS.length;i++){if((state.justePrixAnswered||[]).indexOf(i)<0)avail.push(i);}
+      if(avail.length===0)return;
+      shuffle(avail);_justePrixCurrent=avail[0];buildEvent();
+    });
+    c.appendChild(playBtn);
+  }else{
+    renderJustePrixQ(c,_justePrixCurrent);
+  }
+}
+function renderJustePrixQ(container,qIdx){
+  var qq=JUSTE_PRIX_QUESTIONS[qIdx];
+  var card=document.createElement('div');
+  card.style.cssText='background:rgba(255,255,255,.95);border-radius:14px;padding:16px;margin:8px;box-shadow:0 4px 16px rgba(0,0,0,.12)';
+  var num=document.createElement('div');
+  num.style.cssText='text-align:center;font-size:.7rem;color:#999;margin-bottom:6px';
+  num.textContent='Question #'+((state.justePrixAnswered||[]).length+1)+' / '+JUSTE_PRIX_QUESTIONS.length;
+  card.appendChild(num);
+  var qtxt=document.createElement('div');
+  qtxt.style.cssText='text-align:center;font-size:.92rem;font-weight:bold;color:#333;padding:12px 8px;line-height:1.5';
+  qtxt.textContent=qq.q;
+  card.appendChild(qtxt);
+  var ansDiv=document.createElement('div');
+  ansDiv.style.cssText='display:flex;flex-direction:column;gap:8px;padding:8px 0';
+  // Shuffle options
+  var indices=[];for(var i=0;i<qq.opts.length;i++)indices.push(i);
+  shuffle(indices);
+  for(var oi=0;oi<indices.length;oi++){
+    (function(optIdx){
+      var isCorrect=optIdx===qq.a;
+      var btn=document.createElement('button');
+      btn.style.cssText='padding:12px 16px;border:2px solid rgba(0,0,0,.1);border-radius:10px;background:rgba(255,255,255,.9);font-size:.88rem;font-weight:bold;cursor:pointer;transition:all .2s;text-align:center';
+      btn.textContent=qq.opts[optIdx];
+      btn.addEventListener('click',function(){
+        var btns=ansDiv.querySelectorAll('button');
+        for(var j=0;j<btns.length;j++){btns[j].disabled=true;btns[j].style.cursor='default';btns[j].style.opacity='.7';}
+        if(isCorrect){
+          btn.style.background='#c8e6c9';btn.style.borderColor='#4CAF50';btn.style.opacity='1';
+          state.justePrixScore=(state.justePrixScore||0)+1;
+          state.coins+=20;
+          showFloat(innerWidth/2,100,'✅ +20 💰');
+        }else{
+          btn.style.background='#ffcdd2';btn.style.borderColor='#e74c3c';btn.style.opacity='1';
+          for(var k=0;k<btns.length;k++){
+            if(btns[k].textContent===qq.opts[qq.a]){btns[k].style.background='#c8e6c9';btns[k].style.borderColor='#4CAF50';btns[k].style.opacity='1';}
+          }
+        }
+        if(!state.justePrixAnswered)state.justePrixAnswered=[];
+        state.justePrixAnswered.push(qIdx);_justePrixCurrent=-1;saveGame();updateUI();
+        setTimeout(function(){buildEvent();},1200);
+      });
+      ansDiv.appendChild(btn);
+    })(indices[oi]);
+  }
+  card.appendChild(ansDiv);container.appendChild(card);
+}
+
+// ===== COMBO CLICK =====
+var _comboTimer=null;var _comboClicks=0;var _comboTimeLeft=0;var _comboRunning=false;
+function buildComboPlay(c){
+  var info=getQuizEventInfo();
+  if(!info.active){_activeEvent=null;buildEvent();return;}
+  var hdr=document.createElement('div');
+  hdr.style.cssText='text-align:center;padding:8px';
+  hdr.innerHTML='<div style="font-size:2rem">👆</div><div style="font-size:1rem;font-weight:bold;color:#5d4037">Combo Click</div><div style="font-size:.72rem;color:#888;margin-top:2px">Parties : <b>'+(state.comboClickPlays||0)+'</b> — Record : <b>'+(state.comboClickBest||0)+' clics</b></div>';
+  c.appendChild(hdr);
+  if(_comboRunning){
+    // Show timer and click zone
+    var timerDiv=document.createElement('div');
+    timerDiv.style.cssText='text-align:center;padding:8px;font-size:1.4rem;font-weight:bold;color:#e74c3c';
+    timerDiv.textContent='⏱️ '+(_comboTimeLeft/1000).toFixed(1)+'s';
+    c.appendChild(timerDiv);
+    var counterDiv=document.createElement('div');
+    counterDiv.style.cssText='text-align:center;padding:4px;font-size:2rem;font-weight:bold;color:#5d4037';
+    counterDiv.textContent=_comboClicks+' 👆';
+    c.appendChild(counterDiv);
+    var clickZone=document.createElement('div');
+    clickZone.style.cssText='margin:12px auto;width:200px;height:200px;background:linear-gradient(145deg,#e91e63,#c2185b);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(233,30,99,.4);user-select:none;transition:transform .05s';
+    clickZone.innerHTML='<span style="font-size:3rem;color:#fff;pointer-events:none">👆</span>';
+    clickZone.addEventListener('click',function(){
+      _comboClicks++;
+      clickZone.style.transform='scale(0.92)';
+      setTimeout(function(){clickZone.style.transform='scale(1)';},50);
+      counterDiv.textContent=_comboClicks+' 👆';
+    });
+    c.appendChild(clickZone);
+  }else{
+    var startBtn=document.createElement('button');
+    startBtn.style.cssText='display:block;margin:20px auto;padding:14px 36px;background:linear-gradient(145deg,#e91e63,#c2185b);color:#fff;border:none;border-radius:12px;font-size:1rem;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(233,30,99,.3)';
+    startBtn.textContent='🚀 Go ! (10 secondes)';
+    startBtn.addEventListener('click',function(){startComboClick();});
+    c.appendChild(startBtn);
+  }
+}
+function startComboClick(){
+  _comboClicks=0;_comboTimeLeft=10000;_comboRunning=true;
+  buildEvent();
+  var interval=setInterval(function(){
+    _comboTimeLeft-=100;
+    if(_comboTimeLeft<=0){
+      clearInterval(interval);
+      _comboRunning=false;
+      state.comboClickPlays=(state.comboClickPlays||0)+1;
+      if(_comboClicks>state.comboClickBest)state.comboClickBest=_comboClicks;
+      // Reward tiers
+      var reward=0;
+      if(_comboClicks>=80)reward=500;
+      else if(_comboClicks>=60)reward=300;
+      else if(_comboClicks>=40)reward=150;
+      else if(_comboClicks>=20)reward=50;
+      else reward=10;
+      state.coins+=reward;
+      saveGame();updateUI();
+      showFloat(innerWidth/2,100,_comboClicks+' clics → +'+reward+' 💰');
+      setTimeout(function(){buildEvent();},1500);
+    }else{
+      // Update timer display
+      var td=document.querySelector('[style*="font-size:1.4rem"]');
+      if(td)td.textContent='⏱️ '+(_comboTimeLeft/1000).toFixed(1)+'s';
+    }
+  },100);
 }
 
 // ===== START =====
@@ -4302,8 +4810,8 @@ $('btn-start').addEventListener('click',function(){overlay.classList.add('hidden
 if(localStorage.getItem(SAVE_KEY)){overlay.classList.add('hidden');init()}
 
 // ===== MUSIC SYSTEM =====
-var musicTracks={global:'global.mp3',farm:'global.mp3',buildings:'atelier.mp3',shop:'boutique.mp3',garden:'global.mp3'};
-var musicNames={global:'global.mp3',farm:'global.mp3',buildings:'atelier.mp3',shop:'boutique.mp3',garden:'global.mp3'};
+var musicTracks={global:'global.ogg',farm:'global.ogg',buildings:'atelier.ogg',shop:'boutique.ogg',garden:'global.ogg'};
+var musicNames={global:'global.ogg',farm:'global.ogg',buildings:'atelier.ogg',shop:'boutique.ogg',garden:'global.ogg'};
 var musicAudio=new Audio();
 musicAudio.loop=true;
 musicAudio.volume=0.5;
