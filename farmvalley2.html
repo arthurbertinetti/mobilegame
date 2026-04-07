@@ -164,227 +164,273 @@ body{
 @keyframes pulse-auto{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.8;transform:scale(.98)}}
 
 /* ═══════════════════════════════════════════════════════════
-   ISOMETRIC FARM GRID
+   ISOMETRIC FARM GRID  —  FARMVILLE 2.5D
+   Architecture correcte :
+   .plot (position:absolute, overflow:visible)
+     ├── .tile-top   (top:0,         height=ISO_TH  → face du dessus en losange)
+     ├── .tile-left  (top=ISO_TH,    height=ISO_SIDE → face gauche en parallelogramme)
+     ├── .tile-right (top=ISO_TH,    height=ISO_SIDE → face droite en parallelogramme)
+     └── .tile-over  (top:0, z-index:5 → sprites + labels, pas de clip)
    ═══════════════════════════════════════════════════════════ */
-#farm-iso-wrap{
+
+/* Wrap décoratif de la ferme (ombre + fond herbe) */
+#farm-wrap{
   position:relative;
-  margin:4px auto 8px;
-  /* perspetive container */
+  display:flex;flex-direction:column;align-items:center;
+  padding:10px 8px 16px;
+  background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(0,0,0,.06) 100%);
+}
+/* Ombre portée sous la grille */
+#farm-wrap::after{
+  content:'';
+  position:absolute;bottom:4px;left:10%;right:10%;height:12px;
+  background:radial-gradient(ellipse,rgba(0,0,0,.35) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+/* Titre décoratif au-dessus de la grille */
+#farm-label{
+  font-family:'Fredoka One',cursive;
+  font-size:.95rem;color:var(--wood-dark);
+  text-shadow:0 1px 0 rgba(255,255,255,.7);
+  margin-bottom:4px;letter-spacing:.04em;
 }
 
-/* The isometric container — absolute positioning for tiles */
+/* Container ISO (largeur/hauteur gérées par JS) */
 #farm{
   position:relative;
-  margin:0 auto;
-  /* width/height set by JS */
+  z-index:1;
+  flex-shrink:0;
 }
 
-/* Individual isometric tile */
+/* Tuile individuelle */
 .plot{
   position:absolute;
+  overflow:visible;
   cursor:pointer;
   -webkit-tap-highlight-color:transparent;
+  transition:filter .08s;
 }
-/* Top face of the tile (the visible surface) */
-.plot .tile-top{
+.plot:active{ filter:brightness(1.12); }
+
+/* ── Face du dessus : losange isométrique ── */
+.tile-top{
   position:absolute;
-  width:100%;height:100%;
-  /* isometric diamond via clip-path */
-  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
-  transition:filter .15s;
+  top:0; left:0;
+  /* width et height injectés par JS */
+  clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  transition:filter .2s;
+  box-sizing:border-box;
 }
-/* Left side face */
-.plot .tile-left{
+
+/* ── Face gauche (côté SW) ─────────────────
+   Parallélogramme obtenu par skewY(+26°)
+   depuis le coin bas-gauche de tile-top      */
+.tile-left{
   position:absolute;
-  bottom:-50%;left:0;
+  left:0;
+  /* top et height injectés par JS */
   width:50%;
-  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
-  transform-origin:top right;
-  transform:skewY(30deg);
+  transform-origin:0 0;
+  transform:skewY(26deg);
+  box-sizing:border-box;
 }
-/* Right side face */
-.plot .tile-right{
+
+/* ── Face droite (côté SE) ─────────────────
+   Symétrique : skewY(-26°) depuis coin bas-droit */
+.tile-right{
   position:absolute;
-  bottom:-50%;right:0;
+  right:0;
+  /* top et height injectés par JS */
   width:50%;
-  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
-  transform-origin:top left;
-  transform:skewY(-30deg);
+  transform-origin:100% 0;
+  transform:skewY(-26deg);
+  box-sizing:border-box;
 }
-/* Content overlay (sprite + text) */
-.plot .tile-content{
+
+/* ── Couche contenu (sprite + texte) ───────
+   Pas de clip-path pour que les labels débordent librement */
+.tile-over{
   position:absolute;
-  width:100%;height:100%;
+  top:0; left:0;
+  /* width et height = tile-top → injectés par JS */
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   pointer-events:none;
-  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
-  z-index:2;
+  z-index:5;
+  overflow:visible;
 }
-.plot .tile-sub{
-  position:absolute;bottom:18%;
-  font-size:.38rem;font-weight:800;color:#fff;
-  text-shadow:0 1px 2px rgba(0,0,0,.9),0 0 4px rgba(0,0,0,.6);
-  white-space:nowrap;z-index:3;
-  background:rgba(0,0,0,.45);padding:1px 3px;border-radius:3px;
+/* Le sprite SVG centré sur la tuile */
+.tile-over .t-sprite{
+  display:block;
+  /* width/height injectés par JS */
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.4));
+  flex-shrink:0;
 }
-.plot .tile-badge{
-  position:absolute;top:10%;right:18%;
-  font-size:.7rem;z-index:3;
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));
+/* Étiquette sous la tuile (état, temps restant…) */
+.tile-over .t-lbl{
+  position:absolute;
+  bottom:-9px;          /* légèrement sous la tuile, lisible */
+  left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  font-size:.42rem;font-weight:800;
+  color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,1),0 0 6px rgba(0,0,0,.8);
+  background:rgba(0,0,0,.55);
+  padding:1px 4px;border-radius:4px;
+  pointer-events:none;
+  z-index:10;
 }
-.plot .tile-canvas{
-  width:68%;height:68%;
-  /* SVG sprite rendered by JS */
-}
-.plot:active .tile-top{filter:brightness(1.2)}
-
-/* ── Empty tile (soil) ────────────────────── */
-.plot.empty .tile-top{
-  background:radial-gradient(ellipse at 40% 35%,#c08a58 0%,#9b6840 50%,#7a5230 100%);
-}
-.plot.empty .tile-left{
-  background:linear-gradient(180deg,#6b4225 0%,#4e2e16 100%);
-}
-.plot.empty .tile-right{
-  background:linear-gradient(180deg,#7a4e2d 0%,#5c3318 100%);
-}
-
-/* ── Waiting tile (growing) ───────────────── */
-.plot.waiting .tile-top{
-  background:radial-gradient(ellipse at 40% 35%,#5dcc4a 0%,#3da832 50%,#2d7a1c 100%);
-}
-.plot.waiting .tile-left{
-  background:linear-gradient(180deg,#2a6e18 0%,#1c4a0e 100%);
-}
-.plot.waiting .tile-right{
-  background:linear-gradient(180deg,#357520 0%,#225510 100%);
+/* Badge (goutte d'eau, check…) en haut à droite */
+.tile-over .t-badge{
+  position:absolute;
+  top:-6px; right:-4px;
+  font-size:.75rem;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));
+  z-index:10;
+  pointer-events:none;
 }
 
-/* ── Needs water ──────────────────────────── */
-.plot.needs-water .tile-top{
-  background:radial-gradient(ellipse at 40% 35%,#60b8e8 0%,#2e8dc0 50%,#1a5f8a 100%);
-  animation:pulse-water-tile 1.5s infinite alternate;
-}
-.plot.needs-water .tile-left{
-  background:linear-gradient(180deg,#1a5a82 0%,#0e3d5a 100%);
-}
-.plot.needs-water .tile-right{
-  background:linear-gradient(180deg,#206e9c 0%,#144a6e 100%);
-}
-@keyframes pulse-water-tile{
-  from{filter:brightness(1)}
-  to{filter:brightness(1.2) saturate(1.3)}
+/* ── Couleurs des faces par état ─────────── */
+
+/* Sol vide */
+.plot.empty   .tile-top  { background:linear-gradient(135deg,#c9935a 0%,#a06a38 40%,#7d4e22 100%); }
+.plot.empty   .tile-left { background:linear-gradient(180deg,#5a3010 0%,#3d1e08 100%); }
+.plot.empty   .tile-right{ background:linear-gradient(180deg,#7a4820 0%,#562e0e 100%); }
+
+/* En pousse */
+.plot.waiting .tile-top  { background:linear-gradient(135deg,#7ddc5a 0%,#4cb832 40%,#329020 100%); }
+.plot.waiting .tile-left { background:linear-gradient(180deg,#246012 0%,#164008 100%); }
+.plot.waiting .tile-right{ background:linear-gradient(180deg,#307818 0%,#1e5010 100%); }
+
+/* Besoin d'eau */
+.plot.needs-water .tile-top  { background:linear-gradient(135deg,#70c8f0 0%,#3898d0 40%,#1a70a8 100%);
+  animation:pulse-water-top 1.5s ease-in-out infinite alternate; }
+.plot.needs-water .tile-left { background:linear-gradient(180deg,#124a70 0%,#0a3050 100%); }
+.plot.needs-water .tile-right{ background:linear-gradient(180deg,#1a5e8a 0%,#103a60 100%); }
+@keyframes pulse-water-top{
+  from{ filter:brightness(1) saturate(1); }
+  to  { filter:brightness(1.18) saturate(1.4); }
 }
 
-/* ── Mature tile ──────────────────────────── */
-.plot.mature .tile-top{
-  background:radial-gradient(ellipse at 40% 35%,#ffe066 0%,#f5c542 50%,#c89a10 100%);
-  animation:pulse-mature-tile 1s infinite alternate;
-}
-.plot.mature .tile-left{
-  background:linear-gradient(180deg,#9e7410 0%,#6e5008 100%);
-}
-.plot.mature .tile-right{
-  background:linear-gradient(180deg,#b88518 0%,#805c0a 100%);
-}
-@keyframes pulse-mature-tile{
-  from{filter:brightness(1)}
-  to{filter:brightness(1.15) saturate(1.2)}
+/* Mûr / prêt à récolter */
+.plot.mature .tile-top  { background:linear-gradient(135deg,#ffe86a 0%,#f5c018 40%,#d09000 100%);
+  animation:pulse-mature-top .9s ease-in-out infinite alternate; }
+.plot.mature .tile-left { background:linear-gradient(180deg,#8a6000 0%,#5a3e00 100%); }
+.plot.mature .tile-right{ background:linear-gradient(180deg,#b07a00 0%,#7a5000 100%); }
+@keyframes pulse-mature-top{
+  from{ filter:brightness(1) drop-shadow(0 0 0px #ffd700); }
+  to  { filter:brightness(1.12) drop-shadow(0 0 6px #ffd70088); }
 }
 
-/* ── Locked tile ──────────────────────────── */
-.plot.locked .tile-top{
-  background:radial-gradient(ellipse at 40% 35%,#888 0%,#555 60%,#333 100%);
-}
-.plot.locked .tile-left{background:linear-gradient(180deg,#2a2a2a 0%,#111 100%)}
-.plot.locked .tile-right{background:linear-gradient(180deg,#333 0%,#1a1a1a 100%)}
-.plot.locked.afford .tile-top{
-  background:radial-gradient(ellipse at 40% 35%,#a0a0e8 0%,#6868c0 60%,#484898 100%);
-}
-.plot.locked.afford .tile-left{background:linear-gradient(180deg,#3a3a8a 0%,#252565 100%)}
-.plot.locked.afford .tile-right{background:linear-gradient(180deg,#4a4a9a 0%,#303075 100%)}
-
-/* ─── Plot hover lift effect ──────────────── */
-.plot:not(.locked):active{
-  transform:translateY(-3px) !important;
-  transition:transform .08s;
-}
+/* Verrouillé */
+.plot.locked .tile-top  { background:linear-gradient(135deg,#888 0%,#555 50%,#333 100%); }
+.plot.locked .tile-left { background:linear-gradient(180deg,#282828 0%,#101010 100%); }
+.plot.locked .tile-right{ background:linear-gradient(180deg,#383838 0%,#1a1a1a 100%); }
+.plot.locked.afford .tile-top  { background:linear-gradient(135deg,#b8b8f8 0%,#7878d0 50%,#5050a8 100%); }
+.plot.locked.afford .tile-left { background:linear-gradient(180deg,#303088 0%,#1c1c60 100%); }
+.plot.locked.afford .tile-right{ background:linear-gradient(180deg,#4040a0 0%,#282878 100%); }
 
 /* ═══════════════════════════════════════════════════════════
-   BUILDING GRID — also isometric but larger tiles
+   BUILDING GRID — tuiles ateliers (plus grandes)
+   Même architecture que .plot / .tile-*
    ═══════════════════════════════════════════════════════════ */
+#bfarm-wrap{
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 8px 14px;
+}
+#bfarm-wrap::after{
+  content:'';
+  position:absolute;bottom:2px;left:10%;right:10%;height:10px;
+  background:radial-gradient(ellipse,rgba(0,0,0,.3) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
 #bfarm{
   position:relative;
-  margin:4px auto;
+  z-index:1;
+  flex-shrink:0;
 }
 .bplot{
   position:absolute;
+  overflow:visible;
   cursor:pointer;
   -webkit-tap-highlight-color:transparent;
+  transition:filter .08s;
 }
+.bplot:active{ filter:brightness(1.12); }
+
+/* Faces bplot (même structure que plot, top/left injectés par JS) */
 .bplot .tile-top{
-  position:absolute;width:100%;height:100%;
-  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
-  transition:filter .15s;
+  position:absolute;top:0;left:0;
+  clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  transition:filter .2s;box-sizing:border-box;
 }
 .bplot .tile-left{
-  position:absolute;bottom:-50%;left:0;width:50%;
-  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
-  transform-origin:top right;transform:skewY(30deg);
+  position:absolute;left:0;width:50%;
+  transform-origin:0 0;transform:skewY(26deg);box-sizing:border-box;
 }
 .bplot .tile-right{
-  position:absolute;bottom:-50%;right:0;width:50%;
-  clip-path:polygon(0 0,100% 0,100% 100%,0 100%);
-  transform-origin:top left;transform:skewY(-30deg);
+  position:absolute;right:0;width:50%;
+  transform-origin:100% 0;transform:skewY(-26deg);box-sizing:border-box;
 }
-.bplot .tile-content{
-  position:absolute;width:100%;height:100%;
+.bplot .tile-over{
+  position:absolute;top:0;left:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  pointer-events:none;
-  clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
-  z-index:2;
+  pointer-events:none;z-index:5;overflow:visible;
 }
-.bplot .tile-sub{
-  position:absolute;bottom:12%;
-  font-size:.38rem;font-weight:800;color:#fff;
-  text-shadow:0 1px 2px rgba(0,0,0,.9);
-  white-space:nowrap;z-index:3;
-  background:rgba(0,0,0,.5);padding:1px 4px;border-radius:3px;
+.bplot .tile-over .t-sprite{ display:block; filter:drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
+.bplot .tile-over .t-lbl{
+  position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
+  white-space:nowrap;font-size:.44rem;font-weight:800;color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,1);
+  background:rgba(0,0,0,.6);padding:1px 5px;border-radius:4px;
+  pointer-events:none;z-index:10;
 }
-.bplot .tile-badge{position:absolute;top:6%;right:15%;font-size:.75rem;z-index:3}
-.bplot .tile-canvas{width:60%;height:60%}
-.bplot .prog-bar{
-  position:absolute;bottom:8%;left:20%;right:20%;
-  height:5px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden;z-index:4;
+.bplot .tile-over .t-badge{
+  position:absolute;top:-8px;right:-6px;font-size:.85rem;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));z-index:10;
 }
-.bplot .prog-fill{
-  height:100%;border-radius:3px;
-  background:linear-gradient(90deg,#ff9800,#4CAF50);
-  transition:width .4s linear;
+/* Barre de progression (legacy .b-prog) */
+.bplot .b-prog{
+  position:absolute;
+  left:20%;right:20%;bottom:-18px;
+  height:5px;background:rgba(0,0,0,.25);border-radius:3px;overflow:hidden;
+  z-index:8;
 }
-.bplot:not(.locked):active .tile-top{filter:brightness(1.2)}
+.bplot .b-prog-fill{
+  height:100%;background:linear-gradient(90deg,#ff9800,#4CAF50);
+  border-radius:3px;transition:width .5s linear;
+}
+/* Barre de progression inside .tile-over */
+.bplot .tile-over .prog-bar{
+  position:absolute;
+  left:15%;right:15%;bottom:-14px;
+  height:5px;background:rgba(0,0,0,.28);border-radius:3px;overflow:hidden;
+  z-index:8;
+}
+.bplot .tile-over .prog-fill{
+  height:100%;background:linear-gradient(90deg,#ff9800,#4CAF50);
+  border-radius:3px;transition:width .5s linear;
+}
 
-.bplot.bempty .tile-top{background:radial-gradient(ellipse at 40% 35%,#d4c9ba 0%,#b8a898 50%,#9a8878 100%)}
-.bplot.bempty .tile-left{background:linear-gradient(180deg,#7a6a58 0%,#584838 100%)}
-.bplot.bempty .tile-right{background:linear-gradient(180deg,#8a7868 0%,#685848 100%)}
-
-.bplot.bbuilt .tile-top{background:radial-gradient(ellipse at 40% 35%,#f5e8d0 0%,#d8c0a0 50%,#b89870 100%)}
-.bplot.bbuilt .tile-left{background:linear-gradient(180deg,#8a6840 0%,#604820 100%)}
-.bplot.bbuilt .tile-right{background:linear-gradient(180deg,#9a7848 0%,#705528 100%)}
-
-.bplot.bprod .tile-top{background:radial-gradient(ellipse at 40% 35%,#ffe0b0 0%,#ffc060 50%,#e09030 100%);animation:pulse-mature-tile 1.5s infinite alternate}
-.bplot.bprod .tile-left{background:linear-gradient(180deg,#9a5a10 0%,#6a3808 100%)}
-.bplot.bprod .tile-right{background:linear-gradient(180deg,#aa6818 0%,#7a4410 100%)}
-
-.bplot.bdone .tile-top{background:radial-gradient(ellipse at 40% 35%,#a0f080 0%,#60c840 50%,#38a018 100%);animation:pulse-mature-tile 1s infinite alternate}
-.bplot.bdone .tile-left{background:linear-gradient(180deg,#2a8010 0%,#185808 100%)}
-.bplot.bdone .tile-right{background:linear-gradient(180deg,#359818 0%,#20680c 100%)}
-
-.bplot.locked .tile-top{background:radial-gradient(ellipse at 40% 35%,#aaa 0%,#777 60%,#555 100%)}
-.bplot.locked .tile-left{background:linear-gradient(180deg,#3a3a3a 0%,#1a1a1a 100%)}
-.bplot.locked .tile-right{background:linear-gradient(180deg,#484848 0%,#282828 100%)}
-.bplot.locked.afford .tile-top{background:radial-gradient(ellipse at 40% 35%,#e0c060 0%,#c09030 60%,#9a6808 100%)}
+/* Couleurs bplot */
+.bplot.bempty  .tile-top  { background:linear-gradient(135deg,#d4c9ba,#a89880,#8a7060); }
+.bplot.bempty  .tile-left { background:linear-gradient(180deg,#6a5848,#483830); }
+.bplot.bempty  .tile-right{ background:linear-gradient(180deg,#7a6858,#584840); }
+.bplot.bbuilt  .tile-top  { background:linear-gradient(135deg,#f0e0c0,#d0b080,#a87840); }
+.bplot.bbuilt  .tile-left { background:linear-gradient(180deg,#705020,#4a3010); }
+.bplot.bbuilt  .tile-right{ background:linear-gradient(180deg,#886030,#5a3818); }
+.bplot.bprod   .tile-top  { background:linear-gradient(135deg,#ffe0a0,#ffb840,#e08010);animation:pulse-mature-top 1.5s ease-in-out infinite alternate; }
+.bplot.bprod   .tile-left { background:linear-gradient(180deg,#906010,#602e00); }
+.bplot.bprod   .tile-right{ background:linear-gradient(180deg,#b07820,#783808); }
+.bplot.bdone   .tile-top  { background:linear-gradient(135deg,#a8f080,#60c840,#30a010);animation:pulse-mature-top .9s ease-in-out infinite alternate; }
+.bplot.bdone   .tile-left { background:linear-gradient(180deg,#207010,#104008); }
+.bplot.bdone   .tile-right{ background:linear-gradient(180deg,#308818,#1c5808); }
+.bplot.locked  .tile-top  { background:linear-gradient(135deg,#aaa,#777,#555); }
+.bplot.locked  .tile-left { background:linear-gradient(180deg,#303030,#181818); }
+.bplot.locked  .tile-right{ background:linear-gradient(180deg,#404040,#202020); }
+.bplot.locked.afford .tile-top{ background:linear-gradient(135deg,#e8c860,#c09020,#906800); }
 
 /* ── Bottom Tab Bar ──────────────────────── */
 #tabs{
@@ -869,7 +915,7 @@ body{
       <button class="auto-btn off" id="btn-ah">🤖 Récolte</button>
       <button class="auto-btn off" id="btn-aw">💧 Arrosage</button>
     </div>
-    <div class="panel active" id="panel-farm"><div id="farm"></div></div>
+    <div class="panel active" id="panel-farm"><div id="farm-wrap"><div id="farm-label">🌾 Ma Ferme</div><div id="farm"></div></div></div>
   </div>
   <div id="farm-animals-area" style="display:none;width:96%;max-width:400px">
     <div id="animal-seed-bar"></div>
@@ -885,7 +931,7 @@ body{
   </div>
   <div class="panel" id="panel-shop"><h3>🏪 Boutique</h3><div id="shop-list"></div></div>
   <div class="panel" id="panel-resources"><h3>📦 Stock</h3><div id="stock-sub-tabs" class="sub-tab-bar"></div><div id="res-grid-container"></div><div id="stock-aide-content" style="display:none"></div></div>
-  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="atelier-sub-tabs" class="sub-tab-bar"></div><div id="atelier-main"><div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-aa">🏭 Atelier</button></div><div id="res-bar"></div><div id="bmode-bar"></div><div id="bmode-info" class="garden-info"></div><div id="bld-bar"></div><div id="bfarm"></div><div id="recipe-bar"></div></div><div id="ouvrier-area" style="display:none"><div id="ouvrier-list"></div><div id="ouvrier-hire" style="text-align:center;padding:8px"></div></div><div id="atelier-aide-area" style="display:none"></div></div>
+  <div class="panel" id="panel-buildings"><h3>🏗️ Ateliers</h3><div id="atelier-sub-tabs" class="sub-tab-bar"></div><div id="atelier-main"><div style="text-align:center;padding:2px"><button class="auto-btn off" id="btn-aa">🏭 Atelier</button></div><div id="res-bar"></div><div id="bmode-bar"></div><div id="bmode-info" class="garden-info"></div><div id="bld-bar"></div><div id="bfarm-wrap"><div id="bfarm"></div></div><div id="recipe-bar"></div></div><div id="ouvrier-area" style="display:none"><div id="ouvrier-list"></div><div id="ouvrier-hire" style="text-align:center;padding:8px"></div></div><div id="atelier-aide-area" style="display:none"></div></div>
 
   <div class="panel" id="panel-well"><h3>🪣 Puits & Bois</h3><div id="well-container"></div><div class="wood-section" id="wood-container"></div></div>
   <div class="panel" id="panel-event"><h3>🎉 Événement</h3><div id="event-content"></div></div>
@@ -1481,12 +1527,12 @@ function buildFarm(){
     d.dataset.idx=i;
     d.style.cssText='left:'+x+'px;top:'+y+'px;width:'+ISO_TW+'px;height:'+(ISO_TH+ISO_SIDE)+'px;z-index:'+(col+row)+';';
 
-    // Three faces
+    // Three faces — correct DOM order: top first (z-base), then sides, then overlay
     d.innerHTML=
-      '<div class="tile-left" style="height:'+ISO_SIDE+'px"></div>'+
-      '<div class="tile-right" style="height:'+ISO_SIDE+'px"></div>'+
-      '<div class="tile-top" style="height:'+ISO_TH+'px"></div>'+
-      '<div class="tile-content" style="height:'+ISO_TH+'px"></div>';
+      '<div class="tile-top"   style="width:'+ISO_TW+'px;height:'+ISO_TH+'px"></div>'+
+      '<div class="tile-left"  style="top:'+ISO_TH+'px;height:'+ISO_SIDE+'px"></div>'+
+      '<div class="tile-right" style="top:'+ISO_TH+'px;height:'+ISO_SIDE+'px"></div>'+
+      '<div class="tile-over"  style="width:'+ISO_TW+'px;height:'+ISO_TH+'px"></div>';
 
     d.addEventListener('click',onPlot);
     farmEl.appendChild(d);
@@ -1521,40 +1567,40 @@ function buildFarm(){
 
 function updateVisuals(){
   var now=Date.now(),cc=getCellCost();
-  var spriteSize=Math.round(ISO_TW*0.64);
+  var spriteSize=Math.round(ISO_TW*0.72);
   farmEl.querySelectorAll('.plot').forEach(function(el,i){
     if(i>=state.plots.length)return;
     var p=state.plots[i];
-    var content=el.querySelector('.tile-content');
-    if(!content)return;
+    var over=el.querySelector('.tile-over');
+    if(!over)return;
 
     if(p.locked){
       el.className='plot locked'+(state.coins>=cc?' afford':'');
-      content.innerHTML='<span style="font-size:'+(ISO_TW*0.3)+'px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">🔒</span>'
-        +'<div class="tile-sub">'+fmtN(cc)+'💰</div>';
+      over.innerHTML='<span class="t-sprite" style="font-size:'+(ISO_TW*0.32)+'px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">🔒</span>'
+        +'<div class="t-lbl">'+fmtN(cc)+'💰</div>';
       return;
     }
     if(p.catIdx<0){
       el.className='plot empty';
-      content.innerHTML='';
+      over.innerHTML='';
       return;
     }
     var it=ITEMS[p.catIdx][p.itemIdx],needed=CAT_WATER[p.catIdx];
     if(p.wc>=needed){
       el.className='plot mature';
       var svgH=makePlotSprite(p,spriteSize);
-      content.innerHTML=svgH+'<div class="tile-sub">✅ Récolter</div>';
+      over.innerHTML='<div class="t-sprite">'+svgH+'</div><div class="t-lbl">✅ Récolter</div>';
       return;
     }
     var stMs=getStageTime(it),since=now-p.lw,ready=p.lw===0||since>=stMs;
     var svgH=makePlotSprite(p,spriteSize);
     if(ready){
       el.className='plot needs-water';
-      content.innerHTML=svgH+'<div class="tile-badge">💧</div><div class="tile-sub">'+p.wc+'/'+needed+'</div>';
+      over.innerHTML='<div class="t-sprite">'+svgH+'</div><div class="t-badge">💧</div><div class="t-lbl">'+p.wc+'/'+needed+'</div>';
     }else{
       el.className='plot waiting';
       var rem=Math.ceil((stMs-since)/1000);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
-      content.innerHTML=svgH+'<div class="tile-sub">'+ts+' · '+p.wc+'/'+needed+'</div>';
+      over.innerHTML='<div class="t-sprite">'+svgH+'</div><div class="t-lbl">'+ts+' · '+p.wc+'/'+needed+'</div>';
     }
   });
 }
@@ -2834,7 +2880,7 @@ function buildBuildingGrid(){
   BTIL_SIDE=Math.round(BTIL_H*0.52);
 
   var minX=-(brows_vis-1)*BTIL_W/2;
-  var totalW=(bcols+brows_vis-1)*BTIL_W/2+BTIL_W-minX;
+  var totalW=(bcols-1)*BTIL_W/2+BTIL_W-minX;
   var totalH=(bcols+brows_vis-1)*BTIL_H/2+BTIL_H+BTIL_SIDE;
 
   bfarm.style.width=Math.ceil(totalW)+'px';
@@ -2850,10 +2896,10 @@ function buildBuildingGrid(){
 
     d.style.cssText='left:'+px+'px;top:'+py+'px;width:'+BTIL_W+'px;height:'+(BTIL_H+BTIL_SIDE)+'px;z-index:'+(col+row)+';';
     d.innerHTML=
-      '<div class="tile-left" style="height:'+BTIL_SIDE+'px"></div>'+
-      '<div class="tile-right" style="height:'+BTIL_SIDE+'px"></div>'+
-      '<div class="tile-top" style="height:'+BTIL_H+'px"></div>'+
-      '<div class="tile-content" style="height:'+BTIL_H+'px"><div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div></div>';
+      '<div class="tile-top"   style="width:'+BTIL_W+'px;height:'+BTIL_H+'px"></div>'+
+      '<div class="tile-left"  style="top:'+BTIL_H+'px;height:'+BTIL_SIDE+'px"></div>'+
+      '<div class="tile-right" style="top:'+BTIL_H+'px;height:'+BTIL_SIDE+'px"></div>'+
+      '<div class="tile-over"  style="width:'+BTIL_W+'px;height:'+BTIL_H+'px"><div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div></div>';
     d.addEventListener('click',onBPlot);
     return d;
   }
@@ -2878,32 +2924,29 @@ function updateBuildingVisuals(){
   var now=Date.now(),cc=getBCellCost();
   bfarm.querySelectorAll('.bplot').forEach(function(el){
     var i=+el.dataset.idx;
-    var content=el.querySelector('.tile-content');
-    var progFill=el.querySelector('.prog-fill');
-    if(!content)return;
+    var over=el.querySelector('.tile-over');
+    if(!over)return;
 
     if(i>=state.bplots.length){
       el.className='bplot bempty';
-      content.innerHTML='<div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>';return;
+      over.innerHTML='<div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>';
+      return;
     }
     var bp=state.bplots[i];
-    // Clear inner content (keep prog bar)
-    var iconArea=content.querySelector('.b-icon-area');
-    if(!iconArea){iconArea=document.createElement('div');iconArea.className='b-icon-area';iconArea.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;flex:1';content.insertBefore(iconArea,content.querySelector('.prog-bar'));}
 
     if(bp.locked){
       el.className='bplot locked'+(state.coins>=cc?' afford':'');
-      iconArea.innerHTML='<span style="font-size:1.1rem;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">🔒</span>';
-      var sub=content.querySelector('.tile-sub');if(!sub){sub=document.createElement('div');sub.className='tile-sub';content.appendChild(sub);}
-      sub.textContent=fmtN(cc)+'💰';
-      if(progFill)progFill.style.width='0%';
+      over.innerHTML=
+        '<span class="t-sprite" style="font-size:1.1rem;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))">🔒</span>'+
+        '<div class="t-lbl">'+fmtN(cc)+'💰</div>'+
+        '<div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>';
       return;
     }
     if(bp.buildingIdx<0){
       el.className='bplot bempty';
-      iconArea.innerHTML='<span style="font-size:1.2rem;opacity:.4">➕</span>';
-      var sub2=content.querySelector('.tile-sub');if(sub2)sub2.remove();
-      if(progFill)progFill.style.width='0%';
+      over.innerHTML=
+        '<span class="t-sprite" style="font-size:1.2rem;opacity:.4">➕</span>'+
+        '<div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>';
       return;
     }
     var bld=BUILDINGS[bp.buildingIdx];
@@ -2911,31 +2954,29 @@ function updateBuildingVisuals(){
 
     if(bp.recipe<0){
       el.className='bplot bbuilt'+selClass;
-      iconArea.innerHTML='<span style="font-size:1.5rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))">'+bld.emoji+'</span>'
-        +'<span style="font-size:.46rem;font-weight:800;color:#5c3a1e;margin-top:1px">'+bld.name+'</span>';
-      var sub3=content.querySelector('.tile-sub');if(!sub3){sub3=document.createElement('div');sub3.className='tile-sub';content.appendChild(sub3);}
-      sub3.textContent='👆 Choisir recette';
-      if(progFill)progFill.style.width='0%';
+      over.innerHTML=
+        '<span class="t-sprite" style="font-size:1.5rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))">'+bld.emoji+'</span>'+
+        '<div class="t-lbl">'+bld.name+'</div>'+
+        '<div class="t-badge" style="font-size:.55rem">👆</div>'+
+        '<div class="prog-bar"><div class="prog-fill" style="width:0%"></div></div>';
       return;
     }
     var rec=bld.recipes[bp.recipe];var totalTime=getRecipeTime(rec)*(bp.qty||1);
     var elapsed=(now-bp.prodStart)/1000;var qtyTxt=(bp.qty||1)>1?' ×'+(bp.qty||1):'';
     if(elapsed>=totalTime){
       el.className='bplot bdone'+selClass;
-      iconArea.innerHTML='<span style="font-size:1.4rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))">'+rec.emoji+'</span>'
-        +'<span style="font-size:.44rem;font-weight:800;color:#1a5a18;margin-top:1px">'+rec.name+qtyTxt+'</span>';
-      var sub4=content.querySelector('.tile-sub');if(!sub4){sub4=document.createElement('div');sub4.className='tile-sub';content.appendChild(sub4);}
-      sub4.textContent='✅ Récupérer!';
-      if(progFill)progFill.style.width='100%';
+      over.innerHTML=
+        '<span class="t-sprite" style="font-size:1.4rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))">'+rec.emoji+'</span>'+
+        '<div class="t-lbl">✅ '+rec.name+qtyTxt+'</div>'+
+        '<div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>';
     }else{
       el.className='bplot bprod'+selClass;
       var pct=Math.min(100,Math.floor(elapsed/totalTime*100));
       var rem=Math.ceil(totalTime-elapsed);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
-      iconArea.innerHTML='<span style="font-size:1.3rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))">'+bld.emoji+'</span>'
-        +'<span style="font-size:.44rem;font-weight:800;color:#7a4010;margin-top:1px">'+rec.name+qtyTxt+'</span>';
-      var sub5=content.querySelector('.tile-sub');if(!sub5){sub5=document.createElement('div');sub5.className='tile-sub';content.appendChild(sub5);}
-      sub5.textContent='⏳ '+ts+' ('+pct+'%)';
-      if(progFill)progFill.style.width=pct+'%';
+      over.innerHTML=
+        '<span class="t-sprite" style="font-size:1.3rem;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))">'+bld.emoji+'</span>'+
+        '<div class="t-lbl">⏳ '+ts+' ('+pct+'%)</div>'+
+        '<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>';
     }
   });
 }
