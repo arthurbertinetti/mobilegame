@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="screen-orientation" content="landscape">
+    <title>Worms - Combat Tactique</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100dvh;
+            width: 100dvw;
+            overflow: hidden;
+            color: #fff;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        @media (orientation: portrait) {
+            body::before {
+                content: '📱 Tournez en mode paysage';
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,.95);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-size: 1.5rem;
+                text-align: center;
+                padding: 20px;
+            }
+        }
+        canvas { display: block; }
+        #hud {
+            position: absolute;
+            top: 8px; left: 8px; right: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .player-info {
+            background: rgba(0,0,0,.7);
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,.15);
+            pointer-events: auto;
+            min-width: 130px;
+            backdrop-filter: blur(4px);
+        }
+        .player-info.active {
+            border-color: #ffd93d;
+            box-shadow: 0 0 16px rgba(255,217,61,.4);
+        }
+        .player-name { font-size: .9rem; font-weight: bold; margin-bottom: 4px; }
+        .worm-list { display: flex; gap: 6px; margin-top: 4px; }
+        .worm-pip {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,.3);
+        }
+        .worm-pip.dead { opacity: .3; }
+        .health-bar { width: 100%; height: 6px; background: rgba(255,255,255,.15); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+        .health-fill { height: 100%; background: linear-gradient(90deg, #2ecc71, #27ae60); transition: width .3s; }
+        #wind-display {
+            position: absolute;
+            top: 8px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,.7);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,.15);
+            font-size: .85rem;
+            display: flex; align-items: center; gap: 6px;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+        #wind-arrow {
+            display: inline-block;
+            transition: transform .3s;
+            font-size: 1.2rem;
+        }
+        #controls {
+            position: absolute;
+            bottom: 12px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 10px; z-index: 10;
+        }
+        .ctrl-group { display: flex; gap: 6px; }
+        .control-btn {
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,.25);
+            background: rgba(0,0,0,.6);
+            color: white;
+            font-size: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: transform .1s, background .15s;
+            -webkit-tap-highlight-color: transparent;
+            backdrop-filter: blur(4px);
+        }
+        .control-btn:active { transform: scale(.88); background: rgba(255,255,255,.15); }
+        .control-btn.fire-btn {
+            width: 64px; height: 64px;
+            background: rgba(200,40,40,.7);
+            border-color: rgba(255,80,80,.4);
+            font-size: 1.8rem;
+        }
+        #weapon-menu {
+            position: absolute;
+            bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,.92);
+            border-radius: 14px;
+            padding: 12px;
+            border: 2px solid rgba(255,255,255,.2);
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            max-height: 55vh;
+            overflow-y: auto;
+            z-index: 20;
+            max-width: 85vw;
+            backdrop-filter: blur(6px);
+        }
+        #weapon-menu.show { display: grid; }
+        .weapon-btn {
+            padding: 8px 4px;
+            background: linear-gradient(145deg, #1a252f, #111920);
+            border: 2px solid rgba(255,255,255,.1);
+            border-radius: 8px;
+            color: white;
+            font-size: .65rem;
+            cursor: pointer;
+            transition: all .15s;
+            display: flex; flex-direction: column;
+            align-items: center; gap: 2px;
+            -webkit-tap-highlight-color: transparent;
+            text-align: center;
+        }
+        .weapon-btn:active { transform: scale(.93); }
+        .weapon-btn.selected { border-color: #ffd93d; box-shadow: 0 0 12px rgba(255,217,61,.35); background: linear-gradient(145deg, #2c3e50, #1a252f); }
+        .weapon-icon { font-size: 1.6rem; }
+        #menu {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,.9), rgba(20,30,60,.95));
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 18px; z-index: 100;
+        }
+        #menu.hidden { display: none; }
+        #menu h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #ff6b81, #ffd93d, #6bff8e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 4px 16px rgba(255,107,129,.4));
+        }
+        #menu p { color: #aaa; margin-bottom: 10px; }
+        .menu-btn {
+            padding: 14px 36px;
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            border: none; border-radius: 12px;
+            color: white; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,.3);
+            transition: transform .15s;
+            -webkit-tap-highlight-color: transparent;
+            min-width: 190px;
+        }
+        .menu-btn:active { transform: scale(.95); }
+        .menu-btn.secondary { background: linear-gradient(145deg, #3498db, #2980b9); }
+        #power-bar {
+            position: absolute;
+            bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: 180px; height: 16px;
+            background: rgba(0,0,0,.7);
+            border: 2px solid rgba(255,255,255,.25);
+            border-radius: 8px;
+            overflow: hidden; display: none; z-index: 10;
+        }
+        #power-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #2ecc71, #f39c12, #e74c3c); transition: width .04s; }
+        #turn-info {
+            position: absolute;
+            top: 50px; left: 50%; transform: translateX(-50%);
+            font-size: 1rem;
+            font-weight: bold;
+            color: #ffd93d;
+            text-shadow: 1px 1px 4px rgba(0,0,0,.8);
+            background: rgba(0,0,0,.5);
+            padding: 5px 14px;
+            border-radius: 8px;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+            white-space: nowrap;
+        }
+        #back-btn {
+            position: absolute;
+            top: 8px; right: 8px;
+            width: 40px; height: 40px;
+            background: rgba(0,0,0,.6);
+            border: 1px solid rgba(255,255,255,.2);
+            border-radius: 8px;
+            color: white; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #game-over {
+            position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,.92);
+            padding: 30px 40px;
+            border-radius: 18px;
+            border: 3px solid #ffd93d;
+            text-align: center;
+            display: none; z-index: 200;
+            backdrop-filter: blur(8px);
+        }
+        #game-over.show { display: block; }
+        #game-over h2 { font-size: 2.2rem; margin-bottom: 14px; color: #ffd93d; }
+        #game-over p { font-size: 1.1rem; margin-bottom: 20px; }
+        .go-btns { display: flex; gap: 12px; justify-content: center; }
+    </style>
+</head>
+<body>
+
+<div id="menu">
+    <h1>🪱 WORMS</h1>
+    <p>Combat tactique au tour par tour</p>
+    <button class="menu-btn" onclick="startGame('pvp')">👥 Jouer à 2</button>
+    <button class="menu-btn secondary" onclick="startGame('ai')">🤖 Vs IA</button>
+    <button class="menu-btn secondary" onclick="location.href='index.html'">← Retour</button>
+</div>
+
+<div id="hud">
+    <div class="player-info" id="p1-info">
+        <div class="player-name" style="color:#ff6b6b">🔴 Joueur 1</div>
+        <div class="worm-list" id="p1-pips"></div>
+        <div class="health-bar"><div class="health-fill" id="p1-health" style="width:100%"></div></div>
+    </div>
+    <div class="player-info" id="p2-info">
+        <div class="player-name" style="color:#74b9ff">🔵 Joueur 2</div>
+        <div class="worm-list" id="p2-pips"></div>
+        <div class="health-bar"><div class="health-fill" id="p2-health" style="width:100%"></div></div>
+    </div>
+</div>
+
+<div id="wind-display">
+    💨 <span id="wind-arrow">→</span> <span id="wind-value">0</span>
+</div>
+
+<div id="turn-info">
+    <span id="turn-player">Joueur 1</span> — <span id="turn-weapon">Bazooka</span> — ⏱ <span id="turn-timer">30</span>s
+</div>
+
+<div id="power-bar"><div id="power-fill"></div></div>
+<button id="back-btn" onclick="showMenu()">✕</button>
+<canvas id="gameCanvas"></canvas>
+
+<div id="controls">
+    <div class="ctrl-group">
+        <button class="control-btn" id="btn-left">◀</button>
+        <button class="control-btn" id="btn-jump">▲</button>
+        <button class="control-btn" id="btn-right">▶</button>
+    </div>
+    <div class="ctrl-group">
+        <button class="control-btn" id="btn-aim-up">↑</button>
+        <button class="control-btn" id="btn-aim-down">↓</button>
+    </div>
+    <div class="ctrl-group">
+        <button class="control-btn" id="btn-weapon">🎯</button>
+        <button class="control-btn fire-btn" id="btn-fire">🔥</button>
+    </div>
+</div>
+
+<div id="weapon-menu">
+    <div class="weapon-btn selected" data-weapon="bazooka"><span class="weapon-icon">🚀</span><span>Bazooka</span></div>
+    <div class="weapon-btn" data-weapon="grenade"><span class="weapon-icon">💣</span><span>Grenade</span></div>
+    <div class="weapon-btn" data-weapon="clusterbomb"><span class="weapon-icon">🎆</span><span>Cluster</span></div>
+    <div class="weapon-btn" data-weapon="bananabomb"><span class="weapon-icon">🍌</span><span>Banana</span></div>
+    <div class="weapon-btn" data-weapon="holygrenade"><span class="weapon-icon">✝️</span><span>Holy</span></div>
+    <div class="weapon-btn" data-weapon="sheep"><span class="weapon-icon">🐑</span><span>Sheep</span></div>
+    <div class="weapon-btn" data-weapon="supersheep"><span class="weapon-icon">🦸</span><span>S.Sheep</span></div>
+    <div class="weapon-btn" data-weapon="airstrike"><span class="weapon-icon">✈️</span><span>Airstrike</span></div>
+    <div class="weapon-btn" data-weapon="napalmstrike"><span class="weapon-icon">🔥</span><span>Napalm</span></div>
+    <div class="weapon-btn" data-weapon="shotgun"><span class="weapon-icon">🔫</span><span>Shotgun</span></div>
+    <div class="weapon-btn" data-weapon="uzi"><span class="weapon-icon">🔫</span><span>Uzi</span></div>
+    <div class="weapon-btn" data-weapon="minigun"><span class="weapon-icon">🔫</span><span>Minigun</span></div>
+    <div class="weapon-btn" data-weapon="mine"><span class="weapon-icon">💥</span><span>Mine</span></div>
+    <div class="weapon-btn" data-weapon="dynamite"><span class="weapon-icon">🧨</span><span>Dynamite</span></div>
+    <div class="weapon-btn" data-weapon="petrolbomb"><span class="weapon-icon">🍾</span><span>Petrol</span></div>
+    <div class="weapon-btn" data-weapon="homingmissile"><span class="weapon-icon">🎯</span><span>Homing</span></div>
+    <div class="weapon-btn" data-weapon="mortar"><span class="weapon-icon">🎪</span><span>Mortar</span></div>
+    <div class="weapon-btn" data-weapon="molotov"><span class="weapon-icon">🔥</span><span>Molotov</span></div>
+    <div class="weapon-btn" data-weapon="baseball"><span class="weapon-icon">⚾</span><span>Baseball</span></div>
+    <div class="weapon-btn" data-weapon="dragonball"><span class="weapon-icon">🐉</span><span>Dragon</span></div>
+    <div class="weapon-btn" data-weapon="prod"><span class="weapon-icon">⚡</span><span>Prod</span></div>
+    <div class="weapon-btn" data-weapon="firepunch"><span class="weapon-icon">👊</span><span>Fire Punch</span></div>
+    <div class="weapon-btn" data-weapon="dragonpunch"><span class="weapon-icon">🐲</span><span>Dragon P.</span></div>
+    <div class="weapon-btn" data-weapon="earthquake"><span class="weapon-icon">🌍</span><span>Earthquake</span></div>
+    <div class="weapon-btn" data-weapon="girder"><span class="weapon-icon">🏗️</span><span>Girder</span></div>
+    <div class="weapon-btn" data-weapon="blowtorch"><span class="weapon-icon">🔦</span><span>Blowtorch</span></div>
+    <div class="weapon-btn" data-weapon="drill"><span class="weapon-icon">🔨</span><span>Drill</span></div>
+    <div class="weapon-btn" data-weapon="teleport"><span class="weapon-icon">🌀</span><span>Teleport</span></div>
+    <div class="weapon-btn" data-weapon="ninja"><span class="weapon-icon">🥷</span><span>Rope</span></div>
+</div>
+
+<div id="game-over">
+    <h2 id="winner-text">Victoire !</h2>
+    <p id="winner-score"></p>
+    <div class="go-btns">
+        <button class="menu-btn" onclick="location.reload()">Rejouer</button>
+        <button class="menu-btn secondary" onclick="location.href='index.html'">Menu</button>
+    </div>
+</div>
+
+<script src="leaderboard.js"></script>
+<script>
+// ===================== CORE ENGINE =====================
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// World dimensions (much bigger than viewport)
+const WORLD_W = 3200;
+const WORLD_H = 1400;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ===================== CAMERA =====================
+const camera = {
+    x: 0, y: 0,
+    targetX: 0, targetY: 0,
+    shakeX: 0, shakeY: 0, shakeAmount: 0,
+    zoom: 1,
+
+    follow(obj) {
+        this.targetX = obj.x - canvas.width / (2 * this.zoom);
+        this.targetY = obj.y - canvas.height / (2 * this.zoom);
+    },
+    update() {
+        this.x += (this.targetX - this.x) * 0.08;
+        this.y += (this.targetY - this.y) * 0.08;
+        // Clamp
+        this.x = Math.max(0, Math.min(WORLD_W - canvas.width / this.zoom, this.x));
+        this.y = Math.max(0, Math.min(WORLD_H - canvas.height / this.zoom, this.y));
+        // Shake
+        if (this.shakeAmount > 0) {
+            this.shakeX = (Math.random() - 0.5) * this.shakeAmount;
+            this.shakeY = (Math.random() - 0.5) * this.shakeAmount;
+            this.shakeAmount *= 0.9;
+            if (this.shakeAmount < 0.3) this.shakeAmount = 0;
+        } else {
+            this.shakeX = 0;
+            this.shakeY = 0;
+        }
+    },
+    apply() {
+        ctx.save();
+        ctx.scale(this.zoom, this.zoom);
+        ctx.translate(-this.x + this.shakeX, -this.y + this.shakeY);
+    },
+    restore() { ctx.restore(); },
+    shake(amount) { this.shakeAmount = amount; }
+};
+
+// ===================== GAME STATE =====================
+let gameMode = null, gameRunning = false;
+let currentPlayer = 0, turnTimer = 30, timerInterval = null;
+let wind = 0, gravity = 0.25;
+let waterLevel = WORLD_H * 0.82;
+let trajectoryPoints = [];
+let currentWeapon = 'bazooka';
+let charging = false, power = 0, maxPower = 100;
+let terrain = new Float32Array(WORLD_W);
+let teams = [[], []], activeWorm = null;
+let projectiles = [], particles = [], decorations = [], gravestones = [];
+let wormNames = [
+    ['Sgt.Rock','Cpl.Pain','Pvt.Boom'],
+    ['Col.Frag','Maj.Hurt','Lt.Blam']
+];
+let followTarget = null;
+
+// ===================== WEAPONS =====================
+const weapons = {
+    bazooka:       { damage: 40, blast: 55, delay: 0 },
+    grenade:       { damage: 35, blast: 50, delay: 3000 },
+    clusterbomb:   { damage: 25, blast: 40, delay: 3000, clusters: 5 },
+    bananabomb:    { damage: 60, blast: 70, delay: 3000, clusters: 5 },
+    holygrenade:   { damage: 100, blast: 90, delay: 3000 },
+    sheep:         { damage: 45, blast: 55, delay: 0, walking: true },
+    supersheep:    { damage: 55, blast: 60, delay: 0, flying: true },
+    airstrike:     { damage: 30, blast: 45, delay: 0 },
+    napalmstrike:  { damage: 35, blast: 50, delay: 0, fire: true },
+    shotgun:       { damage: 25, blast: 15, delay: 0, pellets: 2, hitscan: true },
+    uzi:           { damage: 5, blast: 5, delay: 0, bullets: 12 },
+    minigun:       { damage: 4, blast: 5, delay: 0, bullets: 25 },
+    mine:          { damage: 50, blast: 65, delay: 0 },
+    dynamite:      { damage: 60, blast: 75, delay: 2500 },
+    petrolbomb:    { damage: 40, blast: 55, delay: 2000, fire: true },
+    homingmissile: { damage: 45, blast: 52, delay: 0, homing: true },
+    mortar:        { damage: 50, blast: 55, delay: 0 },
+    molotov:       { damage: 30, blast: 45, delay: 1200, fire: true },
+    baseball:      { damage: 35, blast: 45, delay: 0 },
+    dragonball:    { damage: 80, blast: 80, delay: 0 },
+    prod:          { damage: 20, blast: 0, delay: 0, knockback: 15 },
+    firepunch:     { damage: 30, blast: 0, delay: 0, knockback: 12 },
+    dragonpunch:   { damage: 50, blast: 0, delay: 0, knockback: 20 },
+    earthquake:    { damage: 15, blast: 0, delay: 0, special: 'quake' },
+    girder:        { damage: 0, blast: 0, delay: 0, special: 'girder' },
+    blowtorch:     { damage: 15, blast: 0, delay: 0, special: 'torch' },
+    drill:         { damage: 15, blast: 0, delay: 0, special: 'drill' },
+    teleport:      { damage: 0, blast: 0, delay: 0 },
+    ninja:         { damage: 0, blast: 0, delay: 0, special: 'rope' }
+};
+
+// ===================== PERLIN NOISE =====================
+function pseudoNoise(x) {
+    const n = Math.sin(x * 127.1 + 311.7) * 43758.5453;
+    return n - Math.floor(n);
+}
+function smoothNoise(x) {
+    const xi = Math.floor(x);
+    const frac = x - xi;
+    const t = frac * frac * (3 - 2 * frac); // smoothstep
+    return pseudoNoise(xi) * (1 - t) + pseudoNoise(xi + 1) * t;
+}
+function fractalNoise(x, octaves, persistence, scale) {
+    let total = 0, maxVal = 0, amp = 1, freq = scale;
+    for (let i = 0; i < octaves; i++) {
+        total += smoothNoise(x * freq) * amp;
+        maxVal += amp;
+        amp *= persistence;
+        freq *= 2;
+    }
+    return total / maxVal;
+}
+
+// ===================== TERRAIN =====================
+function generateTerrain() {
+    const seed = Math.random() * 10000;
+    for (let x = 0; x < WORLD_W; x++) {
+        const nx = x + seed;
+        let h = fractalNoise(nx, 6, 0.5, 0.003);
+        // Create interesting features: plateaus, valleys, hills
+        h = Math.pow(h, 0.8); // push up
+        // Add some flat plateaus
+        const plateau = fractalNoise(nx, 2, 0.5, 0.001);
+        if (plateau > 0.55 && plateau < 0.65) h = h * 0.3 + 0.5 * 0.7; // flatten
+        terrain[x] = WORLD_H * 0.25 + h * WORLD_H * 0.45;
+    }
+    // Ensure edges taper into water
+    for (let x = 0; x < 80; x++) {
+        const t = x / 80;
+        terrain[x] = terrain[x] * t + waterLevel * (1 - t);
+        terrain[WORLD_W - 1 - x] = terrain[WORLD_W - 1 - x] * t + waterLevel * (1 - t);
+    }
+
+    // Generate decorations (trees, flowers, rocks)
+    decorations = [];
+    for (let x = 60; x < WORLD_W - 60; x += 15 + Math.floor(Math.random() * 40)) {
+        const y = terrain[x];
+        if (y > waterLevel - 20) continue; // skip near water
+        const r = Math.random();
+        if (r < 0.15) {
+            decorations.push({ x, y, type: 'tree', size: 12 + Math.random() * 18 });
+        } else if (r < 0.35) {
+            decorations.push({ x, y, type: 'flower', color: `hsl(${Math.random()*360},70%,60%)` });
+        } else if (r < 0.45) {
+            decorations.push({ x, y, type: 'rock', size: 4 + Math.random() * 8 });
+        } else if (r < 0.5) {
+            decorations.push({ x, y, type: 'bush', size: 8 + Math.random() * 10 });
+        }
+    }
+}
+
+function destroyTerrain(cx, cy, radius) {
+    for (let x = Math.max(0, Math.floor(cx - radius)); x <= Math.min(WORLD_W - 1, Math.ceil(cx + radius)); x++) {
+        const dx = x - cx;
+        if (Math.abs(dx) < radius) {
+            const maxDepth = Math.sqrt(radius * radius - dx * dx);
+            if (terrain[x] < cy + maxDepth && terrain[x] > cy - maxDepth) {
+                terrain[x] = Math.max(terrain[x], cy + maxDepth);
+            }
+        }
+    }
+    // Remove decorations in blast
+    decorations = decorations.filter(d => Math.hypot(d.x - cx, d.y - cy) > radius);
+}
+
+function getGroundY(x) {
+    const ix = Math.floor(Math.max(0, Math.min(WORLD_W - 1, x)));
+    return terrain[ix];
+}
+
+// ===================== WORM CLASS =====================
+class Worm {
+    constructor(x, y, team, idx) {
+        this.x = x; this.y = y;
+        this.team = team;
+        this.health = 100;
+        this.vx = 0; this.vy = 0;
+        this.radius = 10;
+        this.angle = team === 0 ? -0.5 : -2.6; // aim right/left
+        this.grounded = false;
+        this.alive = true;
+        this.name = wormNames[team][idx];
+        this.animFrame = 0;
+        this.facing = team === 0 ? 1 : -1;
+        this.fallDmg = 0;
+        this.prevVy = 0;
+    }
+    update() {
+        if (!this.alive) return;
+        this.prevVy = this.vy;
+        this.vy += gravity;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vx *= 0.92;
+
+        // Death by water
+        if (this.y + this.radius > waterLevel + 5) {
+            this.die();
+            for (let i = 0; i < 20; i++) particles.push(createParticle(this.x, waterLevel, (Math.random() - 0.5) * 5, -Math.random() * 6, 35, 'rgba(100,170,255,.8)'));
+            return;
+        }
+        // Terrain collision
+        this.grounded = false;
+        for (let dx = -this.radius; dx <= this.radius; dx += 2) {
+            const tx = Math.floor(this.x + dx);
+            if (tx < 0 || tx >= WORLD_W) continue;
+            if (this.y + this.radius > terrain[tx]) {
+                this.y = terrain[tx] - this.radius;
+                if (this.vy > 6) {
+                    this.fallDmg = Math.floor((this.vy - 6) * 4);
+                    this.takeDamage(this.fallDmg);
+                }
+                this.vy = 0;
+                this.vx *= 0.7;
+                this.grounded = true;
+                break;
+            }
+        }
+        // Bounds
+        this.x = Math.max(this.radius, Math.min(WORLD_W - this.radius, this.x));
+    }
+    move(dir) {
+        if (!this.grounded) return;
+        this.facing = dir;
+        // Walk up slopes
+        const nextX = this.x + dir * 3;
+        const curGround = getGroundY(this.x);
+        const nextGround = getGroundY(nextX);
+        const slope = curGround - nextGround;
+        if (slope > -12 && slope < 20) { // can climb
+            this.x = nextX;
+            if (slope > 2) this.y -= slope * 0.5;
+        }
+    }
+    jump() {
+        if (!this.grounded) return;
+        this.vy = -7;
+        this.vx += this.facing * 2;
+    }
+    backflip() {
+        if (!this.grounded) return;
+        this.vy = -9;
+        this.vx -= this.facing * 3;
+    }
+    takeDamage(amount) {
+        if (!this.alive) return;
+        this.health = Math.max(0, this.health - amount);
+        if (this.health <= 0) this.die();
+        updateUI();
+    }
+    die() {
+        this.alive = false;
+        this.health = 0;
+        gravestones.push({ x: this.x, y: getGroundY(this.x), team: this.team });
+        updateUI();
+    }
+    drawBody(isActive) {
+        if (!this.alive) return;
+        this.animFrame++;
+        const f = this.facing;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,.15)';
+        ctx.beginPath();
+        ctx.ellipse(0, this.radius - 1, this.radius * 0.9, 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Body segments (worm body)
+        const tc = this.team === 0 ? [255, 100, 100] : [100, 160, 255];
+        const dc = this.team === 0 ? [200, 60, 60] : [60, 120, 220];
+        const bodyLen = 7;
+        for (let i = 0; i < bodyLen; i++) {
+            const t = i / (bodyLen - 1);
+            const wobble = this.grounded ? Math.sin((this.animFrame + i * 12) * 0.12) * 1.2 : 0;
+            const segX = (i - bodyLen * 0.5) * 2.5 * f;
+            const segY = wobble - t * 2;
+            const sz = 4.5 + Math.sin(t * Math.PI) * 3;
+            ctx.fillStyle = i % 2 === 0 ? `rgb(${tc[0]},${tc[1]},${tc[2]})` : `rgb(${dc[0]},${dc[1]},${dc[2]})`;
+            ctx.beginPath();
+            ctx.ellipse(segX, segY, sz, sz * 0.75, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Head
+        const hx = bodyLen * 0.5 * 2.5 * f;
+        const headR = 9;
+        ctx.fillStyle = `rgb(${tc[0]},${tc[1]},${tc[2]})`;
+        ctx.beginPath();
+        ctx.arc(hx, -3, headR, 0, Math.PI * 2);
+        ctx.fill();
+        // Head outline
+        ctx.strokeStyle = `rgb(${dc[0]},${dc[1]},${dc[2]})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Bandana / helmet
+        ctx.fillStyle = this.team === 0 ? '#c0392b' : '#2980b9';
+        ctx.beginPath();
+        ctx.ellipse(hx, -7, headR * 0.85, 4, f * 0.1, Math.PI, Math.PI * 2);
+        ctx.fill();
+        // Bandana tail
+        ctx.strokeStyle = this.team === 0 ? '#e74c3c' : '#3498db';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(hx - f * 7, -8);
+        const tailWave = Math.sin(this.animFrame * 0.1) * 3;
+        ctx.quadraticCurveTo(hx - f * 12, -10 + tailWave, hx - f * 16, -6 + tailWave);
+        ctx.stroke();
+
+        // Eyes
+        const ex = hx + f * 3;
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.ellipse(ex, -4, 3.5, 3, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#111';
+        ctx.beginPath();
+        ctx.arc(ex + f * 1.2, -4, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+        // Pupil highlight
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(ex + f * 0.5, -5, 0.7, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Angry eyebrow
+        ctx.strokeStyle = `rgb(${dc[0]},${dc[1]},${dc[2]})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(ex - 3, -7);
+        ctx.lineTo(ex + f * 3, -8.5);
+        ctx.stroke();
+
+        // Mouth
+        ctx.strokeStyle = `rgb(${dc[0]},${dc[1]},${dc[2]})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(hx + f * 4, -0.5, 2, 0.2, Math.PI - 0.2);
+        ctx.stroke();
+
+        // Weapon aim line (only for active worm)
+        if (isActive) {
+            const aimLen = 35;
+            const ax = hx + Math.cos(this.angle) * aimLen;
+            const ay = -3 + Math.sin(this.angle) * aimLen;
+            // Glow
+            ctx.shadowColor = '#ffd93d';
+            ctx.shadowBlur = 12;
+            ctx.strokeStyle = '#ffd93d';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(hx, -3);
+            ctx.lineTo(ax, ay);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+            // Crosshair
+            const cx2 = ax, cy2 = ay;
+            const pulse = 0.7 + Math.sin(Date.now() * 0.006) * 0.3;
+            ctx.strokeStyle = 'rgba(255,217,61,.8)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx2, cy2, 7 * pulse, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(cx2 - 10, cy2); ctx.lineTo(cx2 + 10, cy2);
+            ctx.moveTo(cx2, cy2 - 10); ctx.lineTo(cx2, cy2 + 10);
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // Name & health above head
+        ctx.save();
+        ctx.font = 'bold 10px Arial';
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = 'rgba(0,0,0,.7)';
+        ctx.lineWidth = 3;
+        ctx.strokeText(this.name, this.x, this.y - 22);
+        ctx.fillStyle = '#fff';
+        ctx.fillText(this.name, this.x, this.y - 22);
+        // Health number
+        ctx.font = 'bold 11px Arial';
+        const hpColor = this.health > 50 ? '#2ecc71' : this.health > 25 ? '#f39c12' : '#e74c3c';
+        ctx.strokeText(this.health, this.x, this.y - 32);
+        ctx.fillStyle = hpColor;
+        ctx.fillText(this.health, this.x, this.y - 32);
+        ctx.restore();
+    }
+}
+
+// ===================== PROJECTILE =====================
+class Projectile {
+    constructor(x, y, vx, vy, type, team, target) {
+        this.x = x; this.y = y;
+        this.vx = vx; this.vy = vy;
+        this.type = type; this.team = team;
+        this.radius = 4;
+        this.exploded = false;
+        this.timer = weapons[type] ? weapons[type].delay : 0;
+        this.target = target || null;
+        this.trail = [];
+        this.age = 0;
+    }
+    update() {
+        if (this.exploded) return false;
+        this.age++;
+        this.trail.push({ x: this.x, y: this.y });
+        if (this.trail.length > 15) this.trail.shift();
+
+        // Timer weapons
+        if (['grenade','dynamite','clusterbomb','bananabomb','holygrenade','petrolbomb','molotov'].includes(this.type)) {
+            this.timer -= 16;
+            if (this.timer <= 0) { this.explode(); return false; }
+        }
+        // Homing
+        if (this.type === 'homingmissile' && this.target && this.target.alive) {
+            const dx = this.target.x - this.x, dy = this.target.y - this.y;
+            const d = Math.sqrt(dx*dx + dy*dy);
+            if (d > 0) { this.vx += (dx/d)*0.4; this.vy += (dy/d)*0.4; }
+            const spd = Math.sqrt(this.vx*this.vx + this.vy*this.vy);
+            if (spd > 9) { this.vx = (this.vx/spd)*9; this.vy = (this.vy/spd)*9; }
+        }
+        // Sheep walk
+        if (this.type === 'sheep' && this.age > 5) {
+            const gx = Math.floor(this.x);
+            if (gx >= 0 && gx < WORLD_W && this.y + 4 >= terrain[gx]) {
+                this.y = terrain[gx] - 4;
+                this.vy = 0;
+                this.vx = (this.vx > 0 ? 1 : -1) * 2.5;
+                if (this.age > 200) { this.explode(); return false; }
+            }
+        }
+        // Physics
+        this.vy += gravity;
+        this.vx += wind * 0.02;
+        this.x += this.vx;
+        this.y += this.vy;
+        // Water
+        if (this.y >= waterLevel) {
+            for (let i = 0; i < 8; i++) particles.push(createParticle(this.x, waterLevel, (Math.random()-.5)*3, -Math.random()*4, 20, 'rgba(100,170,255,.7)'));
+            this.exploded = true; return false;
+        }
+        // Terrain hit
+        const tx = Math.floor(this.x);
+        if (tx >= 0 && tx < WORLD_W && this.y >= terrain[tx]) {
+            if (this.type === 'mine') { this.y = terrain[tx]; this.vx = 0; this.vy = 0; return true; }
+            if (['grenade','dynamite','clusterbomb','bananabomb','holygrenade','sheep'].includes(this.type)) {
+                this.y = terrain[tx] - 1;
+                this.vy *= -0.5; this.vx *= 0.7;
+                if (Math.abs(this.vy) < 0.8) this.vy = 0;
+            } else { this.explode(); return false; }
+        }
+        // Worm direct hit (for fast projectiles)
+        for (const team of teams) for (const w of team) {
+            if (!w.alive) continue;
+            if (Math.hypot(w.x - this.x, w.y - this.y) < w.radius + this.radius) {
+                if (!['grenade','dynamite','clusterbomb','bananabomb','holygrenade','mine','sheep'].includes(this.type)) {
+                    this.explode(); return false;
+                }
+            }
+        }
+        // Out of bounds
+        if (this.x < -50 || this.x > WORLD_W + 50 || this.y < -500) { this.exploded = true; return false; }
+        return true;
+    }
+    explode() {
+        if (this.exploded) return;
+        this.exploded = true;
+        followTarget = { x: this.x, y: this.y };
+        setTimeout(() => { followTarget = null; }, 1500);
+
+        const w = weapons[this.type] || weapons.bazooka;
+        const blast = w.blast, damage = w.damage;
+
+        // Sub-munitions
+        if ((this.type === 'clusterbomb' || this.type === 'bananabomb') && w.clusters) {
+            const subType = this.type === 'bananabomb' ? 'bazooka' : 'grenade';
+            for (let i = 0; i < w.clusters; i++) {
+                const a = (Math.PI * 2 * i) / w.clusters + (Math.random() - 0.5) * 0.5;
+                const spd = 3 + Math.random() * 3;
+                setTimeout(() => {
+                    const p = new Projectile(this.x, this.y, Math.cos(a)*spd, Math.sin(a)*spd - 3, subType, this.team);
+                    if (subType === 'grenade') p.timer = 800;
+                    projectiles.push(p);
+                }, i * 60);
+            }
+        }
+
+        if (blast > 0) {
+            destroyTerrain(this.x, this.y, blast);
+            camera.shake(blast * 0.15);
+        }
+        // Damage
+        teams.forEach(team => team.forEach(worm => {
+            if (!worm.alive) return;
+            const dist = Math.hypot(worm.x - this.x, worm.y - this.y);
+            if (dist < blast + 10) {
+                const dmg = Math.max(0, Math.floor(damage * (1 - dist / (blast + 10))));
+                if (dmg > 0) worm.takeDamage(dmg);
+                const angle = Math.atan2(worm.y - this.y, worm.x - this.x);
+                const force = (1 - dist / (blast + 10)) * 9;
+                worm.vx += Math.cos(angle) * force;
+                worm.vy += Math.sin(angle) * force - 2;
+            }
+        }));
+        // Explosion particles
+        const pCount = Math.min(blast * 1.2, 60);
+        for (let i = 0; i < pCount; i++) {
+            const a = Math.random() * Math.PI * 2;
+            const spd = Math.random() * 7 + 2;
+            const life = 30 + Math.random() * 25;
+            const isSmoke = Math.random() < 0.3;
+            const color = isSmoke ? `rgba(80,80,80,${0.5 + Math.random()*0.3})` : `hsl(${10 + Math.random()*50}, ${70+Math.random()*30}%, ${50+Math.random()*20}%)`;
+            particles.push(createParticle(this.x, this.y, Math.cos(a)*spd, Math.sin(a)*spd - 3, life, color, isSmoke ? 3 + Math.random()*4 : 2 + Math.random()*2));
+        }
+        // Fire ring
+        if (w.fire) {
+            for (let i = 0; i < 15; i++) {
+                const a = Math.random() * Math.PI * 2;
+                particles.push(createParticle(this.x, this.y, Math.cos(a)*4, Math.sin(a)*4-2, 50, `hsl(${Math.random()*30}, 100%, ${40+Math.random()*30}%)`, 3));
+            }
+        }
+    }
+    draw() {
+        if (this.exploded) return;
+        // Trail
+        if (this.trail.length > 1) {
+            for (let i = 1; i < this.trail.length; i++) {
+                const a = i / this.trail.length;
+                ctx.strokeStyle = `rgba(255,255,200,${a * 0.4})`;
+                ctx.lineWidth = a * 3;
+                ctx.beginPath();
+                ctx.moveTo(this.trail[i-1].x, this.trail[i-1].y);
+                ctx.lineTo(this.trail[i].x, this.trail[i].y);
+                ctx.stroke();
+            }
+        }
+        // Body
+        ctx.save();
+        if (this.type === 'sheep' || this.type === 'supersheep') {
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.ellipse(this.x, this.y, 7, 5, 0, 0, Math.PI*2);
+            ctx.fill();
+            ctx.strokeStyle = '#ccc'; ctx.lineWidth = 1; ctx.stroke();
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.arc(this.x + (this.vx > 0 ? 5 : -5), this.y - 2, 2.5, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(this.x + (this.vx > 0 ? 5.5 : -5.5), this.y - 2.5, 1, 0, Math.PI*2);
+            ctx.fill();
+        } else if (this.type === 'bananabomb') {
+            ctx.fillStyle = '#f1c40f';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
+            ctx.fill();
+            ctx.strokeStyle = '#d4ac0d'; ctx.lineWidth = 1.5; ctx.stroke();
+        } else if (this.type === 'holygrenade') {
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
+            ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y-5); ctx.lineTo(this.x, this.y+5);
+            ctx.moveTo(this.x-5, this.y); ctx.lineTo(this.x+5, this.y);
+            ctx.stroke();
+            // Holy glow
+            ctx.shadowColor = '#ffd700';
+            ctx.shadowBlur = 15;
+            ctx.fillStyle = 'rgba(255,215,0,.3)';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 10, 0, Math.PI*2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        } else if (this.type === 'homingmissile') {
+            const a = Math.atan2(this.vy, this.vx);
+            ctx.translate(this.x, this.y);
+            ctx.rotate(a);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(-8, -3, 14, 6);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(-8, -1, 3, 2);
+            // Flame
+            ctx.fillStyle = '#f39c12';
+            ctx.beginPath();
+            ctx.moveTo(-8, -2); ctx.lineTo(-12 - Math.random()*4, 0); ctx.lineTo(-8, 2);
+            ctx.fill();
+        } else if (this.type === 'mine') {
+            ctx.fillStyle = '#555';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y - 4, 2, 0, Math.PI*2);
+            ctx.fill();
+        } else if (this.type === 'dynamite') {
+            ctx.fillStyle = '#c0392b';
+            ctx.fillRect(this.x - 3, this.y - 6, 6, 12);
+            ctx.fillStyle = '#f39c12';
+            ctx.fillRect(this.x - 1, this.y - 9, 2, 4);
+            // Fuse spark
+            if (this.timer > 0 && Math.random() > 0.3) {
+                ctx.fillStyle = '#ffd93d';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y - 10, 2 + Math.random()*2, 0, Math.PI*2);
+                ctx.fill();
+            }
+        } else {
+            // Default projectile
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+            ctx.fill();
+            ctx.strokeStyle = '#1a252f';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+        ctx.restore();
+        // Timer
+        if (this.timer > 0 && ['grenade','dynamite','clusterbomb','bananabomb','holygrenade','petrolbomb','molotov'].includes(this.type)) {
+            ctx.save();
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            const txt = Math.ceil(this.timer / 1000).toString();
+            ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
+            ctx.strokeText(txt, this.x, this.y - 12);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillText(txt, this.x, this.y - 12);
+            ctx.restore();
+        }
+    }
+}
+
+// ===================== PARTICLES =====================
+function createParticle(x, y, vx, vy, life, color, size) {
+    return { x, y, vx, vy, life, maxLife: life, color, size: size || 2 + Math.random()*2 };
+}
+
+// ===================== DRAWING =====================
+function drawBackground() {
+    // Sky
+    const skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    skyGrad.addColorStop(0, '#4a90d9');
+    skyGrad.addColorStop(0.5, '#87CEEB');
+    skyGrad.addColorStop(1, '#b8dff0');
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Sun
+    const sunX = canvas.width * 0.85;
+    const sunY = canvas.height * 0.12;
+    ctx.fillStyle = 'rgba(255,220,100,.3)';
+    ctx.beginPath(); ctx.arc(sunX, sunY, 60, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'rgba(255,230,140,.5)';
+    ctx.beginPath(); ctx.arc(sunX, sunY, 40, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#ffe082';
+    ctx.beginPath(); ctx.arc(sunX, sunY, 25, 0, Math.PI*2); ctx.fill();
+
+    // Distant mountains (parallax layer - moves slower)
+    const px = camera.x * 0.15;
+    ctx.fillStyle = 'rgba(100,140,180,.35)';
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height);
+    for (let x = 0; x <= canvas.width; x += 4) {
+        const wx = x + px;
+        const h = Math.sin(wx * 0.003) * 80 + Math.sin(wx * 0.007) * 40 + Math.sin(wx * 0.002) * 60;
+        ctx.lineTo(x, canvas.height * 0.5 - h);
+    }
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.fill();
+
+    // Nearer hills
+    const px2 = camera.x * 0.3;
+    ctx.fillStyle = 'rgba(80,130,100,.3)';
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height);
+    for (let x = 0; x <= canvas.width; x += 4) {
+        const wx = x + px2;
+        const h = Math.sin(wx * 0.005) * 50 + Math.sin(wx * 0.012) * 25 + Math.sin(wx * 0.003) * 30;
+        ctx.lineTo(x, canvas.height * 0.6 - h);
+    }
+    ctx.lineTo(canvas.width, canvas.height);
+    ctx.fill();
+
+    // Clouds (parallax)
+    const cloudPx = camera.x * 0.1;
+    const t = Date.now() * 0.008;
+    ctx.fillStyle = 'rgba(255,255,255,.5)';
+    for (let i = 0; i < 8; i++) {
+        const cx = ((i * 400 + t + cloudPx * 0.5) % (canvas.width + 300)) - 100;
+        const cy = 40 + i * 25 + Math.sin(i * 2.3) * 20;
+        const s = 25 + i * 5;
+        ctx.beginPath();
+        ctx.arc(cx, cy, s, 0, Math.PI*2);
+        ctx.arc(cx + s * 0.7, cy - s * 0.2, s * 0.8, 0, Math.PI*2);
+        ctx.arc(cx + s * 1.3, cy, s * 0.7, 0, Math.PI*2);
+        ctx.fill();
+    }
+}
+
+function drawWorld() {
+    camera.apply();
+
+    // Water (behind terrain)
+    const wGrad = ctx.createLinearGradient(0, waterLevel, 0, waterLevel + 200);
+    wGrad.addColorStop(0, 'rgba(30,100,180,.7)');
+    wGrad.addColorStop(1, 'rgba(10,50,120,.9)');
+    ctx.fillStyle = wGrad;
+    ctx.fillRect(camera.x, waterLevel, canvas.width / camera.zoom + 10, WORLD_H - waterLevel + 100);
+
+    // Water surface wave
+    const time = Date.now() * 0.002;
+    ctx.strokeStyle = 'rgba(120,180,255,.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    const startX = Math.floor(camera.x);
+    const endX = Math.ceil(camera.x + canvas.width / camera.zoom);
+    for (let x = startX; x < endX; x += 4) {
+        const wy = waterLevel + Math.sin(x * 0.015 + time) * 3 + Math.sin(x * 0.04 + time * 1.5) * 1.5;
+        if (x === startX) ctx.moveTo(x, wy); else ctx.lineTo(x, wy);
+    }
+    ctx.stroke();
+    // Water highlight
+    ctx.strokeStyle = 'rgba(180,220,255,.3)';
+    ctx.beginPath();
+    for (let x = startX; x < endX; x += 4) {
+        const wy = waterLevel + 8 + Math.sin(x * 0.02 + time * 0.8) * 2;
+        if (x === startX) ctx.moveTo(x, wy); else ctx.lineTo(x, wy);
+    }
+    ctx.stroke();
+
+    // Terrain with layers
+    const vStartX = Math.max(0, Math.floor(camera.x));
+    const vEndX = Math.min(WORLD_W, Math.ceil(camera.x + canvas.width / camera.zoom + 1));
+
+    // Dirt fill
+    ctx.beginPath();
+    ctx.moveTo(vStartX, waterLevel + 10);
+    for (let x = vStartX; x < vEndX; x++) ctx.lineTo(x, terrain[x]);
+    ctx.lineTo(vEndX, waterLevel + 10);
+    ctx.closePath();
+    const tg = ctx.createLinearGradient(0, WORLD_H * 0.2, 0, waterLevel);
+    tg.addColorStop(0, '#6B4226');
+    tg.addColorStop(0.05, '#8B5A2B');
+    tg.addColorStop(0.12, '#5D4037');
+    tg.addColorStop(1, '#3E2723');
+    ctx.fillStyle = tg;
+    ctx.fill();
+
+    // Grass top layer
+    ctx.strokeStyle = '#4CAF50';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    for (let x = vStartX; x < vEndX; x++) {
+        if (terrain[x] < waterLevel - 5) {
+            ctx.moveTo(x, terrain[x]);
+            ctx.lineTo(x + 1, terrain[x + 1] || terrain[x]);
+        }
+    }
+    ctx.stroke();
+    // Darker grass line
+    ctx.strokeStyle = '#388E3C';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let x = vStartX; x < vEndX; x++) {
+        if (terrain[x] < waterLevel - 5) {
+            ctx.moveTo(x, terrain[x] + 3);
+            ctx.lineTo(x + 1, (terrain[x + 1] || terrain[x]) + 3);
+        }
+    }
+    ctx.stroke();
+
+    // Grass blades
+    for (let x = vStartX; x < vEndX; x += 3) {
+        if (terrain[x] >= waterLevel - 5) continue;
+        const gy = terrain[x];
+        const h = 3 + pseudoNoise(x * 0.1) * 5;
+        const lean = Math.sin(x * 0.3 + Date.now() * 0.001) * 2;
+        ctx.strokeStyle = `hsl(${100 + pseudoNoise(x*0.05)*40}, 50%, ${30+pseudoNoise(x*0.07)*20}%)`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, gy);
+        ctx.lineTo(x + lean, gy - h);
+        ctx.stroke();
+    }
+
+    // Decorations
+    for (const d of decorations) {
+        if (d.x < vStartX - 30 || d.x > vEndX + 30) continue;
+        if (d.type === 'tree') {
+            // Trunk
+            ctx.fillStyle = '#5D4037';
+            ctx.fillRect(d.x - 2, d.y - d.size * 0.6, 4, d.size * 0.6);
+            // Foliage
+            ctx.fillStyle = '#2E7D32';
+            ctx.beginPath();
+            ctx.arc(d.x, d.y - d.size, d.size * 0.45, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#388E3C';
+            ctx.beginPath();
+            ctx.arc(d.x - 3, d.y - d.size * 0.8, d.size * 0.35, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#43A047';
+            ctx.beginPath();
+            ctx.arc(d.x + 4, d.y - d.size * 0.85, d.size * 0.3, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (d.type === 'flower') {
+            ctx.strokeStyle = '#388E3C';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x, d.y - 6);
+            ctx.stroke();
+            ctx.fillStyle = d.color;
+            ctx.beginPath();
+            ctx.arc(d.x, d.y - 7, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (d.type === 'rock') {
+            ctx.fillStyle = '#78909C';
+            ctx.beginPath();
+            ctx.ellipse(d.x, d.y - d.size * 0.3, d.size, d.size * 0.6, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#546E7A'; ctx.lineWidth = 1; ctx.stroke();
+        } else if (d.type === 'bush') {
+            ctx.fillStyle = '#2E7D32';
+            ctx.beginPath();
+            ctx.ellipse(d.x, d.y - d.size * 0.4, d.size, d.size * 0.6, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#1B5E20';
+            ctx.beginPath();
+            ctx.ellipse(d.x + 3, d.y - d.size * 0.3, d.size * 0.7, d.size * 0.4, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // Gravestones
+    for (const g of gravestones) {
+        ctx.fillStyle = '#616161';
+        ctx.fillRect(g.x - 5, g.y - 14, 10, 14);
+        ctx.fillStyle = '#757575';
+        ctx.beginPath();
+        ctx.arc(g.x, g.y - 14, 5, Math.PI, 0);
+        ctx.fill();
+        ctx.fillStyle = '#9E9E9E';
+        ctx.font = 'bold 7px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('RIP', g.x, g.y - 6);
+    }
+
+    // Worms
+    teams.forEach(team => team.forEach(w => w.drawBody(w === activeWorm)));
+
+    // Projectiles
+    projectiles.forEach(p => p.draw());
+
+    // Particles
+    particles.forEach(p => {
+        const alpha = p.life / p.maxLife;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * (0.5 + alpha * 0.5), 0, Math.PI * 2);
+        ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    // Trajectory
+    if (trajectoryPoints.length > 1 && activeWorm) {
+        ctx.setLineDash([6, 6]);
+        for (let i = 1; i < trajectoryPoints.length; i++) {
+            const a = 1 - i / trajectoryPoints.length;
+            ctx.strokeStyle = `rgba(255,217,61,${a * 0.7})`;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(trajectoryPoints[i-1].x, trajectoryPoints[i-1].y);
+            ctx.lineTo(trajectoryPoints[i].x, trajectoryPoints[i].y);
+            ctx.stroke();
+        }
+        ctx.setLineDash([]);
+        // Impact circle
+        const last = trajectoryPoints[trajectoryPoints.length - 1];
+        const blast = weapons[currentWeapon] ? weapons[currentWeapon].blast : 30;
+        ctx.strokeStyle = 'rgba(255,100,100,.3)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(last.x, last.y, blast, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
+    camera.restore();
+}
+
+// ===================== SPAWN =====================
+function spawnWorms() {
+    teams = [[], []];
+    const n = 3;
+    // Place on safe ground spots
+    const safeZones = [];
+    for (let x = 150; x < WORLD_W - 150; x += 20) {
+        if (terrain[x] < waterLevel - 30) {
+            // Check flat-ish ground
+            let flat = true;
+            for (let dx = -15; dx < 15; dx += 5) {
+                if (Math.abs(terrain[x + dx] - terrain[x]) > 10) { flat = false; break; }
+            }
+            if (flat) safeZones.push(x);
+        }
+    }
+    // Split safe zones into left/right halves
+    const mid = WORLD_W / 2;
+    const leftZones = safeZones.filter(x => x < mid - 100);
+    const rightZones = safeZones.filter(x => x > mid + 100);
+
+    for (let i = 0; i < n; i++) {
+        const lx = leftZones[Math.floor(Math.random() * leftZones.length)];
+        teams[0].push(new Worm(lx, terrain[lx] - 12, 0, i));
+
+        const rx = rightZones[Math.floor(Math.random() * rightZones.length)];
+        teams[1].push(new Worm(rx, terrain[rx] - 12, 1, i));
+    }
+    activeWorm = teams[0][0];
+}
+
+// ===================== TURN =====================
+function nextTurn() {
+    trajectoryPoints = [];
+    // Next player
+    currentPlayer = 1 - currentPlayer;
+    const aliveWorms = teams[currentPlayer].filter(w => w.alive);
+    if (aliveWorms.length === 0) {
+        currentPlayer = 1 - currentPlayer;
+        const other = teams[currentPlayer].filter(w => w.alive);
+        if (other.length === 0) return;
+        activeWorm = other[0];
+    } else {
+        // Cycle through worms
+        const prevIdx = aliveWorms.indexOf(activeWorm);
+        activeWorm = aliveWorms[(prevIdx + 1) % aliveWorms.length] || aliveWorms[0];
+    }
+    turnTimer = 30;
+    wind = (Math.random() - 0.5) * 12;
+    updateWindDisplay();
+    updateUI();
+
+    if (gameMode === 'ai' && currentPlayer === 1) setTimeout(aiTurn, 800);
+}
+
+function updateWindDisplay() {
+    const arrow = document.getElementById('wind-arrow');
+    const val = document.getElementById('wind-value');
+    const absWind = Math.abs(wind);
+    arrow.textContent = wind > 0.5 ? '→' : wind < -0.5 ? '←' : '·';
+    arrow.style.transform = `scaleX(${Math.min(absWind / 5, 2)})`;
+    val.textContent = absWind.toFixed(1);
+}
+
+// ===================== AI =====================
+function aiTurn() {
+    if (!gameRunning || !activeWorm || !activeWorm.alive) return;
+    const enemies = teams[0].filter(w => w.alive);
+    if (enemies.length === 0) return;
+
+    // Pick nearest enemy
+    let closest = null, minDist = Infinity;
+    for (const e of enemies) {
+        const d = Math.hypot(e.x - activeWorm.x, e.y - activeWorm.y);
+        if (d < minDist) { minDist = d; closest = e; }
+    }
+    if (!closest) return;
+
+    // Pick weapon based on distance
+    const dist = minDist;
+    const wpnChoices = dist < 50 ? ['prod','firepunch','dynamite','shotgun'] :
+                       dist < 200 ? ['bazooka','grenade','shotgun'] :
+                       ['bazooka','mortar','homingmissile','grenade'];
+    currentWeapon = wpnChoices[Math.floor(Math.random() * wpnChoices.length)];
+    updateTurnInfo();
+
+    // Aim
+    activeWorm.angle = Math.atan2(closest.y - activeWorm.y, closest.x - activeWorm.x);
+    // Adjust for gravity arc
+    if (dist > 100) activeWorm.angle -= 0.15 + (dist / WORLD_W) * 0.3;
+
+    setTimeout(() => {
+        if (!gameRunning) return;
+        const pow = Math.min(30 + dist * 0.3, 95);
+        fire(pow);
+    }, 600);
+}
+
+// ===================== TRAJECTORY =====================
+function calculateTrajectory(sx, sy, vx, vy, steps) {
+    const pts = [];
+    let x = sx, y = sy, velX = vx, velY = vy;
+    for (let i = 0; i < (steps || 60); i++) {
+        pts.push({ x, y });
+        velY += gravity;
+        velX += wind * 0.02;
+        x += velX; y += velY;
+        if (y >= waterLevel) break;
+        const tx = Math.floor(x);
+        if (tx >= 0 && tx < WORLD_W && y >= terrain[tx]) break;
+        if (x < 0 || x > WORLD_W) break;
+    }
+    return pts;
+}
+
+// ===================== FIRE =====================
+function fire(pow) {
+    if (!activeWorm || !activeWorm.alive) return;
+    trajectoryPoints = [];
+    const speed = pow / 8;
+    const vx = Math.cos(activeWorm.angle) * speed;
+    const vy = Math.sin(activeWorm.angle) * speed;
+
+    if (currentWeapon === 'earthquake') {
+        camera.shake(20);
+        teams.forEach(team => team.forEach(w => { if (w.alive) { w.vy = -4 - Math.random()*3; w.vx = (Math.random()-.5)*6; w.takeDamage(15); }}));
+        // Lower terrain a bit
+        for (let x = 0; x < WORLD_W; x++) terrain[x] = Math.min(terrain[x] + 5 + Math.random()*5, waterLevel + 50);
+        setTimeout(() => nextTurn(), 2000);
+        return;
+    }
+    if (currentWeapon === 'prod' || currentWeapon === 'firepunch' || currentWeapon === 'dragonpunch') {
+        const range = currentWeapon === 'prod' ? 25 : 35;
+        const kb = weapons[currentWeapon].knockback;
+        let hit = false;
+        teams.forEach(team => team.forEach(w => {
+            if (!w.alive || w === activeWorm) return;
+            const d = Math.hypot(w.x - activeWorm.x, w.y - activeWorm.y);
+            if (d < range) {
+                hit = true;
+                w.takeDamage(weapons[currentWeapon].damage);
+                const a = Math.atan2(w.y - activeWorm.y, w.x - activeWorm.x);
+                w.vx = Math.cos(a) * kb;
+                w.vy = Math.sin(a) * kb - 5;
+                camera.shake(5);
+                for (let i = 0; i < 10; i++) particles.push(createParticle(w.x, w.y, (Math.random()-.5)*5, -Math.random()*5, 20, '#f39c12'));
+            }
+        }));
+        if (currentWeapon === 'dragonpunch' && !hit) activeWorm.vy = -10; // uppercut jump
+        setTimeout(() => nextTurn(), 1200);
+        return;
+    }
+    if (currentWeapon === 'blowtorch') {
+        // Dig horizontal tunnel
+        const dir = activeWorm.facing;
+        for (let i = 0; i < 80; i++) {
+            const tx = Math.floor(activeWorm.x + dir * i);
+            if (tx >= 0 && tx < WORLD_W) terrain[tx] = Math.max(terrain[tx], activeWorm.y + 15);
+        }
+        activeWorm.x += activeWorm.facing * 60;
+        setTimeout(() => nextTurn(), 800);
+        return;
+    }
+    if (currentWeapon === 'drill') {
+        // Dig vertical
+        const cx = Math.floor(activeWorm.x);
+        for (let r = -8; r <= 8; r++) {
+            const tx = cx + r;
+            if (tx >= 0 && tx < WORLD_W) terrain[tx] = Math.max(terrain[tx], terrain[tx] + 50);
+        }
+        activeWorm.y += 40;
+        setTimeout(() => nextTurn(), 800);
+        return;
+    }
+    if (currentWeapon === 'girder') {
+        // Place girder ahead
+        const gx = Math.floor(activeWorm.x + activeWorm.facing * 50);
+        const gy = activeWorm.y;
+        for (let dx = -30; dx <= 30; dx++) {
+            const tx = gx + dx;
+            if (tx >= 0 && tx < WORLD_W) terrain[tx] = Math.min(terrain[tx], gy);
+        }
+        setTimeout(() => nextTurn(), 600);
+        return;
+    }
+    if (currentWeapon === 'ninja') {
+        // Simple rope: launch worm forward
+        activeWorm.vx = activeWorm.facing * 8;
+        activeWorm.vy = -8;
+        setTimeout(() => nextTurn(), 1500);
+        return;
+    }
+    if (currentWeapon === 'teleport') return;
+
+    if (currentWeapon === 'airstrike') {
+        const tx = activeWorm.x + Math.cos(activeWorm.angle) * 300;
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const x = tx + (i - 2) * 35;
+                projectiles.push(new Projectile(x, camera.y - 20, 0, 8, 'bazooka', currentPlayer));
+            }, i * 150);
+        }
+        followTarget = { x: tx, y: activeWorm.y };
+    } else if (currentWeapon === 'napalmstrike') {
+        const tx = activeWorm.x + Math.cos(activeWorm.angle) * 300;
+        for (let i = 0; i < 7; i++) {
+            setTimeout(() => {
+                const x = tx + (Math.random()-.5) * 200;
+                const p = new Projectile(x, camera.y - 20, 0, 7, 'bazooka', currentPlayer);
+                projectiles.push(p);
+            }, i * 120);
+        }
+        followTarget = { x: tx, y: activeWorm.y };
+    } else if (currentWeapon === 'shotgun') {
+        // Hitscan
+        for (let shot = 0; shot < 2; shot++) {
+            setTimeout(() => {
+                const spread = (Math.random() - 0.5) * 0.08;
+                const a = activeWorm.angle + spread;
+                // Raycast
+                let hx = activeWorm.x, hy = activeWorm.y - 3;
+                for (let s = 0; s < 300; s += 3) {
+                    hx += Math.cos(a) * 3;
+                    hy += Math.sin(a) * 3;
+                    // Hit worm?
+                    for (const team of teams) for (const w of team) {
+                        if (!w.alive || w === activeWorm) continue;
+                        if (Math.hypot(w.x - hx, w.y - hy) < w.radius + 5) {
+                            w.takeDamage(25);
+                            w.vx += Math.cos(a) * 4;
+                            w.vy += Math.sin(a) * 4;
+                            camera.shake(3);
+                            for (let i = 0; i < 5; i++) particles.push(createParticle(hx, hy, (Math.random()-.5)*3, -Math.random()*3, 15, '#f39c12'));
+                            return;
+                        }
+                    }
+                    // Hit terrain?
+                    const tx = Math.floor(hx);
+                    if (tx >= 0 && tx < WORLD_W && hy >= terrain[tx]) {
+                        destroyTerrain(hx, hy, 12);
+                        camera.shake(2);
+                        for (let i = 0; i < 5; i++) particles.push(createParticle(hx, hy, (Math.random()-.5)*3, -Math.random()*3, 15, '#8B4513'));
+                        return;
+                    }
+                }
+            }, shot * 400);
+        }
+    } else if (currentWeapon === 'uzi' || currentWeapon === 'minigun') {
+        const bullets = weapons[currentWeapon].bullets;
+        for (let i = 0; i < bullets; i++) {
+            setTimeout(() => {
+                const spread = (Math.random() - 0.5) * 0.15;
+                const a = activeWorm.angle + spread;
+                projectiles.push(new Projectile(activeWorm.x, activeWorm.y - 3, Math.cos(a)*speed*1.3, Math.sin(a)*speed*1.3, currentWeapon, currentPlayer));
+            }, i * (currentWeapon === 'minigun' ? 40 : 80));
+        }
+    } else if (currentWeapon === 'homingmissile') {
+        let target = null, minD = Infinity;
+        teams.forEach((t, ti) => { if (ti !== currentPlayer) t.forEach(w => { if (w.alive) { const d = Math.hypot(w.x-activeWorm.x, w.y-activeWorm.y); if (d < minD) { minD = d; target = w; }}});});
+        projectiles.push(new Projectile(activeWorm.x, activeWorm.y - 3, vx, vy, currentWeapon, currentPlayer, target));
+    } else if (currentWeapon === 'mortar') {
+        projectiles.push(new Projectile(activeWorm.x, activeWorm.y - 3, vx, vy - 4, 'bazooka', currentPlayer));
+    } else if (currentWeapon === 'baseball' || currentWeapon === 'dragonball') {
+        projectiles.push(new Projectile(activeWorm.x, activeWorm.y - 3, vx * 1.4, vy * 1.4, currentWeapon, currentPlayer));
+    } else {
+        projectiles.push(new Projectile(activeWorm.x, activeWorm.y - 3, vx, vy, currentWeapon, currentPlayer));
+    }
+    setTimeout(() => { if (projectiles.length === 0 && gameRunning) nextTurn(); }, 3500);
+}
+
+// ===================== UI =====================
+function updateUI() {
+    teams.forEach((team, i) => {
+        const alive = team.filter(w => w.alive);
+        const totalHP = alive.reduce((s, w) => s + w.health, 0);
+        const maxHP = team.length * 100;
+        document.getElementById(`p${i+1}-health`).style.width = (totalHP / maxHP * 100) + '%';
+        // Pips
+        const pips = document.getElementById(`p${i+1}-pips`);
+        pips.innerHTML = '';
+        team.forEach(w => {
+            const pip = document.createElement('div');
+            pip.className = 'worm-pip' + (w.alive ? '' : ' dead');
+            pip.style.background = i === 0 ? '#ff6b6b' : '#74b9ff';
+            pips.appendChild(pip);
+        });
+    });
+    document.getElementById('p1-info').classList.toggle('active', currentPlayer === 0);
+    document.getElementById('p2-info').classList.toggle('active', currentPlayer === 1);
+    updateTurnInfo();
+}
+
+function updateTurnInfo() {
+    const pName = currentPlayer === 0 ? 'Joueur 1' : (gameMode === 'ai' ? 'IA' : 'Joueur 2');
+    const wName = activeWorm ? activeWorm.name : '';
+    document.getElementById('turn-player').textContent = `${pName} - ${wName}`;
+    document.getElementById('turn-weapon').textContent = currentWeapon.charAt(0).toUpperCase() + currentWeapon.slice(1);
+}
+
+function checkGameOver() {
+    const a1 = teams[0].filter(w => w.alive).length;
+    const a2 = teams[1].filter(w => w.alive).length;
+    if (a1 === 0 || a2 === 0) {
+        gameRunning = false;
+        clearInterval(timerInterval);
+        const winner = a1 > 0 ? 0 : 1;
+        const score = teams[winner].reduce((s, w) => s + w.health, 0);
+        document.getElementById('winner-text').textContent = winner === 0 ? '🔴 Joueur 1 gagne !' : '🔵 ' + (gameMode === 'ai' ? 'IA gagne !' : 'Joueur 2 gagne !');
+        document.getElementById('winner-score').textContent = `Score: ${score} PV restants`;
+        document.getElementById('game-over').classList.add('show');
+        Leaderboard.save('worms', score);
+    }
+}
+
+// ===================== GAME LOOP =====================
+function gameLoop() {
+    if (!gameRunning) return;
+
+    // Update
+    teams.forEach(t => t.forEach(w => w.update()));
+    projectiles = projectiles.filter(p => p.update());
+    particles = particles.filter(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.vy += 0.15; p.vx *= 0.98;
+        p.life--;
+        return p.life > 0;
+    });
+
+    // Camera follow
+    if (followTarget) camera.follow(followTarget);
+    else if (activeWorm && activeWorm.alive) camera.follow(activeWorm);
+    camera.update();
+
+    // Draw
+    drawBackground();
+    drawWorld();
+
+    checkGameOver();
+    requestAnimationFrame(gameLoop);
+}
+
+// ===================== START =====================
+function startGame(mode) {
+    gameMode = mode;
+    gameRunning = true;
+    currentPlayer = 0;
+    turnTimer = 30;
+    projectiles = []; particles = []; gravestones = [];
+    followTarget = null;
+
+    document.getElementById('menu').classList.add('hidden');
+    if (gameMode === 'ai') document.getElementById('p2-info').querySelector('.player-name').textContent = '🤖 IA';
+
+    generateTerrain();
+    spawnWorms();
+    updateUI();
+    wind = (Math.random() - 0.5) * 12;
+    updateWindDisplay();
+
+    // Camera initial zoom
+    camera.zoom = Math.min(canvas.width / 800, canvas.height / 500, 1.2);
+    if (activeWorm) camera.follow(activeWorm);
+
+    timerInterval = setInterval(() => {
+        if (!gameRunning) return;
+        turnTimer--;
+        document.getElementById('turn-timer').textContent = turnTimer;
+        if (turnTimer <= 0) nextTurn();
+    }, 1000);
+
+    gameLoop();
+}
+
+function showMenu() {
+    gameRunning = false;
+    clearInterval(timerInterval);
+    document.getElementById('menu').classList.remove('hidden');
+    document.getElementById('game-over').classList.remove('show');
+}
+
+// ===================== CONTROLS =====================
+const btnLeft = document.getElementById('btn-left');
+const btnRight = document.getElementById('btn-right');
+const btnJump = document.getElementById('btn-jump');
+const btnAimUp = document.getElementById('btn-aim-up');
+const btnAimDown = document.getElementById('btn-aim-down');
+const btnWeapon = document.getElementById('btn-weapon');
+const btnFire = document.getElementById('btn-fire');
+
+function holdButton(btn, action) {
+    let interval;
+    const start = (e) => { e.preventDefault(); action(); interval = setInterval(action, 50); };
+    const stop = () => clearInterval(interval);
+    btn.addEventListener('touchstart', start, { passive: false });
+    btn.addEventListener('touchend', stop);
+    btn.addEventListener('mousedown', start);
+    btn.addEventListener('mouseup', stop);
+    btn.addEventListener('mouseleave', stop);
+}
+
+holdButton(btnLeft, () => { if (activeWorm && gameRunning) activeWorm.move(-1); });
+holdButton(btnRight, () => { if (activeWorm && gameRunning) activeWorm.move(1); });
+holdButton(btnAimUp, () => {
+    if (activeWorm && gameRunning) {
+        activeWorm.angle -= 0.04;
+        updateTrajectoryPreview();
+    }
+});
+holdButton(btnAimDown, () => {
+    if (activeWorm && gameRunning) {
+        activeWorm.angle += 0.04;
+        updateTrajectoryPreview();
+    }
+});
+
+btnJump.addEventListener('click', (e) => { e.preventDefault(); if (activeWorm && gameRunning) activeWorm.jump(); });
+btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); if (activeWorm && gameRunning) activeWorm.jump(); });
+
+btnWeapon.addEventListener('click', () => document.getElementById('weapon-menu').classList.toggle('show'));
+
+document.querySelectorAll('.weapon-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.weapon-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        currentWeapon = btn.dataset.weapon;
+        document.getElementById('weapon-menu').classList.remove('show');
+        updateTurnInfo();
+        updateTrajectoryPreview();
+    });
+});
+
+function updateTrajectoryPreview() {
+    if (!activeWorm) return;
+    const spd = (charging ? power : 50) / 8;
+    const vx = Math.cos(activeWorm.angle) * spd;
+    const vy = Math.sin(activeWorm.angle) * spd;
+    trajectoryPoints = calculateTrajectory(activeWorm.x, activeWorm.y - 3, vx, vy);
+}
+
+// Aim with touch on canvas
+canvas.addEventListener('touchmove', (e) => {
+    if (!activeWorm || !gameRunning) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const cx = (touch.clientX - rect.left) / camera.zoom + camera.x;
+    const cy = (touch.clientY - rect.top) / camera.zoom + camera.y;
+    activeWorm.angle = Math.atan2(cy - activeWorm.y, cx - activeWorm.x);
+    updateTrajectoryPreview();
+}, { passive: false });
+
+canvas.addEventListener('mousemove', (e) => {
+    if (!activeWorm || !gameRunning) return;
+    const rect = canvas.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) / camera.zoom + camera.x;
+    const cy = (e.clientY - rect.top) / camera.zoom + camera.y;
+    activeWorm.angle = Math.atan2(cy - activeWorm.y, cx - activeWorm.x);
+    updateTrajectoryPreview();
+});
+
+// Fire
+let chargeInterval;
+function startCharge(e) {
+    if (e) e.preventDefault();
+    if (!activeWorm || !gameRunning || charging) return;
+    if (gameMode === 'ai' && currentPlayer === 1) return;
+    if (currentWeapon === 'teleport') {
+        canvas.addEventListener('click', teleportWorm, { once: true });
+        canvas.addEventListener('touchend', teleportWormTouch, { once: true });
+        return;
+    }
+    charging = true; power = 0;
+    document.getElementById('power-bar').style.display = 'block';
+    chargeInterval = setInterval(() => {
+        power = Math.min(power + 1.5, maxPower);
+        document.getElementById('power-fill').style.width = power + '%';
+        updateTrajectoryPreview();
+    }, 16);
+}
+function endCharge(e) {
+    if (e) e.preventDefault();
+    if (!charging) return;
+    clearInterval(chargeInterval);
+    charging = false;
+    document.getElementById('power-bar').style.display = 'none';
+    if (power > 5) fire(power);
+    power = 0;
+}
+
+btnFire.addEventListener('touchstart', startCharge, { passive: false });
+btnFire.addEventListener('touchend', endCharge);
+btnFire.addEventListener('mousedown', startCharge);
+btnFire.addEventListener('mouseup', endCharge);
+
+function teleportWorm(e) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = (e.clientX - rect.left) / camera.zoom + camera.x;
+    const cy = (e.clientY - rect.top) / camera.zoom + camera.y;
+    if (activeWorm) {
+        const tx = Math.floor(Math.max(10, Math.min(WORLD_W - 10, cx)));
+        activeWorm.x = tx;
+        activeWorm.y = Math.min(cy, terrain[tx] - activeWorm.radius - 2);
+        activeWorm.vx = 0; activeWorm.vy = 0;
+    }
+    nextTurn();
+}
+function teleportWormTouch(e) {
+    const touch = e.changedTouches[0];
+    teleportWorm({ clientX: touch.clientX, clientY: touch.clientY });
+}
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+    if (!activeWorm || !gameRunning) return;
+    if (e.key === 'ArrowLeft') activeWorm.move(-1);
+    if (e.key === 'ArrowRight') activeWorm.move(1);
+    if (e.key === 'ArrowUp') { activeWorm.angle -= 0.05; updateTrajectoryPreview(); }
+    if (e.key === 'ArrowDown') { activeWorm.angle += 0.05; updateTrajectoryPreview(); }
+    if (e.key === ' ') activeWorm.jump();
+    if (e.key === 'Enter' && !charging) startCharge();
+});
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') endCharge();
+});
+</script>
+</body>
+</html>
