@@ -358,174 +358,73 @@ body{align-items:stretch}
 #farm-sub-tabs{display:flex;flex-wrap:wrap}
 
 /* ══════════════════════════════════════════════════════
-   ISOMETRIC 3D FARMVILLE STYLE
+   FARMVILLE ISO — tuiles losange vraies, style mobile
    ══════════════════════════════════════════════════════ */
 
-/* Left-pane: perspective container */
+/* Left-pane : fond ciel + prairie comme Farmville */
 #left-pane{
-  perspective:900px;
-  perspective-origin:50% 30%;
-  background:linear-gradient(180deg,#87CEEB 0%,#b5e8a0 60%,#6ab04c 100%) !important;
-}
-
-/* The ISO scene wrapper inside left-pane */
-#iso-scene{
+  background:linear-gradient(180deg,#7ec8e3 0%,#a8dba8 55%,#6ab04c 100%) !important;
+  overflow:hidden;
   position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;height:100%;
-  overflow:visible;
 }
 
-/* Farm grid: rotated isometrically */
-#farm, #bfarm, #animal-farm{
-  transform: rotateX(52deg) rotateZ(-45deg);
-  transform-style: preserve-3d;
-  transform-origin: center center;
-  will-change: transform;
-  box-shadow:
-    0 20px 40px rgba(0,0,0,.35),
-    0 8px 16px rgba(0,0,0,.2);
-  border-radius:4px;
-  gap:3px !important;
-}
-#farm{
-  background:linear-gradient(135deg,#6ab04c,#78c850) !important;
-  border:2px solid rgba(0,0,0,.2) !important;
-}
-#bfarm{
-  background:linear-gradient(135deg,#c8a97e,#b8956a) !important;
-  border:2px solid rgba(0,0,0,.2) !important;
-}
-#animal-farm{
-  background:linear-gradient(135deg,#a8d57a,#88c050) !important;
-  border:2px solid rgba(0,0,0,.2) !important;
-}
-
-/* Plot cells — isometric style */
-.plot{
-  border-radius:3px !important;
-  border:1px solid rgba(0,0,0,.25) !important;
-  box-shadow: inset 0 -3px 0 rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.3) !important;
-  transition:filter .1s, transform .1s !important;
-  overflow:visible !important;
-  flex-direction:column;
-  gap:0;
-}
-.plot:active{filter:brightness(1.25) !important}
-
-/* Empty plot: terre labourée */
-.plot.empty{
-  background:linear-gradient(160deg,#8B6914,#A07828) !important;
-  box-shadow: inset 0 -3px 0 rgba(0,0,0,.3), inset 0 2px 0 rgba(255,255,255,.1) !important;
-}
-
-/* Waiting (pousse en cours) */
-.plot.waiting{
-  background:linear-gradient(160deg,#5a9e3a,#6ab848) !important;
-}
-
-/* Needs water */
-.plot.needs-water{
-  background:linear-gradient(160deg,#3a7ebf,#4a9ed0) !important;
-  animation:iso-pulse-water 1.2s ease-in-out infinite alternate !important;
-}
-@keyframes iso-pulse-water{
-  from{filter:brightness(1)}
-  to{filter:brightness(1.3) drop-shadow(0 0 6px #64b5f6)}
-}
-
-/* Mature */
-.plot.mature{
-  background:linear-gradient(160deg,#d4a017,#f0c040) !important;
-  animation:iso-pulse-mature .9s ease-in-out infinite alternate !important;
-}
-@keyframes iso-pulse-mature{
-  from{filter:brightness(1)}
-  to{filter:brightness(1.35) drop-shadow(0 0 8px #FFD700)}
-}
-
-/* Locked */
-.plot.locked{
-  background:linear-gradient(160deg,#555,#666) !important;
-  opacity:.55 !important;
-}
-.plot.locked.afford{
-  opacity:.8 !important;
-  border-color:rgba(255,200,0,.6) !important;
-  animation:iso-pulse-afford 1.5s ease-in-out infinite alternate !important;
-}
-@keyframes iso-pulse-afford{
-  from{filter:brightness(1)}
-  to{filter:brightness(1.25) drop-shadow(0 0 5px #ffd700)}
-}
-@keyframes iso-bounce{
-  from{transform:translateY(0) rotateX(-52deg) rotateZ(45deg)}
-  to{transform:translateY(-4px) rotateX(-52deg) rotateZ(45deg)}
-}
-
-/* Emoji grows out of the cell (pop-up effect) */
-.plot .emoji{
-  font-size:1.5em !important;
-  line-height:1 !important;
-  margin-bottom:1px;
-  filter:drop-shadow(0 -2px 3px rgba(0,0,0,.4));
-  transform: translateZ(4px) rotateX(-52deg) rotateZ(45deg);
-  display:block;
-}
-
-/* sub-label stays flat */
-.plot .sub{
-  transform: rotateX(-52deg) rotateZ(45deg);
-  font-size:.42rem !important;
-  background:rgba(0,0,0,.65) !important;
-  color:#fff !important;
-  border-radius:3px !important;
-  padding:1px 3px !important;
-  white-space:nowrap;
+/* Scene ISO : contient le canvas de la ferme */
+#iso-scene{
   position:absolute;
-  bottom:-2px;
-  left:50%;
-  transform:translateX(-50%) rotateX(-52deg) rotateZ(45deg);
+  inset:0;
+  overflow:hidden;
+}
+
+/* Les 3 grilles sont cachées — on dessine dans #iso-scene via canvas/SVG */
+#farm,#bfarm,#animal-farm{
+  position:absolute!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+  width:0!important;height:0!important;
+}
+
+/* Canvas Farmville ISO */
+#fv-canvas{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  touch-action:none;
+}
+
+/* Labels flottants au-dessus du canvas */
+#fv-labels{
+  position:absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;
+  overflow:hidden;
+}
+.fv-label{
+  position:absolute;
+  transform:translate(-50%,-100%);
+  background:rgba(0,0,0,.65);
+  color:#fff;
+  font-size:.42rem;
+  padding:1px 4px;
+  border-radius:3px;
+  white-space:nowrap;
   pointer-events:none;
 }
-
-/* water badge */
-.plot .badge{
+.fv-badge{
   position:absolute;
-  top:-4px; right:-2px;
-  font-size:.75rem !important;
-  transform: rotateX(-52deg) rotateZ(45deg);
-  filter:drop-shadow(0 1px 2px rgba(0,0,0,.4));
+  transform:translate(-50%,-100%);
+  font-size:.7rem;
+  pointer-events:none;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.5));
 }
 
-/* bplot in iso mode */
-.bplot{
-  border-radius:3px !important;
-  border:1px solid rgba(0,0,0,.25) !important;
-  box-shadow: inset 0 -3px 0 rgba(0,0,0,.2) !important;
-}
-.bplot .emoji{
-  font-size:1.5em !important;
-  transform: rotateX(-52deg) rotateZ(45deg);
-  display:block;
-}
-.bplot .bname, .bplot .sub{
-  transform: rotateX(-52deg) rotateZ(45deg);
-  font-size:.45rem !important;
-}
-
-/* Wrapper to contain the ISO grid and allow overflow */
-#farm-iso-wrap, #bfarm-iso-wrap, #animal-iso-wrap{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:100%;height:100%;
-  overflow:visible;
-}
+/* Animations pulsation */
+@keyframes fv-pulse-water{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fv-pulse-mature{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes fv-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 </style>
 </head>
+
 <body>
 <div id="rotate-overlay">
   <div class="r-icon">📱</div>
@@ -571,6 +470,8 @@ body{align-items:stretch}
   <!-- ── Left pane: grille ISO ferme / ateliers / animaux ── -->
   <div id="left-pane">
     <div id="iso-scene">
+      <canvas id="fv-canvas"></canvas>
+      <div id="fv-labels"></div>
       <div id="farm" style="display:none"></div>
       <div id="bfarm" style="display:none"></div>
       <div id="animal-farm" style="display:none"></div>
@@ -914,7 +815,10 @@ var farmEl=$('farm'),seedBar=$('seed-bar'),overlay=$('overlay');
 var btnAH=$('btn-ah'),btnAW=$('btn-aw'),btnAA=$('btn-aa'),btnAF=$('btn-af');
 
 // ===== INIT =====
+var _inited=false;
 function init(){
+  if(_inited)return;
+  _inited=true;
   calcMysteryCosts();
   loadGame();
   UPGRADES.forEach(function(u){if(state.upgrades[u.id]===undefined)state.upgrades[u.id]=0});
@@ -966,6 +870,7 @@ function init(){
   processOffline();
   if(state.questMonth!==state.month||state.quests.length!==10)generateQuests();
   setLeftPane('farm');
+  fvInit();
   buildSeedBar();buildFarm();buildShop();
   buildBModeBar();buildBuildingGrid();buildBldBar();updateResBar();buildRecipeBar();
   updateAuto();updateUI();
@@ -1127,103 +1032,564 @@ function isReady(p){
 }
 function isMature(p){return p.catIdx>=0&&p.wc>=CAT_WATER[p.catIdx]}
 
-// ===== FARM GRID =====
+// ══════════════════════════════════════════════════════════
+//  FARMVILLE ISO ENGINE — canvas 2D, tuiles losange vraies
+// ══════════════════════════════════════════════════════════
+var FV={
+  canvas:null, ctx:null, labels:null,
+  mode:'farm',   // 'farm' | 'buildings' | 'animals'
+  cols:0, rows:0,
+  tw:0, th:0,    // tile width / height (losange)
+  ox:0, oy:0,    // origin (coin haut, centre haut du losange 0,0)
+  plots:[],      // ref vers state.plots ou state.bplots ou state.animalPlots
+  _animFrame:null,
+  _clicking:false,
+  _swipe:false,_planted:{}
+};
+
+// Couleurs de base pour les tuiles
+var TILE_COLORS={
+  empty:   {top:'#8B6914',left:'#6d500f',right:'#a07828'},
+  locked:  {top:'#555',left:'#333',right:'#666'},
+  afford:  {top:'#7a6500',left:'#5a4800',right:'#a08800'},
+  growing: {top:'#4a8c2a',left:'#2e5c18',right:'#5faa35'},
+  water:   {top:'#2e6fa8',left:'#1a4a78',right:'#3a88cc'},
+  mature:  {top:'#d4a017',left:'#a07800',right:'#f0c040'},
+  bdone:   {top:'#4caf50',left:'#2e7d32',right:'#66bb6a'},
+  bprod:   {top:'#ff9800',left:'#e65100',right:'#ffc107'},
+  bbuilt:  {top:'#c8a97e',left:'#8d6e4a',right:'#e0c090'},
+  bempty:  {top:'#b0a090',left:'#7a6a5a',right:'#c8b8a8'},
+  animal:  {top:'#88c050',left:'#5a8030',right:'#a8d870'}
+};
+
+function fvInit(){
+  FV.canvas=$('fv-canvas');
+  FV.ctx=FV.canvas?FV.canvas.getContext('2d'):null;
+  FV.labels=$('fv-labels');
+  if(!FV.canvas||!FV.ctx)return;
+  // Resize
+  fvResize();
+  // Pointer events
+  FV.canvas.addEventListener('click',fvOnClick);
+  FV.canvas.addEventListener('touchstart',fvTouchStart,{passive:true});
+  FV.canvas.addEventListener('touchmove',fvTouchMove,{passive:false});
+  FV.canvas.addEventListener('touchend',fvTouchEnd,{passive:true});
+}
+
+function fvResize(){
+  if(!FV.canvas)return;
+  var lp=$('left-pane');
+  var W=lp?lp.clientWidth:Math.floor(innerWidth*0.6-54);
+  var H=lp?lp.clientHeight:Math.floor(innerHeight-34);
+  if(W<=0)W=Math.floor(innerWidth*0.6-54);
+  if(H<=0)H=Math.floor(innerHeight-34);
+  // Nombre de colonnes / lignes selon le mode
+  var cols,rows;
+  if(FV.mode==='farm'){
+    cols=GCOLS; rows=getVisibleRows();
+  }else if(FV.mode==='buildings'){
+    cols=BCOLS; rows=getBVisibleRows();
+  }else{
+    cols=ACOLS;
+    var aSlots=ASTART+(state.upgrades&&state.upgrades.animalslots||0)*2;
+    rows=Math.min(AMAX,Math.floor((aSlots-1)/ACOLS)+2);
+  }
+  FV.cols=cols; FV.rows=rows;
+  // Taille tuile : on veut que la grille tienne dans W×H
+  // En ISO (losange 2:1), la largeur totale = (cols+rows)*tw/2, hauteur = (cols+rows)*th/2
+  // tw = tileWidth, th = tw/2 (ratio 2:1 classique Farmville)
+  var twW=Math.floor(W/(cols+rows+1));
+  var twH=Math.floor(H/((cols+rows)/2+2));
+  var tw=Math.min(twW,twH*2,120);
+  tw=Math.max(tw,32);
+  // S'assurer qu'il est pair pour la symétrie
+  if(tw%2!==0)tw--;
+  var th=Math.floor(tw/2);
+  FV.tw=tw; FV.th=th;
+  // Origine = centre-haut : colonne 0 ligne 0 au sommet
+  // x(c,r)=ox+(c-r)*tw/2, y(c,r)=oy+(c+r)*th/2
+  FV.ox=Math.floor(W/2);
+  FV.oy=Math.floor(th*(rows<3?1.2:0.8));
+  // Resize canvas device pixel
+  var dpr=window.devicePixelRatio||1;
+  FV.canvas.width=W*dpr;
+  FV.canvas.height=H*dpr;
+  FV.canvas.style.width=W+'px';
+  FV.canvas.style.height=H+'px';
+  FV.ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+// Coordonnées pixel du sommet (point haut) de la tuile (col,row)
+function fvTileTopXY(c,r){
+  return{
+    x: FV.ox+(c-r)*FV.tw/2,
+    y: FV.oy+(c+r)*FV.th/2
+  };
+}
+
+// Centre de la tuile (centre du losange)
+function fvTileCenterXY(c,r){
+  return{
+    x: FV.ox+(c-r)*FV.tw/2,
+    y: FV.oy+(c+r)*FV.th/2+FV.th/2
+  };
+}
+
+// Dessine une tuile losange isométrique avec effet 3D (face top + côté gauche + côté droit)
+function fvDrawTile(c,r,colors,alpha){
+  var ctx=FV.ctx;
+  var tw=FV.tw,th=FV.th;
+  var p=fvTileTopXY(c,r);
+  var x=p.x,y=p.y;
+  var depth=Math.floor(th*0.38); // hauteur du bord 3D
+  if(alpha!==undefined)ctx.globalAlpha=alpha;
+
+  // Face top (losange)
+  ctx.beginPath();
+  ctx.moveTo(x,        y);
+  ctx.lineTo(x+tw/2,   y+th/2);
+  ctx.lineTo(x,        y+th);
+  ctx.lineTo(x-tw/2,   y+th/2);
+  ctx.closePath();
+  ctx.fillStyle=colors.top;
+  ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.18)';ctx.lineWidth=0.7;ctx.stroke();
+
+  // Côté gauche (face avant-gauche)
+  ctx.beginPath();
+  ctx.moveTo(x-tw/2,  y+th/2);
+  ctx.lineTo(x,       y+th);
+  ctx.lineTo(x,       y+th+depth);
+  ctx.lineTo(x-tw/2,  y+th/2+depth);
+  ctx.closePath();
+  ctx.fillStyle=colors.left;
+  ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.22)';ctx.lineWidth=0.5;ctx.stroke();
+
+  // Côté droit (face avant-droite)
+  ctx.beginPath();
+  ctx.moveTo(x,       y+th);
+  ctx.lineTo(x+tw/2,  y+th/2);
+  ctx.lineTo(x+tw/2,  y+th/2+depth);
+  ctx.lineTo(x,       y+th+depth);
+  ctx.closePath();
+  ctx.fillStyle=colors.right;
+  ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,0.18)';ctx.lineWidth=0.5;ctx.stroke();
+
+  ctx.globalAlpha=1;
+}
+
+// Dessine un émoji centré au-dessus d'une tuile
+function fvDrawEmoji(c,r,emoji,scale,offsetY){
+  var ctx=FV.ctx;
+  var ctr=fvTileCenterXY(c,r);
+  var fs=Math.floor(FV.tw*0.42*(scale||1));
+  if(fs<8)fs=8;
+  ctx.font=fs+'px serif';
+  ctx.textAlign='center';
+  ctx.textBaseline='bottom';
+  var oy=offsetY||0;
+  ctx.fillText(emoji, ctr.x, ctr.y+oy);
+}
+
+// Dessine une plante SVG-like (tige + feuilles + fruit) en canvas selon le stade
+function fvDrawCrop(c,r,wc,needed,emoji,catIdx){
+  var ctx=FV.ctx;
+  var ctr=fvTileCenterXY(c,r);
+  var tw=FV.tw;
+  var cx=ctr.x, cy=ctr.y;
+  var progress=wc/needed; // 0..1
+
+  if(catIdx===0){
+    // Culture : tige + feuilles + fruit
+    var stemH=Math.floor(tw*(0.15+progress*0.35));
+    var leafR=Math.floor(tw*(0.1+progress*0.12));
+    // Tige
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-stemH);
+    ctx.strokeStyle='#3a8c1a';ctx.lineWidth=Math.max(1,tw*0.05);ctx.stroke();
+    // Feuilles (apparaissent progressivement)
+    if(wc>=1){
+      ctx.beginPath();ctx.arc(cx-leafR,cy-stemH*0.4,leafR,0,Math.PI*2);
+      ctx.fillStyle='#4caf50';ctx.fill();
+    }
+    if(wc>=2){
+      ctx.beginPath();ctx.arc(cx+leafR,cy-stemH*0.7,leafR,0,Math.PI*2);
+      ctx.fillStyle='#66bb6a';ctx.fill();
+    }
+    // Fruit si presque mature
+    if(wc>=2||needed<=2){
+      var fs=Math.floor(tw*(0.28+progress*0.18));
+      ctx.font=fs+'px serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText(emoji,cx,cy-stemH+2);
+    }else{
+      // Stade précoce : juste une petite pousse
+      var bud=wc===0?'🌱':'🌿';
+      var fs2=Math.floor(tw*0.3);
+      ctx.font=fs2+'px serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText(bud,cx,cy-stemH+2);
+    }
+  }else if(catIdx===1){
+    // Arbre : tronc + couronne ronde + fruits
+    var trunkH=Math.floor(tw*(0.2+progress*0.25));
+    var crownR=Math.floor(tw*(0.15+progress*0.22));
+    // Tronc
+    var tw2=Math.max(2,Math.floor(tw*0.07));
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);ctx.lineTo(cx,cy-trunkH);
+    ctx.strokeStyle='#6d4c41';ctx.lineWidth=tw2;ctx.stroke();
+    // Couronne
+    if(wc>=1){
+      var grd=ctx.createRadialGradient(cx,cy-trunkH-crownR,crownR*0.1,cx,cy-trunkH-crownR,crownR);
+      grd.addColorStop(0,'#81c784');grd.addColorStop(1,'#2e7d32');
+      ctx.beginPath();ctx.arc(cx,cy-trunkH-crownR,crownR,0,Math.PI*2);
+      ctx.fillStyle=grd;ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.15)';ctx.lineWidth=0.5;ctx.stroke();
+    }
+    // Fruits si arbre mature ou presque
+    if(wc>=needed-1&&needed>=2){
+      var fs3=Math.floor(tw*0.3);
+      ctx.font=fs3+'px serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText(emoji,cx,cy-trunkH-crownR*0.3);
+    }else if(wc===0){
+      ctx.font=Math.floor(tw*0.32)+'px serif';ctx.textAlign='center';ctx.textBaseline='bottom';
+      ctx.fillText('🌱',cx,cy-2);
+    }
+  }else{
+    // Animal
+    fvDrawEmoji(c,r,emoji,0.7,-FV.th*0.2);
+  }
+}
+
+// Dessine un indicateur 💧 pulsant
+function fvDrawWaterBadge(c,r,now){
+  var alpha=0.6+0.4*Math.sin(now/300);
+  var ctr=fvTileCenterXY(c,r);
+  var tw=FV.tw;
+  FV.ctx.globalAlpha=alpha;
+  FV.ctx.font=Math.floor(tw*0.3)+'px serif';
+  FV.ctx.textAlign='right';FV.ctx.textBaseline='top';
+  FV.ctx.fillText('💧',ctr.x+tw*0.45,ctr.y-FV.th*0.9);
+  FV.ctx.globalAlpha=1;
+}
+
+// Dessine un ✅ pulsant
+function fvDrawReadyBadge(c,r,now){
+  var s=1+0.12*Math.sin(now/250);
+  var ctr=fvTileCenterXY(c,r);
+  var tw=FV.tw;
+  FV.ctx.save();
+  FV.ctx.translate(ctr.x+tw*0.3,ctr.y-FV.th);
+  FV.ctx.scale(s,s);
+  FV.ctx.font=Math.floor(tw*0.32)+'px serif';
+  FV.ctx.textAlign='center';FV.ctx.textBaseline='middle';
+  FV.ctx.fillText('✅',0,0);
+  FV.ctx.restore();
+}
+
+// Dessine le label texte flottant (timer, wc/needed, etc.)
+function fvLabel(c,r,text,color){
+  if(!FV.labels)return;
+  var ctr=fvTileCenterXY(c,r);
+  var el=document.createElement('div');
+  el.className='fv-label';
+  el.style.left=ctr.x+'px';
+  el.style.top=(ctr.y-FV.th*0.1)+'px';
+  if(color)el.style.background=color;
+  el.textContent=text;
+  FV.labels.appendChild(el);
+}
+
+// ── Rendu principal ──
+function fvRender(now){
+  if(!FV.ctx)return;
+  var ctx=FV.ctx;
+  var lp=$('left-pane');
+  var W=lp?lp.clientWidth:Math.floor(innerWidth*0.6-54);
+  var H=lp?lp.clientHeight:Math.floor(innerHeight-34);
+
+  ctx.clearRect(0,0,W*2,H*2);
+
+  // Fond herbe douce
+  var grd=ctx.createLinearGradient(0,0,0,H);
+  grd.addColorStop(0,'#9de07a');grd.addColorStop(1,'#6ab04c');
+  ctx.fillStyle=grd;ctx.fillRect(0,0,W,H);
+
+  // Vider les labels
+  if(FV.labels)FV.labels.innerHTML='';
+
+  var cols=FV.cols,rows=FV.rows;
+
+  if(FV.mode==='farm'){
+    var plots=state.plots;
+    var cc=getCellCost();
+    // Rendu de bas en haut pour les tuiles (ordre peintre)
+    for(var r=0;r<rows;r++){
+      for(var c=0;c<cols;c++){
+        var idx=r*cols+c;
+        if(idx>=plots.length){fvDrawTile(c,r,TILE_COLORS.locked,0.3);continue;}
+        var p=plots[idx];
+        if(p.locked){
+          var canAfford=state.coins>=cc;
+          fvDrawTile(c,r,canAfford?TILE_COLORS.afford:TILE_COLORS.locked);
+          fvDrawEmoji(c,r,canAfford?'🔓':'🔒',0.5,-FV.th*0.3);
+          fvLabel(c,r,fmtN(cc)+'💰');
+          continue;
+        }
+        if(p.catIdx<0){
+          fvDrawTile(c,r,TILE_COLORS.empty);
+          continue;
+        }
+        var it=ITEMS[p.catIdx][p.itemIdx];
+        var needed=CAT_WATER[p.catIdx];
+        if(p.wc>=needed){
+          // Mature
+          fvDrawTile(c,r,TILE_COLORS.mature);
+          fvDrawCrop(c,r,p.wc,needed,it[E],p.catIdx);
+          fvDrawReadyBadge(c,r,now);
+          fvLabel(c,r,'✅ Récolter','rgba(200,100,0,.8)');
+        }else{
+          var stMs=getStageTime(it),since=now-p.lw,ready=p.lw===0||since>=stMs;
+          if(ready){
+            fvDrawTile(c,r,TILE_COLORS.water);
+            fvDrawCrop(c,r,p.wc,needed,it[E],p.catIdx);
+            fvDrawWaterBadge(c,r,now);
+            fvLabel(c,r,p.wc+'/'+needed+'💧','rgba(0,80,160,.8)');
+          }else{
+            fvDrawTile(c,r,TILE_COLORS.growing);
+            fvDrawCrop(c,r,p.wc,needed,it[E],p.catIdx);
+            var rem=Math.ceil((stMs-since)/1000);
+            var ts=rem>=3600?Math.floor(rem/3600)+'h':rem>=60?Math.ceil(rem/60)+'m':rem+'s';
+            fvLabel(c,r,ts+'·'+p.wc+'/'+needed);
+          }
+        }
+      }
+    }
+  }else if(FV.mode==='buildings'){
+    var bplots=state.bplots;
+    // Rendu ateliers — seulement les ateliers construits, ou tous en mode add
+    var builtIdx=[];
+    if(bMode==='add'){
+      for(var i=0;i<Math.min(rows*cols,BTOTAL);i++)builtIdx.push(i);
+    }else{
+      for(var i=0;i<bplots.length;i++){
+        if(!bplots[i].locked&&bplots[i].buildingIdx>=0)builtIdx.push(i);
+      }
+    }
+    var di=0;
+    for(var r2=0;r2<rows;r2++){
+      for(var c2=0;c2<cols;c2++){
+        if(di>=builtIdx.length)break;
+        var bidx=builtIdx[di++];
+        if(bidx>=bplots.length){fvDrawTile(c2,r2,TILE_COLORS.bempty);continue;}
+        var bp=bplots[bidx];
+        if(bp.locked){fvDrawTile(c2,r2,TILE_COLORS.locked);fvDrawEmoji(c2,r2,'🔒',0.5,-FV.th*0.3);continue;}
+        if(bp.buildingIdx<0){fvDrawTile(c2,r2,TILE_COLORS.bempty);fvDrawEmoji(c2,r2,'➕',0.5,-FV.th*0.3);continue;}
+        var bld=BUILDINGS[bp.buildingIdx];
+        if(bp.recipe<0){
+          fvDrawTile(c2,r2,TILE_COLORS.bbuilt);
+          fvDrawEmoji(c2,r2,bld.emoji,0.7,-FV.th*0.3);
+          fvLabel(c2,r2,bld.name);
+        }else{
+          var rec=bld.recipes[bp.recipe];
+          var totalTime=getRecipeTime(rec)*(bp.qty||1);
+          var elapsed=(now-bp.prodStart)/1000;
+          if(elapsed>=totalTime){
+            fvDrawTile(c2,r2,TILE_COLORS.bdone);
+            fvDrawEmoji(c2,r2,rec.emoji,0.8,-FV.th*0.4);
+            fvDrawReadyBadge(c2,r2,now);
+            fvLabel(c2,r2,'✅ Récupérer','rgba(30,130,30,.85)');
+          }else{
+            fvDrawTile(c2,r2,TILE_COLORS.bprod);
+            fvDrawEmoji(c2,r2,bld.emoji,0.65,-FV.th*0.3);
+            var pct=Math.min(100,Math.floor(elapsed/totalTime*100));
+            var rem2=Math.ceil(totalTime-elapsed);
+            var ts2=rem2>=60?Math.ceil(rem2/60)+'m':rem2+'s';
+            fvLabel(c2,r2,pct+'% '+ts2);
+          }
+        }
+      }
+    }
+  }else{
+    // Animals
+    var aplots=state.animalPlots;
+    for(var r3=0;r3<rows;r3++){
+      for(var c3=0;c3<cols;c3++){
+        var ai=r3*cols+c3;
+        if(ai>=aplots.length){fvDrawTile(c3,r3,TILE_COLORS.locked,0.3);continue;}
+        var ap=aplots[ai];
+        if(ap.locked){
+          var acost=getACellCost();
+          fvDrawTile(c3,r3,state.coins>=acost?TILE_COLORS.afford:TILE_COLORS.locked);
+          fvDrawEmoji(c3,r3,state.coins>=acost?'🔓':'🔒',0.5,-FV.th*0.3);
+          fvLabel(c3,r3,fmtN(acost)+'💰');
+          continue;
+        }
+        if(ap.animalIdx<0){fvDrawTile(c3,r3,TILE_COLORS.bempty);continue;}
+        var aIt=ANIMALS[ap.animalIdx];
+        if(ap.feedStart>0){
+          var prodMs=getAnimalProdTime(ap.animalIdx)*1000;
+          var elA=now-ap.feedStart;
+          if(elA<prodMs){
+            fvDrawTile(c3,r3,TILE_COLORS.animal);
+            fvDrawEmoji(c3,r3,aIt[E],0.75,-FV.th*0.4);
+            var pctA=Math.min(100,Math.floor(elA/prodMs*100));
+            var remA=Math.ceil((prodMs-elA)/1000);
+            var tsA=remA>=60?Math.ceil(remA/60)+'m':remA+'s';
+            fvLabel(c3,r3,pctA+'% '+tsA);
+          }else{
+            fvDrawTile(c3,r3,TILE_COLORS.bdone);
+            fvDrawEmoji(c3,r3,aIt[E],0.75,-FV.th*0.4);
+            fvDrawReadyBadge(c3,r3,now);
+            fvLabel(c3,r3,'🍽️ Nourrir','rgba(30,130,30,.85)');
+          }
+        }else{
+          fvDrawTile(c3,r3,TILE_COLORS.animal);
+          fvDrawEmoji(c3,r3,aIt[E],0.75,-FV.th*0.4);
+          fvLabel(c3,r3,'🍽️ Nourrir');
+        }
+      }
+    }
+  }
+
+  // Boucle d'animation
+  FV._animFrame=requestAnimationFrame(fvRender);
+}
+
+// Démarrer / arrêter la boucle
+function fvStart(){
+  if(FV._animFrame)cancelAnimationFrame(FV._animFrame);
+  fvResize();
+  FV._animFrame=requestAnimationFrame(fvRender);
+}
+function fvStop(){
+  if(FV._animFrame){cancelAnimationFrame(FV._animFrame);FV._animFrame=null;}
+}
+
+// Conversion pixel → colonne/ligne
+function fvPixelToCell(px,py){
+  // On inverse les formules iso :
+  // px=ox+(c-r)*tw/2 → c-r = 2*(px-ox)/tw
+  // py=oy+(c+r)*th/2 → c+r = 2*(py-oy)/th  (centre)
+  var tw=FV.tw,th=FV.th;
+  var pr=px-FV.ox, qr=py-FV.oy-th/2; // ajust pour centre
+  var s=(2*pr/tw), t=(2*qr/th);
+  var c=Math.floor((s+t)/2);
+  var r=Math.floor((t-s)/2);
+  return{c:c,r:r};
+}
+
+function fvOnClick(e){
+  var rect=FV.canvas.getBoundingClientRect();
+  var px=e.clientX-rect.left, py=e.clientY-rect.top;
+  fvCellAction(px,py);
+}
+function fvTouchStart(e){
+  FV._swipe=false;FV._planted={};
+  if(e.touches.length===1){FV._touchX=e.touches[0].clientX;FV._touchY=e.touches[0].clientY;}
+}
+function fvTouchMove(e){
+  if(e.touches.length===1){
+    var dx=e.touches[0].clientX-FV._touchX,dy=e.touches[0].clientY-FV._touchY;
+    if(Math.abs(dx)>8||Math.abs(dy)>8){FV._swipe=true;}
+    // Swipe to plant
+    if(FV._swipe&&FV.mode==='farm'){
+      e.preventDefault();
+      var rect=FV.canvas.getBoundingClientRect();
+      var px=e.touches[0].clientX-rect.left,py=e.touches[0].clientY-rect.top;
+      var cell=fvPixelToCell(px,py);
+      var idx=cell.r*FV.cols+cell.c;
+      if(idx>=0&&idx<state.plots.length&&!FV._planted[idx]){
+        var p=state.plots[idx];
+        if(p&&!p.locked&&p.catIdx<0&&state.selCat>=0&&state.selCat<=1){
+          var cat=state.selCat,si=state.selItem;
+          var arr=ITEMS[cat];if(si<0||si>=arr.length)return;
+          var it=arr[si];
+          if(it[RL]<=state.level&&state.coins>=it[CO]){
+            state.coins-=it[CO];p.catIdx=cat;p.itemIdx=si;p.wc=0;p.lw=0;
+            FV._planted[idx]=true;updateUI();
+          }
+        }
+      }
+    }
+  }
+}
+function fvTouchEnd(e){
+  if(!FV._swipe){
+    var rect=FV.canvas.getBoundingClientRect();
+    var px=FV._touchX-rect.left,py=FV._touchY-rect.top;
+    fvCellAction(px,py);
+  }
+  FV._swipe=false;FV._planted={};
+}
+
+function fvCellAction(px,py){
+  var cell=fvPixelToCell(px,py);
+  var c=cell.c,r=cell.r;
+  if(c<0||c>=FV.cols||r<0||r>=FV.rows)return;
+  var idx=r*FV.cols+c;
+
+  if(FV.mode==='farm'){
+    if(idx<0||idx>=state.plots.length)return;
+    // Simuler onPlot
+    var fakeEl={dataset:{idx:idx},getBoundingClientRect:function(){
+      var ctr=fvTileCenterXY(c,r);
+      var lp=$('left-pane');var rect=lp?lp.getBoundingClientRect():{left:0,top:0};
+      return{left:rect.left+ctr.x-FV.tw/4,top:rect.top+ctr.y-FV.th,width:FV.tw/2,height:FV.th};
+    }};
+    onPlot({currentTarget:fakeEl});
+  }else if(FV.mode==='buildings'){
+    // Trouver le vrai index bplot
+    var builtIdx=[];
+    if(bMode==='add'){
+      for(var i=0;i<Math.min(FV.rows*FV.cols,BTOTAL);i++)builtIdx.push(i);
+    }else{
+      for(var i=0;i<state.bplots.length;i++){
+        if(!state.bplots[i].locked&&state.bplots[i].buildingIdx>=0)builtIdx.push(i);
+      }
+    }
+    var di2=r*FV.cols+c;
+    if(di2>=builtIdx.length)return;
+    var realIdx=builtIdx[di2];
+    var fakeEl2={dataset:{idx:realIdx},getBoundingClientRect:function(){
+      var ctr=fvTileCenterXY(c,r);var lp=$('left-pane');
+      var rect=lp?lp.getBoundingClientRect():{left:0,top:0};
+      return{left:rect.left+ctr.x,top:rect.top+ctr.y,width:2,height:2};
+    }};
+    onBPlot({currentTarget:fakeEl2});
+  }else{
+    // Animals
+    if(idx<0||idx>=state.animalPlots.length)return;
+    var fakeEl3={dataset:{idx:idx},getBoundingClientRect:function(){
+      var ctr=fvTileCenterXY(c,r);var lp=$('left-pane');
+      var rect=lp?lp.getBoundingClientRect():{left:0,top:0};
+      return{left:rect.left+ctr.x,top:rect.top+ctr.y,width:2,height:2};
+    }};
+    onAnimalPlot({currentTarget:fakeEl3});
+  }
+}
+
+// ── buildFarm remplacé : init le moteur ISO et démarre le rendu ──
 function buildFarm(){
-  var rows=getVisibleRows(),cols=GCOLS;
-  var lpEl=$('left-pane');
-  var lpW=(lpEl&&lpEl.clientWidth>0)?lpEl.clientWidth:Math.floor(innerWidth*0.60-54);
-  var lpH=(lpEl&&lpEl.clientHeight>0)?lpEl.clientHeight:Math.floor(innerHeight-34);
-  // Isometric: grid is rotateX(52)+rotateZ(-45). Visual diagonal = cols*ps*√2
-  // Constrain so diagonal ≤ lpW and vertical extent ≤ lpH
-  var psW=Math.floor((lpW*0.9)/(cols*1.42));
-  var psH=Math.floor((lpH*0.9)/(rows*1.42*0.61));// cos(52°)≈0.61
-  var ps=Math.min(psW,psH,72);
-  ps=Math.max(ps,28);
-  farmEl.style.gridTemplateColumns='repeat('+cols+','+ps+'px)';
+  FV.mode='farm';
+  fvStart();
+  // Garder les .plot DOM pour la compatibilité (swipe, onPlot)
+  // mais les cacher — le canvas gère l'affichage
   farmEl.innerHTML='';
+  var rows=getVisibleRows(),cols=GCOLS;
   for(var i=0;i<rows*cols;i++){
-    var d=document.createElement('div');d.className='plot';d.style.width=ps+'px';
-    d.dataset.idx=i;d.addEventListener('click',onPlot);farmEl.appendChild(d);
+    var d=document.createElement('div');d.className='plot';
+    d.dataset.idx=i;farmEl.appendChild(d);
   }
-  // Swipe-to-plant
-  var _swipe=false,_planted={};
-  function swipePlant(touch){
-    var el=document.elementFromPoint(touch.clientX,touch.clientY);
-    if(!el)return;while(el&&!el.dataset.idx&&el!==farmEl)el=el.parentElement;
-    if(!el||!el.dataset.idx)return;
-    var idx=+el.dataset.idx;if(_planted[idx])return;
-    var p=state.plots[idx];if(!p||p.locked||p.catIdx>=0)return;
-    var cat=state.selCat,si=state.selItem;
-    if(cat<0||cat>2)return;var arr=ITEMS[cat];if(si<0||si>=arr.length)return;
-    var it=arr[si];
-    if(it[RL]>state.level&&cat!==0)return;
-    if(state.coins<it[CO])return;
-    state.coins-=it[CO];p.catIdx=cat;p.itemIdx=si;p.wc=0;p.lw=0;
-    _planted[idx]=true;updateVisuals();updateUI();
-  }
-  farmEl.addEventListener('touchstart',function(e){
-    if(e.touches.length===1){_swipe=true;_planted={};}
-  },{passive:true});
-  farmEl.addEventListener('touchmove',function(e){
-    if(_swipe&&e.touches.length===1){e.preventDefault();swipePlant(e.touches[0]);}
-  },{passive:false});
-  farmEl.addEventListener('touchend',function(){_swipe=false;_planted={};},{passive:true});
-  farmEl.addEventListener('touchcancel',function(){_swipe=false;_planted={};},{passive:true});
-  updateVisuals();
 }
+
+// updateVisuals redirige vers le moteur canvas (le rendu se fait dans fvRender)
 function updateVisuals(){
-  var now=Date.now(),cc=getCellCost();
-  // Crop growth stages by watering count
-  // wc=0 planted → wc=1 sprout → wc=2 growing → wc=3 ready
-  var CROP_STAGES=['🌱','🪴','🌿',''];  // last = fruit emoji
-  var TREE_STAGES=['🌱','🌿','🌳','🌳'];
-  farmEl.querySelectorAll('.plot').forEach(function(el,i){
-    if(i>=state.plots.length)return;
-    var p=state.plots[i];
-    // Locked
-    if(p.locked){
-      el.className='plot locked'+(state.coins>=cc?' afford':'');
-      el.innerHTML='<span class="emoji">🔒</span><span class="sub">'+fmtN(cc)+'💰</span>';
-      return;
-    }
-    // Empty
-    if(p.catIdx<0){el.className='plot empty';el.innerHTML='';return;}
-    var it=ITEMS[p.catIdx][p.itemIdx];
-    var needed=CAT_WATER[p.catIdx];
-    // Mature → harvest
-    if(p.wc>=needed){
-      // Show full grown visual with bounce
-      var mEmoji=it[E];
-      el.className='plot mature';
-      el.innerHTML='<span class="emoji" style="font-size:1.8em;animation:iso-bounce .7s ease-in-out infinite alternate">'+mEmoji+'</span><span class="sub">✅ Récolter</span>';
-      return;
-    }
-    var stMs=getStageTime(it),since=now-p.lw,ready=p.lw===0||since>=stMs;
-    // Choose growth emoji based on watering progress
-    var stageEmoji;
-    if(p.catIdx===0){
-      // Cultures: wc 0→🌱 1→🪴 2→🌿 3→emoji culture
-      stageEmoji=p.wc===0?'🌱':p.wc===1?'🪴':p.wc===2?'🌿':it[E];
-    }else if(p.catIdx===1){
-      // Arbres: wc 0→🌱 1→🌿 2→🌳 3→🌳+emoji
-      stageEmoji=p.wc===0?'🌱':p.wc===1?'🌿':p.wc<=2?'🌳':it[E];
-    }else{
-      // Animaux (normalement dans animal-farm mais par sécurité)
-      stageEmoji=it[E];
-    }
-    // Stade size grows with wc
-    var eSizeEm=(1.1+p.wc*0.2).toFixed(1)+'em';
-    if(ready){
-      el.className='plot needs-water';
-      el.innerHTML='<span class="emoji" style="font-size:'+eSizeEm+'">'+stageEmoji+'</span><span class="badge">💧</span><span class="sub">'+p.wc+'/'+needed+'</span>';
-    }else{
-      el.className='plot waiting';
-      var rem=Math.ceil((stMs-since)/1000);
-      var ts=rem>=3600?Math.floor(rem/3600)+'h':rem>=60?Math.ceil(rem/60)+'m':rem+'s';
-      el.innerHTML='<span class="emoji" style="font-size:'+eSizeEm+'">'+stageEmoji+'</span><span class="sub">'+ts+'·'+p.wc+'/'+needed+'</span>';
-    }
-  });
+  // Le canvas se redessine automatiquement via requestAnimationFrame
+  // Rien à faire ici — fvRender() lit state.plots directement
 }
+
 
 // ===== PLOT CLICK =====
 function onPlot(e){
@@ -1623,7 +1989,8 @@ function updateAuto(){
   }else btnAF.className='auto-btn off';
 }
 btnAH.addEventListener('click',function(){
-  var lv=state.upgrades.autoharvest||0;if(lv<=0)return;
+  var lv=state.upgrades.autoharvest||0;
+  if(lv<=0){showFloat(innerWidth/2,innerHeight/2,'🏪 Achète Auto-récolte en Boutique !');return;}
   var now=Date.now();if(state.autoHarvestEnd>now)return;
   if(state.autoHarvestEnd>0){var cost=getReactivateHCost();
     if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return}
@@ -1632,7 +1999,8 @@ btnAH.addEventListener('click',function(){
   state.autoHarvestEnd=now+getAutoHDur();updateAuto();updateUI();
 });
 btnAW.addEventListener('click',function(){
-  var lv=state.upgrades.autowater||0;if(lv<=0)return;
+  var lv=state.upgrades.autowater||0;
+  if(lv<=0){showFloat(innerWidth/2,innerHeight/2,'🏪 Achète Auto-arrosage en Boutique !');return;}
   var now=Date.now();if(state.autoWaterEnd>now)return;
   if(state.autoWaterEnd>0){var cost=getReactivateWCost();
     if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return}
@@ -1641,7 +2009,8 @@ btnAW.addEventListener('click',function(){
   state.autoWaterEnd=now+getAutoWDur();updateAuto();updateUI();
 });
 btnAA.addEventListener('click',function(){
-  var lv=state.upgrades.autoatelier||0;if(lv<=0)return;
+  var lv=state.upgrades.autoatelier||0;
+  if(lv<=0){showFloat(innerWidth/2,innerHeight/2,'🏪 Achète Auto-atelier en Boutique !');return;}
   var now=Date.now();if(state.autoAtelierEnd>now)return;
   if(state.autoAtelierEnd>0){var cost=getReactivateACost();
     if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return}
@@ -1650,7 +2019,8 @@ btnAA.addEventListener('click',function(){
   state.autoAtelierEnd=now+getAutoADur();updateAuto();updateUI();
 });
 btnAF.addEventListener('click',function(){
-  var lv=state.upgrades.autofeed||0;if(lv<=0)return;
+  var lv=state.upgrades.autofeed||0;
+  if(lv<=0){showFloat(innerWidth/2,innerHeight/2,'🏪 Achète Auto-alimentation en Boutique !');return;}
   var now=Date.now();if(state.autoFeedEnd>now)return;
   if(state.autoFeedEnd>0){var cost=getReactivateFCost();
     if(state.coins<cost){showFloat(innerWidth/2,innerHeight/2,'❌ '+fmtN(cost)+'💰 requis');return}
@@ -1674,81 +2044,12 @@ function buildAnimalSeedBar(){
   });
 }
 function buildAnimalGrid(){
-  var aEl=$('animal-farm');if(!aEl)return;
-  var aSlots=ASTART+(state.upgrades.animalslots||0)*2;
-  var rows=Math.min(AMAX,Math.floor((aSlots-1)/ACOLS)+2);
-  var lpEl=$('left-pane');
-  var lpW=(lpEl&&lpEl.clientWidth>0)?lpEl.clientWidth:Math.floor(innerWidth*0.60-54);
-  var lpH=(lpEl&&lpEl.clientHeight>0)?lpEl.clientHeight:Math.floor(innerHeight-34);
-  var psW=Math.floor((lpW*0.9)/(ACOLS*1.42));
-  var psH=Math.floor((lpH*0.9)/(rows*1.42*0.61));
-  var ps=Math.min(psW,psH,80);ps=Math.max(ps,28);
-  aEl.style.display='grid';aEl.style.gap='3px';aEl.style.padding='4px';
-  aEl.style.gridTemplateColumns='repeat('+ACOLS+','+ps+'px)';
-  aEl.innerHTML='';
-  for(var i=0;i<rows*ACOLS;i++){
-    var d=document.createElement('div');d.className='bplot';d.style.width=ps+'px';d.style.height=ps+'px';
-    d.dataset.idx=i;d.addEventListener('click',onAnimalPlot);aEl.appendChild(d);
-  }
-  aEl.addEventListener('click',function(e){
-    var badge=e.target.closest('.af-badge');if(badge){
-      e.stopPropagation();
-      var ai=+badge.dataset.afidx;var ap=state.animalPlots[ai];if(!ap||ap.animalIdx<0)return;
-      ap.autoFeed=!ap.autoFeed;updateAnimalVisuals();return;
-    }
-    var del=e.target.closest('.del-badge');if(del){
-      e.stopPropagation();
-      var di=+del.dataset.delidx;var ap2=state.animalPlots[di];if(!ap2||ap2.animalIdx<0)return;
-      var it=ANIMALS[ap2.animalIdx];
-      if(confirm('Retirer '+it[E]+' '+it[N]+' ? (pas de remboursement)')){
-        ap2.animalIdx=-1;ap2.feedStart=0;ap2.produced=0;ap2.autoFeed=false;
-        showFloat(innerWidth/2,innerHeight/2,'🗑️ '+it[N]+' retiré');
-        updateAnimalVisuals();
-      }
-    }
-  });
-  updateAnimalVisuals();
+  // Le rendu est géré par le moteur canvas FV
+  FV.mode='animals';
+  fvStart();
 }
 function updateAnimalVisuals(){
-  var aEl=$('animal-farm');if(!aEl)return;
-  var now=Date.now();
-  var aSlots=ASTART+(state.upgrades.animalslots||0)*2;
-  aEl.querySelectorAll('.bplot').forEach(function(el){
-    var i=+el.dataset.idx;if(i>=state.animalPlots.length)return;
-    var ap=state.animalPlots[i];
-    if(ap.locked){
-      var cost=getACellCost();
-      el.className='bplot locked'+(state.coins>=cost?' afford':'');
-      el.innerHTML='🔒<span class="sub">'+fmtN(cost)+'💰</span>';return;
-    }
-    if(ap.animalIdx<0){el.className='bplot bempty';el.innerHTML='';return;}
-    var it=ANIMALS[ap.animalIdx];
-    var af=ANIMAL_FEED[ap.animalIdx];
-    var afBadge=(state.upgrades.autofeed||0)>=1?'<span class="af-badge'+(ap.autoFeed?' af-on':'')+'" data-afidx="'+i+'">'+(ap.autoFeed?'🔄':'⏸️')+'</span>':'';
-    var delBadge='<span class="del-badge" data-delidx="'+i+'">❌</span>';
-    if(ap.feedStart>0){
-      var prodMs=getAnimalProdTime(ap.animalIdx)*1000;
-      var elapsed=now-ap.feedStart;
-      if(elapsed<prodMs){
-        var pct=Math.min(100,elapsed/prodMs*100);
-        el.className='bplot bprod';
-        var outTxt=af[AO]?RES_INFO[af[AO]].emoji:fmtN(af[AC])+'💰';
-        var qty=getAnimalProdQty();
-        el.innerHTML=delBadge+afBadge+'<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
-          +'<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'
-          +'<span class="sub">'+qty+'× '+outTxt+'</span>';
-      }else{
-        el.className='bplot bdone';
-        el.innerHTML=delBadge+afBadge+'<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
-          +'<span class="sub">🍽️ Nourrir</span>';
-      }
-    }else{
-      el.className='bplot bbuilt';
-      var feedTxt=af[AF]==='coins'?fmtN(af[AQ])+'💰':af[AQ]+RES_INFO[af[AF]].emoji;
-      el.innerHTML=delBadge+afBadge+'<span class="emoji">'+it[E]+'</span><span class="bname">'+it[N]+'</span>'
-        +'<span class="sub">🍽️ '+feedTxt+'</span>';
-    }
-  });
+  // Le canvas se redessine automatiquement via requestAnimationFrame
 }
 function canFeedAnimal(idx){
   var ap=state.animalPlots[idx];if(!ap||ap.animalIdx<0)return false;
@@ -2473,74 +2774,13 @@ function buildBModeBar(){
 }
 
 function buildBuildingGrid(){
-  var bfarm=$('bfarm');if(!bfarm)return;
-  bfarm.innerHTML='';
-  var lpEl=$('left-pane');
-  var lpW=(lpEl&&lpEl.clientWidth>0)?lpEl.clientWidth:Math.floor(innerWidth*0.60-54);
-  var lpH=(lpEl&&lpEl.clientHeight>0)?lpEl.clientHeight:Math.floor(innerHeight-34);
-  if(bMode==='add'){
-    var rows=getBVisibleRows(),cols=BCOLS;
-    var psW=Math.floor((lpW*0.9)/(cols*1.42));
-    var psH=Math.floor((lpH*0.9)/(rows*1.42*0.61));
-    var ps=Math.min(psW,psH,90);ps=Math.max(ps,30);
-    bfarm.style.gridTemplateColumns='repeat('+cols+','+ps+'px)';
-    var total=rows*cols;if(total>BTOTAL)total=BTOTAL;
-    for(var i=0;i<total;i++){
-      var d=document.createElement('div');d.className='bplot';d.style.minHeight=ps+'px';
-      d.dataset.idx=i;d.addEventListener('click',onBPlot);bfarm.appendChild(d);
-    }
-  }else{
-    var builtIdx=[];
-    for(var i=0;i<state.bplots.length;i++){
-      if(!state.bplots[i].locked&&state.bplots[i].buildingIdx>=0)builtIdx.push(i);
-    }
-    if(builtIdx.length===0){
-      bfarm.innerHTML='<div style="text-align:center;padding:16px;font-size:.8rem;color:#888">Aucun atelier construit.<br>Utilise ➕ Construire pour en ajouter!</div>';
-      return;
-    }
-    var cols=Math.min(BCOLS,builtIdx.length);
-    var rows=Math.ceil(builtIdx.length/cols);
-    var psW=Math.floor((lpW*0.9)/(cols*1.42));
-    var psH=Math.floor((lpH*0.9)/(rows*1.42*0.61));
-    var ps=Math.min(psW,psH,90);ps=Math.max(ps,30);
-    bfarm.style.gridTemplateColumns='repeat('+cols+','+ps+'px)';
-    for(var j=0;j<builtIdx.length;j++){
-      var d=document.createElement('div');d.className='bplot';d.style.minHeight=ps+'px';
-      d.dataset.idx=builtIdx[j];d.addEventListener('click',onBPlot);bfarm.appendChild(d);
-    }
-  }
-  updateBuildingVisuals();
+  // Le rendu est géré par le moteur canvas FV
+  FV.mode='buildings';
+  fvStart();
 }
 
 function updateBuildingVisuals(){
-  var bfarm=$('bfarm');if(!bfarm)return;
-  var now=Date.now(),cc=getBCellCost();
-  bfarm.querySelectorAll('.bplot').forEach(function(el){
-    var i=+el.dataset.idx;
-    if(i>=state.bplots.length){el.className='bplot bempty';el.innerHTML='';return;}
-    var bp=state.bplots[i];
-    if(bp.locked){el.className='bplot locked'+(state.coins>=cc?' afford':'');
-      el.innerHTML='\ud83d\udd12<span class="sub">'+fmtN(cc)+'\ud83d\udcb0</span>';return;}
-    if(bp.buildingIdx<0){el.className='bplot bempty';el.innerHTML='<span style="font-size:1.2rem;opacity:.3">\u2795</span>';return;}
-    var bld=BUILDINGS[bp.buildingIdx];
-    var selClass=(bMode==='move'&&bMoveSrc===i)?' gsel':'';
-    if(bp.recipe<0){
-      el.className='bplot bbuilt'+selClass;
-      el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+bld.name+'</span><span class="sub">\ud83d\udc46 Choisir recette</span>';return;}
-    var rec=bld.recipes[bp.recipe];var totalTime=getRecipeTime(rec)*(bp.qty||1);
-    var elapsed=(now-bp.prodStart)/1000;var qtyTxt=(bp.qty||1)>1?' \u00d7'+(bp.qty||1):'';
-    if(elapsed>=totalTime){
-      el.className='bplot bdone'+selClass;
-      el.innerHTML='<span class="emoji">'+rec.emoji+'</span><span class="bname">'+rec.name+qtyTxt+'</span><span class="sub">\u2705 R\u00e9cup\u00e9rer!</span>';
-    }else{
-      el.className='bplot bprod'+selClass;
-      var pct=Math.min(100,Math.floor(elapsed/totalTime*100));
-      var rem=Math.ceil(totalTime-elapsed);var ts=rem>=60?Math.ceil(rem/60)+'m':rem+'s';
-      el.innerHTML='<span class="emoji">'+bld.emoji+'</span><span class="bname">'+rec.name+qtyTxt+'</span>'
-        +'<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'
-        +'<span class="sub">\u23f3 '+ts+' ('+pct+'%)</span>';
-    }
-  });
+  // Le canvas se redessine automatiquement via requestAnimationFrame
 }
 
 function onBPlot(e){
@@ -4194,6 +4434,7 @@ function showFarmSub(sub){
   $('farm-aide-area').style.display=sub==='aide'?'':'none';
   // Met à jour le left-pane selon le sous-tab
   setLeftPane('farm');
+  if(sub==='crops'){buildFarm();}
   if(sub==='animals'){buildAnimalSeedBar();buildAnimalGrid();}
   if(sub==='farmers'){buildFarmerUI();}
   if(sub==='aide'){buildFarmAide();}
@@ -4239,6 +4480,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       $('farm-animals-area').style.display=farmSubTab==='animals'?'':'none';
       $('farm-farmers-area').style.display=farmSubTab==='farmers'?'':'none';
       $('farm-aide-area').style.display=farmSubTab==='aide'?'':'none';
+      if(farmSubTab==='crops'){buildFarm();}
       if(farmSubTab==='animals'){buildAnimalSeedBar();buildAnimalGrid();}
       if(farmSubTab==='farmers'){buildFarmerUI();}
       if(farmSubTab==='aide'){buildFarmAide();}
@@ -4268,11 +4510,10 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 
 // ── Rebuild grids on resize / orientation change ──
 function onResize(){
+  fvResize();
   var activeTab=document.querySelector('.tab-btn.active');
   if(!activeTab)return;
   var pnl=activeTab.dataset.panel;
-  if(pnl==='farm')buildFarm();
-  if(pnl==='buildings')buildBuildingGrid();
   if(pnl==='garden')buildGarden();
 }
 window.addEventListener('resize',onResize);
@@ -5232,6 +5473,8 @@ function startComboClick(){
 // ===== START =====
 $('btn-start').addEventListener('click',function(){overlay.classList.add('hidden');init()});
 if(localStorage.getItem(SAVE_KEY)){overlay.classList.add('hidden');init()}
+// Sauvegarde garantie à la fermeture
+window.addEventListener('beforeunload',function(){if(_inited)saveGame();});
 
 // ===== MUSIC SYSTEM =====
 var musicTracks={global:'global.ogg',farm:'global.ogg',buildings:'atelier.ogg',shop:'boutique.ogg',garden:'global.ogg'};

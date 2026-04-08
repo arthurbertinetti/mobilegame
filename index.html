@@ -230,6 +230,14 @@
             background: linear-gradient(135deg, #e74c3c, #f39c12);
             box-shadow: 0 4px 12px rgba(231,76,60,.3);
         }
+        .icon-worms {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            box-shadow: 0 4px 12px rgba(230,126,34,.3);
+        }
+        .icon-worms2 {
+            background: linear-gradient(135deg, #8e44ad, #6c3483);
+            box-shadow: 0 4px 12px rgba(142,68,173,.3);
+        }
 
         .ranking-link {
             display: block;
@@ -644,12 +652,30 @@
             </div>
         </a>
 
+        <a href="worms.html" class="game-card">
+            <div class="game-icon icon-worms">🪱</div>
+            <div class="game-info">
+                <h2>Worms</h2>
+                <p>Combat de vers tactique, armes variées !</p>
+                <p class="game-record" id="rec-worms"></p>
+            </div>
+        </a>
+
+        <a href="worms2.html" class="game-card">
+            <div class="game-icon icon-worms2">💥</div>
+            <div class="game-info">
+                <h2>Worms 2</h2>
+                <p>Artillerie tactique, terrain destructible !</p>
+                <p class="game-record" id="rec-worms2"></p>
+            </div>
+        </a>
+
         <a href="ranking.html" class="ranking-link">🏆 Classement général</a>
     </div>
     <div class="footer">© 2026 Arthur B - Tous droits réservés</div>
 <script src="leaderboard.js"></script>
 <script>
-var GAME_IDS = ['snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','sonic','pacman','bomberman','zingvalley2'];
+var GAME_IDS = ['snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','sonic','pacman','bomberman','zingvalley2','worms','worms2'];
 var FAV_KEY = 'arcade_favorites';
 var favMode = false;
 
