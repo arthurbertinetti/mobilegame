@@ -1583,11 +1583,11 @@ function generateMap(mapKey) {
             // Maison de la ferme
             if (x >= 7 && x <= 9 && y >= 9 && y <= 11)
                 return { type: 'building', walkable: false, emoji: '🏠' };
-            // Clôtures autour de la ferme
+            // Clôtures autour de la ferme (traversables pour accès)
             if ((x === 6 || x === 14) && y >= 8 && y <= 14)
-                return { type: 'fence', walkable: false, emoji: '🪵' };
+                return { type: 'fence', walkable: true, emoji: '🪵' };
             if ((y === 8 || y === 14) && x >= 6 && x <= 14)
-                return { type: 'fence', walkable: false, emoji: '🪵' };
+                return { type: 'fence', walkable: true, emoji: '🪵' };
             // Terrain labouré (zone de culture)
             if (x >= 7 && x <= 13 && y >= 12 && y <= 13)
                 return { type: 'farm', walkable: true, emoji: '🟫' };
@@ -2719,12 +2719,12 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
                             <button class="menu-btn" onclick="tryCapture('superball')" 
                                     ${(game.bag.superball || 0) <= 0 ? 'disabled' : ''}
                                     style="font-size: 0.7rem; padding: 8px;">
-                                🥎 SuperBall x${game.bag.superball || 0} (Taux +50%)
+                                🥎 SuperBall x${game.bag.superball || 0} (Taux +40%)
                             </button>
                             <button class="menu-btn" onclick="tryCapture('ultraball')" 
                                     ${(game.bag.ultraball || 0) <= 0 ? 'disabled' : ''}
                                     style="font-size: 0.7rem; padding: 8px;">
-                                🏐 Ultra Ball x${game.bag.ultraball || 0} (Taux +100%)
+                                🏐 Ultra Ball x${game.bag.ultraball || 0} (Taux +80%)
                             </button>
                         </div>
                     </div>
@@ -2878,20 +2878,21 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
         // Modifier le taux selon le type de balle
         const ballMultipliers = {
             'pokeball': 1,
-            'superball': 1.5,
-            'ultraball': 2
+            'superball': 1.4,
+            'ultraball': 1.8
         };
         const multiplier = ballMultipliers[ballType] || 1;
         
         game.bag[ballType]--;
         
-        const baseCatchRate = Math.min(95, Math.max(5,
-            ((enemyPokemon.maxHp - enemyPokemon.currentHp) / enemyPokemon.maxHp) * 60 +
-            (100 - enemyPokemon.level * 2.5) +
-            (enemyPokemon.currentHp < enemyPokemon.maxHp * 0.2 ? 20 : 0)
+        // Système de capture plus difficile
+        const baseCatchRate = Math.min(85, Math.max(5,
+            ((enemyPokemon.maxHp - enemyPokemon.currentHp) / enemyPokemon.maxHp) * 40 +
+            (80 - enemyPokemon.level * 3) +
+            (enemyPokemon.currentHp < enemyPokemon.maxHp * 0.2 ? 10 : 0)
         ));
         
-        const catchRate = Math.min(98, baseCatchRate * multiplier);
+        const catchRate = Math.min(90, baseCatchRate * multiplier);
         
         const success = Math.random() * 100 < catchRate;
         
@@ -3344,17 +3345,23 @@ function openTeam() {
                     };
                     const color = typeColors[data.type] || '#A8A878';
                     
-                    // Calculer faiblesses et forces
-                    const weaknesses = [];
-                    const strengths = [];
+                    // Calculer faiblesses et forces basées sur TYPE_EFFECTIVENESS
+                    const weaknesses = []; // Types efficaces CONTRE ce Pokémon (il est faible)
+                    const strengths = []; // Types contre lesquels CE Pokémon est efficace (il est fort)
+                    
+                    // Trouver les types auxquels ce Pokémon est faible
                     Object.keys(TYPE_EFFECTIVENESS).forEach(attackType => {
-                        const effectiveness = TYPE_EFFECTIVENESS[attackType];
-                        if (effectiveness[data.type] === 1.5) {
+                        const typeData = TYPE_EFFECTIVENESS[attackType];
+                        if (typeData.effective && typeData.effective.includes(data.type)) {
                             weaknesses.push(attackType);
-                        } else if (effectiveness[data.type] === 0.67) {
-                            strengths.push(attackType);
                         }
                     });
+                    
+                    // Trouver les types contre lesquels ce Pokémon est fort
+                    const myTypeData = TYPE_EFFECTIVENESS[data.type];
+                    if (myTypeData && myTypeData.effective) {
+                        strengths.push(...myTypeData.effective);
+                    }
                     
                     const isSelected = game.releaseSelection.includes(p.originalIndex);
                     
@@ -3904,6 +3911,20 @@ function showShopTab(tab) {
         ];
         
         let html = '<div style="font-size: 0.7rem; margin-bottom: 15px;">💰 Argent: ' + game.money + '</div>';
+        
+        // Section Codes Secrets
+        html += `
+            <div style="background: linear-gradient(135deg, #8e44ad, #9b59b6); border: 2px solid #fff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;">🔑 CODES SECRETS</div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="secretCodeInput" placeholder="Entrez un code..." 
+                           style="flex: 1; padding: 10px; font-size: 0.8rem; border: 2px solid #fff; border-radius: 5px; background: rgba(255,255,255,0.1); color: #fff;" />
+                    <button class="menu-btn" style="padding: 10px 20px; font-size: 0.7rem;" onclick="redeemSecretCode()">✓ VALIDER</button>
+                </div>
+                <div style="font-size: 0.6rem; color: #ecf0f1; margin-top: 8px;">Utilise des codes pour obtenir des bonus!</div>
+            </div>
+        `;
+        
         html += '<div style="display: grid; gap: 10px;">';
         
         items.forEach(item => {
@@ -4006,6 +4027,40 @@ function sellAllLoot(totalValue) {
     showShopTab('sell'); // Refresh
     updateHUD();
 }
+
+window.redeemSecretCode = function() {
+    const input = document.getElementById('secretCodeInput');
+    const code = input.value.trim().toUpperCase();
+    
+    if (!code) {
+        showNotification('❌ Entrez un code!');
+        return;
+    }
+    
+    const codes = {
+        'OR': { type: 'money', amount: 500, message: '💰 +500💰 reçus!' },
+        'SBALL': { type: 'item', key: 'superball', amount: 5, message: '🥎 +5 Super Balls reçues!' },
+        'MBALL': { type: 'item', key: 'pokeball', amount: 5, message: '⚽ +5 Monster Balls reçues!' },
+        'UBALL': { type: 'item', key: 'ultraball', amount: 5, message: '🏐 +5 Ultra Balls reçues!' }
+    };
+    
+    if (codes[code]) {
+        const reward = codes[code];
+        
+        if (reward.type === 'money') {
+            game.money += reward.amount;
+        } else if (reward.type === 'item') {
+            game.bag[reward.key] = (game.bag[reward.key] || 0) + reward.amount;
+        }
+        
+        showNotification('✅ ' + reward.message);
+        input.value = '';
+        updateHUD();
+        showShopTab('buy'); // Refresh
+    } else {
+        showNotification('❌ Code invalide!');
+    }
+};
 
 // ========== SÉLECTION DE POKÉMON POUR COMBAT ==========
 function showPokemonSelection(enemyPokemon) {
