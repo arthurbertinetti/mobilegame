@@ -238,6 +238,10 @@
             background: linear-gradient(135deg, #8e44ad, #6c3483);
             box-shadow: 0 4px 12px rgba(142,68,173,.3);
         }
+        .icon-pokemon {
+            background: linear-gradient(135deg, #ffcc00, #e74c3c);
+            box-shadow: 0 4px 12px rgba(255,204,0,.3);
+        }
 
         .ranking-link {
             display: block;
@@ -334,15 +338,31 @@
             <div class="game-info">
                 <h2>Farm Zing Valley</h2>
                 <p>Farming idle : plante, récolte, améliore !</p>
-                <p class="game-record" id="rec-farmvalley"></p>
             </div>
         </a>
 
-        <a href="farmvalley2.html" class="game-card">
-            <div class="game-icon icon-farmvalley" style="background:linear-gradient(135deg,#3da832,#f5c542)">✨</div>
+        <a href="worms2.html" class="game-card">
+            <div class="game-icon icon-worms2">💥</div>
             <div class="game-info">
-                <h2>Farm Valley 2 ✨</h2>
-                <p>Nouvelle version 2.5D isométrique Farmville-style !</p>
+                <h2>Worms 2</h2>
+                <p>Artillerie tactique, terrain destructible !</p>
+                <p class="game-record" id="rec-worms2"></p>
+            </div>
+        </a>
+
+        <a href="pokemon.html" class="game-card">
+            <div class="game-icon icon-pokemon">⚡</div>
+            <div class="game-info">
+                <h2>Monster Trainers</h2>
+                <p>Capture et combats de monstres, style Game Boy !</p>
+            </div>
+        </a>
+
+        <a href="tamagotchi.html" class="game-card">
+            <div class="game-icon icon-tamagotchi">🐣</div>
+            <div class="game-info">
+                <h2>Tamagotchi</h2>
+                <p>Prends soin de ton monstre virtuel !</p>
             </div>
         </a>
 
@@ -661,12 +681,18 @@
             </div>
         </a>
 
-        <a href="worms2.html" class="game-card">
-            <div class="game-icon icon-worms2">💥</div>
+        <a href="farmvalley2.html" class="game-card">
+            <div class="game-icon icon-farmvalley" style="background:linear-gradient(135deg,#3da832,#f5c542)">✨</div>
             <div class="game-info">
-                <h2>Worms 2</h2>
-                <p>Artillerie tactique, terrain destructible !</p>
-                <p class="game-record" id="rec-worms2"></p>
+                <h2>Farm Valley 2 ✨</h2>
+            </div>
+        </a>
+
+        <a href="pokemon_ultimate.html" class="game-card">
+            <div class="game-icon icon-pokemon">⚡</div>
+            <div class="game-info">
+                <h2>Monster Trainers V2</h2>
+                <p>Capture et combats de monstres, style Game Boy !</p>
             </div>
         </a>
 
@@ -675,7 +701,7 @@
     <div class="footer">© 2026 Arthur B - Tous droits réservés</div>
 <script src="leaderboard.js"></script>
 <script>
-var GAME_IDS = ['snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','sonic','pacman','bomberman','zingvalley2','worms','worms2'];
+var GAME_IDS = ['tamagotchi','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','sonic','pacman','bomberman','zingvalley2','worms','worms2','pokemon','farmvalley2','pokemon_ultimate'];
 var FAV_KEY = 'arcade_favorites';
 var favMode = false;
 

@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Monster World - Ultimate Edition</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Press Start 2P', monospace, 'Courier New', monospace;
+    -webkit-user-select: none;
+    user-select: none;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #000;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    color: #fff;
+    overflow-y: auto;
+    padding: 20px;
+}
+.overlay h1 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #ffcc00;
+    text-shadow: 3px 3px 0 #000;
+}
+
+.menu-btn {
+    padding: 15px 40px;
+    font-size: 0.9rem;
+    background: #e74c3c;
+    color: #fff;
+    border: 3px solid #000;
+    cursor: pointer;
+    margin: 10px;
+    font-family: inherit;
+    box-shadow: 4px 4px 0 #000;
+}
+.menu-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #000;
+}
+
+#hud {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background: rgba(0,0,0,.75);
+    color: #fff;
+    padding: 10px;
+    border: 2px solid #fff;
+    font-size: 0.7rem;
+    z-index: 500;
+    max-width: 250px;
+}
+#hud div { margin: 5px 0; }
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a1a;
+    border: 4px solid #fff;
+    padding: 20px;
+    z-index: 2000;
+    color: #fff;
+    max-width: 90%;
+    max-height: 80%;
+    overflow-y: auto;
+    display: none;
+}
+.modal h2 {
+    margin-bottom: 20px;
+    color: #ffcc00;
+    font-size: 1.4rem;
+    text-shadow: 2px 2px 0 #000;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 1999;
+    display: none;
+    backdrop-filter: blur(8px);
+}
+.grid {
+    display: grid;
+    gap: 15px;
+    margin: 20px 0;
+}
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.card {
+    background: #2c3e50;
+    border: 2px solid #3498db;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+.card:hover {
+    background: #34495e;
+    border-color: #2ecc71;
+}
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #2ecc71;
+    color: #fff;
+    padding: 15px 25px;
+    border: 3px solid #fff;
+    font-size: 0.8rem;
+    z-index: 3000;
+    box-shadow: 4px 4px 0 #000;
+}
+
+.hp-bar {
+    background: #333;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+.hp-fill {
+    height: 100%;
+    transition: width 0.3s, background 0.3s;
+}
+.hp-high { background: #2ecc71; }
+.hp-medium { background: #f39c12; }
+.hp-low { background: #e74c3c; }
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.tab {
+    padding: 12px 25px;
+    background: #555;
+    border: 2px solid #777;
+    cursor: pointer;
+    font-size: 0.7rem;
+    font-family: inherit;
+    color: #fff;
+}
+.tab.active {
+    background: #3498db;
+    border-color: #fff;
+}
+.rules-section {
+    background: rgba(44,62,80,0.5);
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 4px solid #3498db;
+}
+.rules-section h3 {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    color: #f1c40f;
+}
+.rules-section p, .rules-section ul {
+    font-size: 0.65rem;
+    line-height: 1.8;
+    color: #ecf0f1;
+}
+.rules-section ul {
+    margin-left: 20px;
+}
+.controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    z-index: 600;
+    align-items: center;
+}
+.dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 70px);
+    grid-template-rows: repeat(3, 70px);
+    gap: 5px;
+}
+.dpad-btn {
+    background: rgba(40,40,40,.85);
+    border: 3px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+}
+.dpad-btn:active {
+    background: rgba(80,80,80,.85);
+}
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+}
+.action-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(231,76,60,.85);
+    border: 3px solid rgba(255,255,255,.3);
+    color: #fff;
+    font-size: 0.7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    font-weight: bold;
+}
+.action-btn:active {
+    background: rgba(192,57,43,.85);
+}
+.action-btn.pokedex {
+    /* Styles removed - using simple background */
+}
+.action-btn.bag {
+    /* Styles removed - using simple background */
+}
+.action-btn.monsters {
+    /* Styles removed - using simple background */
+}
+.action-btn.menu {
+    /* Styles removed - using simple background */
+}
+.action-btn .icon {
+    font-size: 1.3rem;
+}
+
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div id="overlay" class="overlay">
+    <h1>🌟 MONSTER WORLD 🌟</h1>
+    <div id="mainMenu">
+        <button class="menu-btn" onclick="startNewGame()">▶️ NOUVELLE PARTIE</button>
+        <button class="menu-btn secondary" onclick="continueGame()" id="continueBtn" style="display: none;">💾 CONTINUER</button>
+        <button class="menu-btn success" onclick="showRules()">📋 RÈGLES</button>
+    </div>
+</div>
+
+<div id="hud" style="display: none;">
+    <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 8px; color: #ffcc00; text-shadow: 2px 2px 0 #000;">
+        🌍 MONSTER WORLD
+    </div>
+    <div style="background: rgba(0,0,0,0.5); padding: 8px; border-radius: 5px; margin: 5px 0;">
+        <div style="margin: 3px 0;">📍 <span id="hudPos">0, 0</span></div>
+        <div style="margin: 3px 0;">💰 <span id="hudMoney" style="color: #f1c40f;">1000</span>$</div>
+        <div style="margin: 3px 0;">👾 <span id="hudMonsters" style="color: #3498db;">0/20</span> monstres</div>
+        <div style="margin: 3px 0;">🏆 <span id="hudBadges" style="color: #e74c3c;">0/17</span> badges</div>
+    </div>
+</div>
+
+<div class="controls" id="controls" style="display: none;">
+    <div class="dpad">
+        <div></div>
+        <div class="dpad-btn" data-dir="up">▲</div>
+        <div></div>
+        <div class="dpad-btn" data-dir="left">◄</div>
+        <div style="background: rgba(0,0,0,0.3); border-radius: 50%;"></div>
+        <div class="dpad-btn" data-dir="right">►</div>
+        <div></div>
+        <div class="dpad-btn" data-dir="down">▼</div>
+        <div></div>
+    </div>
+    
+    <div class="action-buttons">
+        <div class="action-btn pokedex" onclick="openPokedex()">
+            <div class="icon">📖</div>
+            <div>DEX</div>
+        </div>
+        <div class="action-btn bag" onclick="openBag()">
+            <div class="icon">🎒</div>
+            <div>SAC</div>
+        </div>
+        <div class="action-btn monsters" onclick="openMonsters()">
+            <div class="icon">👾</div>
+            <div>TEAM</div>
+        </div>
+        <div class="action-btn menu" onclick="openModal('menuModal')">
+            <div class="icon">☰</div>
+            <div>MENU</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<div id="starterModal" class="modal">
+    <h2>🎯 CHOISIS TON STARTER!</h2>
+    <div class="grid grid-3" id="starterGrid"></div>
+</div>
+
+<div id="rulesModal" class="modal" style="max-width: 900px;">
+    <h2>📋 RÈGLES DU JEU</h2>
+    <div id="rulesContent"></div>
+    <button class="menu-btn" onclick="closeModal('rulesModal')" style="margin-top: 20px; width: 100%;">← RETOUR</button>
+</div>
+
+<div id="menuModal" class="modal">
+    <h2>📱 MENU</h2>
+    <div class="grid grid-2">
+        <button class="menu-btn" onclick="openPokedex()">📖 POKÉDEX</button>
+        <button class="menu-btn" onclick="openMonsters()">📋 MONSTRES</button>
+        <button class="menu-btn" onclick="openBag()">🎒 SAC</button>
+        <button class="menu-btn" onclick="openShop()">🏪 BOUTIQUE</button>
+    </div>
+    <button class="menu-btn secondary" onclick="closeModal('menuModal')" style="margin-top: 20px; width: 100%;">❌ ANNULER</button>
+</div>
+
+<div id="pokedexModal" class="modal" style="max-width: 1200px;">
+    <h2>📖 POKÉDEX - <span id="pokedexCount">0/54</span> vus</h2>
+    <div class="grid grid-3" id="pokedexContent"></div>
+    <button class="menu-btn" onclick="closeModal('pokedexModal')" style="margin-top: 20px; width: 100%;">← RETOUR</button>
+</div>
+
+<div id="monstersModal" class="modal" style="max-width: 1000px;">
+    <h2>📋 MES MONSTRES (<span id="monsterCount">0/20</span>)</h2>
+    <div><strong>👥 ÉQUIPE ACTIVE (<span id="activeCount">0/3</span>)</strong></div>
+    <div id="monstersContent" style="margin-top: 15px;"></div>
+    <button class="menu-btn" onclick="closeModal('monstersModal')" style="margin-top: 20px; width: 100%;">← RETOUR</button>
+</div>
+
+<div id="bagModal" class="modal">
+    <h2>🎒 SAC</h2>
+    <div id="bagContent"></div>
+    <button class="menu-btn" onclick="closeModal('bagModal')" style="margin-top: 20px; width: 100%;">← RETOUR</button>
+</div>
+
+<div id="shopModal" class="modal">
+    <h2>🏪 BOUTIQUE</h2>
+    <div class="tabs">
+        <button class="tab active" onclick="switchShopTab('buy')">ACHETER</button>
+        <button class="tab" onclick="switchShopTab('sell')">VENDRE</button>
+    </div>
+    <div id="shopContent"></div>
+    <button class="menu-btn" onclick="closeModal('shopModal')" style="margin-top: 20px; width: 100%;">← RETOUR</button>
+</div>
+
+<div id="battleModal" class="modal" style="max-width: 95%;">
+    <div id="battleContent"></div>
+</div>
+
+<div id="dialogModal" class="modal">
+    <div id="dialogContent"></div>
+    <button class="menu-btn" onclick="closeModal('dialogModal')" style="margin-top: 15px; width: 100%;">OK</button>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const TILE_SIZE = 48;
+const MAP_SIZE = 150;
+const SAVE_KEY = 'monsterWorldSave';
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ========== DONNÉES DES MONSTRES ==========
+const MONSTER_DATA = {
+    // STARTERS
+    Flamix: { type: 'fire', hp: 45, atk: 52, emoji: '🔥', rarity: 'starter', evolution: { level: 16, into: 'Pyroar' } },
+    Pyroar: { type: 'fire', hp: 58, atk: 64, emoji: '🦁', rarity: 'starter', evolution: { level: 36, into: 'Inferdrake' } },
+    Inferdrake: { type: 'fire', hp: 78, atk: 84, emoji: '🐉', rarity: 'starter', evolution: null },
+    
+    Aqueon: { type: 'water', hp: 44, atk: 48, emoji: '💧', rarity: 'starter', evolution: { level: 16, into: 'Aquarius' } },
+    Aquarius: { type: 'water', hp: 59, atk: 63, emoji: '🌊', rarity: 'starter', evolution: { level: 36, into: 'Hydroknight' } },
+    Hydroknight: { type: 'water', hp: 79, atk: 85, emoji: '⚔️', rarity: 'starter', evolution: null },
+    
+    Leafix: { type: 'grass', hp: 45, atk: 49, emoji: '🍃', rarity: 'starter', evolution: { level: 16, into: 'Floradon' } },
+    Floradon: { type: 'grass', hp: 60, atk: 62, emoji: '🌺', rarity: 'starter', evolution: { level: 36, into: 'Verdantitan' } },
+    Verdantitan: { type: 'grass', hp: 80, atk: 82, emoji: '🌳', rarity: 'starter', evolution: null },
+    
+    Sparkle: { type: 'electric', hp: 35, atk: 55, emoji: '⚡', rarity: 'starter', evolution: { level: 16, into: 'Voltiger' } },
+    Voltiger: { type: 'electric', hp: 48, atk: 75, emoji: '⚡', rarity: 'starter', evolution: { level: 36, into: 'Thundorah' } },
+    Thundorah: { type: 'electric', hp: 63, atk: 95, emoji: '🌩️', rarity: 'starter', evolution: null },
+    
+    Pebble: { type: 'rock', hp: 40, atk: 80, emoji: '🪨', rarity: 'starter', evolution: { level: 16, into: 'Boulder' } },
+    Boulder: { type: 'rock', hp: 55, atk: 100, emoji: '⛰️', rarity: 'starter', evolution: { level: 36, into: 'Mountainlord' } },
+    Mountainlord: { type: 'rock', hp: 85, atk: 130, emoji: '🏔️', rarity: 'starter', evolution: null },
+    
+    Tweepy: { type: 'flying', hp: 40, atk: 45, emoji: '🐦', rarity: 'starter', evolution: { level: 16, into: 'Aerowing' } },
+    Aerowing: { type: 'flying', hp: 55, atk: 70, emoji: '🦅', rarity: 'starter', evolution: { level: 36, into: 'Skyknight' } },
+    Skyknight: { type: 'flying', hp: 75, atk: 90, emoji: '🦜', rarity: 'starter', evolution: null },
+    
+    // COMMUNS
+    Ratix: { type: 'normal', hp: 30, atk: 56, emoji: '🐀', rarity: 'common', evolution: { level: 20, into: 'Ratigant' } },
+    Ratigant: { type: 'normal', hp: 55, atk: 81, emoji: '🐁', rarity: 'common', evolution: { level: 40, into: 'Ratititan' } },
+    Ratititan: { type: 'normal', hp: 85, atk: 106, emoji: '🦫', rarity: 'common', evolution: null },
+    
+    Buglet: { type: 'bug', hp: 45, atk: 30, emoji: '🐛', rarity: 'common', evolution: { level: 12, into: 'Cocoon' } },
+    Cocoon: { type: 'bug', hp: 50, atk: 25, emoji: '🥚', rarity: 'common', evolution: { level: 24, into: 'Butterfree' } },
+    Butterfree: { type: 'bug', hp: 60, atk: 70, emoji: '🦋', rarity: 'common', evolution: null },
+    
+    // UNCOMMONS
+    Batling: { type: 'poison', hp: 40, atk: 45, emoji: '🦇', rarity: 'uncommon', evolution: { level: 22, into: 'Vampyre' } },
+    Vampyre: { type: 'poison', hp: 75, atk: 80, emoji: '🦇', rarity: 'uncommon', evolution: { level: 42, into: 'Dracolisk' } },
+    Dracolisk: { type: 'poison', hp: 95, atk: 100, emoji: '🧛', rarity: 'uncommon', evolution: null },
+    
+    Ghostlet: { type: 'ghost', hp: 30, atk: 40, emoji: '👻', rarity: 'uncommon', evolution: { level: 25, into: 'Phantom' } },
+    Phantom: { type: 'ghost', hp: 50, atk: 65, emoji: '😈', rarity: 'uncommon', evolution: { level: 45, into: 'Spectrax' } },
+    Spectrax: { type: 'ghost', hp: 80, atk: 95, emoji: '💀', rarity: 'uncommon', evolution: null },
+    
+    Frostling: { type: 'ice', hp: 38, atk: 42, emoji: '❄️', rarity: 'uncommon', evolution: { level: 28, into: 'Glacius' } },
+    Glacius: { type: 'ice', hp: 63, atk: 77, emoji: '🧊', rarity: 'uncommon', evolution: { level: 48, into: 'Blizzardlord' } },
+    Blizzardlord: { type: 'ice', hp: 93, atk: 107, emoji: '⛄', rarity: 'uncommon', evolution: null },
+    
+    // RARES
+    Dragonet: { type: 'dragon', hp: 42, atk: 64, emoji: '🐲', rarity: 'rare', evolution: { level: 30, into: 'Wyrmling' } },
+    Wyrmling: { type: 'dragon', hp: 72, atk: 94, emoji: '🐉', rarity: 'rare', evolution: { level: 50, into: 'Dragonlord' } },
+    Dragonlord: { type: 'dragon', hp: 102, atk: 134, emoji: '🔱', rarity: 'rare', evolution: null },
+    
+    Fightling: { type: 'fighting', hp: 50, atk: 70, emoji: '🥊', rarity: 'rare', evolution: { level: 32, into: 'Karateka' } },
+    Karateka: { type: 'fighting', hp: 80, atk: 100, emoji: '🥋', rarity: 'rare', evolution: { level: 52, into: 'Champfist' } },
+    Champfist: { type: 'fighting', hp: 110, atk: 140, emoji: '👊', rarity: 'rare', evolution: null },
+    
+    Psychling: { type: 'psychic', hp: 45, atk: 50, emoji: '🔮', rarity: 'rare', evolution: { level: 26, into: 'Mindor' } },
+    Mindor: { type: 'psychic', hp: 70, atk: 80, emoji: '🧠', rarity: 'rare', evolution: { level: 46, into: 'Cerebrax' } },
+    Cerebrax: { type: 'psychic', hp: 95, atk: 105, emoji: '👁️', rarity: 'rare', evolution: null },
+    
+    Steelet: { type: 'steel', hp: 55, atk: 65, emoji: '⚙️', rarity: 'rare', evolution: { level: 30, into: 'Ironclaw' } },
+    Ironclaw: { type: 'steel', hp: 80, atk: 90, emoji: '🔩', rarity: 'rare', evolution: { level: 50, into: 'Titanforge' } },
+    Titanforge: { type: 'steel', hp: 120, atk: 120, emoji: '🛡️', rarity: 'rare', evolution: null },
+    
+    Fairyling: { type: 'fairy', hp: 38, atk: 42, emoji: '🧚', rarity: 'rare', evolution: { level: 28, into: 'Pixiess' } },
+    Pixiess: { type: 'fairy', hp: 68, atk: 72, emoji: '✨', rarity: 'rare', evolution: { level: 48, into: 'Enchantora' } },
+    Enchantora: { type: 'fairy', hp: 98, atk: 102, emoji: '🌟', rarity: 'rare', evolution: null },
+    
+    Shadeling: { type: 'dark', hp: 40, atk: 60, emoji: '🌑', rarity: 'rare', evolution: { level: 29, into: 'Nightshade' } },
+    Nightshade: { type: 'dark', hp: 70, atk: 90, emoji: '🌚', rarity: 'rare', evolution: { level: 49, into: 'Voidking' } },
+    Voidking: { type: 'dark', hp: 100, atk: 130, emoji: '⚫', rarity: 'rare', evolution: null },
+    
+    Earthling: { type: 'ground', hp: 50, atk: 55, emoji: '🏜️', rarity: 'rare', evolution: { level: 27, into: 'Sandstorm' } },
+    Sandstorm: { type: 'ground', hp: 75, atk: 85, emoji: '🌋', rarity: 'rare', evolution: { level: 47, into: 'Earthlord' } },
+    Earthlord: { type: 'ground', hp: 105, atk: 115, emoji: '🗿', rarity: 'rare', evolution: null },
+};
+
+// ========== ATTAQUES ==========
+const MOVES_BY_TYPE = {
+    fire: [
+        { name: 'Flammèche', emoji: '🔥', power: 40, field: 'burn' },
+        { name: 'Lance-Flammes', emoji: '🔥', power: 90, field: 'burn' },
+        { name: 'Déflagration', emoji: '💥', power: 110, field: 'burn' },
+        { name: 'Boutefeu', emoji: '🌋', power: 70, field: 'burn' }
+    ],
+    water: [
+        { name: 'Pistolet à O', emoji: '💧', power: 40, field: null },
+        { name: 'Hydrocanon', emoji: '🌊', power: 110, field: null },
+        { name: 'Surf', emoji: '🏄', power: 90, field: null },
+        { name: 'Cascade', emoji: '💦', power: 80, field: null }
+    ],
+    grass: [
+        { name: 'Fouet Lianes', emoji: '🌿', power: 45, field: 'cut' },
+        { name: 'Tranch\'Herbe', emoji: '🍃', power: 55, field: 'cut' },
+        { name: 'Lance-Soleil', emoji: '☀️', power: 120, field: null },
+        { name: 'Tempête Verte', emoji: '🌪️', power: 75, field: null }
+    ],
+    electric: [
+        { name: 'Éclair', emoji: '⚡', power: 40, field: null },
+        { name: 'Tonnerre', emoji: '🌩️', power: 110, field: null },
+        { name: 'Cage-Éclair', emoji: '⚡', power: 90, field: null },
+        { name: 'Fatal-Foudre', emoji: '⚡', power: 130, field: null }
+    ],
+    rock: [
+        { name: 'Jet-Pierres', emoji: '🪨', power: 50, field: null },
+        { name: 'Éboulement', emoji: '⛰️', power: 75, field: 'break' },
+        { name: 'Lame de Roc', emoji: '🗻', power: 100, field: 'break' },
+        { name: 'Pouvoir Antique', emoji: '🏔️', power: 60, field: null }
+    ],
+    flying: [
+        { name: 'Tornade', emoji: '🌪️', power: 40, field: null },
+        { name: 'Aéropique', emoji: '🦅', power: 90, field: null },
+        { name: 'Lame d\'Air', emoji: '💨', power: 75, field: 'cut' },
+        { name: 'Vent Violent', emoji: '🌬️', power: 110, field: null }
+    ],
+    bug: [
+        { name: 'Piqûre', emoji: '🐛', power: 60, field: null },
+        { name: 'Plaie-X', emoji: '✖️', power: 80, field: 'cut' },
+        { name: 'Bourdon', emoji: '🐝', power: 90, field: null },
+        { name: 'Appel Signal', emoji: '📡', power: 75, field: null }
+    ],
+    poison: [
+        { name: 'Acidarmure', emoji: '☠️', power: 40, field: null },
+        { name: 'Détritus', emoji: '🧪', power: 65, field: 'poison' },
+        { name: 'Toxik', emoji: '☣️', power: 90, field: 'poison' },
+        { name: 'Dard-Venin', emoji: '💉', power: 80, field: 'poison' }
+    ],
+    ghost: [
+        { name: 'Léchouille', emoji: '👅', power: 30, field: null },
+        { name: 'Ball\'Ombre', emoji: '🌑', power: 80, field: null },
+        { name: 'Châtiment', emoji: '👻', power: 100, field: null },
+        { name: 'Malédiction', emoji: '😈', power: 0, field: null }
+    ],
+    ice: [
+        { name: 'Poudreuse', emoji: '❄️', power: 40, field: null },
+        { name: 'Laser Glace', emoji: '🧊', power: 90, field: null },
+        { name: 'Blizzard', emoji: '🌨️', power: 110, field: null },
+        { name: 'Grêle', emoji: '⛄', power: 0, field: null }
+    ],
+    dragon: [
+        { name: 'Draco-Rage', emoji: '🐉', power: 40, field: 'break' },
+        { name: 'Dracochoc', emoji: '🔱', power: 85, field: null },
+        { name: 'Oura-dragon', emoji: '🐲', power: 100, field: null },
+        { name: 'Colère', emoji: '💢', power: 120, field: null }
+    ],
+    fighting: [
+        { name: 'Poing-Karaté', emoji: '🥊', power: 50, field: 'break' },
+        { name: 'Poing-Éclair', emoji: '⚡', power: 75, field: null },
+        { name: 'Close Combat', emoji: '🥋', power: 120, field: null },
+        { name: 'Aurasphère', emoji: '🔵', power: 80, field: null }
+    ],
+    psychic: [
+        { name: 'Choc Mental', emoji: '🧠', power: 50, field: null },
+        { name: 'Psyko', emoji: '🔮', power: 90, field: 'push' },
+        { name: 'Psybeam', emoji: '👁️', power: 65, field: 'push' },
+        { name: 'Prescience', emoji: '✨', power: 100, field: null }
+    ],
+    steel: [
+        { name: 'Griffe Acier', emoji: '⚙️', power: 50, field: null },
+        { name: 'Tête de Fer', emoji: '🔩', power: 80, field: null },
+        { name: 'Luminocanon', emoji: '💫', power: 80, field: null },
+        { name: 'Métallo-Griffe', emoji: '🛡️', power: 75, field: null }
+    ],
+    fairy: [
+        { name: 'Vent Féérique', emoji: '🧚', power: 40, field: null },
+        { name: 'Éclat Magique', emoji: '✨', power: 80, field: null },
+        { name: 'Pouvoir Lunaire', emoji: '🌙', power: 95, field: null },
+        { name: 'Câlinerie', emoji: '💕', power: 90, field: null }
+    ],
+    dark: [
+        { name: 'Morsure', emoji: '🦷', power: 60, field: null },
+        { name: 'Mâchouille', emoji: '😈', power: 80, field: null },
+        { name: 'Vibrobscur', emoji: '🌑', power: 80, field: null },
+        { name: 'Châtiment', emoji: '⚫', power: 0, field: null }
+    ],
+    ground: [
+        { name: 'Coud\'Boue', emoji: '🏜️', power: 20, field: null },
+        { name: 'Séisme', emoji: '🌋', power: 100, field: 'break' },
+        { name: 'Tunnel', emoji: '⛏️', power: 80, field: 'dig' },
+        { name: 'Destruction', emoji: '💥', power: 120, field: 'break' }
+    ],
+    normal: [
+        { name: 'Charge', emoji: '💨', power: 40, field: null },
+        { name: 'Plaquage', emoji: '💥', power: 85, field: null },
+        { name: 'Ultimapoing', emoji: '👊', power: 150, field: null },
+        { name: 'Météores', emoji: '⭐', power: 60, field: null }
+    ]
+};
+
+// ========== AVANTAGES DE TYPES ==========
+const TYPE_EFFECTIVENESS = {
+    fire: { effective: ['grass', 'bug', 'ice', 'steel'], weak: ['water', 'ground', 'rock'] },
+    water: { effective: ['fire', 'ground', 'rock'], weak: ['grass', 'electric'] },
+    grass: { effective: ['water', 'ground', 'rock'], weak: ['fire', 'bug', 'poison', 'flying', 'ice'] },
+    electric: { effective: ['water', 'flying'], weak: ['ground'] },
+    rock: { effective: ['fire', 'bug', 'flying', 'ice'], weak: ['water', 'grass', 'fighting', 'ground', 'steel'] },
+    flying: { effective: ['grass', 'bug', 'fighting'], weak: ['electric', 'rock', 'ice'] },
+    bug: { effective: ['grass', 'psychic', 'dark'], weak: ['fire', 'flying', 'rock'] },
+    poison: { effective: ['grass', 'fairy'], weak: ['ground', 'psychic'] },
+    ghost: { effective: ['ghost', 'psychic'], weak: ['ghost', 'dark'] },
+    ice: { effective: ['grass', 'ground', 'flying', 'dragon'], weak: ['fire', 'fighting', 'rock', 'steel'] },
+    dragon: { effective: ['dragon'], weak: ['ice', 'dragon', 'fairy'] },
+    fighting: { effective: ['normal', 'ice', 'rock', 'dark', 'steel'], weak: ['flying', 'psychic', 'fairy'] },
+    psychic: { effective: ['fighting', 'poison'], weak: ['bug', 'ghost', 'dark'] },
+    steel: { effective: ['ice', 'rock', 'fairy'], weak: ['fire', 'fighting', 'ground'] },
+    fairy: { effective: ['fighting', 'dragon', 'dark'], weak: ['poison', 'steel'] },
+    dark: { effective: ['ghost', 'psychic'], weak: ['fighting', 'bug', 'fairy'] },
+    ground: { effective: ['fire', 'electric', 'poison', 'rock', 'steel'], weak: ['water', 'grass', 'ice'] },
+    normal: { effective: [], weak: ['fighting'] }
+};
+
+function getTypeMultiplier(attackType, defenderType) {
+    const data = TYPE_EFFECTIVENESS[attackType];
+    if (!data) return 1;
+    if (data.effective.includes(defenderType)) return 1.5;
+    if (data.weak.includes(defenderType)) return 0.67;
+    return 1;
+}
+
+// ========== ÉTAT DU JEU ==========
+const game = {
+    running: false,
+    inBattle: false,
+    player: { 
+        x: 75, 
+        y: 75, 
+        worldX: 75 * TILE_SIZE, 
+        worldY: 75 * TILE_SIZE,
+        targetX: 75 * TILE_SIZE,
+        targetY: 75 * TILE_SIZE,
+        direction: 'down',
+        moving: false,
+        moveProgress: 0
+    },
+    camera: {
+        x: 0,
+        y: 0,
+        targetX: 0,
+        targetY: 0
+    },
+    money: 1000,
+    monsters: [],
+    activeTeam: [],
+    bag: { 
+        monsterball: 5, 
+        superball: 2, 
+        ultraball: 1, 
+        potion: 3, 
+        superpotion: 1, 
+        hyperpotion: 0 
+    },
+    loot: {},
+    badges: 0,
+    pokedex: new Set(),
+    world: [],
+    cities: [],
+    pokemonCenters: [],
+    npcs: [],
+    obstacles: [],
+    unlockedObstacles: new Set(),
+    currentShopTab: 'buy'
+};
+
+// ========== GÉNÉRATION DU MONDE ==========
+const BIOMES = {
+    grass: { emoji: '🟩', walkable: true, encounter: 0.15, color: '#90EE90', level: 1 },
+    forest: { emoji: '🌲', walkable: false, encounter: 0, color: '#228B22', level: 1 },
+    town: { emoji: '🏘️', walkable: true, encounter: 0, color: '#D3D3D3', level: 0 },
+    mountain: { emoji: '⛰️', walkable: false, encounter: 0, color: '#8B4513', level: 3 },
+    water: { emoji: '🌊', walkable: false, encounter: 0, color: '#1E90FF', level: 2 },
+    field: { emoji: '🌾', walkable: true, encounter: 0.10, color: '#F0E68C', level: 1 },
+    swamp: { emoji: '🟫', walkable: true, encounter: 0.20, color: '#556B2F', level: 2 },
+    cave: { emoji: '🕳️', walkable: true, encounter: 0.25, color: '#2F4F4F', level: 2 },
+    path: { emoji: '⬛', walkable: true, encounter: 0, color: '#696969', level: 0 },
+    building: { emoji: '🏠', walkable: false, encounter: 0, color: '#CD853F', level: 0 },
+    tallgrass: { emoji: '🌿', walkable: true, encounter: 0.25, color: '#32CD32', level: 1 },
+    bridge: { emoji: '🌉', walkable: true, encounter: 0, color: '#8B4513', level: 1 },
+    dungeon: { emoji: '🏰', walkable: false, encounter: 0, color: '#4B0082', level: 3 },
+    gate: { emoji: '🚪', walkable: true, encounter: 0, color: '#FFD700', level: 0 }
+};
+
+// ZONES DU MONDE
+const WORLD_ZONES = [
+    { name: 'Zone Départ', minX: 65, maxX: 85, minY: 65, maxY: 85, level: 1, wildLevelMin: 3, wildLevelMax: 8, requiredBadges: 0 },
+    { name: 'Plaine Est', minX: 85, maxX: 110, minY: 65, maxY: 85, level: 2, wildLevelMin: 8, wildLevelMax: 15, requiredBadges: 2 },
+    { name: 'Forêt Nord', minX: 65, maxX: 85, minY: 40, maxY: 65, level: 2, wildLevelMin: 10, wildLevelMax: 18, requiredBadges: 3 },
+    { name: 'Marais Sud', minX: 65, maxX: 85, minY: 85, maxY: 110, level: 3, wildLevelMin: 15, wildLevelMax: 25, requiredBadges: 5 },
+    { name: 'Montagne Ouest', minX: 40, maxX: 65, minY: 65, maxY: 85, level: 3, wildLevelMin: 18, wildLevelMax: 28, requiredBadges: 6 },
+    { name: 'Caverne Profonde', minX: 110, maxX: 135, minY: 40, maxY: 65, level: 4, wildLevelMin: 25, wildLevelMax: 35, requiredBadges: 10 },
+    { name: 'Terres Lointaines', minX: 0, maxX: 40, minY: 0, maxY: 150, level: 5, wildLevelMin: 30, wildLevelMax: 45, requiredBadges: 15 }
+];
+
+function generateWorld() {
+    const world = [];
+    for (let y = 0; y < MAP_SIZE; y++) {
+        world[y] = [];
+        for (let x = 0; x < MAP_SIZE; x++) {
+            const rand = Math.random();
+            if (rand < 0.05) world[y][x] = 'forest';
+            else if (rand < 0.10) world[y][x] = 'mountain';
+            else if (rand < 0.15) world[y][x] = 'water';
+            else if (rand < 0.30) world[y][x] = 'tallgrass';
+            else if (rand < 0.40) world[y][x] = 'field';
+            else world[y][x] = 'grass';
+        }
+    }
+    
+    // 5 VILLES
+    const cityPositions = [
+        { x: 75, y: 75, name: 'Ville Départ' },
+        { x: 30, y: 30, name: 'Ville Roche' },
+        { x: 120, y: 40, name: 'Ville Aqua' },
+        { x: 40, y: 120, name: 'Ville Forêt' },
+        { x: 110, y: 110, name: 'Ville Éclair' }
+    ];
+    
+    game.cities = cityPositions;
+    
+    // PASSAGES ENTRE ZONES (gates)
+    const gates = [
+        // Entre Zone Départ et Plaine Est
+        { x: 85, y: 75 },
+        // Entre Zone Départ et Forêt Nord  
+        { x: 75, y: 65 },
+        // Entre Zone Départ et Marais Sud
+        { x: 75, y: 85 },
+        // Entre Zone Départ et Montagne Ouest
+        { x: 65, y: 75 }
+    ];
+    
+    gates.forEach(gate => {
+        if (world[gate.y] && world[gate.y][gate.x]) {
+            world[gate.y][gate.x] = 'gate';
+        }
+    });
+    
+    cityPositions.forEach(city => {
+        for (let dy = -3; dy <= 3; dy++) {
+            for (let dx = -3; dx <= 3; dx++) {
+                const nx = city.x + dx;
+                const ny = city.y + dy;
+                if (nx >= 0 && nx < MAP_SIZE && ny >= 0 && ny < MAP_SIZE) {
+                    if (Math.abs(dx) <= 1 && Math.abs(dy) <= 1) {
+                        world[ny][nx] = 'town';
+                    } else {
+                        world[ny][nx] = 'path';
+                    }
+                }
+            }
+        }
+        
+        // CENTRE POKÉMON
+        game.pokemonCenters.push({
+            x: city.x,
+            y: city.y,
+            name: city.name,
+            npc: { emoji: '🏥', message: 'Bienvenue ! Je soigne vos monstres gratuitement.' }
+        });
+        
+        // BÂTIMENTS
+        world[city.y - 1][city.x - 1] = 'building';
+        world[city.y - 1][city.x + 1] = 'building';
+        world[city.y + 1][city.x - 1] = 'building';
+        world[city.y + 1][city.x + 1] = 'building';
+    });
+    
+    // CHEMINS ENTRE VILLES
+    for (let i = 0; i < cityPositions.length - 1; i++) {
+        const from = cityPositions[i];
+        const to = cityPositions[i + 1];
+        let x = from.x;
+        let y = from.y;
+        while (x !== to.x || y !== to.y) {
+            if (x < to.x) x++;
+            else if (x > to.x) x--;
+            if (y < to.y) y++;
+            else if (y > to.y) y--;
+            if (x >= 0 && x < MAP_SIZE && y >= 0 && y < MAP_SIZE) {
+                if (world[y][x] !== 'town' && world[y][x] !== 'building') {
+                    world[y][x] = world[y][x] === 'water' ? 'bridge' : 'path';
+                }
+            }
+        }
+    }
+    
+    // OBSTACLES (50)
+    for (let i = 0; i < 50; i++) {
+        const x = Math.floor(Math.random() * MAP_SIZE);
+        const y = Math.floor(Math.random() * MAP_SIZE);
+        const tile = world[y][x];
+        if (tile === 'grass' || tile === 'field' || tile === 'path') {
+            const types = ['🌳', '🪨', '🌲'];
+            game.obstacles.push({
+                x, y,
+                type: types[Math.floor(Math.random() * types.length)],
+                id: `obstacle_${x}_${y}`
+            });
+        }
+    }
+    
+    game.world = world;
+}
+
+// ========== UTILITAIRES ==========
+function createMonster(species, level) {
+    const data = MONSTER_DATA[species];
+    const stats = {
+        hp: Math.floor(data.hp + (level * 2)),
+        atk: Math.floor(data.atk + (level * 1.5))
+    };
+    
+    // ATTAQUES ALÉATOIRES (60% pour 2, 40% pour 1)
+    const possibleMoves = MOVES_BY_TYPE[data.type] || [];
+    const numMoves = Math.random() < 0.6 ? 2 : 1;
+    const moves = [];
+    const shuffled = [...possibleMoves].sort(() => Math.random() - 0.5);
+    for (let i = 0; i < numMoves && i < shuffled.length; i++) {
+        moves.push(shuffled[i]);
+    }
+    
+    return {
+        species,
+        level,
+        type: data.type,
+        emoji: data.emoji,
+        stats,
+        maxHp: stats.hp,
+        currentHp: stats.hp,
+        exp: 0,
+        expToNext: level * level * 10,
+        evolution: data.evolution,
+        moves,
+        rarity: data.rarity
+    };
+}
+
+function checkEvolution(monster) {
+    if (monster.evolution && monster.level >= monster.evolution.level) {
+        const oldSpecies = monster.species;
+        const newSpecies = monster.evolution.into;
+        const newData = MONSTER_DATA[newSpecies];
+        
+        monster.species = newSpecies;
+        monster.emoji = newData.emoji;
+        monster.type = newData.type;
+        monster.evolution = newData.evolution;
+        
+        // Recalculer stats
+        monster.stats.hp = Math.floor(newData.hp + (monster.level * 2));
+        monster.stats.atk = Math.floor(newData.atk + (monster.level * 1.5));
+        const oldMaxHp = monster.maxHp;
+        monster.maxHp = monster.stats.hp;
+        monster.currentHp = Math.floor((monster.currentHp / oldMaxHp) * monster.maxHp);
+        
+        showNotification(`🎉 ${oldSpecies} évolue en ${newSpecies}!`);
+        return true;
+    }
+    return false;
+}
+
+function getCurrentZone() {
+    for (const zone of WORLD_ZONES) {
+        if (game.player.x >= zone.minX && game.player.x <= zone.maxX &&
+            game.player.y >= zone.minY && game.player.y <= zone.maxY) {
+            return zone;
+        }
+    }
+    return WORLD_ZONES[0]; // Zone par défaut
+}
+
+function getWildMonster() {
+    const zone = getCurrentZone();
+    const allSpecies = Object.keys(MONSTER_DATA).filter(s => MONSTER_DATA[s].rarity !== 'starter');
+    const rarityWeights = { common: 0.6, uncommon: 0.3, rare: 0.08, legendary: 0.015, mythical: 0.005 };
+    
+    let rarity = 'common';
+    const rand = Math.random();
+    if (rand < 0.005) rarity = 'mythical';
+    else if (rand < 0.02) rarity = 'legendary';
+    else if (rand < 0.10) rarity = 'rare';
+    else if (rand < 0.40) rarity = 'uncommon';
+    
+    const filtered = allSpecies.filter(s => MONSTER_DATA[s].rarity === rarity);
+    const species = filtered.length > 0 ? filtered[Math.floor(Math.random() * filtered.length)] : allSpecies[0];
+    
+    // Niveau basé sur la zone
+    const level = zone.wildLevelMin + Math.floor(Math.random() * (zone.wildLevelMax - zone.wildLevelMin + 1));
+    
+    return createMonster(species, level);
+}
+
+function showNotification(message, color = '#2ecc71') {
+    const notif = document.createElement('div');
+    notif.className = 'notification';
+    notif.style.background = `linear-gradient(135deg, ${color}, ${color}dd)`;
+    notif.textContent = message;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
+}
+
+function openModal(modalId) {
+    document.getElementById('modalOverlay').style.display = 'block';
+    document.getElementById(modalId).style.display = 'block';
+}
+
+// ========== SAUVEGARDE ==========
+function saveGame() {
+    try {
+        const saveData = {
+            player: game.player,
+            money: game.money,
+            monsters: game.monsters,
+            activeTeam: game.activeTeam,
+            bag: game.bag,
+            loot: game.loot,
+            badges: game.badges,
+            pokedex: Array.from(game.pokedex),
+            unlockedObstacles: Array.from(game.unlockedObstacles)
+        };
+        localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+        return true;
+    } catch (e) {
+        console.error('Save error:', e);
+        return false;
+    }
+}
+
+function loadGame() {
+    try {
+        const data = JSON.parse(localStorage.getItem(SAVE_KEY));
+        if (!data) return false;
+        
+        game.player = data.player;
+        game.money = data.money || 1000;
+        game.monsters = data.monsters || [];
+        game.activeTeam = data.activeTeam || [];
+        game.bag = data.bag || { monsterball: 5, superball: 2, ultraball: 1, potion: 3, superpotion: 1, hyperpotion: 0 };
+        game.loot = data.loot || {};
+        game.badges = data.badges || 0;
+        game.pokedex = new Set(data.pokedex || []);
+        game.unlockedObstacles = new Set(data.unlockedObstacles || []);
+        
+        return true;
+    } catch (e) {
+        console.error('Load error:', e);
+        return false;
+    }
+}
+
+// SAUVEGARDE AUTO TOUTES LES 10s
+setInterval(() => {
+    if (game.running) {
+        saveGame();
+    }
+}, 10000);
+
+// ========== MENUS ==========
+function startNewGame() {
+    showStarterSelection();
+}
+
+function continueGame() {
+    if (loadGame()) {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('hud').style.display = 'block';
+        document.getElementById('controls').style.display = 'flex';
+        game.running = true;
+        updateHUD();
+        initTouchControls();
+        gameLoop();
+        showNotification('📂 Partie chargée!');
+    } else {
+        showNotification('❌ Erreur de chargement', '#e74c3c');
+    }
+}
+
+function showStarterSelection() {
+    const starters = ['Flamix', 'Aqueon', 'Leafix', 'Sparkle', 'Pebble', 'Tweepy'];
+    const grid = document.getElementById('starterGrid');
+    grid.innerHTML = starters.map(species => {
+        const data = MONSTER_DATA[species];
+        const moves = MOVES_BY_TYPE[data.type] || [];
+        return `
+            <div class="card" onclick="selectStarter('${species}')">
+                <div style="font-size: 3rem; margin: 10px 0;">${data.emoji}</div>
+                <div style="font-size: 1rem; color: #f1c40f; margin: 10px 0;">${species}</div>
+                <div style="font-size: 0.7rem; margin: 5px 0;">Type: ${data.type.toUpperCase()}</div>
+                <div style="font-size: 0.7rem; margin: 5px 0;">❤️ ${data.hp} HP | ⚔️ ${data.atk} ATK</div>
+                <div style="font-size: 0.6rem; margin-top: 10px; color: #bdc3c7;">
+                    Attaques: ${moves.slice(0, 2).map(m => m.emoji + m.name).join(', ')}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    openModal('starterModal');
+}
+
+function selectStarter(species) {
+    const starter = createMonster(species, 5);
+    game.monsters.push(starter);
+    game.activeTeam.push(0);
+    game.pokedex.add(species);
+    
+    closeModal('starterModal');
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('hud').style.display = 'block';
+    document.getElementById('controls').style.display = 'flex';
+    game.running = true;
+    updateHUD();
+    initTouchControls();
+    gameLoop();
+    showNotification(`🎉 Aventure avec ${species}!`);
+}
+
+function showRules() {
+    const content = `
+        <div class="rules-section">
+            <h3>🎯 OBJECTIF</h3>
+            <p>Devenez le meilleur dresseur en capturant 54 monstres, en gagnant 17 badges d'arène et en explorant un monde de 150x150 tuiles.</p>
+        </div>
+        
+        <div class="rules-section">
+            <h3>🌍 EXPLORATION</h3>
+            <ul>
+                <li>13 biomes différents : herbe, forêt, montagne, eau, marais, grotte...</li>
+                <li>5 villes avec centres Pokémon (soins gratuits)</li>
+                <li>Chemins reliant les villes</li>
+                <li>Obstacles déblocables (🌳🪨🌲) avec attaques spéciales</li>
+                <li>Rencontres aléatoires dans les hautes herbes (~15%)</li>
+            </ul>
+        </div>
+        
+        <div class="rules-section">
+            <h3>⚔️ COMBAT</h3>
+            <ul>
+                <li>Tour par tour : Attaque / Sac / Monstre / Fuir</li>
+                <li>Système de types avec avantages (×1.5 super efficace)</li>
+                <li>Capture avec balls (Monster 40%, Super 60%, Ultra 80%)</li>
+                <li>Plus facile si HP < 30%</li>
+                <li>Impossible de fuir contre les dresseurs</li>
+            </ul>
+        </div>
+        
+        <div class="rules-section">
+            <h3>📈 PROGRESSION</h3>
+            <ul>
+                <li>54 monstres avec évolutions (3 stades)</li>
+                <li>Évolution automatique au niveau requis</li>
+                <li>Max 20 monstres dans l'équipe totale</li>
+                <li>Équipe active de 3 monstres max (suivent le joueur)</li>
+                <li>Butin après chaque combat (argent + objets)</li>
+                <li>Boutique : achat/vente d'objets</li>
+            </ul>
+        </div>
+        
+        <div class="rules-section">
+            <h3>⌨️ CONTRÔLES</h3>
+            <ul>
+                <li><strong>ZQSD</strong> ou <strong>Flèches</strong> : Déplacement</li>
+                <li><strong>P</strong> : Pokédex</li>
+                <li><strong>B</strong> : Sac</li>
+                <li><strong>M</strong> : Monstres</li>
+                <li><strong>Esc</strong> : Menu principal</li>
+            </ul>
+        </div>
+        
+        <div class="rules-section">
+            <h3>💾 SAUVEGARDE</h3>
+            <p>Sauvegarde automatique toutes les 10 secondes. Votre progression est toujours protégée!</p>
+        </div>
+    `;
+    
+    document.getElementById('rulesContent').innerHTML = content;
+    openModal('rulesModal');
+}
+
+function updateHUD() {
+    const zone = getCurrentZone();
+    document.getElementById('hudPos').textContent = `${game.player.x}, ${game.player.y}`;
+    document.getElementById('hudMoney').textContent = game.money;
+    document.getElementById('hudMonsters').textContent = `${game.monsters.length}/20`;
+    document.getElementById('hudBadges').textContent = `${game.badges}/17`;
+    
+    // Afficher la zone actuelle
+    const hudDiv = document.getElementById('hud');
+    let zoneDiv = hudDiv.querySelector('.zone-info');
+    if (!zoneDiv) {
+        zoneDiv = document.createElement('div');
+        zoneDiv.className = 'zone-info';
+        zoneDiv.style.cssText = 'margin: 3px 0; color: #f39c12; font-weight: bold;';
+        hudDiv.querySelector('div:last-child').appendChild(zoneDiv);
+    }
+    zoneDiv.textContent = `🗺️ ${zone.name} (Nv.${zone.level})`;
+}
+
+function openPokedex() {
+    const content = document.getElementById('pokedexContent');
+    const seen = game.pokedex.size;
+    document.getElementById('pokedexCount').textContent = `${seen}/54`;
+    
+    content.innerHTML = Object.keys(MONSTER_DATA).map(species => {
+        const data = MONSTER_DATA[species];
+        const discovered = game.pokedex.has(species);
+        const caught = game.monsters.some(m => m.species === species);
+        
+        if (discovered) {
+            return `
+                <div class="card" style="border-color: ${caught ? '#2ecc71' : '#3498db'};">
+                    <div style="font-size: 2rem;">${data.emoji}</div>
+                    <div style="font-size: 0.8rem; color: #f1c40f; margin: 5px 0;">${species}</div>
+                    <div style="font-size: 0.6rem; color: #bdc3c7;">
+                        Type: ${data.type}<br>
+                        HP: ${data.hp} | ATK: ${data.atk}<br>
+                        ${caught ? '✅ Capturé' : '👁️ Vu'}
+                    </div>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="card" style="opacity: 0.3; cursor: default;">
+                    <div style="font-size: 2rem;">❓</div>
+                    <div style="font-size: 0.8rem;">???</div>
+                    <div style="font-size: 0.6rem;">Non découvert</div>
+                </div>
+            `;
+        }
+    }).join('');
+    
+    closeModal('menuModal');
+    openModal('pokedexModal');
+}
+
+function openMonsters() {
+    const content = document.getElementById('monstersContent');
+    document.getElementById('monsterCount').textContent = `${game.monsters.length}/20`;
+    document.getElementById('activeCount').textContent = `${game.activeTeam.length}/3`;
+    
+    if (game.monsters.length === 0) {
+        content.innerHTML = '<div style="text-align: center; padding: 20px;">Aucun monstre</div>';
+    } else {
+        content.innerHTML = game.monsters.map((m, i) => {
+            const hpPercent = (m.currentHp / m.maxHp) * 100;
+            const expPercent = (m.exp / m.expToNext) * 100;
+            const isActive = game.activeTeam.includes(i);
+            const isDead = m.currentHp <= 0;
+            
+            return `
+                <div style="background: linear-gradient(135deg, #2c3e50, #34495e); 
+                            padding: 15px; margin: 10px 0; border-left: 5px solid ${isDead ? '#e74c3c' : '#3498db'};">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <div style="font-size: 2rem;">${isDead ? '💀' : m.emoji}</div>
+                        <div style="flex: 1;">
+                            <div style="font-size: 0.9rem; font-weight: bold;">${m.species} Lv${m.level}</div>
+                            <div style="font-size: 0.7rem; color: #bdc3c7;">Type: ${m.type}</div>
+                        </div>
+                        ${!isActive && game.activeTeam.length < 3 ? 
+                            `<button class="menu-btn" style="padding: 8px 15px; font-size: 0.6rem; margin: 0;" 
+                                     onclick="addToActiveTeam(${i})">✅ Équipe active</button>` : ''}
+                        ${isActive ? 
+                            `<button class="menu-btn secondary" style="padding: 8px 15px; font-size: 0.6rem; margin: 0;" 
+                                     onclick="removeFromActiveTeam(${i})">❌ Retirer équipe</button>` : ''}
+                    </div>
+                    
+                    <div style="margin: 8px 0;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 3px;">
+                            <span>❤️ HP</span>
+                            <span>${m.currentHp} / ${m.maxHp}</span>
+                        </div>
+                        <div class="hp-bar">
+                            <div class="hp-fill ${hpPercent > 50 ? 'hp-high' : hpPercent > 20 ? 'hp-medium' : 'hp-low'}"
+                                 style="width: ${hpPercent}%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 8px 0;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 3px;">
+                            <span>⭐ EXP</span>
+                            <span>${m.exp} / ${m.expToNext}</span>
+                        </div>
+                        <div class="hp-bar">
+                            <div style="background: linear-gradient(90deg, #f1c40f, #f39c12); height: 100%; width: ${expPercent}%;"></div>
+                        </div>
+                    </div>
+                    
+                    ${m.evolution ? `<div style="font-size: 0.6rem; color: #f1c40f; margin-top: 5px;">
+                        ➡️ Évolue au niv. ${m.evolution.level}
+                    </div>` : ''}
+                    
+                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #555;">
+                        <div style="font-size: 0.7rem; font-weight: bold; margin-bottom: 5px;">Attaques:</div>
+                        ${m.moves.map(move => `
+                            <div style="background: #1a1a1a; padding: 8px; margin: 5px 0; border-radius: 3px; font-size: 0.65rem;">
+                                ${move.emoji} ${move.name} | ⚡${move.power} ${move.field ? `| 🔑 ${move.field}` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    closeModal('menuModal');
+    openModal('monstersModal');
+}
+
+window.addToActiveTeam = function(index) {
+    if (game.activeTeam.length < 3 && !game.activeTeam.includes(index)) {
+        game.activeTeam.push(index);
+        openMonsters();
+        showNotification('✅ Ajouté à l\'équipe active!');
+    }
+};
+
+window.removeFromActiveTeam = function(index) {
+    const idx = game.activeTeam.indexOf(index);
+    if (idx !== -1) {
+        game.activeTeam.splice(idx, 1);
+        openMonsters();
+        showNotification('❌ Retiré de l\'équipe active!');
+    }
+};
+
+function openBag() {
+    const content = document.getElementById('bagContent');
+    const items = [
+        { key: 'monsterball', name: 'Monster Ball', emoji: '🔴', desc: 'Capture 40%' },
+        { key: 'superball', name: 'Super Ball', emoji: '🔵', desc: 'Capture 60%' },
+        { key: 'ultraball', name: 'Ultra Ball', emoji: '🟣', desc: 'Capture 80%' },
+        { key: 'potion', name: 'Potion', emoji: '🧪', desc: '+20 HP' },
+        { key: 'superpotion', name: 'Super Potion', emoji: '💊', desc: '+50 HP' },
+        { key: 'hyperpotion', name: 'Hyper Potion', emoji: '💉', desc: '+100 HP' }
+    ];
+    
+    content.innerHTML = items.map(item => `
+        <div style="background: linear-gradient(135deg, #34495e, #2c3e50); 
+                    padding: 15px; margin: 8px 0; display: flex; align-items: center; gap: 10px;
+                    border-left: 4px solid #3498db;">
+            <span style="font-size: 2rem;">${item.emoji}</span>
+            <div style="flex: 1;">
+                <div style="font-weight: bold; font-size: 0.8rem;">${item.name}</div>
+                <div style="font-size: 0.6rem; color: #bdc3c7;">${item.desc}</div>
+            </div>
+            <div style="font-size: 1.2rem; font-weight: bold; color: #f1c40f;">×${game.bag[item.key] || 0}</div>
+        </div>
+    `).join('');
+    
+    closeModal('menuModal');
+    openModal('bagModal');
+}
+
+function openShop() {
+    game.currentShopTab = 'buy';
+    updateShopContent();
+    closeModal('menuModal');
+    openModal('shopModal');
+}
+
+window.switchShopTab = function(tab) {
+    game.currentShopTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    updateShopContent();
+};
+
+function updateShopContent() {
+    const content = document.getElementById('shopContent');
+    
+    if (game.currentShopTab === 'buy') {
+        const shopItems = [
+            { key: 'monsterball', name: 'Monster Ball', emoji: '🔴', price: 200 },
+            { key: 'superball', name: 'Super Ball', emoji: '🔵', price: 600 },
+            { key: 'ultraball', name: 'Ultra Ball', emoji: '🟣', price: 1200 },
+            { key: 'potion', name: 'Potion', emoji: '🧪', price: 100 },
+            { key: 'superpotion', name: 'Super Potion', emoji: '💊', price: 300 },
+            { key: 'hyperpotion', name: 'Hyper Potion', emoji: '💉', price: 700 }
+        ];
+        
+        content.innerHTML = shopItems.map(item => `
+            <div style="background: linear-gradient(135deg, #34495e, #2c3e50); 
+                        padding: 15px; margin: 8px 0; display: flex; align-items: center; gap: 10px;
+                        border-left: 4px solid #2ecc71;">
+                <span style="font-size: 2rem;">${item.emoji}</span>
+                <div style="flex: 1;">
+                    <div style="font-weight: bold; font-size: 0.8rem;">${item.name}</div>
+                    <div style="font-size: 0.7rem; color: #f1c40f;">${item.price}$</div>
+                </div>
+                <button class="menu-btn success" style="padding: 10px 20px; font-size: 0.7rem; margin: 0;"
+                        onclick="buyItem('${item.key}', ${item.price})">ACHETER</button>
+            </div>
+        `).join('');
+    } else {
+        const lootItems = Object.keys(game.loot).filter(key => game.loot[key] > 0);
+        
+        if (lootItems.length === 0) {
+            content.innerHTML = '<div style="text-align: center; padding: 20px;">Aucun objet à vendre</div>';
+        } else {
+            const prices = {
+                'Baie': 50, 'Plume': 80, 'Écaille': 100, 'Gemme': 150, 
+                'Perle': 200, 'Fossile': 300, 'Relique': 500
+            };
+            
+            content.innerHTML = lootItems.map(item => `
+                <div style="background: linear-gradient(135deg, #34495e, #2c3e50); 
+                            padding: 15px; margin: 8px 0; display: flex; align-items: center; gap: 10px;
+                            border-left: 4px solid #f39c12;">
+                    <span style="font-size: 2rem;">💎</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; font-size: 0.8rem;">${item}</div>
+                        <div style="font-size: 0.7rem; color: #f1c40f;">${prices[item] || 50}$ chacun</div>
+                    </div>
+                    <div style="font-size: 1rem; margin-right: 10px;">×${game.loot[item]}</div>
+                    <button class="menu-btn" style="padding: 10px 20px; font-size: 0.7rem; margin: 0;"
+                            onclick="sellItem('${item}', ${prices[item] || 50})">VENDRE TOUT</button>
+                </div>
+            `).join('');
+        }
+    }
+}
+
+window.buyItem = function(key, price) {
+    if (game.money >= price) {
+        game.money -= price;
+        game.bag[key] = (game.bag[key] || 0) + 1;
+        updateHUD();
+        updateShopContent();
+        showNotification(`✅ ${key} acheté!`);
+    } else {
+        showNotification('❌ Pas assez d\'argent!', '#e74c3c');
+    }
+};
+
+window.sellItem = function(item, price) {
+    const quantity = game.loot[item] || 0;
+    if (quantity > 0) {
+        const total = quantity * price;
+        game.money += total;
+        delete game.loot[item];
+        updateHUD();
+        updateShopContent();
+        showNotification(`✅ Vendu pour ${total}$!`);
+    }
+};
+
+// ========== COMBAT ==========
+function startWildEncounter() {
+    const wild = getWildMonster();
+    game.pokedex.add(wild.species);
+    
+    const playerMonster = game.monsters[0];
+    if (!playerMonster || playerMonster.currentHp <= 0) {
+        showNotification('❌ Pas de monstre actif!', '#e74c3c');
+        return;
+    }
+    
+    runBattle(playerMonster, wild, true);
+}
+
+function runBattle(player, enemy, isWild) {
+    game.inBattle = true;
+    let battleLog = '';
+    let turn = 'player';
+    let battleEnded = false;
+    
+    function updateBattle() {
+        const content = document.getElementById('battleContent');
+        const playerHpPercent = (player.currentHp / player.maxHp) * 100;
+        const enemyHpPercent = (enemy.currentHp / enemy.maxHp) * 100;
+        
+        content.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                <div>
+                    <h3>Ennemi ${enemy.species}</h3>
+                    <div>Lv ${enemy.level}</div>
+                    <div style="background: #555; height: 20px; margin: 10px 0; position: relative;">
+                        <div style="background: ${enemyHpPercent > 50 ? '#2ecc71' : enemyHpPercent > 20 ? '#f39c12' : '#e74c3c'}; height: 100%; width: ${enemyHpPercent}%;"></div>
+                    </div>
+                    <div>${enemy.currentHp}/${enemy.maxHp} HP</div>
+                </div>
+                <div>
+                    <h3>Votre ${player.species}</h3>
+                    <div>Lv ${player.level}</div>
+                    <div style="background: #555; height: 20px; margin: 10px 0; position: relative;">
+                        <div style="background: ${playerHpPercent > 50 ? '#2ecc71' : playerHpPercent > 20 ? '#f39c12' : '#e74c3c'}; height: 100%; width: ${playerHpPercent}%;"></div>
+                    </div>
+                    <div>${player.currentHp}/${player.maxHp} HP</div>
+                    <div style="font-size: 0.6rem; color: #f1c40f; margin-top: 5px;">
+                        EXP: ${player.exp}/${player.expToNext}
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #2c3e50; padding: 15px; margin: 20px 0; min-height: 100px; max-height: 200px; overflow-y: auto;">
+                ${battleLog}
+            </div>
+            
+            ${turn === 'player' && !battleEnded ? `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    ${player.moves.map((move, i) => `
+                        <button class="menu-btn" onclick="playerAttack(${i})" ${player.currentHp <= 0 ? 'disabled' : ''}>
+                            ${move.emoji} ${move.name}
+                            <div style="font-size: 0.6rem; margin-top: 3px;">⚡${move.power}</div>
+                        </button>
+                    `).join('')}
+                </div>
+                ${isWild ? `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <button class="menu-btn" onclick="tryCapture()" ${game.bag.monsterball <= 0 ? 'disabled' : ''} 
+                                style="${game.bag.monsterball <= 0 ? 'opacity: 0.5;' : ''}">
+                            🎾 CAPTURER (${game.bag.monsterball})
+                        </button>
+                        <button class="menu-btn" onclick="tryRun()">
+                            🏃 FUIR
+                        </button>
+                    </div>
+                ` : ''}
+            ` : ''}
+        `;
+    }
+    
+    window.playerAttack = function(moveIndex) {
+        if (battleEnded || turn !== 'player') return;
+        
+        const move = player.moves[moveIndex];
+        const typeMultiplier = getTypeMultiplier(player.type, enemy.type);
+        const damage = Math.max(1, Math.floor((move.power * player.stats.atk) / enemy.stats.def * 0.4 * typeMultiplier));
+        
+        enemy.currentHp = Math.max(0, enemy.currentHp - damage);
+        
+        battleLog += `<div>${player.species} utilise ${move.name}! -${damage} HP</div>`;
+        if (typeMultiplier > 1) battleLog += `<div style="color: #2ecc71;">C'est super efficace!</div>`;
+        else if (typeMultiplier < 1) battleLog += `<div style="color: #e67e22;">Ce n'est pas très efficace...</div>`;
+        
+        updateBattle();
+        
+        if (enemy.currentHp <= 0) {
+            setTimeout(() => {
+                battleLog += `<div style="color: #e74c3c;">💀 ${enemy.species} est K.O.!</div>`;
+                const expGain = Math.floor(enemy.level * 50);
+                player.exp += expGain;
+                battleLog += `<div style="color: #f1c40f;">+${expGain} EXP</div>`;
+                
+                while (player.exp >= player.expToNext) {
+                    player.level++;
+                    player.exp -= player.expToNext;
+                    player.expToNext = player.level * player.level * 10;
+                    
+                    // Augmentation des stats
+                    player.stats.hp = Math.floor(player.stats.hp * 1.1);
+                    player.stats.atk = Math.floor(player.stats.atk * 1.1);
+                    player.stats.def = Math.floor(player.stats.def * 1.1);
+                    player.maxHp = player.stats.hp;
+                    player.currentHp = player.maxHp;
+                    
+                    battleLog += `<div style="color: #2ecc71;">🎉 ${player.species} monte au niveau ${player.level}!</div>`;
+                    
+                    checkEvolution(player);
+                }
+                
+                game.money += Math.floor(enemy.level * 20);
+                battleEnded = true;
+                updateBattle();
+                updateHUD();
+                
+                setTimeout(() => {
+                    closeModal('battleModal');
+                    game.inBattle = false;
+                }, 2000);
+            }, 1000);
+        } else {
+            setTimeout(enemyTurn, 1500);
+        }
+    };
+    
+    function enemyTurn() {
+        if (battleEnded) return;
+        turn = 'enemy';
+        
+        setTimeout(() => {
+            const move = enemy.moves[Math.floor(Math.random() * enemy.moves.length)];
+            const typeMultiplier = getTypeMultiplier(enemy.type, player.type);
+            const damage = Math.max(1, Math.floor((move.power * enemy.stats.atk) / player.stats.def * 0.4 * typeMultiplier));
+            
+            player.currentHp = Math.max(0, player.currentHp - damage);
+            
+            battleLog += `<div>${enemy.species} utilise ${move.name}! -${damage} HP</div>`;
+            if (typeMultiplier > 1) battleLog += `<div style="color: #2ecc71;">C'est super efficace!</div>`;
+            else if (typeMultiplier < 1) battleLog += `<div style="color: #e67e22;">Ce n'est pas très efficace...</div>`;
+            
+            updateBattle();
+            
+            if (player.currentHp <= 0) {
+                setTimeout(() => {
+                    battleLog += `<div style="color: #e74c3c;">💀 ${player.species} est K.O.!</div>`;
+                    battleEnded = true;
+                    updateBattle();
+                    
+                    setTimeout(() => {
+                        closeModal('battleModal');
+                        game.inBattle = false;
+                        showNotification('😢 Défaite...', '#e74c3c');
+                    }, 2000);
+                }, 1000);
+            } else {
+                turn = 'player';
+                setTimeout(updateBattle, 1000);
+            }
+        }, 1000);
+    }
+    
+    window.tryCapture = function() {
+        if (battleEnded || !isWild) return;
+        
+        if (game.bag.monsterball <= 0) {
+            battleLog += `<div style="color: #e74c3c;">❌ Pas de Monsterball!</div>`;
+            updateBattle();
+            return;
+        }
+        
+        game.bag.monsterball--;
+        
+        // Capture plus facile si HP < 30%
+        const hpPercent = enemy.currentHp / enemy.maxHp;
+        let catchRate = ((enemy.maxHp - enemy.currentHp) / enemy.maxHp) * 50 + (100 - enemy.level * 2);
+        catchRate = Math.max(0, Math.min(100, catchRate));
+        
+        battleLog += `<div>🎯 Lancer de Monsterball...</div>`;
+        updateBattle();
+        
+        setTimeout(() => {
+            const success = Math.random() * 100 < catchRate;
+            
+            if (success) {
+                if (game.monsters.length >= 20) {
+                    battleLog += `<div style="color: #e74c3c;">❌ Équipe pleine! (Max 20 monstres)</div>`;
+                    updateBattle();
+                    setTimeout(enemyTurn, 1500);
+                } else {
+                    battleLog += `<div style="color: #2ecc71;">🎉 ${enemy.species} capturé!</div>`;
+                    game.monsters.push(enemy);
+                    game.pokedex.add(enemy.species);
+                    battleEnded = true;
+                    updateBattle();
+                    updateHUD();
+                    
+                    setTimeout(() => {
+                        closeModal('battleModal');
+                        game.inBattle = false;
+                    }, 2000);
+                }
+            } else {
+                battleLog += `<div style="color: #e74c3c;">❌ ${enemy.species} s'est libéré!</div>`;
+                updateBattle();
+                setTimeout(enemyTurn, 1500);
+            }
+        }, 2000);
+    };
+    
+    window.tryRun = function() {
+        if (battleEnded) return;
+        
+        const runChance = Math.random();
+        if (runChance > 0.5) {
+            battleLog += `<div style="color: #2ecc71;">🏃 Vous avez fui en toute sécurité!</div>`;
+            battleEnded = true;
+            updateBattle();
+            setTimeout(() => {
+                closeModal('battleModal');
+                game.inBattle = false;
+            }, 1500);
+        } else {
+            battleLog += `<div style="color: #e74c3c;">❌ Impossible de fuir!</div>`;
+            updateBattle();
+            setTimeout(enemyTurn, 1500);
+        }
+    };
+    
+    openModal('battleModal');
+    updateBattle();
+}
+
+// ========== CONTRÔLES ==========
+const keys = {};
+
+function initTouchControls() {
+    // D-pad buttons
+    document.querySelectorAll('.dpad-btn').forEach(btn => {
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const dir = btn.dataset.dir;
+            if (dir) {
+                handleMove(dir);
+            }
+        });
+        
+        btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const dir = btn.dataset.dir;
+            if (dir) {
+                handleMove(dir);
+            }
+        });
+    });
+}
+
+function handleMove(direction) {
+    if (game.running && !game.inBattle) {
+        const speed = 1;
+        let dx = 0, dy = 0;
+        
+        switch(direction) {
+            case 'up': dy = -speed; break;
+            case 'down': dy = speed; break;
+            case 'left': dx = -speed; break;
+            case 'right': dx = speed; break;
+        }
+        
+        if (dx !== 0 || dy !== 0) {
+            movePlayer(dx, dy);
+        }
+    }
+}
+
+window.addEventListener('keydown', e => {
+    keys[e.key] = true;
+    
+    if (e.key === 'Escape') {
+        if (document.getElementById('menuModal').style.display === 'block') {
+            closeModal('menuModal');
+        } else {
+            openModal('menuModal');
+        }
+    }
+    if (e.key === 'p' || e.key === 'P') openPokedex();
+    if (e.key === 'b' || e.key === 'B') openBag();
+    if (e.key === 'm' || e.key === 'M') openMonsters();
+});
+window.addEventListener('keyup', e => keys[e.key] = false);
+
+function movePlayer(dx, dy) {
+    if (game.player.moving) return; // Bloquer si déjà en mouvement
+    
+    const newX = game.player.x + dx;
+    const newY = game.player.y + dy;
+    
+    if (newX >= 0 && newX < MAP_SIZE && newY >= 0 && newY < MAP_SIZE) {
+        const tile = game.world[newY][newX];
+        const biome = BIOMES[tile];
+        
+        // Vérifier obstacles
+        const obstacle = game.obstacles.find(o => o.x === newX && o.y === newY);
+        if (obstacle && !game.unlockedObstacles.has(obstacle.id)) {
+            // Vérifier si équipe peut débloquer
+            const requiredFields = {
+                '🌳': ['burn', 'cut', 'poison'],
+                '🪨': ['break', 'push'],
+                '🌲': ['cut', 'burn']
+            };
+            
+            const fields = requiredFields[obstacle.type] || [];
+            const hasField = game.activeTeam.some(idx => {
+                const monster = game.monsters[idx];
+                return monster && monster.moves.some(m => fields.includes(m.field));
+            });
+            
+            if (hasField) {
+                game.unlockedObstacles.add(obstacle.id);
+                showNotification(`✅ Obstacle ${obstacle.type} débloqué!`);
+            } else {
+                showNotification(`❌ Besoin: ${fields.join('/')}`, '#e74c3c');
+                return;
+            }
+        }
+        
+        if (biome && biome.walkable) {
+            // Vérifier l'accès à la zone
+            const newZone = WORLD_ZONES.find(z => 
+                newX >= z.minX && newX <= z.maxX && 
+                newY >= z.minY && newY <= z.maxY
+            );
+            
+            if (newZone && game.badges < newZone.requiredBadges) {
+                showNotification(`🚫 ${newZone.name} nécessite ${newZone.requiredBadges} badges!`, '#e74c3c');
+                return;
+            }
+            
+            // Définir direction
+            if (dx < 0) game.player.direction = 'left';
+            else if (dx > 0) game.player.direction = 'right';
+            else if (dy < 0) game.player.direction = 'up';
+            else if (dy > 0) game.player.direction = 'down';
+            
+            // Démarrer animation de mouvement fluide
+            game.player.moving = true;
+            game.player.moveProgress = 0;
+            game.player.x = newX;
+            game.player.y = newY;
+            game.player.targetX = newX * TILE_SIZE;
+            game.player.targetY = newY * TILE_SIZE;
+            
+            updateHUD();
+            
+            // Centre Pokémon
+            const center = game.pokemonCenters.find(c => c.x === newX && c.y === newY);
+            if (center) {
+                game.monsters.forEach(m => m.currentHp = m.maxHp);
+                showNotification(`🏥 Monstres soignés à ${center.name}!`);
+            }
+            
+            // Rencontre aléatoire (hautes herbes = 25%)
+            const encounterRate = tile === 'tallgrass' ? 0.25 : biome.encounter;
+            if (encounterRate > 0 && Math.random() < encounterRate) {
+                setTimeout(() => startWildEncounter(), 300);
+            }
+        }
+    }
+}
+
+function updatePlayerMovement() {
+    if (game.player.moving) {
+        game.player.moveProgress += 0.25; // Vitesse du mouvement
+        
+        if (game.player.moveProgress >= 1) {
+            game.player.moveProgress = 1;
+            game.player.moving = false;
+            game.player.worldX = game.player.targetX;
+            game.player.worldY = game.player.targetY;
+        } else {
+            // Interpolation smooth (easing)
+            const t = easeInOutQuad(game.player.moveProgress);
+            const startX = game.player.targetX - (game.player.x - (game.player.targetX / TILE_SIZE)) * TILE_SIZE;
+            const startY = game.player.targetY - (game.player.y - (game.player.targetY / TILE_SIZE)) * TILE_SIZE;
+            
+            game.player.worldX = startX + (game.player.targetX - startX) * t;
+            game.player.worldY = startY + (game.player.targetY - startY) * t;
+        }
+    }
+}
+
+function easeInOutQuad(t) {
+    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+}
+
+function handleInput() {
+    if (game.player.moving || !game.running || game.inBattle) return;
+    
+    const speed = 1;
+    let dx = 0, dy = 0;
+    
+    if (keys['z'] || keys['Z'] || keys['ArrowUp']) dy = -speed;
+    if (keys['s'] || keys['S'] || keys['ArrowDown']) dy = speed;
+    if (keys['q'] || keys['Q'] || keys['ArrowLeft']) dx = -speed;
+    if (keys['d'] || keys['D'] || keys['ArrowRight']) dx = speed;
+    
+    if (dx !== 0 || dy !== 0) {
+        movePlayer(dx, dy);
+    }
+}
+
+// ========== RENDU ==========
+function updateCamera() {
+    // Caméra fluide qui suit le joueur
+    game.camera.targetX = canvas.width / 2 - game.player.worldX - TILE_SIZE / 2;
+    game.camera.targetY = canvas.height / 2 - game.player.worldY - TILE_SIZE / 2;
+    
+    // Interpolation smooth de la caméra
+    game.camera.x += (game.camera.targetX - game.camera.x) * 0.15;
+    game.camera.y += (game.camera.targetY - game.camera.y) * 0.15;
+}
+
+function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    updateCamera();
+    
+    ctx.save();
+    ctx.translate(game.camera.x, game.camera.y);
+    
+    // Dessiner monde
+    const startX = Math.max(0, Math.floor(game.player.x - canvas.width / TILE_SIZE / 2) - 2);
+    const endX = Math.min(MAP_SIZE, Math.ceil(game.player.x + canvas.width / TILE_SIZE / 2) + 2);
+    const startY = Math.max(0, Math.floor(game.player.y - canvas.height / TILE_SIZE / 2) - 2);
+    const endY = Math.min(MAP_SIZE, Math.ceil(game.player.y + canvas.height / TILE_SIZE / 2) + 2);
+    
+    for (let y = startY; y < endY; y++) {
+        for (let x = startX; x < endX; x++) {
+            const tile = game.world[y][x];
+            const biome = BIOMES[tile];
+            if (biome) {
+                // Fond de tuile simple
+                ctx.fillStyle = biome.color;
+                ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                
+                // Emoji centré
+                ctx.font = `${TILE_SIZE - 6}px Arial`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(biome.emoji, x * TILE_SIZE + TILE_SIZE / 2, y * TILE_SIZE + TILE_SIZE / 2);
+            }
+        }
+    }
+    
+    // Obstacles
+    game.obstacles.forEach(obstacle => {
+        if (!game.unlockedObstacles.has(obstacle.id)) {
+            ctx.font = `${TILE_SIZE}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(obstacle.type, obstacle.x * TILE_SIZE + TILE_SIZE / 2, obstacle.y * TILE_SIZE + TILE_SIZE / 2);
+        }
+    });
+    
+    // Équipe active (following player)
+    game.activeTeam.forEach((idx, i) => {
+        const monster = game.monsters[idx];
+        if (monster) {
+            const offset = (i + 1) * TILE_SIZE * 0.8;
+            let followX = game.player.worldX;
+            let followY = game.player.worldY;
+            
+            if (game.player.direction === 'right') followX -= offset;
+            else if (game.player.direction === 'left') followX += offset;
+            else if (game.player.direction === 'down') followY -= offset;
+            else if (game.player.direction === 'up') followY += offset;
+            
+            ctx.font = `${TILE_SIZE * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(monster.emoji, followX + TILE_SIZE / 2, followY + TILE_SIZE / 2);
+        }
+    });
+    
+    // Joueur
+    const playerEmojis = { up: '🧍', down: '🧑', left: '🧍', right: '🧍' };
+    ctx.font = `${TILE_SIZE}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(playerEmojis[game.player.direction], 
+        game.player.worldX + TILE_SIZE / 2, 
+        game.player.worldY + TILE_SIZE / 2);
+    
+    ctx.restore();
+}
+
+function gameLoop() {
+    if (!game.running) return;
+    
+    updatePlayerMovement();
+    handleInput();
+    render();
+    
+    requestAnimationFrame(gameLoop);
+}
+
+// ========== INITIALISATION ==========
+window.addEventListener('load', () => {
+    generateWorld();
+    
+    if (checkSaveExists()) {
+        document.getElementById('continueBtn').style.display = 'block';
+    }
+});
+
+function checkSaveExists() {
+    return localStorage.getItem(SAVE_KEY) !== null;
+}
+</script>
+</body>
+</html>

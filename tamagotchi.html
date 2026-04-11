@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyPet V8</title>
+
+<style>
+body{margin:0;background:#87ceeb;font-family:sans-serif;display:flex;justify-content:center;align-items:center;height:100vh;}
+#app{width:360px;background:white;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+canvas{width:100%;}
+#menu{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #ddd;}
+.btn{padding:10px;text-align:center;font-size:20px;}
+.stats{display:flex;justify-content:space-around;background:#eee;font-size:12px;}
+.bar{width:60px;height:6px;background:#ddd;border-radius:5px;}
+.fill{height:100%;background:#4caf50;}
+#start{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.choice{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.choice div{font-size:30px;cursor:pointer;}
+</style>
+</head>
+
+<body>
+
+<div id="start">
+  <h3>Choisis ton animal</h3>
+  <div class="choice" id="choices"></div>
+</div>
+
+<div id="app">
+  <canvas id="game" width="360" height="300"></canvas>
+
+  <div class="stats">
+    🍔<div class="bar"><div id="h" class="fill"></div></div>
+    😊<div class="bar"><div id="ha" class="fill"></div></div>
+    ⚡<div class="bar"><div id="e" class="fill"></div></div>
+  </div>
+
+  <div id="menu">
+    <div class="btn" onclick="ui.feed()">🍔</div>
+    <div class="btn" onclick="ui.play()">🎮</div>
+    <div class="btn" onclick="ui.sleep()">💤</div>
+    <div class="btn" onclick="ui.shop()">🛒</div>
+    <div class="btn" onclick="ui.startMiniGame()">🎯</div>
+  </div>
+</div>
+
+<script>
+// ===== ANIMAUX =====
+const ANIMALS = {
+  dog:"🐶", cat:"🐱", rat:"🐭", dragon:"🐲",
+  unicorn:"🦄", fish:"🐟", chameleon:"🦎", shrimp:"🦐"
+};
+
+// ===== PET =====
+class Pet{
+  constructor(type){
+    this.type=type;
+    this.emoji=ANIMALS[type];
+    this.age=0;
+    this.stage="baby";
+    this.hunger=80;
+    this.happiness=80;
+    this.energy=80;
+    this.coins=20;
+    this.x=180;this.y=200;this.vx=1;
+    this.last=Date.now();
+  }
+
+  tick(dt){
+    let d=dt/5;
+    this.hunger-=d;
+    this.happiness-=d*0.5;
+    this.energy-=d*0.4;
+
+    // vieillissement
+    this.age+=dt/60;
+    if(this.age>5) this.stage="child";
+    if(this.age>15) this.stage="adult";
+
+    // mouvement
+    this.x+=this.vx;
+    if(this.x<40||this.x>320) this.vx*=-1;
+
+    this.clamp();
+  }
+
+  clamp(){
+    ["hunger","happiness","energy"]
+    .forEach(k=>this[k]=Math.max(0,Math.min(100,this[k])));
+  }
+}
+
+// ===== GAME =====
+class Game{
+  constructor(type){
+    this.pet=new Pet(type);
+    this.canvas=document.getElementById("game");
+    this.ctx=this.canvas.getContext("2d");
+    this.mode="main";
+    this.loop();
+  }
+
+  loop(){
+    setInterval(()=>{
+      let now=Date.now();
+      let dt=(now-this.pet.last)/1000;
+      this.pet.tick(dt);
+      this.pet.last=now;
+      ui.draw();
+    },50);
+  }
+}
+
+// ===== MINI GAME =====
+class MiniGame{
+  constructor(game){
+    this.g=game;
+    this.player={x:180,y:260};
+    this.obs=[];
+    this.score=0;
+    this.spawn();
+  }
+
+  spawn(){this.obs.push({x:Math.random()*340,y:0});}
+
+  update(){
+    this.obs.forEach(o=>o.y+=4);
+    this.obs.forEach(o=>{
+      if(Math.abs(o.x-this.player.x)<20 && Math.abs(o.y-this.player.y)<20){
+        this.g.mode="main";
+        alert("Score:"+this.score);
+      }
+    });
+    this.score++;
+    if(this.score%30===0) this.spawn();
+  }
+
+  draw(ctx){
+    ctx.fillStyle="#222";ctx.fillRect(0,0,360,300);
+    ctx.fillStyle="yellow";
+    ctx.fillRect(this.player.x-10,this.player.y-10,20,20);
+    ctx.fillStyle="red";
+    this.obs.forEach(o=>ctx.fillRect(o.x,o.y,15,15));
+    ctx.fillStyle="white";
+    ctx.fillText("Score:"+this.score,10,20);
+  }
+}
+
+// ===== UI =====
+class UI{
+  constructor(game){
+    this.g=game;
+    this.canvas=game.canvas;
+
+    this.canvas.addEventListener("touchmove",e=>{
+      if(this.g.mode==="minigame"){
+        let rect=this.canvas.getBoundingClientRect();
+        this.g.minigame.player.x=e.touches[0].clientX-rect.left;
+      }
+    });
+  }
+
+  draw(){
+    let ctx=this.g.ctx,p=this.g.pet;
+
+    if(this.g.mode==="minigame"){
+      this.g.minigame.update();
+      this.g.minigame.draw(ctx);
+      return;
+    }
+
+    // fond
+    let h=new Date().getHours();
+    ctx.fillStyle=(h>6&&h<20)?"#87ceeb":"#001d3d";
+    ctx.fillRect(0,0,360,300);
+
+    // sol
+    ctx.fillStyle="#4caf50";
+    ctx.fillRect(0,240,360,60);
+
+    // pet (emoji + taille selon âge)
+    let size=30;
+    if(p.stage==="child") size=40;
+    if(p.stage==="adult") size=50;
+
+    ctx.font=size+"px serif";
+    ctx.fillText(p.emoji,p.x-20,p.y);
+
+    // infos
+    ctx.fillText("💰"+p.coins,10,20);
+    ctx.fillText(p.stage,140,20);
+
+    // stats
+    document.getElementById("h").style.width=p.hunger+"%";
+    document.getElementById("ha").style.width=p.happiness+"%";
+    document.getElementById("e").style.width=p.energy+"%";
+  }
+
+  feed(){if(game.pet.coins>0){game.pet.hunger+=20;game.pet.coins--;}}
+  play(){game.pet.happiness+=20;}
+  sleep(){game.pet.energy+=30;}
+  shop(){
+    let c=prompt("1: nourriture (5)\n2: coins (debug)");
+    if(c==1 && game.pet.coins>=5){
+      game.pet.coins-=5;
+      game.pet.hunger+=30;
+    }
+  }
+
+  startMiniGame(){
+    this.g.mode="minigame";
+    this.g.minigame=new MiniGame(this.g);
+  }
+}
+
+// ===== START SCREEN =====
+const choicesDiv=document.getElementById("choices");
+Object.keys(ANIMALS).forEach(a=>{
+  let d=document.createElement("div");
+  d.innerText=ANIMALS[a];
+  d.onclick=()=>{
+    document.getElementById("start").style.display="none";
+    window.game=new Game(a);
+    window.ui=new UI(game);
+  };
+  choicesDiv.appendChild(d);
+});
+</script>
+
+</body>
+</html>
