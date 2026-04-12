@@ -639,10 +639,12 @@ canvas {
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">⚔️ Combats</h3>
         <p>• Choisissez une attaque pour battre le monstre adverse<br>
         • Les attaques <b>super efficaces</b> font 1.5× de dégâts (indicateur vert)<br>
-        • Battez des monstres pour gagner de l'<b>EXP</b>, de l'<b>argent</b> et des <b>livres d'expérience</b><br>
+        • Battez des monstres pour gagner de l'<b>EXP</b>, de l'<b>argent</b>, des <b>livres</b> et des <b>objets de boost</b><br>
+        • Vaincre (sans capturer) : 25% chance d'obtenir Protéine/Fer/PV Plus<br>
         • Utilisez des Monster/Super/Ultra Balls pour capturer (plus facile si HP bas)<br>
         • Vous pouvez avoir jusqu'à <b>20 Pokémon</b> dans votre équipe<br>
-        • Seuls les Pokémon ayant participé au combat gagnent de l'XP</p>
+        • Seuls les Pokémon ayant participé au combat gagnent de l'XP<br>
+        • Niveaux des sauvages adaptés au Pokémon le plus fort de votre équipe</p>
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">⭐ Évolution & Niveaux</h3>
         <p>• <b>Forme B → E1</b> : Niveau 20<br>
@@ -655,7 +657,8 @@ canvas {
         • <b>Rappel</b> : Réanime un monstre K.O. avec 50% HP<br>
         • <b>Livres d'XP</b> : 📗 Vert (+100), 📘 Bleu (+200), 📕 Rouge (+500)<br>
         • <b>Balls</b> : ⚽ Monster (normal), 🥎 Super (+40%), 🏐 Ultra (+80%)<br>
-        • <b>Codes secrets</b> : Entrez des codes dans la boutique pour des bonus!</p>
+        • <b>Boosts permanents</b> : 💪 Protéine (+2 ATK), 🛡️ Fer (+2 DEF), ❤️ PV Plus (+5 HP)<br>
+        • <b>Codes secrets</b> : Entrez des codes dans la boutique pour des bonus !</p>
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🗺️ Exploration (18 mondes)</h3>
         <p>• <b>Bourg Palette</b> : Ville de départ avec la Ferme XP<br>
@@ -674,8 +677,9 @@ canvas {
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🚜 Ferme XP</h3>
         <p>• Déposez jusqu'à 3 Pokémon à la ferme (Bourg Palette)<br>
-        • Ils gagnent <b>50 XP toutes les 2 minutes</b> (max 10 min)<br>
-        • Le décompte continue même quand vous quittez le jeu!</p>
+        • Ils gagnent <b>50 XP toutes les 2 minutes</b> (max 30 min = 1500 XP)<br>
+        • Le décompte continue même quand vous quittez le jeu!<br>
+        • Les Centres Pokémon (🏥) soignent gratuitement tous vos Pokémon</p>
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🎖️ Arènes & Badges</h3>
         <p>• Chaque monde élémentaire possède une <b>arène</b> avec un champion<br>
@@ -907,7 +911,10 @@ const game = {
         revive: 1,
         expbook_green: 0,  // Livre vert +100 EXP
         expbook_blue: 0,   // Livre bleu +200 EXP
-        expbook_red: 0     // Livre rouge +500 EXP
+        expbook_red: 0,    // Livre rouge +500 EXP
+        protein: 0,        // Protéine +2 ATK permanent
+        iron: 0,           // Fer +2 DEF permanent
+        hp_up: 0           // PV Plus +5 HP permanent
     },
     battleParticipants: [], // Indices des Pokémon ayant participé au combat actuel
     loot: {},
@@ -1059,7 +1066,8 @@ const MAPS = {
             { x: 8, y: 8, homeX: 8, homeY: 8, message: 'Bienvenue! 18 mondes t\'attendent!', emoji: '👨' },
             { x: 16, y: 10, homeX: 16, homeY: 10, message: 'Chaque type a son propre monde!', emoji: '👩' },
             { x: 5, y: 15, homeX: 5, homeY: 15, message: 'Utilise le bouton MAP pour t\'orienter!', emoji: '👴' },
-            { x: 12, y: 10, homeX: 12, homeY: 10, message: 'Bienvenue à la Ferme XP!', emoji: '🚜', isFarm: true }
+            { x: 12, y: 10, homeX: 12, homeY: 10, message: 'Bienvenue à la Ferme XP!', emoji: '🚜', isFarm: true },
+            { x: 20, y: 10, homeX: 20, homeY: 10, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
         ],
         encounterRate: 0,
         wildPokemon: []
@@ -1827,6 +1835,33 @@ function generateMap(mapKey) {
         }
     }
     
+    // S'assurer que les emplacements des NPCs existants sont accessibles (centres Pokémon, ferme, etc.)
+    if (map.npcs && map.npcs.length > 0) {
+        map.npcs.forEach(npc => {
+            const nx = npc.x;
+            const ny = npc.y;
+            
+            // Créer une zone 3×3 walkable autour des NPCs importants (centres Pokémon, ferme)
+            if (npc.isPokemonCenter || npc.isFarm) {
+                for (let dy = -1; dy <= 1; dy++) {
+                    for (let dx = -1; dx <= 1; dx++) {
+                        const x = nx + dx;
+                        const y = ny + dy;
+                        if (x >= 0 && x < map.width && y >= 0 && y < map.height) {
+                            // Créer un chemin walkable partout (y compris la case du NPC)
+                            tiles[y][x] = { type: 'path', walkable: true, emoji: '⬛' };
+                        }
+                    }
+                }
+            } else {
+                // Pour les autres NPCs, juste s'assurer que leur case est walkable
+                if (nx >= 0 && nx < map.width && ny >= 0 && ny < map.height) {
+                    tiles[ny][nx] = { ...tiles[ny][nx], walkable: true };
+                }
+            }
+        });
+    }
+    
     // Ajouter des dresseurs NPCs si le monde en a
     if (TRAINERS[mapKey]) {
         const worldTrainers = TRAINERS[mapKey];
@@ -1878,6 +1913,11 @@ function initNPCs() {
 
 function updateNPCs() {
     game.npcs.forEach(npc => {
+        // Garder les Centres Pokémon et Ferme XP stationnaires
+        if (npc.isPokemonCenter || npc.isFarm) {
+            return;
+        }
+        
         npc.moveTimer++;
         if (npc.moveTimer >= npc.moveDelay) {
             npc.moveTimer = 0;
@@ -2440,10 +2480,10 @@ function handleMove(direction) {
     
     if (newX < 0 || newX >= map.width || newY < 0 || newY >= map.height) return;
     
-    const tile = map.tiles[newY][newX];
-    if (!tile || !tile.walkable) return;
-    
+    // IMPORTANT : Vérifier d'abord les NPCs AVANT le walkable
+    // pour que l'interaction fonctionne même si la case n'est pas walkable
     const npcHere = game.npcs.find(npc => npc.x === newX && npc.y === newY);
+    
     if (npcHere) {
         if (npcHere.isTrainer) {
             // Flash bleu avant le combat de dresseur
@@ -2515,6 +2555,10 @@ function handleMove(direction) {
         return;
     }
     
+    // Vérifier le walkable seulement s'il n'y a pas de NPC
+    const tile = map.tiles[newY][newX];
+    if (!tile || !tile.walkable) return;
+    
     // Vérifier si c'est une arène
     if (tile.type === 'gym' && tile.gymKey && GYMS[tile.gymKey]) {
         // Flash rouge/noir avant l'arène
@@ -2582,10 +2626,15 @@ function showEncounter() {
     // Trouver le niveau max de l'équipe
     const maxTeamLevel = game.team.length > 0 ? Math.max(...game.team.map(p => p.level)) : 0;
     
-    // Calculer la plage de niveaux (tous les 5 niveaux)
-    const tierLevel = Math.floor(maxTeamLevel / 5) * 5;
-    const minLevel = Math.max(1, tierLevel + 1);
-    const maxLevel = tierLevel + 5;
+    // Calculer la plage de niveaux selon le système demandé
+    // Niveau 0-4 → Sauvages niveau 1-3
+    // Niveau 5-9 → Sauvages niveau 4-7
+    // Niveau 10-14 → Sauvages niveau 8-11
+    // Et ainsi de suite tous les 5 niveaux
+    const tier = Math.floor(maxTeamLevel / 5);
+    const baseLevel = tier > 0 ? tier * 4 : 1;
+    const minLevel = baseLevel;
+    const maxLevel = baseLevel + (tier > 0 ? 3 : 2);
     
     const level = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
     
@@ -3140,12 +3189,31 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
                 showNotification(`📕 +${bookDrops.red} Livre Rouge!`);
             }
             
-            // Récompenses aléatoires (30% de chance)
+            // Récompenses aléatoires pour vente (30% de chance)
             if (Math.random() < 0.3) {
                 const lootItems = ['Baie', 'Plume', 'Écaille', 'Gemme', 'Perle', 'Fossile', 'Poudre', 'Cristal'];
                 const randomLoot = lootItems[Math.floor(Math.random() * lootItems.length)];
                 game.loot[randomLoot] = (game.loot[randomLoot] || 0) + 1;
                 showNotification(`🎁 Trouvé: ${randomLoot}!`);
+            }
+            
+            // Items de boost de stats (25% de chance si victoire sans capture)
+            if (won && !captured && isWild && Math.random() < 0.25) {
+                const statItems = ['protein', 'iron', 'hp_up'];
+                const randomStatItem = statItems[Math.floor(Math.random() * statItems.length)];
+                game.bag[randomStatItem] = (game.bag[randomStatItem] || 0) + 1;
+                
+                const itemNames = {
+                    'protein': 'Protéine',
+                    'iron': 'Fer',
+                    'hp_up': 'PV Plus'
+                };
+                const itemEmojis = {
+                    'protein': '💪',
+                    'iron': '🛡️',
+                    'hp_up': '❤️'
+                };
+                showNotification(`${itemEmojis[randomStatItem]} Trouvé: ${itemNames[randomStatItem]}!`);
             }
             
             const participantsCount = game.battleParticipants.length;
@@ -3709,6 +3777,42 @@ function openBag() {
                 </button>
             </div>
             
+            <div style="margin: 20px 0; border-top: 2px dashed #555; padding-top: 15px;">
+                <div style="font-size: 0.9rem; color: #e74c3c; margin-bottom: 10px; font-weight: bold;">⚡ OBJETS DE BOOST</div>
+                
+                <div style="padding: 15px; margin: 8px 0; background: linear-gradient(135deg, #e74c3c, #c0392b); border-left: 4px solid #f1c40f; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 2rem;">💪</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold;">Protéine</div>
+                        <div style="font-size: 0.6rem; color: #fadbd8;">+2 ATK permanent</div>
+                    </div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #f1c40f;">×${game.bag.protein || 0}</div>
+                </div>
+                
+                <div style="padding: 15px; margin: 8px 0; background: linear-gradient(135deg, #95a5a6, #7f8c8d); border-left: 4px solid #ecf0f1; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 2rem;">🛡️</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold;">Fer</div>
+                        <div style="font-size: 0.6rem; color: #ecf0f1;">+2 DEF permanent</div>
+                    </div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #f1c40f;">×${game.bag.iron || 0}</div>
+                </div>
+                
+                <div style="padding: 15px; margin: 8px 0; background: linear-gradient(135deg, #e91e63, #c2185b); border-left: 4px solid #f48fb1; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 2rem;">❤️</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold;">PV Plus</div>
+                        <div style="font-size: 0.6rem; color: #fce4ec;">+5 HP permanent</div>
+                    </div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #f1c40f;">×${game.bag.hp_up || 0}</div>
+                </div>
+                
+                <button class="menu-btn" onclick="showUseStatBoostMenu()" 
+                        style="width: 100%; margin-top: 10px; font-size: 0.8rem; background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                    ⚡ UTILISER UN BOOST
+                </button>
+            </div>
+            
             <button class="menu-btn" onclick="showUsePotionMenu()" 
                     style="width: 100%; margin-top: 15px; font-size: 0.8rem;">
                 💊 UTILISER UN OBJET
@@ -3929,6 +4033,86 @@ function useExpBook(pokemonIndex, bookType, expAmount) {
     updateHUD();
 }
 
+// ========== OBJETS DE BOOST DE STATS ==========
+// Protéine: +2 ATK | Fer: +2 DEF | PV Plus: +5 HP (permanents)
+// Obtenus en battant (sans capturer) des Pokémon sauvages (25% de chance)
+function showUseStatBoostMenu() {
+    const modal = document.getElementById('usePotionModal');
+    const content = document.getElementById('usePotionContent');
+    
+    if (game.team.length === 0) {
+        content.innerHTML = '<p style="text-align: center;">Aucun monstre dans l\'équipe</p>';
+    } else {
+        content.innerHTML = `
+            <div style="max-height: 400px; overflow-y: auto;">
+                ${game.team.map((p, i) => {
+                    return `
+                        <div style="background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="font-size: 2rem;">${p.emoji}</div>
+                                <div style="flex: 1;">
+                                    <div style="font-size: 0.9rem;">${p.species} (Lv${p.level})</div>
+                                    <div style="font-size: 0.7rem; color: #bdc3c7;">
+                                        ❤️ ${p.stats.hp} | ⚔️ ${p.stats.atk} | 🛡️ ${p.stats.def}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px;">
+                                <button class="menu-btn" 
+                                        onclick="useStatBoost(${i}, 'protein')" 
+                                        ${(game.bag.protein || 0) <= 0 ? 'disabled' : ''}
+                                        style="font-size: 0.6rem; padding: 8px; background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                                    💪 Protéine<br>+2 ATK<br>(${game.bag.protein || 0})
+                                </button>
+                                <button class="menu-btn" 
+                                        onclick="useStatBoost(${i}, 'iron')" 
+                                        ${(game.bag.iron || 0) <= 0 ? 'disabled' : ''}
+                                        style="font-size: 0.6rem; padding: 8px; background: linear-gradient(135deg, #95a5a6, #7f8c8d);">
+                                    🛡️ Fer<br>+2 DEF<br>(${game.bag.iron || 0})
+                                </button>
+                                <button class="menu-btn" 
+                                        onclick="useStatBoost(${i}, 'hp_up')" 
+                                        ${(game.bag.hp_up || 0) <= 0 ? 'disabled' : ''}
+                                        style="font-size: 0.6rem; padding: 8px; background: linear-gradient(135deg, #e91e63, #c2185b);">
+                                    ❤️ PV Plus<br>+5 HP<br>(${game.bag.hp_up || 0})
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+    
+    modal.style.display = 'block';
+}
+
+function useStatBoost(pokemonIndex, boostType) {
+    const pokemon = game.team[pokemonIndex];
+    if (!pokemon || !game.bag[boostType] || game.bag[boostType] <= 0) return;
+    
+    // Consommer l'objet
+    game.bag[boostType]--;
+    
+    // Appliquer le boost permanent
+    if (boostType === 'protein') {
+        pokemon.stats.atk += 2;
+        showNotification(`💪 ${pokemon.species} gagne +2 ATK permanent!`);
+    } else if (boostType === 'iron') {
+        pokemon.stats.def += 2;
+        showNotification(`🛡️ ${pokemon.species} gagne +2 DEF permanent!`);
+    } else if (boostType === 'hp_up') {
+        pokemon.stats.hp += 5;
+        pokemon.maxHp += 5;
+        pokemon.currentHp = Math.min(pokemon.currentHp + 5, pokemon.maxHp);
+        showNotification(`❤️ ${pokemon.species} gagne +5 HP permanent!`);
+    }
+    
+    // Rafraîchir l'affichage
+    showUseStatBoostMenu();
+    updateHUD();
+}
+
 
 function useItem(pokemonIndex, itemType) {
     const pokemon = game.team[pokemonIndex];
@@ -4138,6 +4322,10 @@ function sellAllLoot(totalValue) {
     updateHUD();
 }
 
+// ========== CODES SECRETS ==========
+// OR: +500💰 | SBALL/MBALL/UBALL: +5 balls
+// LVERT/LBLEU/LROUGE: +5 livres XP | POTION/SPOTION/HPOTION: +5 potions
+// PROT/IRON/HPUP: +5 objets de boost de stats
 window.redeemSecretCode = function() {
     const input = document.getElementById('secretCodeInput');
     const code = input.value.trim().toUpperCase();
@@ -4151,7 +4339,16 @@ window.redeemSecretCode = function() {
         'OR': { type: 'money', amount: 500, message: '💰 +500💰 reçus!' },
         'SBALL': { type: 'item', key: 'superball', amount: 5, message: '🥎 +5 Super Balls reçues!' },
         'MBALL': { type: 'item', key: 'pokeball', amount: 5, message: '⚽ +5 Monster Balls reçues!' },
-        'UBALL': { type: 'item', key: 'ultraball', amount: 5, message: '🏐 +5 Ultra Balls reçues!' }
+        'UBALL': { type: 'item', key: 'ultraball', amount: 5, message: '🏐 +5 Ultra Balls reçues!' },
+        'LVERT': { type: 'item', key: 'expbook_green', amount: 5, message: '📗 +5 Livres Verts reçus!' },
+        'LBLEU': { type: 'item', key: 'expbook_blue', amount: 5, message: '📘 +5 Livres Bleus reçus!' },
+        'LROUGE': { type: 'item', key: 'expbook_red', amount: 5, message: '📕 +5 Livres Rouges reçus!' },
+        'POTION': { type: 'item', key: 'potion', amount: 5, message: '💊 +5 Potions reçues!' },
+        'SPOTION': { type: 'item', key: 'superpotion', amount: 5, message: '💉 +5 Super Potions reçues!' },
+        'HPOTION': { type: 'item', key: 'hyperpotion', amount: 5, message: '🧪 +5 Hyper Potions reçues!' },
+        'PROT': { type: 'item', key: 'protein', amount: 5, message: '💪 +5 Protéines reçues!' },
+        'IRON': { type: 'item', key: 'iron', amount: 5, message: '🛡️ +5 Fer reçus!' },
+        'HPUP': { type: 'item', key: 'hp_up', amount: 5, message: '❤️ +5 PV Plus reçus!' }
     };
     
     if (codes[code]) {
@@ -5039,7 +5236,7 @@ function openFarm() {
             <div style="font-size: 0.7rem; line-height: 1.6;">
                 • Dépose jusqu'à 3 Pokémon dans la ferme<br>
                 • Ils gagnent 50 XP toutes les 2 minutes<br>
-                • Maximum 10 minutes (500 XP)<br>
+                • Maximum 30 minutes (1500 XP)<br>
                 • Le décompte se poursuit même si tu quittes !
             </div>
         </div>
@@ -5053,9 +5250,9 @@ function openFarm() {
         
         if (pokemon) {
             const elapsed = Math.floor((Date.now() - timestamp) / 1000 / 60); // minutes écoulées
-            const cappedElapsed = Math.min(elapsed, 10); // max 10 minutes
+            const cappedElapsed = Math.min(elapsed, 30); // max 30 minutes
             const xpGained = Math.floor(cappedElapsed / 2) * 50; // 50 XP toutes les 2 minutes
-            const timeLeft = Math.max(0, 10 - elapsed);
+            const timeLeft = Math.max(0, 30 - elapsed);
             
             html += `
                 <div style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border: 2px solid #2ecc71; padding: 15px; border-radius: 5px;">
@@ -5099,7 +5296,7 @@ function updateFarmXP() {
         
         if (pokemon && timestamp) {
             const elapsed = Math.floor((Date.now() - timestamp) / 1000 / 60); // minutes écoulées
-            const cappedElapsed = Math.min(elapsed, 10); // max 10 minutes
+            const cappedElapsed = Math.min(elapsed, 30); // max 30 minutes
             const xpGained = Math.floor(cappedElapsed / 2) * 50; // 50 XP toutes les 2 minutes
             
             // Trouver le Pokémon original dans l'équipe pour le mettre à jour
@@ -5168,7 +5365,7 @@ window.retrieveFromFarm = function(slotIndex) {
     
     // Calculer l'XP gagné
     const elapsed = Math.floor((Date.now() - timestamp) / 1000 / 60); // minutes écoulées
-    const cappedElapsed = Math.min(elapsed, 10); // max 10 minutes
+    const cappedElapsed = Math.min(elapsed, 30); // max 30 minutes
     const xpGained = Math.floor(cappedElapsed / 2) * 50; // 50 XP toutes les 2 minutes
     
     // Trouver le Pokémon original dans l'équipe
