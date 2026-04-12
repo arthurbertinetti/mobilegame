@@ -257,6 +257,7 @@ body{background:#87CEEB;font-family:'Segoe UI',Arial,sans-serif;display:flex;fle
   <div style="display:flex;gap:4px;align-items:center">
     <a href="index.html" class="top-btn">🏠</a>
     <button class="top-btn" id="music-btn">🔊</button>
+    <button class="top-btn" id="fullscreen-btn" title="Plein écran">⛶</button>
   </div>
   <div id="stats">
     <span>💰<b id="coins">20</b></span>
@@ -2327,7 +2328,11 @@ function buildRecipeBar(){
   bld.recipes.forEach(function(rec,ri){
     var ok=canMakeRecipe(rec);var maxQ=ok?getMaxQty(rec):0;
     var d=document.createElement('div');d.className='recipe-btn'+(ok?' can':' cant');
-    var ingTxt='';for(var k in rec.inputs)ingTxt+=rec.inputs[k]+RES_INFO[k].emoji+' ';
+    var ingTxt='';for(var k in rec.inputs){
+      var owned=state.resources[k]||0;
+      var needed=rec.inputs[k];
+      ingTxt+=RES_INFO[k].emoji+' '+owned+'/'+needed+' ';
+    }
     var timeStr=getRecipeTime(rec)>=60?Math.ceil(getRecipeTime(rec)/60)+'m':Math.round(getRecipeTime(rec))+'s';
     var outTxt=rec.output?'\u2192'+RES_INFO[rec.output].emoji:'\u2192'+fmtN(rec.sell)+'\ud83d\udcb0';
     d.innerHTML='<span class="r-ico">'+rec.emoji+'</span><b>'+rec.name+'</b><span>'+ingTxt+'</span><span>\u23f1'+timeStr+' '+outTxt+'</span>';
@@ -4936,6 +4941,32 @@ document.addEventListener('click',function(e){
   var btn=$('music-btn');
   if(panel.classList.contains('show')&&!panel.contains(e.target)&&e.target!==btn&&!btn.contains(e.target)){
     panel.classList.remove('show');
+  }
+});
+
+// Fullscreen button
+$('fullscreen-btn').addEventListener('click',function(e){
+  e.preventDefault();
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(function(err){
+      console.log('Fullscreen error:',err);
+    });
+  }else{
+    if(document.exitFullscreen){
+      document.exitFullscreen();
+    }
+  }
+});
+
+// Update fullscreen button icon
+document.addEventListener('fullscreenchange',function(){
+  var btn=$('fullscreen-btn');
+  if(document.fullscreenElement){
+    btn.textContent='⛶';
+    btn.title='Quitter plein écran';
+  }else{
+    btn.textContent='⛶';
+    btn.title='Plein écran';
   }
 });
 </script>
