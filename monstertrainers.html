@@ -1029,17 +1029,18 @@ function loadGame() {
         
         game.money = saveData.money || 500;
         game.currentMap = saveData.currentMap || 'town';
-        game.player.mapX = saveData.player.mapX;
-        game.player.mapY = saveData.player.mapY;
-        game.player.x = saveData.player.mapX * TILE_SIZE;
-        game.player.y = saveData.player.mapY * TILE_SIZE;
-        game.player.direction = saveData.player.direction || 'down';
-        game.team = saveData.team || [];
+        game.player.mapX = saveData.player?.mapX ?? 10;
+        game.player.mapY = saveData.player?.mapY ?? 10;
+        game.player.x = game.player.mapX * TILE_SIZE;
+        game.player.y = game.player.mapY * TILE_SIZE;
+        game.player.direction = saveData.player?.direction || 'down';
+        game.team = Array.isArray(saveData.team) ? saveData.team.filter(p => p && p.species) : [];
         game.bag = saveData.bag || {pokeball: 20, greatball: 5, potion: 15, superpotion: 8, hyperpotion: 5, revive: 1};
         game.pokedex = new Map(saveData.pokedex || []);
         game.badges = saveData.badges || {};
         game.gymsDefeated = saveData.gymsDefeated || 0;
         game.farm = saveData.farm || { monsters: [null, null, null], timestamps: [null, null, null] };
+        normalizeFarmData();
         game.followers = saveData.followers || [];
         
         return true;
@@ -1047,6 +1048,26 @@ function loadGame() {
         console.error('Erreur chargement:', e);
         return false;
     }
+}
+
+function normalizeFarmData() {
+    if (!game.farm || typeof game.farm !== 'object') {
+        game.farm = { monsters: [null, null, null], timestamps: [null, null, null] };
+        return;
+    }
+
+    const legacyMonsters = game.farm['monster trainers'];
+    if (!Array.isArray(game.farm.monsters)) {
+        game.farm.monsters = Array.isArray(legacyMonsters) ? legacyMonsters : [null, null, null];
+    }
+    if (!Array.isArray(game.farm.timestamps)) {
+        game.farm.timestamps = [null, null, null];
+    }
+
+    while (game.farm.monsters.length < 3) game.farm.monsters.push(null);
+    while (game.farm.timestamps.length < 3) game.farm.timestamps.push(null);
+    game.farm.monsters = game.farm.monsters.slice(0, 3);
+    game.farm.timestamps = game.farm.timestamps.slice(0, 3);
 }
 
 function showNotification(message) {
@@ -2781,6 +2802,13 @@ function showEncounter() {
 
 window.startBattle = function() {
     closeAllModals();
+    normalizeFarmData();
+
+    if (!game.currentEncounter || game.team.length === 0) {
+        showNotification('❌ Aucun Monster prêt pour le combat!');
+        return;
+    }
+
     // Permettre de choisir le Monster si l'équipe a plusieurs membres
     if (game.team.length > 1) {
         showMonsterSelection(game.currentEncounter);
@@ -2796,6 +2824,12 @@ window.runFromEncounter = function() {
 };
 
 function runBattle(playerMonster, enemyMonster, isWild = false) {
+    if (!playerMonster || !enemyMonster) {
+        game.inBattle = false;
+        showNotification('❌ Combat impossible: équipe ou ennemi invalide.');
+        return;
+    }
+
     game.inBattle = true;
     game.currentEncounter = enemyMonster; // Store for potential Monster switching
     
@@ -3500,6 +3534,7 @@ function closeMonsterDetail() {
 }
 
 function openTeam() {
+    normalizeFarmData();
     const modal = document.getElementById('teamModal');
     const content = document.getElementById('teamContent');
     
@@ -3513,7 +3548,16 @@ function openTeam() {
         if (!game.releaseSelection) game.releaseSelection = [];
         
         // Trier l'équipe selon le critère choisi
-        let sortedTeam = [...game.team.map((p, idx) => ({...p, originalIndex: idx}))];
+        let sortedTeam = [...game.team
+            .map((p, idx) => ({...p, originalIndex: idx}))
+            .filter(p => p && p.species && p.stats && typeof p.maxHp === 'number' && typeof p.currentHp === 'number')];
+
+        if (sortedTeam.length === 0) {
+            content.innerHTML = '<div style="text-align: center; padding: 20px;">Aucun Monstre valide dans la sauvegarde</div>';
+            modal.style.display = 'block';
+            document.getElementById('modalOverlay').style.display = 'block';
+            return;
+        }
         if (game.teamSort === 'power') {
             sortedTeam.sort((a, b) => {
                 const powerA = a.maxHp + a.stats.atk + a.stats.def;
@@ -3546,7 +3590,7 @@ function openTeam() {
         const monsterTrainersGrid = `
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                 ${sortedTeam.map((p) => {
-                    const data = MONSTER_DATA[p.species];
+                    const data = MONSTER_DATA[p.species] || { type: 'normal' };
                     const hpPercent = (p.currentHp / p.maxHp) * 100;
                     const expPercent = (p.exp / p.expToNext) * 100;
                     const power = p.maxHp + p.stats.atk + p.stats.def;
@@ -5266,6 +5310,7 @@ window.confirmMonsterSwitch = function(teamIndex) {
 
 // ========== FERME XP ==========
 function openFarm() {
+    normalizeFarmData();
     updateFarmXP(); // Mettre à jour les XP avant d'afficher
     
     let html = `
