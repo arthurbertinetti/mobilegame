@@ -266,13 +266,13 @@ canvas {
 .modal-close:active {
     transform: translate(1px, 1px);
 }
-.pokemon-grid {
+.monster trainers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
     margin-top: 15px;
 }
-.pokemon-card {
+.monster trainers-card {
     background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     border: 2px solid #3498db;
     padding: 10px;
@@ -280,17 +280,17 @@ canvas {
     text-align: center;
     transition: all 0.3s;
 }
-.pokemon-card:hover {
+.monster trainers-card:hover {
     border-color: #2ecc71;
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0,0,0,0.5);
 }
-.pokemon-card .name {
+.monster trainers-card .name {
     font-size: 0.8rem;
     margin-bottom: 5px;
     color: #f1c40f;
 }
-.pokemon-card .stats {
+.monster trainers-card .stats {
     font-size: 0.6rem;
     color: #bdc3c7;
 }
@@ -336,7 +336,7 @@ canvas {
     position: relative;
     padding: 20px;
 }
-.pokemon-sprite {
+.monster trainers-sprite {
     position: absolute;
     font-size: 80px;
     animation: fadeIn 0.5s;
@@ -596,10 +596,10 @@ canvas {
     <button class="modal-close" onclick="closePokedex()">FERMER</button>
 </div>
 
-<div id="pokemonDetailModal" class="modal">
+<div id="monster trainersDetailModal" class="modal">
     <h2 id="detailName"></h2>
     <div id="detailContent"></div>
-    <button class="modal-close" onclick="closePokemonDetail()">RETOUR</button>
+    <button class="modal-close" onclick="closeMonster TrainersDetail()">RETOUR</button>
 </div>
 
 <div id="teamModal" class="modal">
@@ -629,7 +629,7 @@ canvas {
     <h2>📖 RÈGLES DU JEU</h2>
     <div style="font-size: 0.7rem; line-height: 1.8; max-width: 600px;">
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🎯 Objectif</h3>
-        <p>Devenez le meilleur dresseur de monstres ! Capturez, entraînez et faites évoluer vos créatures. Complétez votre Pokédex avec les <b>84 Pokémon disponibles</b>!</p>
+        <p>Devenez le meilleur dresseur de monstres ! Capturez, entraînez et faites évoluer vos créatures. Complétez votre Pokédex avec les <b>84 Monster Trainers disponibles</b>!</p>
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🎮 Contrôles</h3>
         <p>• Déplacez-vous avec les flèches ou le D-pad tactile<br>
@@ -642,9 +642,9 @@ canvas {
         • Battez des monstres pour gagner de l'<b>EXP</b>, de l'<b>argent</b>, des <b>livres</b> et des <b>objets de boost</b><br>
         • Vaincre (sans capturer) : 25% chance d'obtenir Protéine/Fer/PV Plus<br>
         • Utilisez des Monster/Super/Ultra Balls pour capturer (plus facile si HP bas)<br>
-        • Vous pouvez avoir jusqu'à <b>20 Pokémon</b> dans votre équipe<br>
-        • Seuls les Pokémon ayant participé au combat gagnent de l'XP<br>
-        • Niveaux des sauvages adaptés au Pokémon le plus fort de votre équipe</p>
+        • Vous pouvez avoir jusqu'à <b>20 Monster Trainers</b> dans votre équipe<br>
+        • Seuls les Monster Trainers ayant participé au combat gagnent de l'XP<br>
+        • Niveaux des sauvages adaptés au Monster Trainers le plus fort de votre équipe</p>
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">⭐ Évolution & Niveaux</h3>
         <p>• <b>Forme B → E1</b> : Niveau 20<br>
@@ -664,11 +664,11 @@ canvas {
         <p>• <b>Bourg Palette</b> : Ville de départ avec la Ferme XP<br>
         • <b>Route Centrale</b> : Hub connectant tous les 17 mondes thématiques<br>
         • <b>Mondes élémentaires</b> : Volcan, Océan, Jardin, Centrale, Carrière, Ciel, etc.<br>
-        • Chaque monde a des <b>Pokémon uniques</b>, une <b>arène</b> et un <b>Centre Pokémon</b><br>
+        • Chaque monde a des <b>Monster Trainers uniques</b>, une <b>arène</b> et un <b>Centre Monster Trainers</b><br>
         • Utilisez les téléporteurs 🚪 pour voyager rapidement</p>
         
-        <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🏆 Raretés des Pokémon</h3>
-        <p>• <b>Starter</b> : Pokémon de départ (6 espèces × 3 formes)<br>
+        <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🏆 Raretés des Monster Trainers</h3>
+        <p>• <b>Starter</b> : Monster Trainers de départ (6 espèces × 3 formes)<br>
         • <b>Common</b> : Communs partout (2 espèces × 3 formes)<br>
         • <b>Uncommon</b> : Peu communs (5 espèces × 3 formes)<br>
         • <b>Rare</b> : Rares (11 espèces × 3 formes)<br>
@@ -676,10 +676,10 @@ canvas {
         • <b>Legendary</b> : Légendaires extrêmement rares (8 espèces, pas d'évolution) ⚡</p>
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🚜 Ferme XP</h3>
-        <p>• Déposez jusqu'à 3 Pokémon à la ferme (Bourg Palette)<br>
+        <p>• Déposez jusqu'à 3 Monster Trainers à la ferme (Bourg Palette)<br>
         • Ils gagnent <b>50 XP toutes les 2 minutes</b> (max 30 min = 1500 XP)<br>
         • Le décompte continue même quand vous quittez le jeu!<br>
-        • Les Centres Pokémon (🏥) soignent gratuitement tous vos Pokémon</p>
+        • Les Centres Monster Trainers (🏥) soignent gratuitement tous vos Monster Trainers</p>
         
         <h3 style="color: #f1c40f; margin: 15px 0 10px 0;">🎖️ Arènes & Badges</h3>
         <p>• Chaque monde élémentaire possède une <b>arène</b> avec un champion<br>
@@ -706,9 +706,9 @@ canvas {
     <button class="modal-close" onclick="closeShop()">FERMER</button>
 </div>
 
-<div id="selectPokemonModal" class="modal">
+<div id="selectMonster TrainersModal" class="modal">
     <h2>👥 CHOISIR UN POKÉMON</h2>
-    <div id="selectPokemonContent"></div>
+    <div id="selectMonster TrainersContent"></div>
 </div>
 
 <div id="teleportConfirmModal" class="modal">
@@ -916,17 +916,17 @@ const game = {
         iron: 0,           // Fer +2 DEF permanent
         hp_up: 0           // PV Plus +5 HP permanent
     },
-    battleParticipants: [], // Indices des Pokémon ayant participé au combat actuel
+    battleParticipants: [], // Indices des Monster Trainers ayant participé au combat actuel
     loot: {},
     pokedex: new Map(),
     npcs: [],
     badges: {}, // Badges collectés par arène (clé = monde, valeur = nombre)
     gymsDefeated: 0, // Nombre total d'arènes battues (pour difficulté progressive)
     farm: {
-        pokemon: [null, null, null], // 3 emplacements
+        monster trainers: [null, null, null], // 3 emplacements
         timestamps: [null, null, null] // Temps de dépôt (timestamp)
     },
-    followers: [] // Pokémon qui suivent le joueur (max 3)
+    followers: [] // Monster Trainers qui suivent le joueur (max 3)
 };
 
 window.addEventListener('load', () => {
@@ -968,7 +968,7 @@ function saveGame() {
             badges: {...game.badges},
             gymsDefeated: game.gymsDefeated,
             farm: {
-                pokemon: game.farm.pokemon.map(p => p ? ({...p}) : null),
+                monster trainers: game.farm.monster trainers.map(p => p ? ({...p}) : null),
                 timestamps: [...game.farm.timestamps]
             },
             followers: [...game.followers]
@@ -1001,7 +1001,7 @@ function loadGame() {
         game.pokedex = new Map(saveData.pokedex || []);
         game.badges = saveData.badges || {};
         game.gymsDefeated = saveData.gymsDefeated || 0;
-        game.farm = saveData.farm || { pokemon: [null, null, null], timestamps: [null, null, null] };
+        game.farm = saveData.farm || { monster trainers: [null, null, null], timestamps: [null, null, null] };
         game.followers = saveData.followers || [];
         
         return true;
@@ -1067,10 +1067,10 @@ const MAPS = {
             { x: 16, y: 10, homeX: 16, homeY: 10, message: 'Chaque type a son propre monde!', emoji: '👩' },
             { x: 5, y: 15, homeX: 5, homeY: 15, message: 'Utilise le bouton MAP pour t\'orienter!', emoji: '👴' },
             { x: 12, y: 10, homeX: 12, homeY: 10, message: 'Bienvenue à la Ferme XP!', emoji: '🚜', isFarm: true },
-            { x: 20, y: 10, homeX: 20, homeY: 10, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 20, y: 10, homeX: 20, homeY: 10, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0,
-        wildPokemon: []
+        wildMonster Trainers: []
     },
     route1: {
         name: 'Route Centrale',
@@ -1102,7 +1102,7 @@ const MAPS = {
             { x: 10, y: 10, homeX: 10, homeY: 10, message: '18 types, 18 mondes!', emoji: '👧' }
         ],
         encounterRate: 0.20,
-        wildPokemon: ['Ratix', 'Buglet', 'Frostling']
+        wildMonster Trainers: ['Ratix', 'Buglet', 'Frostling']
     },
     volcano: {
         name: '🌋 Volcan Ardent',
@@ -1113,11 +1113,11 @@ const MAPS = {
             { x: 28, y: 15, targetMap: 'route1', targetX: 1, targetY: 12 }
         ],
         npcs: [
-            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Pokémon Feu partout!', emoji: '🔥' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Monster Trainers Feu partout!', emoji: '🔥' },
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Flamix', 'Pyroar', 'Inferdrake', 'Ratix', 'Flameheart', 'Inferbird', 'Sunphoenix']
+        wildMonster Trainers: ['Flamix', 'Pyroar', 'Inferdrake', 'Ratix', 'Flameheart', 'Inferbird', 'Sunphoenix']
     },
     ocean: {
         name: '🌊 Océan Profond',
@@ -1128,11 +1128,11 @@ const MAPS = {
             { x: 1, y: 15, targetMap: 'route1', targetX: 28, targetY: 12 }
         ],
         npcs: [
-            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Royaume des Pokémon Eau!', emoji: '🏊' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Royaume des Monster Trainers Eau!', emoji: '🏊' },
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Aqueon', 'Aquarius', 'Hydroknight', 'Frostling', 'Aquafin', 'Tidalwave', 'Oceanlord', 'Oceanmaster', 'Seaguardian']
+        wildMonster Trainers: ['Aqueon', 'Aquarius', 'Hydroknight', 'Frostling', 'Aquafin', 'Tidalwave', 'Oceanlord', 'Oceanmaster', 'Seaguardian']
     },
     garden: {
         name: '🌺 Jardin Luxuriant',
@@ -1143,11 +1143,11 @@ const MAPS = {
             { x: 15, y: 28, targetMap: 'route1', targetX: 15, targetY: 1 }
         ],
         npcs: [
-            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Paradis des Pokémon Plante!', emoji: '🌿' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Paradis des Monster Trainers Plante!', emoji: '🌿' },
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Leafix', 'Floradon', 'Verdantitan', 'Buglet', 'Vinewhip', 'Thornblade', 'Forestking', 'Timeleaf']
+        wildMonster Trainers: ['Leafix', 'Floradon', 'Verdantitan', 'Buglet', 'Vinewhip', 'Thornblade', 'Forestking', 'Timeleaf']
     },
     powerplant: {
         name: '⚡ Centrale Électrique',
@@ -1159,10 +1159,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Attention aux électrocutions!', emoji: '⚡' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Sparkle', 'Voltiger', 'Thundorah', 'Steelet', 'Sparkid', 'Voltbeast', 'Thunderking', 'Thunderwing']
+        wildMonster Trainers: ['Sparkle', 'Voltiger', 'Thundorah', 'Steelet', 'Sparkid', 'Voltbeast', 'Thunderking', 'Thunderwing']
     },
     quarry: {
         name: '🪨 Carrière Rocheuse',
@@ -1174,10 +1174,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Solides comme le roc!', emoji: '⛏️' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Pebble', 'Boulder', 'Mountainlord', 'Earthling', 'Stonefist', 'Boulderclaw', 'Mountainking']
+        wildMonster Trainers: ['Pebble', 'Boulder', 'Mountainlord', 'Earthling', 'Stonefist', 'Boulderclaw', 'Mountainking']
     },
     skyzone: {
         name: '☁️ Zone Céleste',
@@ -1189,10 +1189,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Le royaume du ciel!', emoji: '🦅' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Tweepy', 'Aerowing', 'Skyknight', 'Dragonet', 'Frostwind']
+        wildMonster Trainers: ['Tweepy', 'Aerowing', 'Skyknight', 'Dragonet', 'Frostwind']
     },
     jungle: {
         name: '🐛 Jungle Tropicale',
@@ -1203,11 +1203,11 @@ const MAPS = {
             { x: 28, y: 15, targetMap: 'route1', targetX: 28, targetY: 18 }
         ],
         npcs: [
-            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Pokémon Insecte en masse!', emoji: '🦋' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Monster Trainers Insecte en masse!', emoji: '🦋' },
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Buglet', 'Cocoon', 'Butterfree', 'Leafix']
+        wildMonster Trainers: ['Buglet', 'Cocoon', 'Butterfree', 'Leafix']
     },
     swamp: {
         name: '☠️ Marais Toxique',
@@ -1219,10 +1219,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Poison mortel partout!', emoji: '☠️' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Batling', 'Vampyre', 'Dracolisk', 'Buglet', 'Toxling', 'Venomoth', 'Toxicrown']
+        wildMonster Trainers: ['Batling', 'Vampyre', 'Dracolisk', 'Buglet', 'Toxling', 'Venomoth', 'Toxicrown']
     },
     cemetery: {
         name: '👻 Cimetière Hanté',
@@ -1234,10 +1234,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Les esprits hantent ces lieux...', emoji: '💀' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Ghostlet', 'Phantom', 'Spectrax', 'Psychling', 'Mysteon']
+        wildMonster Trainers: ['Ghostlet', 'Phantom', 'Spectrax', 'Psychling', 'Mysteon']
     },
     tundra: {
         name: '❄️ Toundra Glacée',
@@ -1249,10 +1249,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Froid polaire!', emoji: '⛄' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Frostling', 'Glacius', 'Blizzardlord', 'Aqueon', 'Frostwind']
+        wildMonster Trainers: ['Frostling', 'Glacius', 'Blizzardlord', 'Aqueon', 'Frostwind']
     },
     dragonpeak: {
         name: '🐉 Pic du Dragon',
@@ -1264,10 +1264,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Les dragons règnent ici!', emoji: '🐲' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Dragonet', 'Wyrmling', 'Dragonlord', 'Tweepy']
+        wildMonster Trainers: ['Dragonet', 'Wyrmling', 'Dragonlord', 'Tweepy']
     },
     dojo: {
         name: '🥋 Dojo de Combat',
@@ -1279,10 +1279,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Force et discipline!', emoji: '🥊' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Fightling', 'Karateka', 'Champfist', 'Pebble']
+        wildMonster Trainers: ['Fightling', 'Karateka', 'Champfist', 'Pebble']
     },
     temple: {
         name: '🔮 Temple Psychique',
@@ -1294,10 +1294,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Le pouvoir de l\'esprit...', emoji: '🧠' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Psychling', 'Mindor', 'Cerebrax', 'Ghostlet', 'Mysteon', 'Mindgod', 'Seaguardian']
+        wildMonster Trainers: ['Psychling', 'Mindor', 'Cerebrax', 'Ghostlet', 'Mysteon', 'Mindgod', 'Seaguardian']
     },
     factory: {
         name: '🏭 Usine Métallique',
@@ -1309,10 +1309,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Acier pur!', emoji: '🔩' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Steelet', 'Ironclaw', 'Titanforge', 'Pebble', 'Metallic', 'Ironwing', 'Titanbird', 'Starwish']
+        wildMonster Trainers: ['Steelet', 'Ironclaw', 'Titanforge', 'Pebble', 'Metallic', 'Ironwing', 'Titanbird', 'Starwish']
     },
     glade: {
         name: '✨ Clairière Féérique',
@@ -1324,10 +1324,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Magie féérique!', emoji: '🧚' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Fairyling', 'Pixiess', 'Enchantora', 'Leafix', 'Starwish']  
+        wildMonster Trainers: ['Fairyling', 'Pixiess', 'Enchantora', 'Leafix', 'Starwish']  
     },
     darkforest: {
         name: '🌑 Forêt Ténébreuse',
@@ -1339,10 +1339,10 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Les ombres vivent ici...', emoji: '🌚' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Shadeling', 'Nightshade', 'Voidking', 'Ghostlet']
+        wildMonster Trainers: ['Shadeling', 'Nightshade', 'Voidking', 'Ghostlet']
     },
     desert: {
         name: '🏜️ Désert Aride',
@@ -1354,33 +1354,33 @@ const MAPS = {
         ],
         npcs: [
             { x: 15, y: 15, homeX: 15, homeY: 15, message: 'Sable à perte de vue!', emoji: '🏖️' },
-            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Pokémon!', emoji: '🏥', isPokemonCenter: true }
+            { x: 15, y: 25, homeX: 15, homeY: 25, message: 'Bienvenue au Centre Monster Trainers!', emoji: '🏥', isMonster TrainersCenter: true }
         ],
         encounterRate: 0.35,
-        wildPokemon: ['Earthling', 'Sandstorm', 'Earthlord', 'Pebble', 'Earthbreaker']
+        wildMonster Trainers: ['Earthling', 'Sandstorm', 'Earthlord', 'Pebble', 'Earthbreaker']
     }
 };
 
 const WORLD_DESCRIPTIONS = {
-    town: { desc: 'Zone de départ sécurisée', spawns: 'Aucun Pokémon sauvage' },
+    town: { desc: 'Zone de départ sécurisée', spawns: 'Aucun Monster Trainers sauvage' },
     route1: { desc: 'Hub central connectant tous les mondes', spawns: 'Ratix, Buglet, Frostling' },
-    volcano: { desc: 'Volcan ardent rempli de lave', spawns: 'Pokémon FEU (Flamix, Pyroar...)' },
-    ocean: { desc: 'Océan profond aux eaux bleues', spawns: 'Pokémon EAU (Aqueon, Aquarius...)' },
-    garden: { desc: 'Jardin luxuriant plein de fleurs', spawns: 'Pokémon PLANTE (Leafix, Floradon...)' },
-    powerplant: { desc: 'Centrale électrique dangereuse', spawns: 'Pokémon ÉLECTRIQUE (Sparkle, Voltiger...)' },
-    quarry: { desc: 'Carrière de pierres solides', spawns: 'Pokémon ROCHE (Pebble, Boulder...)' },
-    skyzone: { desc: 'Zone céleste dans les nuages', spawns: 'Pokémon VOL (Tweepy, Aerowing...)' },
-    jungle: { desc: 'Jungle tropicale dense', spawns: 'Pokémon INSECTE (Buglet, Cocoon...)' },
-    swamp: { desc: 'Marais toxique et dangereux', spawns: 'Pokémon POISON (Batling, Vampyre...)' },
-    cemetery: { desc: 'Cimetière hanté par les esprits', spawns: 'Pokémon SPECTRE (Ghostlet, Phantom...)' },
-    tundra: { desc: 'Toundra glacée au froid polaire', spawns: 'Pokémon GLACE (Frostling, Glacius...)' },
-    dragonpeak: { desc: 'Pic du dragon aux sommets élevés', spawns: 'Pokémon DRAGON (Dragonet, Wyrmling...)' },
-    dojo: { desc: 'Dojo de combat pour guerriers', spawns: 'Pokémon COMBAT (Fightling, Karateka...)' },
-    temple: { desc: 'Temple psychique mystérieux', spawns: 'Pokémon PSY (Psychling, Mindor...)' },
-    factory: { desc: 'Usine métallique industrielle', spawns: 'Pokémon ACIER (Steelet, Ironclaw...)' },
-    glade: { desc: 'Clairière féérique enchantée', spawns: 'Pokémon FÉE (Fairyling, Pixiess...)' },
-    darkforest: { desc: 'Forêt ténébreuse et sombre', spawns: 'Pokémon TÉNÈBRES (Shadeling, Nightshade...)' },
-    desert: { desc: 'Désert aride et sablonneux', spawns: 'Pokémon SOL (Earthling, Sandstorm...)' }
+    volcano: { desc: 'Volcan ardent rempli de lave', spawns: 'Monster Trainers FEU (Flamix, Pyroar...)' },
+    ocean: { desc: 'Océan profond aux eaux bleues', spawns: 'Monster Trainers EAU (Aqueon, Aquarius...)' },
+    garden: { desc: 'Jardin luxuriant plein de fleurs', spawns: 'Monster Trainers PLANTE (Leafix, Floradon...)' },
+    powerplant: { desc: 'Centrale électrique dangereuse', spawns: 'Monster Trainers ÉLECTRIQUE (Sparkle, Voltiger...)' },
+    quarry: { desc: 'Carrière de pierres solides', spawns: 'Monster Trainers ROCHE (Pebble, Boulder...)' },
+    skyzone: { desc: 'Zone céleste dans les nuages', spawns: 'Monster Trainers VOL (Tweepy, Aerowing...)' },
+    jungle: { desc: 'Jungle tropicale dense', spawns: 'Monster Trainers INSECTE (Buglet, Cocoon...)' },
+    swamp: { desc: 'Marais toxique et dangereux', spawns: 'Monster Trainers POISON (Batling, Vampyre...)' },
+    cemetery: { desc: 'Cimetière hanté par les esprits', spawns: 'Monster Trainers SPECTRE (Ghostlet, Phantom...)' },
+    tundra: { desc: 'Toundra glacée au froid polaire', spawns: 'Monster Trainers GLACE (Frostling, Glacius...)' },
+    dragonpeak: { desc: 'Pic du dragon aux sommets élevés', spawns: 'Monster Trainers DRAGON (Dragonet, Wyrmling...)' },
+    dojo: { desc: 'Dojo de combat pour guerriers', spawns: 'Monster Trainers COMBAT (Fightling, Karateka...)' },
+    temple: { desc: 'Temple psychique mystérieux', spawns: 'Monster Trainers PSY (Psychling, Mindor...)' },
+    factory: { desc: 'Usine métallique industrielle', spawns: 'Monster Trainers ACIER (Steelet, Ironclaw...)' },
+    glade: { desc: 'Clairière féérique enchantée', spawns: 'Monster Trainers FÉE (Fairyling, Pixiess...)' },
+    darkforest: { desc: 'Forêt ténébreuse et sombre', spawns: 'Monster Trainers TÉNÈBRES (Shadeling, Nightshade...)' },
+    desert: { desc: 'Désert aride et sablonneux', spawns: 'Monster Trainers SOL (Earthling, Sandstorm...)' }
 }
 
 // ========== ARÈNES PAR MONDE ==========
@@ -1390,208 +1390,208 @@ const GYMS = {
         badge: '🔥', 
         type: 'fire',
         position: { x: 15, y: 20 },
-        pokemon: ['Flamix', 'Pyroar', 'Inferdrake']
+        monster trainers: ['Flamix', 'Pyroar', 'Inferdrake']
     },
     ocean: { 
         name: 'Arène Océanique 🌊', 
         badge: '💧', 
         type: 'water',
         position: { x: 15, y: 20 },
-        pokemon: ['Aqueon', 'Aquarius', 'Hydroknight']
+        monster trainers: ['Aqueon', 'Aquarius', 'Hydroknight']
     },
     garden: { 
         name: 'Arène Florale 🌺', 
         badge: '🌿', 
         type: 'grass',
         position: { x: 15, y: 5 },
-        pokemon: ['Leafix', 'Floradon', 'Verdantitan']
+        monster trainers: ['Leafix', 'Floradon', 'Verdantitan']
     },
     powerplant: { 
         name: 'Arène Électrique ⚡', 
         badge: '⚡', 
         type: 'electric',
         position: { x: 15, y: 20 },
-        pokemon: ['Sparkle', 'Voltiger', 'Thundorah']
+        monster trainers: ['Sparkle', 'Voltiger', 'Thundorah']
     },
     quarry: { 
         name: 'Arène Rocheuse 🪨', 
         badge: '🪨', 
         type: 'rock',
         position: { x: 15, y: 20 },
-        pokemon: ['Pebble', 'Boulder', 'Mountainlord']
+        monster trainers: ['Pebble', 'Boulder', 'Mountainlord']
     },
     skyzone: { 
         name: 'Arène Céleste ☁️', 
         badge: '🦅', 
         type: 'flying',
         position: { x: 15, y: 20 },
-        pokemon: ['Tweepy', 'Aerowing', 'Skyknight']
+        monster trainers: ['Tweepy', 'Aerowing', 'Skyknight']
     },
     jungle: { 
         name: 'Arène Insectoïde 🐛', 
         badge: '🦋', 
         type: 'bug',
         position: { x: 15, y: 20 },
-        pokemon: ['Buglet', 'Cocoon', 'Butterfree']
+        monster trainers: ['Buglet', 'Cocoon', 'Butterfree']
     },
     swamp: { 
         name: 'Arène Toxique ☠️', 
         badge: '☠️', 
         type: 'poison',
         position: { x: 15, y: 5 },
-        pokemon: ['Batling', 'Vampyre', 'Dracolisk']
+        monster trainers: ['Batling', 'Vampyre', 'Dracolisk']
     },
     cemetery: { 
         name: 'Arène Spectrale 👻', 
         badge: '💀', 
         type: 'ghost',
         position: { x: 15, y: 5 },
-        pokemon: ['Ghostlet', 'Phantom', 'Spectrax']
+        monster trainers: ['Ghostlet', 'Phantom', 'Spectrax']
     },
     tundra: { 
         name: 'Arène Glaciale ❄️', 
         badge: '⛄', 
         type: 'ice',
         position: { x: 15, y: 20 },
-        pokemon: ['Frostling', 'Glacius', 'Blizzardlord']
+        monster trainers: ['Frostling', 'Glacius', 'Blizzardlord']
     },
     dragonpeak: { 
         name: 'Arène Draconique 🐉', 
         badge: '🔱', 
         type: 'dragon',
         position: { x: 15, y: 20 },
-        pokemon: ['Dragonet', 'Wyrmling', 'Dragonlord']
+        monster trainers: ['Dragonet', 'Wyrmling', 'Dragonlord']
     },
     dojo: { 
         name: 'Arène Martiale 🥋', 
         badge: '👊', 
         type: 'fighting',
         position: { x: 15, y: 5 },
-        pokemon: ['Fightling', 'Karateka', 'Champfist']
+        monster trainers: ['Fightling', 'Karateka', 'Champfist']
     },
     temple: { 
         name: 'Arène Psychique 🔮', 
         badge: '👁️', 
         type: 'psychic',
         position: { x: 15, y: 5 },
-        pokemon: ['Psychling', 'Mindor', 'Cerebrax']
+        monster trainers: ['Psychling', 'Mindor', 'Cerebrax']
     },
     factory: { 
         name: 'Arène Métallique 🏭', 
         badge: '🛡️', 
         type: 'steel',
         position: { x: 15, y: 20 },
-        pokemon: ['Steelet', 'Ironclaw', 'Titanforge']
+        monster trainers: ['Steelet', 'Ironclaw', 'Titanforge']
     },
     glade: { 
         name: 'Arène Féérique ✨', 
         badge: '🌟', 
         type: 'fairy',
         position: { x: 15, y: 20 },
-        pokemon: ['Fairyling', 'Pixiess', 'Enchantora']
+        monster trainers: ['Fairyling', 'Pixiess', 'Enchantora']
     },
     darkforest: { 
         name: 'Arène Ténébreuse 🌑', 
         badge: '⚫', 
         type: 'dark',
         position: { x: 15, y: 15 },
-        pokemon: ['Shadeling', 'Nightshade', 'Voidking']
+        monster trainers: ['Shadeling', 'Nightshade', 'Voidking']
     },
     desert: { 
         name: 'Arène Terrestre 🏜️', 
         badge: '🗿', 
         type: 'ground',
         position: { x: 15, y: 15 },
-        pokemon: ['Earthling', 'Sandstorm', 'Earthlord']
+        monster trainers: ['Earthling', 'Sandstorm', 'Earthlord']
     }
 };
 
-// Dresseurs NPCs par monde (1 à 3 Pokémon chacun)
+// Dresseurs NPCs par monde (1 à 3 Monster Trainers chacun)
 const TRAINERS = {
     volcano: [
-        { name: 'Dresseur Flamme', pokemon: ['Flamix', 'Emberling'], message: '🔥 Affronte-moi si tu l\'oses!' },
-        { name: 'Expert Feu', pokemon: ['Pyroar', 'Inferdrake', 'Flamix'], message: '🔥 Mes Pokémon brûlent de combattre!' },
-        { name: 'Campeur Lave', pokemon: ['Emberling'], message: '🔥 J\'aime la chaleur!' }
+        { name: 'Dresseur Flamme', monster trainers: ['Flamix', 'Emberling'], message: '🔥 Affronte-moi si tu l\'oses!' },
+        { name: 'Expert Feu', monster trainers: ['Pyroar', 'Inferdrake', 'Flamix'], message: '🔥 Mes Monster Trainers brûlent de combattre!' },
+        { name: 'Campeur Lave', monster trainers: ['Emberling'], message: '🔥 J\'aime la chaleur!' }
     ],
     ocean: [
-        { name: 'Surfeur Pro', pokemon: ['Splashling', 'Aquaor'], message: '🌊 Les vagues sont avec moi!' },
-        { name: 'Nageur Expert', pokemon: ['Oceanlord', 'Aquaor', 'Splashling'], message: '🌊 L\'océan est ma maison!' },
-        { name: 'Pêcheur', pokemon: ['Splashling'], message: '🌊 Regarde ma prise!' }
+        { name: 'Surfeur Pro', monster trainers: ['Splashling', 'Aquaor'], message: '🌊 Les vagues sont avec moi!' },
+        { name: 'Nageur Expert', monster trainers: ['Oceanlord', 'Aquaor', 'Splashling'], message: '🌊 L\'océan est ma maison!' },
+        { name: 'Pêcheur', monster trainers: ['Splashling'], message: '🌊 Regarde ma prise!' }
     ],
     garden: [
-        { name: 'Jardinier', pokemon: ['Seedling', 'Leafor'], message: '🌿 Mes plantes sont fortes!' },
-        { name: 'Botaniste', pokemon: ['Verdantor', 'Leafor', 'Seedling'], message: '🌿 La nature est puissante!' },
-        { name: 'Campeur', pokemon: ['Seedling'], message: '🌿 J\'adore la nature!' }
+        { name: 'Jardinier', monster trainers: ['Seedling', 'Leafor'], message: '🌿 Mes plantes sont fortes!' },
+        { name: 'Botaniste', monster trainers: ['Verdantor', 'Leafor', 'Seedling'], message: '🌿 La nature est puissante!' },
+        { name: 'Campeur', monster trainers: ['Seedling'], message: '🌿 J\'adore la nature!' }
     ],
     powerplant: [
-        { name: 'Électricien', pokemon: ['Voltling', 'Zapor'], message: '⚡ Prêt pour le choc?' },
-        { name: 'Ingénieur', pokemon: ['Thunderex', 'Zapor', 'Voltling'], message: '⚡ Mes circuits sont parfaits!' },
-        { name: 'Technicien', pokemon: ['Voltling'], message: '⚡ Courant alternatif!' }
+        { name: 'Électricien', monster trainers: ['Voltling', 'Zapor'], message: '⚡ Prêt pour le choc?' },
+        { name: 'Ingénieur', monster trainers: ['Thunderex', 'Zapor', 'Voltling'], message: '⚡ Mes circuits sont parfaits!' },
+        { name: 'Technicien', monster trainers: ['Voltling'], message: '⚡ Courant alternatif!' }
     ],
     quarry: [
-        { name: 'Mineur', pokemon: ['Pebbling', 'Rockgor'], message: '🪨 Dur comme la pierre!' },
-        { name: 'Géologue', pokemon: ['Mountainlord', 'Rockgor', 'Pebbling'], message: '🪨 Les roches éternelles!' },
-        { name: 'Carrier', pokemon: ['Pebbling'], message: '🪨 Pierre solide!' }
+        { name: 'Mineur', monster trainers: ['Pebbling', 'Rockgor'], message: '🪨 Dur comme la pierre!' },
+        { name: 'Géologue', monster trainers: ['Mountainlord', 'Rockgor', 'Pebbling'], message: '🪨 Les roches éternelles!' },
+        { name: 'Carrier', monster trainers: ['Pebbling'], message: '🪨 Pierre solide!' }
     ],
     skyzone: [
-        { name: 'Pilote', pokemon: ['Windling', 'Aerobird'], message: '🌌 Dans les cieux!' },
-        { name: 'Aviateur', pokemon: ['Skyrex', 'Aerobird', 'Windling'], message: '🌌 Le ciel m\'appartient!' },
-        { name: 'Parachutiste', pokemon: ['Windling'], message: '🌌 En vol libre!' }
+        { name: 'Pilote', monster trainers: ['Windling', 'Aerobird'], message: '🌌 Dans les cieux!' },
+        { name: 'Aviateur', monster trainers: ['Skyrex', 'Aerobird', 'Windling'], message: '🌌 Le ciel m\'appartient!' },
+        { name: 'Parachutiste', monster trainers: ['Windling'], message: '🌌 En vol libre!' }
     ],
     jungle: [
-        { name: 'Explorateur', pokemon: ['Buglet', 'Beetlor'], message: '🐛 La jungle grouille de vie!' },
-        { name: 'Entomologiste', pokemon: ['Hivequeen', 'Beetlor', 'Buglet'], message: '🐛 Les insectes règnent!' },
-        { name: 'Aventurier', pokemon: ['Buglet'], message: '🐛 J\'explore la jungle!' }
+        { name: 'Explorateur', monster trainers: ['Buglet', 'Beetlor'], message: '🐛 La jungle grouille de vie!' },
+        { name: 'Entomologiste', monster trainers: ['Hivequeen', 'Beetlor', 'Buglet'], message: '🐛 Les insectes règnent!' },
+        { name: 'Aventurier', monster trainers: ['Buglet'], message: '🐛 J\'explore la jungle!' }
     ],
     swamp: [
-        { name: 'Collectionneur', pokemon: ['Toxling', 'Poisonor'], message: '☠️ Le poison est mon arme!' },
-        { name: 'Alchimiste', pokemon: ['Venomind', 'Poisonor', 'Toxling'], message: '☠️ Toxiques et mortels!' },
-        { name: 'Randonneur', pokemon: ['Toxling'], message: '☠️ Attention au marais!' }
+        { name: 'Collectionneur', monster trainers: ['Toxling', 'Poisonor'], message: '☠️ Le poison est mon arme!' },
+        { name: 'Alchimiste', monster trainers: ['Venomind', 'Poisonor', 'Toxling'], message: '☠️ Toxiques et mortels!' },
+        { name: 'Randonneur', monster trainers: ['Toxling'], message: '☠️ Attention au marais!' }
     ],
     cemetery: [
-        { name: 'Médium', pokemon: ['Phantling', 'Spectraor'], message: '👻 Les esprits me parlent!' },
-        { name: 'Occultiste', pokemon: ['Revenex', 'Spectraor', 'Phantling'], message: '👻 Au-delà du voile!' },
-        { name: 'Visiteur', pokemon: ['Phantling'], message: '👻 Brrr... Effrayant!' }
+        { name: 'Médium', monster trainers: ['Phantling', 'Spectraor'], message: '👻 Les esprits me parlent!' },
+        { name: 'Occultiste', monster trainers: ['Revenex', 'Spectraor', 'Phantling'], message: '👻 Au-delà du voile!' },
+        { name: 'Visiteur', monster trainers: ['Phantling'], message: '👻 Brrr... Effrayant!' }
     ],
     tundra: [
-        { name: 'Skieur', pokemon: ['Frostling', 'Freezor'], message: '❄️ Le froid ne me dérange pas!' },
-        { name: 'Explorateur Polaire', pokemon: ['Blizzardlord', 'Freezor', 'Frostling'], message: '❄️ Gelé jusqu\'aux os!' },
-        { name: 'Randonneur Neige', pokemon: ['Frostling'], message: '❄️ Il fait froid!' }
+        { name: 'Skieur', monster trainers: ['Frostling', 'Freezor'], message: '❄️ Le froid ne me dérange pas!' },
+        { name: 'Explorateur Polaire', monster trainers: ['Blizzardlord', 'Freezor', 'Frostling'], message: '❄️ Gelé jusqu\'aux os!' },
+        { name: 'Randonneur Neige', monster trainers: ['Frostling'], message: '❄️ Il fait froid!' }
     ],
     dragonpeak: [
-        { name: 'Alpiniste', pokemon: ['Dragling', 'Dragonor'], message: '🔱 Les dragons sont majestueux!' },
-        { name: 'Dompteur Dragon', pokemon: ['Dragonlord', 'Dragonor', 'Dragling'], message: '🔱 Les dragons m\'obéissent!' },
-        { name: 'Grimpeur', pokemon: ['Dragling'], message: '🔱 Au sommet!' }
+        { name: 'Alpiniste', monster trainers: ['Dragling', 'Dragonor'], message: '🔱 Les dragons sont majestueux!' },
+        { name: 'Dompteur Dragon', monster trainers: ['Dragonlord', 'Dragonor', 'Dragling'], message: '🔱 Les dragons m\'obéissent!' },
+        { name: 'Grimpeur', monster trainers: ['Dragling'], message: '🔱 Au sommet!' }
     ],
     dojo: [
-        { name: 'Karatéka', pokemon: ['Fightling', 'Brawlor'], message: '🥋 Entraînement intensif!' },
-        { name: 'Maître Combat', pokemon: ['Champex', 'Brawlor', 'Fightling'], message: '🥋 La voie du guerrier!' },
-        { name: 'Élève', pokemon: ['Fightling'], message: '🥋 Art martial!' }
+        { name: 'Karatéka', monster trainers: ['Fightling', 'Brawlor'], message: '🥋 Entraînement intensif!' },
+        { name: 'Maître Combat', monster trainers: ['Champex', 'Brawlor', 'Fightling'], message: '🥋 La voie du guerrier!' },
+        { name: 'Élève', monster trainers: ['Fightling'], message: '🥋 Art martial!' }
     ],
     temple: [
-        { name: 'Moine', pokemon: ['Psychling', 'Mindor'], message: '👁️ L\'esprit transcende!' },
-        { name: 'Grand Sage', pokemon: ['Cerebrax', 'Mindor', 'Psychling'], message: '👁️ Le pouvoir de l\'esprit!' },
-        { name: 'Novice', pokemon: ['Psychling'], message: '👁️ Méditation...' }
+        { name: 'Moine', monster trainers: ['Psychling', 'Mindor'], message: '👁️ L\'esprit transcende!' },
+        { name: 'Grand Sage', monster trainers: ['Cerebrax', 'Mindor', 'Psychling'], message: '👁️ Le pouvoir de l\'esprit!' },
+        { name: 'Novice', monster trainers: ['Psychling'], message: '👁️ Méditation...' }
     ],
     factory: [
-        { name: 'Ouvrier', pokemon: ['Steelet', 'Ironclaw'], message: '🛡️ Métal robuste!' },
-        { name: 'Contremaître', pokemon: ['Titanforge', 'Ironclaw', 'Steelet'], message: '🛡️ Acier trempé!' },
-        { name: 'Mécanicien', pokemon: ['Steelet'], message: '🛡️ Engrenages!' }
+        { name: 'Ouvrier', monster trainers: ['Steelet', 'Ironclaw'], message: '🛡️ Métal robuste!' },
+        { name: 'Contremaître', monster trainers: ['Titanforge', 'Ironclaw', 'Steelet'], message: '🛡️ Acier trempé!' },
+        { name: 'Mécanicien', monster trainers: ['Steelet'], message: '🛡️ Engrenages!' }
     ],
     glade: [
-        { name: 'Mystique', pokemon: ['Fairyling', 'Pixiess'], message: '✨ Magie féerique!' },
-        { name: 'Enchanteur', pokemon: ['Enchantora', 'Pixiess', 'Fairyling'], message: '✨ Les fées scintillent!' },
-        { name: 'Rêveur', pokemon: ['Fairyling'], message: '✨ Monde merveilleux!' }
+        { name: 'Mystique', monster trainers: ['Fairyling', 'Pixiess'], message: '✨ Magie féerique!' },
+        { name: 'Enchanteur', monster trainers: ['Enchantora', 'Pixiess', 'Fairyling'], message: '✨ Les fées scintillent!' },
+        { name: 'Rêveur', monster trainers: ['Fairyling'], message: '✨ Monde merveilleux!' }
     ],
     darkforest: [
-        { name: 'Rôdeur', pokemon: ['Shadeling', 'Nightshade'], message: '⚫ L\'ombre m\'enveloppe!' },
-        { name: 'Assassin', pokemon: ['Voidking', 'Nightshade', 'Shadeling'], message: '⚫ Les ténèbres règnent!' },
-        { name: 'Vagabond', pokemon: ['Shadeling'], message: '⚫ Sombre forêt!' }
+        { name: 'Rôdeur', monster trainers: ['Shadeling', 'Nightshade'], message: '⚫ L\'ombre m\'enveloppe!' },
+        { name: 'Assassin', monster trainers: ['Voidking', 'Nightshade', 'Shadeling'], message: '⚫ Les ténèbres règnent!' },
+        { name: 'Vagabond', monster trainers: ['Shadeling'], message: '⚫ Sombre forêt!' }
     ],
     desert: [
-        { name: 'Nomade', pokemon: ['Earthling', 'Sandstorm'], message: '🏜️ Le désert est mon royaume!' },
-        { name: 'Chercheur Trésor', pokemon: ['Earthlord', 'Sandstorm', 'Earthling'], message: '🏜️ Sables éternels!' },
-        { name: 'Voyageur', pokemon: ['Earthling'], message: '🏜️ Traversée du désert!' }
+        { name: 'Nomade', monster trainers: ['Earthling', 'Sandstorm'], message: '🏜️ Le désert est mon royaume!' },
+        { name: 'Chercheur Trésor', monster trainers: ['Earthlord', 'Sandstorm', 'Earthling'], message: '🏜️ Sables éternels!' },
+        { name: 'Voyageur', monster trainers: ['Earthling'], message: '🏜️ Traversée du désert!' }
     ]
 };
 
@@ -1835,14 +1835,14 @@ function generateMap(mapKey) {
         }
     }
     
-    // S'assurer que les emplacements des NPCs existants sont accessibles (centres Pokémon, ferme, etc.)
+    // S'assurer que les emplacements des NPCs existants sont accessibles (centres Monster Trainers, ferme, etc.)
     if (map.npcs && map.npcs.length > 0) {
         map.npcs.forEach(npc => {
             const nx = npc.x;
             const ny = npc.y;
             
-            // Créer une zone 3×3 walkable autour des NPCs importants (centres Pokémon, ferme)
-            if (npc.isPokemonCenter || npc.isFarm) {
+            // Créer une zone 3×3 walkable autour des NPCs importants (centres Monster Trainers, ferme)
+            if (npc.isMonster TrainersCenter || npc.isFarm) {
                 for (let dy = -1; dy <= 1; dy++) {
                     for (let dx = -1; dx <= 1; dx++) {
                         const x = nx + dx;
@@ -1891,7 +1891,7 @@ function generateMap(mapKey) {
                     message: trainerTemplate.message,
                     isTrainer: true,
                     trainerName: trainerTemplate.name,
-                    trainerPokemon: trainerTemplate.pokemon
+                    trainerMonster Trainers: trainerTemplate.monster trainers
                 });
             }
         }
@@ -1913,8 +1913,8 @@ function initNPCs() {
 
 function updateNPCs() {
     game.npcs.forEach(npc => {
-        // Garder les Centres Pokémon et Ferme XP stationnaires
-        if (npc.isPokemonCenter || npc.isFarm) {
+        // Garder les Centres Monster Trainers et Ferme XP stationnaires
+        if (npc.isMonster TrainersCenter || npc.isFarm) {
             return;
         }
         
@@ -2241,7 +2241,7 @@ function getDisplayName(species) {
     return stage ? `${species} (${stage})` : species;
 }
 
-// Helper pour obtenir la forme de base d'un Pokémon
+// Helper pour obtenir la forme de base d'un Monster Trainers
 function getBaseForm(species) {
     let current = species;
     // Remonter jusqu'à la forme de base
@@ -2270,7 +2270,7 @@ function getEvolutionLine(species) {
     return line; // [B, E1, E2] ou [B, E1] ou [B]
 }
 
-function createPokemon(species, level) {
+function createMonster Trainers(species, level) {
     const base = MONSTER_DATA[species];
     if (!base) {
         console.error('Species not found:', species);
@@ -2305,11 +2305,11 @@ function createPokemon(species, level) {
         // comment est calculer le expToNext ?
         // la fonction math.pow(level, 3) est une formule courante 
         // pour calculer l'expérience nécessaire pour atteindre le niveau suivant 
-        // dans les jeux Pokémon. Elle signifie que l'expérience nécessaire 
-        // augmente de manière exponentielle à mesure que le niveau du Pokémon augmente. 
+        // dans les jeux Monster Trainers. Elle signifie que l'expérience nécessaire 
+        // augmente de manière exponentielle à mesure que le niveau du Monster Trainers augmente. 
         // Par exemple, pour atteindre le niveau 2, il faudrait 8 points d'expérience (2^3), 
         // pour le niveau 3, il faudrait 27 points d'expérience (3^3), et ainsi de suite. 
-        // Cela rend la progression plus difficile à mesure que le Pokémon monte en niveau, 
+        // Cela rend la progression plus difficile à mesure que le Monster Trainers monte en niveau, 
         // ce qui est typique dans les jeux de rôle pour maintenir un défi constant.
         expToNext: Math.pow(level, 3),
         type: base.type,
@@ -2320,40 +2320,40 @@ function createPokemon(species, level) {
     };
 }
 
-function checkEvolution(pokemon) {
-    const data = MONSTER_DATA[pokemon.species];
-    if (data && data.evolution && data.evolution.level && pokemon.level >= data.evolution.level) {
+function checkEvolution(monster trainers) {
+    const data = MONSTER_DATA[monster trainers.species];
+    if (data && data.evolution && data.evolution.level && monster trainers.level >= data.evolution.level) {
         const newSpecies = data.evolution.into;
         const newData = MONSTER_DATA[newSpecies];
         if (newData) {
             // Évolution!
-            const oldName = pokemon.species;
-            pokemon.species = newSpecies;
-            pokemon.emoji = newData.emoji;
-            pokemon.type = newData.type;
+            const oldName = monster trainers.species;
+            monster trainers.species = newSpecies;
+            monster trainers.emoji = newData.emoji;
+            monster trainers.type = newData.type;
             
             // Mise à jour des stats avec BOOST d'évolution (nouveau système)
-            const iv = pokemon.iv || Math.floor(Math.random() * 32);
-            const levelBonus = pokemon.level - 1;
+            const iv = monster trainers.iv || Math.floor(Math.random() * 32);
+            const levelBonus = monster trainers.level - 1;
             const evolutionBoost = 10; // BOOST supplémentaire à l'évolution
             
-            pokemon.stats.hp = Math.floor(((2 * newData.hp + iv) * pokemon.level) / 100) + pokemon.level + 10 + (levelBonus * 2) + evolutionBoost;
-            pokemon.stats.atk = Math.floor(((2 * newData.atk + iv) * pokemon.level) / 100) + pokemon.level + 10 + (levelBonus * 1.5) + evolutionBoost;
-            pokemon.stats.def = Math.floor(((2 * newData.def + iv) * pokemon.level) / 100) + pokemon.level + 10 + (levelBonus * 1.5) + evolutionBoost;
-            pokemon.maxHp = pokemon.stats.hp;
-            pokemon.currentHp = pokemon.maxHp;
+            monster trainers.stats.hp = Math.floor(((2 * newData.hp + iv) * monster trainers.level) / 100) + monster trainers.level + 10 + (levelBonus * 2) + evolutionBoost;
+            monster trainers.stats.atk = Math.floor(((2 * newData.atk + iv) * monster trainers.level) / 100) + monster trainers.level + 10 + (levelBonus * 1.5) + evolutionBoost;
+            monster trainers.stats.def = Math.floor(((2 * newData.def + iv) * monster trainers.level) / 100) + monster trainers.level + 10 + (levelBonus * 1.5) + evolutionBoost;
+            monster trainers.maxHp = monster trainers.stats.hp;
+            monster trainers.currentHp = monster trainers.maxHp;
             
             // Nouvelles attaques
             const moves = MOVES_BY_TYPE[newData.type] || MOVES_BY_TYPE.normal;
-            pokemon.moves = moves.slice(0, 4);
+            monster trainers.moves = moves.slice(0, 4);
             
             // Mise à jour du Pokédex pour la nouvelle évolution
             if (!game.pokedex.has(newSpecies)) {
-                game.pokedex.set(newSpecies, { seen: 1, caught: 1, highestLevel: pokemon.level, timesEncountered: 1 });
+                game.pokedex.set(newSpecies, { seen: 1, caught: 1, highestLevel: monster trainers.level, timesEncountered: 1 });
             } else {
                 const entry = game.pokedex.get(newSpecies);
                 entry.caught++;
-                entry.highestLevel = Math.max(entry.highestLevel, pokemon.level);
+                entry.highestLevel = Math.max(entry.highestLevel, monster trainers.level);
             }
             
             showNotification(`✨ ${getDisplayName(oldName)} évolue en ${getDisplayName(newSpecies)}!`, '#ffcc00');
@@ -2367,7 +2367,7 @@ function showStarterSelection() {
 }
 
 function selectStarter(species) {
-    const starter = createPokemon(species, 5);
+    const starter = createMonster Trainers(species, 5);
     game.team.push(starter);
     registerPokedex(species, true);
     closeAllModals();
@@ -2501,7 +2501,7 @@ function handleMove(direction) {
                 const minTrainerLevel = Math.max(1, maxTeamLevel - 2);
                 const maxTrainerLevel = maxTeamLevel + 3;
                 
-                const trainerTeam = npcHere.trainerPokemon.map(speciesName => {
+                const trainerTeam = npcHere.trainerMonster Trainers.map(speciesName => {
                     const level = minTrainerLevel + Math.floor(Math.random() * (maxTrainerLevel - minTrainerLevel + 1));
                     
                     // Forcer B ou E1 seulement (pas E2)
@@ -2515,12 +2515,12 @@ function handleMove(direction) {
                         species = evolutionLine[0];
                     }
                     
-                    return createPokemon(species, level);
+                    return createMonster Trainers(species, level);
                 });
                 startTrainerBattle(trainerTeam, npcHere.trainerName, null, false);
             }, 300);
-        } else if (npcHere.isPokemonCenter) {
-            // Centre Pokémon - soigne tous les Pokémon
+        } else if (npcHere.isMonster TrainersCenter) {
+            // Centre Monster Trainers - soigne tous les Monster Trainers
             let healed = 0;
             let revived = 0;
             game.team.forEach(p => {
@@ -2535,13 +2535,13 @@ function handleMove(direction) {
             
             let message = '🏥 ';
             if (revived > 0 && healed > 0) {
-                message += `${revived} Pokémon ressuscité(s) et ${healed} soigné(s)!`;
+                message += `${revived} Monster Trainers ressuscité(s) et ${healed} soigné(s)!`;
             } else if (revived > 0) {
-                message += `${revived} Pokémon ressuscité(s) avec 50% HP!`;
+                message += `${revived} Monster Trainers ressuscité(s) avec 50% HP!`;
             } else if (healed > 0) {
-                message += `${healed} Pokémon soigné(s) complètement!`;
+                message += `${healed} Monster Trainers soigné(s) complètement!`;
             } else {
-                message += 'Vos Pokémon sont déjà en pleine forme!';
+                message += 'Vos Monster Trainers sont déjà en pleine forme!';
             }
             
             showNotification(message);
@@ -2588,7 +2588,7 @@ function handleMove(direction) {
         return;
     }
     
-    if (tile.encounter && map.wildPokemon && map.wildPokemon.length > 0 && Math.random() < map.encounterRate) {
+    if (tile.encounter && map.wildMonster Trainers && map.wildMonster Trainers.length > 0 && Math.random() < map.encounterRate) {
         setTimeout(() => showEncounter(), 300);
     }
 }
@@ -2638,21 +2638,21 @@ function showEncounter() {
     
     const level = minLevel + Math.floor(Math.random() * (maxLevel - minLevel + 1));
     
-    // Choisir un Pokémon aléatoire de la liste du monde avec système de rareté
+    // Choisir un Monster Trainers aléatoire de la liste du monde avec système de rareté
     let randomSpecies;
     const rarityRoll = Math.random();
     
-    // Filtrer les Pokémon par rareté dans la liste
-    const availablePokemon = map.wildPokemon.map(name => ({
+    // Filtrer les Monster Trainers par rareté dans la liste
+    const availableMonster Trainers = map.wildMonster Trainers.map(name => ({
         name,
         rarity: MONSTER_DATA[getBaseForm(name)]?.rarity || 'common'
     }));
     
-    const legendaries = availablePokemon.filter(p => p.rarity === 'legendary');
-    const mythics = availablePokemon.filter(p => p.rarity === 'mythic');
-    const rares = availablePokemon.filter(p => p.rarity === 'rare');
-    const uncommons = availablePokemon.filter(p => p.rarity === 'uncommon');
-    const commons = availablePokemon.filter(p => p.rarity === 'common' || p.rarity === 'starter');
+    const legendaries = availableMonster Trainers.filter(p => p.rarity === 'legendary');
+    const mythics = availableMonster Trainers.filter(p => p.rarity === 'mythic');
+    const rares = availableMonster Trainers.filter(p => p.rarity === 'rare');
+    const uncommons = availableMonster Trainers.filter(p => p.rarity === 'uncommon');
+    const commons = availableMonster Trainers.filter(p => p.rarity === 'common' || p.rarity === 'starter');
     
     // Système de rareté avec probabilités
     if (rarityRoll < 0.0005 && legendaries.length > 0) {
@@ -2669,7 +2669,7 @@ function showEncounter() {
         randomSpecies = uncommons[Math.floor(Math.random() * uncommons.length)].name;
     } else {
         // 60% chance de common/starter
-        const commonPool = commons.length > 0 ? commons : availablePokemon;
+        const commonPool = commons.length > 0 ? commons : availableMonster Trainers;
         randomSpecies = commonPool[Math.floor(Math.random() * commonPool.length)].name;
     }
     
@@ -2691,7 +2691,7 @@ function showEncounter() {
         species = evolutionLine[0];
     }
     
-    const wildPokemon = createPokemon(species, level);
+    const wildMonster Trainers = createMonster Trainers(species, level);
     
     // Notification spéciale pour les spawns rares
     if (baseData.rarity === 'legendary') {
@@ -2723,9 +2723,9 @@ function showEncounter() {
         content.innerHTML = `
             <div class="encounter-screen">
             <h2>⚠️ UN POKÉMON SAUVAGE APPARAÎT! ⚠️</h2>
-            <div style="font-size: 3rem; margin: 30px 0; animation: bounce 1s infinite;">${wildPokemon.emoji}</div>
+            <div style="font-size: 3rem; margin: 30px 0; animation: bounce 1s infinite;">${wildMonster Trainers.emoji}</div>
             <div style="font-size: 1.2rem; margin: 20px 0; color: #f1c40f;">
-                ${getDisplayName(wildPokemon.species)} Niveau ${wildPokemon.level}
+                ${getDisplayName(wildMonster Trainers.species)} Niveau ${wildMonster Trainers.level}
             </div>
             <div class="encounter-choices">
                 <button class="choice-btn fight" onclick="startBattle()">⚔️ COMBATTRE</button>
@@ -2734,7 +2734,7 @@ function showEncounter() {
         </div>
     `;
     
-        game.currentEncounter = wildPokemon;
+        game.currentEncounter = wildMonster Trainers;
         modal.style.display = 'block';
         document.getElementById('modalOverlay').style.display = 'block';
     }, 300);
@@ -2742,9 +2742,9 @@ function showEncounter() {
 
 window.startBattle = function() {
     closeAllModals();
-    // Permettre de choisir le Pokémon si l'équipe a plusieurs membres
+    // Permettre de choisir le Monster Trainers si l'équipe a plusieurs membres
     if (game.team.length > 1) {
-        showPokemonSelection(game.currentEncounter);
+        showMonster TrainersSelection(game.currentEncounter);
     } else {
         runBattle(game.team[0], game.currentEncounter, true);
     }
@@ -2756,12 +2756,12 @@ window.runFromEncounter = function() {
     game.currentEncounter = null;
 };
 
-function runBattle(playerPokemon, enemyPokemon, isWild = false) {
+function runBattle(playerMonster Trainers, enemyMonster Trainers, isWild = false) {
     game.inBattle = true;
-    game.currentEncounter = enemyPokemon; // Store for potential Pokemon switching
+    game.currentEncounter = enemyMonster Trainers; // Store for potential Monster Trainers switching
     
-    // Initialiser les participants au combat avec le Pokémon de départ
-    const playerIndex = game.team.indexOf(playerPokemon);
+    // Initialiser les participants au combat avec le Monster Trainers de départ
+    const playerIndex = game.team.indexOf(playerMonster Trainers);
     if (playerIndex !== -1 && !game.battleParticipants.includes(playerIndex)) {
         game.battleParticipants = [playerIndex]; // Réinitialiser avec le premier participant
     }
@@ -2769,12 +2769,12 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
     const modal = document.getElementById('battleModal');
     const content = document.getElementById('battleContent');
     
-    let battleLog = [`Un ${getDisplayName(enemyPokemon.species)} sauvage apparaît!`];
+    let battleLog = [`Un ${getDisplayName(enemyMonster Trainers.species)} sauvage apparaît!`];
     let turn = 'player';
     let battleEnded = false;
     
-    function getHealthColor(pokemon) {
-        const percent = (pokemon.currentHp / pokemon.maxHp) * 100;
+    function getHealthColor(monster trainers) {
+        const percent = (monster trainers.currentHp / monster trainers.maxHp) * 100;
         if (percent > 50) return 'health-high';
         if (percent > 20) return 'health-medium';
         return 'health-low';
@@ -2787,36 +2787,36 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
             <div class="battle-screen">
                 <div style="position: absolute; top: 30px; right: 80px;">
                     <div class="health-bar" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(enemyPokemon.species)}</div>
-                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${enemyPokemon.level}</div>
+                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(enemyMonster Trainers.species)}</div>
+                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${enemyMonster Trainers.level}</div>
                         <div class="health-bar-inner">
-                            <div class="health-bar-fill ${getHealthColor(enemyPokemon)}" 
-                                 style="width: ${(enemyPokemon.currentHp / enemyPokemon.maxHp) * 100}%;"></div>
+                            <div class="health-bar-fill ${getHealthColor(enemyMonster Trainers)}" 
+                                 style="width: ${(enemyMonster Trainers.currentHp / enemyMonster Trainers.maxHp) * 100}%;"></div>
                         </div>
                         <div style="font-size: 0.7rem; margin-top: 3px;">
-                            ${enemyPokemon.currentHp} / ${enemyPokemon.maxHp} HP
+                            ${enemyMonster Trainers.currentHp} / ${enemyMonster Trainers.maxHp} HP
                         </div>
                     </div>
                 </div>
-                <div class="pokemon-sprite enemy-sprite" style="font-size: 80px;">${enemyPokemon.emoji}</div>
+                <div class="monster trainers-sprite enemy-sprite" style="font-size: 80px;">${enemyMonster Trainers.emoji}</div>
                 
                 <div style="position: absolute; bottom: 30px; left: 20px;">
                     <div class="health-bar">
-                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(playerPokemon.species)}</div>
-                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${playerPokemon.level}</div>
+                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(playerMonster Trainers.species)}</div>
+                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${playerMonster Trainers.level}</div>
                         <div class="health-bar-inner">
-                            <div class="health-bar-fill ${getHealthColor(playerPokemon)}" 
-                                 style="width: ${(playerPokemon.currentHp / playerPokemon.maxHp) * 100}%;"></div>
+                            <div class="health-bar-fill ${getHealthColor(playerMonster Trainers)}" 
+                                 style="width: ${(playerMonster Trainers.currentHp / playerMonster Trainers.maxHp) * 100}%;"></div>
                         </div>
                         <div style="font-size: 0.7rem; margin-top: 3px;">
-                            ${playerPokemon.currentHp} / ${playerPokemon.maxHp} HP
+                            ${playerMonster Trainers.currentHp} / ${playerMonster Trainers.maxHp} HP
                         </div>
                         <div style="font-size: 0.6rem; color: #f1c40f; margin-top: 5px;">
-                            EXP: ${playerPokemon.exp}/${playerPokemon.expToNext}
+                            EXP: ${playerMonster Trainers.exp}/${playerMonster Trainers.expToNext}
                         </div>
                     </div>
                 </div>
-                <div class="pokemon-sprite player-sprite" style="font-size: 80px;">${playerPokemon.emoji}</div>
+                <div class="monster trainers-sprite player-sprite" style="font-size: 80px;">${playerMonster Trainers.emoji}</div>
             </div>
             
             <div class="battle-log">
@@ -2825,10 +2825,10 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
             
             ${turn === 'player' && !battleEnded ? `
                 <div class="battle-menu">
-                    ${playerPokemon.moves.map((move, index) => {
+                    ${playerMonster Trainers.moves.map((move, index) => {
                         // Calculer l'efficacité du type
-                        const moveType = MOVES_BY_TYPE[playerPokemon.type] ? playerPokemon.type : 'normal';
-                        const multiplier = move.power > 0 ? getTypeMultiplier(moveType, enemyPokemon.type) : 1;
+                        const moveType = MOVES_BY_TYPE[playerMonster Trainers.type] ? playerMonster Trainers.type : 'normal';
+                        const multiplier = move.power > 0 ? getTypeMultiplier(moveType, enemyMonster Trainers.type) : 1;
                         let typeIndicator = '';
                         if (move.power > 0) {
                             if (multiplier > 1) {
@@ -2840,7 +2840,7 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
                         
                         return `
                             <button class="menu-btn" onclick="playerAttack(${index})" 
-                                    ${playerPokemon.currentHp <= 0 ? 'disabled' : ''}
+                                    ${playerMonster Trainers.currentHp <= 0 ? 'disabled' : ''}
                                     style="font-size: 0.7rem; padding: 12px;">
                                 ${typeIndicator} ${move.emoji || ''} ${move.name}<br>
                                 <span style="font-size: 0.5rem; color: #bdc3c7;">
@@ -2851,7 +2851,7 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
                     }).join('')}
                 </div>
                 ${game.team.filter(p => p.currentHp > 0).length > 1 ? `
-                    <button class="menu-btn" onclick="switchPokemonDuringBattle()" 
+                    <button class="menu-btn" onclick="switchMonster TrainersDuringBattle()" 
                             style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, #9b59b6, #8e44ad); font-size: 0.8rem;">
                         🔄 CHANGER DE POKÉMON
                     </button>
@@ -2905,18 +2905,18 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
     window.playerAttack = function(moveIndex) {
         if (battleEnded || turn !== 'player') return;
         
-        const move = playerPokemon.moves[moveIndex];
+        const move = playerMonster Trainers.moves[moveIndex];
         if (!move) return;
         
         if (move.power > 0) {
             // Calcul dégâts avec multiplicateur de type
-            const typeMultiplier = getTypeMultiplier(playerPokemon.type, enemyPokemon.type);
+            const typeMultiplier = getTypeMultiplier(playerMonster Trainers.type, enemyMonster Trainers.type);
             const damage = Math.max(1, Math.floor(
-                ((2 * playerPokemon.level / 5 + 2) * move.power * playerPokemon.stats.atk / enemyPokemon.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
+                ((2 * playerMonster Trainers.level / 5 + 2) * move.power * playerMonster Trainers.stats.atk / enemyMonster Trainers.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
             ));
             
-            enemyPokemon.currentHp = Math.max(0, enemyPokemon.currentHp - damage);
-            battleLog.push(`${getDisplayName(playerPokemon.species)} utilise ${move.name}! -${damage} HP`);
+            enemyMonster Trainers.currentHp = Math.max(0, enemyMonster Trainers.currentHp - damage);
+            battleLog.push(`${getDisplayName(playerMonster Trainers.species)} utilise ${move.name}! -${damage} HP`);
             
             if (typeMultiplier > 1) {
                 battleLog.push('⚡ C\'est super efficace!');
@@ -2925,16 +2925,16 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
             }
         } else {
             // Attaque de support (heal, etc.)
-            const heal = Math.floor(playerPokemon.maxHp / 2);
-            playerPokemon.currentHp = Math.min(playerPokemon.maxHp, playerPokemon.currentHp + heal);
-            battleLog.push(`${getDisplayName(playerPokemon.species)} se soigne de ${heal} HP!`);
+            const heal = Math.floor(playerMonster Trainers.maxHp / 2);
+            playerMonster Trainers.currentHp = Math.min(playerMonster Trainers.maxHp, playerMonster Trainers.currentHp + heal);
+            battleLog.push(`${getDisplayName(playerMonster Trainers.species)} se soigne de ${heal} HP!`);
         }
         
         updateBattle();
         
-        if (enemyPokemon.currentHp <= 0) {
+        if (enemyMonster Trainers.currentHp <= 0) {
             setTimeout(() => {
-                battleLog.push(`💀 ${getDisplayName(enemyPokemon.species)} est K.O.!`);
+                battleLog.push(`💀 ${getDisplayName(enemyMonster Trainers.species)} est K.O.!`);
                 battleLog.push(`🎉 Victoire!`);
                 
                 updateBattle();
@@ -2956,41 +2956,41 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
         updateBattle();
         
         setTimeout(() => {
-            const moveIndex =Math.floor(Math.random() * enemyPokemon.moves.length);
-            const move = enemyPokemon.moves[moveIndex];
+            const moveIndex =Math.floor(Math.random() * enemyMonster Trainers.moves.length);
+            const move = enemyMonster Trainers.moves[moveIndex];
             
             if (move.power > 0) {
                 // Calcul dégâts avec multiplicateur de type
-                const typeMultiplier = getTypeMultiplier(enemyPokemon.type, playerPokemon.type);
+                const typeMultiplier = getTypeMultiplier(enemyMonster Trainers.type, playerMonster Trainers.type);
                 const damage = Math.max(1, Math.floor(
-                    ((2 * enemyPokemon.level / 5 + 2) * move.power * enemyPokemon.stats.atk / playerPokemon.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
+                    ((2 * enemyMonster Trainers.level / 5 + 2) * move.power * enemyMonster Trainers.stats.atk / playerMonster Trainers.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
                 ));
                 
-                playerPokemon.currentHp = Math.max(0, playerPokemon.currentHp - damage);
-            battleLog.push(`${getDisplayName(enemyPokemon.species)} utilise ${move.name}! -${damage} HP`);
+                playerMonster Trainers.currentHp = Math.max(0, playerMonster Trainers.currentHp - damage);
+            battleLog.push(`${getDisplayName(enemyMonster Trainers.species)} utilise ${move.name}! -${damage} HP`);
                 if (typeMultiplier > 1) {
                     battleLog.push('⚡ C\'est super efficace!');
                 } else if (typeMultiplier < 1) {
                     battleLog.push('💨 Pas très efficace...');
                 }
             } else {
-                battleLog.push(`${enemyPokemon.species} utilise ${move.name}!`);
+                battleLog.push(`${enemyMonster Trainers.species} utilise ${move.name}!`);
             }
             
             updateBattle();
             
-            if (playerPokemon.currentHp <= 0) {
+            if (playerMonster Trainers.currentHp <= 0) {
                 setTimeout(() => {
-                battleLog.push(`💀 ${getDisplayName(playerPokemon.species)} est K.O.!`);
-                    const alivePokemon = game.team.filter(p => p.currentHp > 0);
+                battleLog.push(`💀 ${getDisplayName(playerMonster Trainers.species)} est K.O.!`);
+                    const aliveMonster Trainers = game.team.filter(p => p.currentHp > 0);
                     
-                    if (alivePokemon.length > 0) {
-                        battleLog.push(`💪 Choisissez un autre Pokémon!`);
+                    if (aliveMonster Trainers.length > 0) {
+                        battleLog.push(`💪 Choisissez un autre Monster Trainers!`);
                         updateBattle();
                         
-                        // Proposer de choisir un nouveau Pokémon
+                        // Proposer de choisir un nouveau Monster Trainers
                         setTimeout(() => {
-                            showPokemonSwitchInBattle(enemyPokemon, isWild);
+                            showMonster TrainersSwitchInBattle(enemyMonster Trainers, isWild);
                         }, 1500);
                     } else {
                         battleLog.push(`😢 Défaite... Toute l'équipe est K.O.!`);
@@ -3046,9 +3046,9 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
         
         // Système de capture plus difficile
         const baseCatchRate = Math.min(85, Math.max(5,
-            ((enemyPokemon.maxHp - enemyPokemon.currentHp) / enemyPokemon.maxHp) * 40 +
-            (80 - enemyPokemon.level * 3) +
-            (enemyPokemon.currentHp < enemyPokemon.maxHp * 0.2 ? 10 : 0)
+            ((enemyMonster Trainers.maxHp - enemyMonster Trainers.currentHp) / enemyMonster Trainers.maxHp) * 40 +
+            (80 - enemyMonster Trainers.level * 3) +
+            (enemyMonster Trainers.currentHp < enemyMonster Trainers.maxHp * 0.2 ? 10 : 0)
         ));
         
         const catchRate = Math.min(90, baseCatchRate * multiplier);
@@ -3067,18 +3067,18 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
         
         setTimeout(() => {
             if (success) {
-                battleLog.push(`🎉 ${getDisplayName(enemyPokemon.species)} capturé!`);
+                battleLog.push(`🎉 ${getDisplayName(enemyMonster Trainers.species)} capturé!`);
                 
                 // Vérifier si équipe pleine (max 20)
                 if (game.team.length >= 20) {
-                    battleLog.push(`⚠️ Équipe pleine (20/20)! ${getDisplayName(enemyPokemon.species)} envoyé au PC.`);
-                    showNotification(`📦 ${getDisplayName(enemyPokemon.species)} stocké (équipe pleine)`);
+                    battleLog.push(`⚠️ Équipe pleine (20/20)! ${getDisplayName(enemyMonster Trainers.species)} envoyé au PC.`);
+                    showNotification(`📦 ${getDisplayName(enemyMonster Trainers.species)} stocké (équipe pleine)`);
                 } else {
-                    game.team.push(enemyPokemon);
-                    battleLog.push(`👥 Équipe: ${game.team.length}/20 Pokémon`);
+                    game.team.push(enemyMonster Trainers);
+                    battleLog.push(`👥 Équipe: ${game.team.length}/20 Monster Trainers`);
                 }
                 
-                registerPokedex(enemyPokemon.species, true);
+                registerPokedex(enemyMonster Trainers.species, true);
                 
                 updateBattle();
                 battleEnded = true;
@@ -3088,7 +3088,7 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
                     endBattle(false, true);
                 }, 100);
             } else {
-                battleLog.push(`❌ ${enemyPokemon.species} s'est libéré!`);
+                battleLog.push(`❌ ${enemyMonster Trainers.species} s'est libéré!`);
                 updateBattle();
                 setTimeout(enemyTurn, 1500);
             }
@@ -3098,7 +3098,7 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
     window.tryRunFromBattle = function() {
         if (battleEnded) return;
         
-        const runChance = Math.max(30, 100 - (enemyPokemon.stats.speed - playerPokemon.stats.speed));
+        const runChance = Math.max(30, 100 - (enemyMonster Trainers.stats.speed - playerMonster Trainers.stats.speed));
         
         if (Math.random() * 100 < runChance) {
             battleLog.push('🏃 Fuite réussie!');
@@ -3122,8 +3122,8 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
         
         // Récompenses de combat
         if (won || captured) {
-            // XP uniquement pour les Pokémon ayant participé au combat
-            const expGain = Math.floor(enemyPokemon.level * 40);
+            // XP uniquement pour les Monster Trainers ayant participé au combat
+            const expGain = Math.floor(enemyMonster Trainers.level * 40);
             game.battleParticipants.forEach(participantIndex => {
                 const p = game.team[participantIndex];
                 if (p && p.currentHp > 0) {
@@ -3158,14 +3158,14 @@ function runBattle(playerPokemon, enemyPokemon, isWild = false) {
             });
             
             // Or selon niveau ennemi
-            const goldGain = captured ? Math.floor(enemyPokemon.level * 25) : Math.floor(enemyPokemon.level * 50);
+            const goldGain = captured ? Math.floor(enemyMonster Trainers.level * 25) : Math.floor(enemyMonster Trainers.level * 50);
             game.money += goldGain;
             
             // Drops de livres d'expérience selon le type de combat
             let bookDrops = { green: 0, blue: 0, red: 0 };
             
             if (isWild) {
-                // Pokémon sauvages : beaucoup de vert (80%), peu de bleu (20%)
+                // Monster Trainers sauvages : beaucoup de vert (80%), peu de bleu (20%)
                 const dropChance = Math.random();
                 if (dropChance < 0.8) {
                     bookDrops.green = 1; // 80% livre vert
@@ -3282,16 +3282,16 @@ function render() {
         game.player.x + TILE_SIZE / 2, 
         game.player.y + TILE_SIZE / 2);
     
-    // Afficher jusqu'à 3 Pokémon qui suivent le joueur
+    // Afficher jusqu'à 3 Monster Trainers qui suivent le joueur
     const followersToShow = game.team.slice(0, 3);
     const offsets = [
         { x: 0, y: TILE_SIZE },
         { x: -TILE_SIZE, y: TILE_SIZE },
         { x: TILE_SIZE, y: TILE_SIZE }
     ];
-    followersToShow.forEach((pokemon, index) => {
+    followersToShow.forEach((monster trainers, index) => {
         const offset = offsets[index];
-        ctx.fillText(pokemon.emoji, 
+        ctx.fillText(monster trainers.emoji, 
             game.player.x + TILE_SIZE / 2 + offset.x, 
             game.player.y + TILE_SIZE / 2 + offset.y);
     });
@@ -3343,7 +3343,7 @@ function openPokedex() {
     document.getElementById('pokedexCount').textContent = discovered;
     document.getElementById('pokedexTotal').textContent = totalSpecies;
     
-    let html = '<div class="pokemon-grid">';
+    let html = '<div class="monster trainers-grid">';
     
     Object.keys(MONSTER_DATA).forEach((species, index) => {
         const entry = game.pokedex.get(species);
@@ -3362,7 +3362,7 @@ function openPokedex() {
             const color = typeColors[data.type] || '#A8A878';
             
             html += `
-                <div class="pokemon-card" onclick="showPokemonDetail('${species}')">
+                <div class="monster trainers-card" onclick="showMonster TrainersDetail('${species}')">
                     <div style="font-size: 2rem;">${data.emoji}</div>
                     <div class="name">#${(index + 1).toString().padStart(3, '0')} ${getDisplayName(species)}</div>
                     <div class="stats">
@@ -3376,7 +3376,7 @@ function openPokedex() {
             `;
         } else {
             html += `
-                <div class="pokemon-card" style="opacity: 0.3; cursor: default;">
+                <div class="monster trainers-card" style="opacity: 0.3; cursor: default;">
                     <div style="font-size: 2rem;">❓</div>
                     <div class="name">#${(index + 1).toString().padStart(3, '0')}</div>
                     <div class="stats">Non découvert</div>
@@ -3395,14 +3395,14 @@ function closePokedex() {
     closeAllModals();
 }
 
-function showPokemonDetail(species) {
-    const modal = document.getElementById('pokemonDetailModal');
-    const data = POKEMON_SPECIES[species];
+function showMonster TrainersDetail(species) {
+    const modal = document.getElementById('monster trainersDetailModal');
+    const data = MONSTER_DATA[species];
     const entry = game.pokedex.get(species);
     
     if (!entry) return;
     
-    const index = Object.keys(POKEMON_SPECIES).indexOf(species);
+    const index = Object.keys(MONSTER_DATA).indexOf(species);
     document.getElementById('detailName').innerHTML = `
         ${data.emoji} #${(index + 1).toString().padStart(3, '0')} ${getDisplayName(species)}
     `;
@@ -3456,7 +3456,7 @@ function showPokemonDetail(species) {
     document.getElementById('modalOverlay').style.display = 'block';
 }
 
-function closePokemonDetail() {
+function closeMonster TrainersDetail() {
     closeAllModals();
 }
 
@@ -3488,8 +3488,8 @@ function openTeam() {
         
         const header = `
             <div style="background: linear-gradient(135deg, #34495e, #2c3e50); padding: 15px; margin-bottom: 15px; border-radius: 5px; text-align: center;">
-                <div style="font-size: 1rem; color: #f1c40f;">👥 ${game.team.length}/20 Pokémon</div>
-                <div style="font-size: 0.6rem; color: #bdc3c7; margin-top: 5px;">Vous pouvez capturer ${20 - game.team.length} Pokémon de plus</div>
+                <div style="font-size: 1rem; color: #f1c40f;">👥 ${game.team.length}/20 Monster Trainers</div>
+                <div style="font-size: 0.6rem; color: #bdc3c7; margin-top: 5px;">Vous pouvez capturer ${20 - game.team.length} Monster Trainers de plus</div>
                 
                 <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                     <button class="menu-btn secondary" style="padding: 8px 16px; font-size: 0.7rem;" onclick="openFollowers()">👥 SUIVEURS</button>
@@ -3504,7 +3504,7 @@ function openTeam() {
         `;
         
         // Afficher en grille 2 colonnes
-        const pokemonGrid = `
+        const monster trainersGrid = `
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                 ${sortedTeam.map((p) => {
                     const data = MONSTER_DATA[p.species];
@@ -3524,10 +3524,10 @@ function openTeam() {
                     const color = typeColors[data.type] || '#A8A878';
                     
                     // Calculer faiblesses et forces basées sur TYPE_EFFECTIVENESS
-                    const weaknesses = []; // Types efficaces CONTRE ce Pokémon (il est faible)
-                    const strengths = []; // Types contre lesquels CE Pokémon est efficace (il est fort)
+                    const weaknesses = []; // Types efficaces CONTRE ce Monster Trainers (il est faible)
+                    const strengths = []; // Types contre lesquels CE Monster Trainers est efficace (il est fort)
                     
-                    // Trouver les types auxquels ce Pokémon est faible
+                    // Trouver les types auxquels ce Monster Trainers est faible
                     Object.keys(TYPE_EFFECTIVENESS).forEach(attackType => {
                         const typeData = TYPE_EFFECTIVENESS[attackType];
                         if (typeData.effective && typeData.effective.includes(data.type)) {
@@ -3535,7 +3535,7 @@ function openTeam() {
                         }
                     });
                     
-                    // Trouver les types contre lesquels ce Pokémon est fort
+                    // Trouver les types contre lesquels ce Monster Trainers est fort
                     const myTypeData = TYPE_EFFECTIVENESS[data.type];
                     if (myTypeData && myTypeData.effective) {
                         strengths.push(...myTypeData.effective);
@@ -3543,8 +3543,8 @@ function openTeam() {
                     
                     const isSelected = game.releaseSelection.includes(p.originalIndex);
                     
-                    // Vérifier si le Pokémon est à la ferme
-                    const isInFarm = game.farm.pokemon.some(fp => fp && fp.species === p.species && fp.level === p.level);
+                    // Vérifier si le Monster Trainers est à la ferme
+                    const isInFarm = game.farm.monster trainers.some(fp => fp && fp.species === p.species && fp.level === p.level);
                     
                     return `
                         <div style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); 
@@ -3598,8 +3598,8 @@ function openTeam() {
                 <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 10px;">💰 RELÂCHER DES POKÉMON</div>
                 <div style="font-size: 0.6rem; margin-bottom: 15px; color: #ecf0f1;">
                     ${game.releaseSelection.length > 0 
-                        ? `${game.releaseSelection.length} Pokémon sélectionné(s) - Gain: ${game.releaseSelection.reduce((sum, idx) => sum + (game.team[idx].level * 50), 0)}💰`
-                        : 'Clique sur SÉLECTIONNER pour choisir les Pokémon à relâcher'}
+                        ? `${game.releaseSelection.length} Monster Trainers sélectionné(s) - Gain: ${game.releaseSelection.reduce((sum, idx) => sum + (game.team[idx].level * 50), 0)}💰`
+                        : 'Clique sur SÉLECTIONNER pour choisir les Monster Trainers à relâcher'}
                 </div>
                 <div style="display: flex; gap: 10px; justify-content: center;">
                     <button class="menu-btn" style="padding: 10px 20px; font-size: 0.7rem; background: linear-gradient(135deg, #3498db, #2980b9);" 
@@ -3616,15 +3616,15 @@ function openTeam() {
             </div>
         `;
         
-        content.innerHTML = header + pokemonGrid + releaseSection;
+        content.innerHTML = header + monster trainersGrid + releaseSection;
         
         // Ajouter event listeners pour la sélection en mode relâchement
         if (game.releaseMode) {
-            document.querySelectorAll('[data-pokemon-index]').forEach(el => {
+            document.querySelectorAll('[data-monster trainers-index]').forEach(el => {
                 el.style.cursor = 'pointer';
                 el.onclick = function() {
-                    const idx = parseInt(this.getAttribute('data-pokemon-index'));
-                    togglePokemonSelection(idx);
+                    const idx = parseInt(this.getAttribute('data-monster trainers-index'));
+                    toggleMonster TrainersSelection(idx);
                 };
             });
         }
@@ -3736,7 +3736,7 @@ function openBag() {
                 <span style="font-size: 2rem;">✨</span>
                 <div style="flex: 1;">
                     <div style="font-weight: bold;">Rappel</div>
-                    <div style="font-size: 0.6rem; color: #bdc3c7;">Ranime un Pokémon K.O.</div>
+                    <div style="font-size: 0.6rem; color: #bdc3c7;">Ranime un Monster Trainers K.O.</div>
                 </div>
                 <div style="font-size: 1.2rem; font-weight: bold; color: #f1c40f;">×${game.bag.revive || 0}</div>
             </div>
@@ -3978,16 +3978,16 @@ function showUseExpBookMenu() {
     modal.style.display = 'block';
 }
 
-function useExpBook(pokemonIndex, bookType, expAmount) {
-    const pokemon = game.team[pokemonIndex];
-    if (!pokemon || !game.bag[bookType] || game.bag[bookType] <= 0) return;
+function useExpBook(monster trainersIndex, bookType, expAmount) {
+    const monster trainers = game.team[monster trainersIndex];
+    if (!monster trainers || !game.bag[bookType] || game.bag[bookType] <= 0) return;
     
-    // Vérifier si le Pokémon est au niveau max
-    const evolutionStage = getEvolutionStage(pokemon.species);
-    const isMaxLevel = (evolutionStage === 'E2' && pokemon.level >= 70) || pokemon.level >= 100;
+    // Vérifier si le Monster Trainers est au niveau max
+    const evolutionStage = getEvolutionStage(monster trainers.species);
+    const isMaxLevel = (evolutionStage === 'E2' && monster trainers.level >= 70) || monster trainers.level >= 100;
     
     if (isMaxLevel) {
-        showNotification('❌ Ce Pokémon est au niveau maximum!');
+        showNotification('❌ Ce Monster Trainers est au niveau maximum!');
         return;
     }
     
@@ -3995,37 +3995,37 @@ function useExpBook(pokemonIndex, bookType, expAmount) {
     game.bag[bookType]--;
     
     // Ajouter l'XP
-    pokemon.exp += expAmount;
+    monster trainers.exp += expAmount;
     
     // Vérifier les montées de niveau avec le plafond
-    const base = MONSTER_DATA[pokemon.species];
+    const base = MONSTER_DATA[monster trainers.species];
     let leveledUp = false;
     let maxLevel = (evolutionStage === 'E2') ? 70 : 100;
     
-    while (pokemon.exp >= pokemon.expToNext && pokemon.level < maxLevel) {
-        pokemon.level++;
-        pokemon.exp -= pokemon.expToNext;
-        pokemon.expToNext = Math.pow(pokemon.level, 3);
+    while (monster trainers.exp >= monster trainers.expToNext && monster trainers.level < maxLevel) {
+        monster trainers.level++;
+        monster trainers.exp -= monster trainers.expToNext;
+        monster trainers.expToNext = Math.pow(monster trainers.level, 3);
         leveledUp = true;
         
         if (base) {
-            const iv = pokemon.iv || 15;
-            const levelBonus = pokemon.level - 1;
+            const iv = monster trainers.iv || 15;
+            const levelBonus = monster trainers.level - 1;
             
-            pokemon.stats.hp = Math.floor(((2 * base.hp + iv) * pokemon.level) / 100) + pokemon.level + 10 + (levelBonus * 2);
-            pokemon.stats.atk = Math.floor(((2 * base.atk + iv) * pokemon.level) / 100) + pokemon.level + 10 + (levelBonus * 1.5);
-            pokemon.stats.def = Math.floor(((2 * base.def + iv) * pokemon.level) / 100) + pokemon.level + 10 + (levelBonus * 1.5);
-            pokemon.maxHp = pokemon.stats.hp;
+            monster trainers.stats.hp = Math.floor(((2 * base.hp + iv) * monster trainers.level) / 100) + monster trainers.level + 10 + (levelBonus * 2);
+            monster trainers.stats.atk = Math.floor(((2 * base.atk + iv) * monster trainers.level) / 100) + monster trainers.level + 10 + (levelBonus * 1.5);
+            monster trainers.stats.def = Math.floor(((2 * base.def + iv) * monster trainers.level) / 100) + monster trainers.level + 10 + (levelBonus * 1.5);
+            monster trainers.maxHp = monster trainers.stats.hp;
         }
         
-        checkEvolution(pokemon);
+        checkEvolution(monster trainers);
     }
     
     const bookEmoji = bookType === 'expbook_green' ? '📗' : bookType === 'expbook_blue' ? '📘' : '📕';
     if (leveledUp) {
-        showNotification(`${bookEmoji} ${pokemon.species} gagne ${expAmount} XP et monte de niveau!`);
+        showNotification(`${bookEmoji} ${monster trainers.species} gagne ${expAmount} XP et monte de niveau!`);
     } else {
-        showNotification(`${bookEmoji} ${pokemon.species} gagne ${expAmount} XP!`);
+        showNotification(`${bookEmoji} ${monster trainers.species} gagne ${expAmount} XP!`);
     }
     
     // Rafraîchir l'affichage
@@ -4035,7 +4035,7 @@ function useExpBook(pokemonIndex, bookType, expAmount) {
 
 // ========== OBJETS DE BOOST DE STATS ==========
 // Protéine: +2 ATK | Fer: +2 DEF | PV Plus: +5 HP (permanents)
-// Obtenus en battant (sans capturer) des Pokémon sauvages (25% de chance)
+// Obtenus en battant (sans capturer) des Monster Trainers sauvages (25% de chance)
 function showUseStatBoostMenu() {
     const modal = document.getElementById('usePotionModal');
     const content = document.getElementById('usePotionContent');
@@ -4087,25 +4087,25 @@ function showUseStatBoostMenu() {
     modal.style.display = 'block';
 }
 
-function useStatBoost(pokemonIndex, boostType) {
-    const pokemon = game.team[pokemonIndex];
-    if (!pokemon || !game.bag[boostType] || game.bag[boostType] <= 0) return;
+function useStatBoost(monster trainersIndex, boostType) {
+    const monster trainers = game.team[monster trainersIndex];
+    if (!monster trainers || !game.bag[boostType] || game.bag[boostType] <= 0) return;
     
     // Consommer l'objet
     game.bag[boostType]--;
     
     // Appliquer le boost permanent
     if (boostType === 'protein') {
-        pokemon.stats.atk += 2;
-        showNotification(`💪 ${pokemon.species} gagne +2 ATK permanent!`);
+        monster trainers.stats.atk += 2;
+        showNotification(`💪 ${monster trainers.species} gagne +2 ATK permanent!`);
     } else if (boostType === 'iron') {
-        pokemon.stats.def += 2;
-        showNotification(`🛡️ ${pokemon.species} gagne +2 DEF permanent!`);
+        monster trainers.stats.def += 2;
+        showNotification(`🛡️ ${monster trainers.species} gagne +2 DEF permanent!`);
     } else if (boostType === 'hp_up') {
-        pokemon.stats.hp += 5;
-        pokemon.maxHp += 5;
-        pokemon.currentHp = Math.min(pokemon.currentHp + 5, pokemon.maxHp);
-        showNotification(`❤️ ${pokemon.species} gagne +5 HP permanent!`);
+        monster trainers.stats.hp += 5;
+        monster trainers.maxHp += 5;
+        monster trainers.currentHp = Math.min(monster trainers.currentHp + 5, monster trainers.maxHp);
+        showNotification(`❤️ ${monster trainers.species} gagne +5 HP permanent!`);
     }
     
     // Rafraîchir l'affichage
@@ -4114,45 +4114,45 @@ function useStatBoost(pokemonIndex, boostType) {
 }
 
 
-function useItem(pokemonIndex, itemType) {
-    const pokemon = game.team[pokemonIndex];
-    if (!pokemon) return;
+function useItem(monster trainersIndex, itemType) {
+    const monster trainers = game.team[monster trainersIndex];
+    if (!monster trainers) return;
     
     if (itemType === 'potion' && game.bag.potion > 0) {
-        if (pokemon.currentHp === 0) {
+        if (monster trainers.currentHp === 0) {
             showNotification('❌ Ce monstre est K.O.!');
             return;
         }
         game.bag.potion--;
-        const healAmount = Math.min(50, pokemon.maxHp - pokemon.currentHp);
-        pokemon.currentHp = Math.min(pokemon.maxHp, pokemon.currentHp + 50);
-        showNotification(`💊 ${pokemon.species} restaure ${healAmount} HP!`);
+        const healAmount = Math.min(50, monster trainers.maxHp - monster trainers.currentHp);
+        monster trainers.currentHp = Math.min(monster trainers.maxHp, monster trainers.currentHp + 50);
+        showNotification(`💊 ${monster trainers.species} restaure ${healAmount} HP!`);
     } else if (itemType === 'superpotion' && game.bag.superpotion > 0) {
-        if (pokemon.currentHp === 0) {
+        if (monster trainers.currentHp === 0) {
             showNotification('❌ Ce monstre est K.O.!');
             return;
         }
         game.bag.superpotion--;
-        const healAmount = Math.min(100, pokemon.maxHp - pokemon.currentHp);
-        pokemon.currentHp = Math.min(pokemon.maxHp, pokemon.currentHp + 100);
-        showNotification(`� ${pokemon.species} restaure ${healAmount} HP!`);
+        const healAmount = Math.min(100, monster trainers.maxHp - monster trainers.currentHp);
+        monster trainers.currentHp = Math.min(monster trainers.maxHp, monster trainers.currentHp + 100);
+        showNotification(`� ${monster trainers.species} restaure ${healAmount} HP!`);
     } else if (itemType === 'hyperpotion' && game.bag.hyperpotion > 0) {
-        if (pokemon.currentHp === 0) {
+        if (monster trainers.currentHp === 0) {
             showNotification('❌ Ce monstre est K.O.!');
             return;
         }
         game.bag.hyperpotion--;
-        const healAmount = Math.min(200, pokemon.maxHp - pokemon.currentHp);
-        pokemon.currentHp = Math.min(pokemon.maxHp, pokemon.currentHp + 200);
-        showNotification(`🧪 ${pokemon.species} restaure ${healAmount} HP!`);
+        const healAmount = Math.min(200, monster trainers.maxHp - monster trainers.currentHp);
+        monster trainers.currentHp = Math.min(monster trainers.maxHp, monster trainers.currentHp + 200);
+        showNotification(`🧪 ${monster trainers.species} restaure ${healAmount} HP!`);
     } else if (itemType === 'revive' && game.bag.revive > 0) {
-        if (pokemon.currentHp > 0) {
+        if (monster trainers.currentHp > 0) {
             showNotification('❌ Ce monstre n\'est pas K.O.!');
             return;
         }
         game.bag.revive--; 
-        pokemon.currentHp = Math.floor(pokemon.maxHp * 0.5);
-        showNotification(`⚡ ${pokemon.species} est réanimé avec 50% HP!`);
+        monster trainers.currentHp = Math.floor(monster trainers.maxHp * 0.5);
+        showNotification(`⚡ ${monster trainers.species} est réanimé avec 50% HP!`);
     } else {
         showNotification('❌ Objet non disponible');
         return;
@@ -4370,28 +4370,28 @@ window.redeemSecretCode = function() {
 };
 
 // ========== SÉLECTION DE POKÉMON POUR COMBAT ==========
-function showPokemonSelection(enemyPokemon) {
-    const modal = document.getElementById('selectPokemonModal');
-    const content = document.getElementById('selectPokemonContent');
+function showMonster TrainersSelection(enemyMonster Trainers) {
+    const modal = document.getElementById('selectMonster TrainersModal');
+    const content = document.getElementById('selectMonster TrainersContent');
     
     let html = `
         <div style="font-size: 0.8rem; margin-bottom: 20px; text-align: center;">
-            Choisissez un Pokémon pour affronter ${enemyPokemon.emoji} ${getDisplayName(enemyPokemon.species)} Lv${enemyPokemon.level}
+            Choisissez un Monster Trainers pour affronter ${enemyMonster Trainers.emoji} ${getDisplayName(enemyMonster Trainers.species)} Lv${enemyMonster Trainers.level}
         </div>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
     `;
     
-    game.team.forEach((pokemon, index) => {
-        const hpPercent = (pokemon.currentHp / pokemon.maxHp) * 100;
+    game.team.forEach((monster trainers, index) => {
+        const hpPercent = (monster trainers.currentHp / monster trainers.maxHp) * 100;
         const hpColor = hpPercent > 50 ? '#2ecc71' : hpPercent > 20 ? '#f39c12' : '#e74c3c';
-        const isKO = pokemon.currentHp === 0;
+        const isKO = monster trainers.currentHp === 0;
         
-        // Vérifier si le Pokémon est à la ferme
-        const isInFarm = game.farm.pokemon.some(fp => fp && fp.species === pokemon.species && fp.level === pokemon.level);
+        // Vérifier si le Monster Trainers est à la ferme
+        const isInFarm = game.farm.monster trainers.some(fp => fp && fp.species === monster trainers.species && fp.level === monster trainers.level);
         const isDisabled = isKO || isInFarm;
         
         html += `
-            <div onclick="selectPokemonForBattle(${index}, ${JSON.stringify(enemyPokemon).replace(/"/g, '&quot;')})" 
+            <div onclick="selectMonster TrainersForBattle(${index}, ${JSON.stringify(enemyMonster Trainers).replace(/"/g, '&quot;')})" 
                  style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); 
                         border: 3px solid ${isDisabled ? '#555' : '#3498db'}; 
                         padding: 15px; 
@@ -4401,10 +4401,10 @@ function showPokemonSelection(enemyPokemon) {
                         transition: all 0.3s;
                         position: relative;">
                 ${isInFarm ? '<div style="position: absolute; top: 5px; right: 5px; background: #f39c12; color: #fff; padding: 3px 6px; border-radius: 3px; font-size: 0.5rem;">🚜 FERME</div>' : ''}
-                <div style="font-size: 3rem; margin-bottom: 10px;">${pokemon.emoji}</div>
-                <div style="font-size: 0.9rem; color: #f1c40f; margin-bottom: 8px;">${getDisplayName(pokemon.species)}</div>
-                <div style="font-size: 0.7rem; color: #bdc3c7; margin-bottom: 5px;">Niveau ${pokemon.level}</div>
-                <div style="font-size: 0.6rem; color: ${hpColor};">❤️ ${pokemon.currentHp}/${pokemon.maxHp}</div>
+                <div style="font-size: 3rem; margin-bottom: 10px;">${monster trainers.emoji}</div>
+                <div style="font-size: 0.9rem; color: #f1c40f; margin-bottom: 8px;">${getDisplayName(monster trainers.species)}</div>
+                <div style="font-size: 0.7rem; color: #bdc3c7; margin-bottom: 5px;">Niveau ${monster trainers.level}</div>
+                <div style="font-size: 0.6rem; color: ${hpColor};">❤️ ${monster trainers.currentHp}/${monster trainers.maxHp}</div>
                 ${isKO ? '<div style="color: #e74c3c; font-size: 0.7rem; margin-top: 5px;">K.O.</div>' : ''}
                 ${isInFarm ? '<div style="color: #f39c12; font-size: 0.6rem; margin-top: 5px;">🚜 À la ferme</div>' : ''}
             </div>
@@ -4418,23 +4418,23 @@ function showPokemonSelection(enemyPokemon) {
     document.getElementById('modalOverlay').style.display = 'block';
 }
 
-function selectPokemonForBattle(index, enemyPokemon) {
-    const pokemon = game.team[index];
+function selectMonster TrainersForBattle(index, enemyMonster Trainers) {
+    const monster trainers = game.team[index];
     
-    if (pokemon.currentHp === 0) {
-        showNotification('❌ Ce Pokémon est K.O.!');
+    if (monster trainers.currentHp === 0) {
+        showNotification('❌ Ce Monster Trainers est K.O.!');
         return;
     }
     
-    // Vérifier si le Pokémon est à la ferme
-    const isInFarm = game.farm.pokemon.some(fp => fp && fp.species === pokemon.species && fp.level === pokemon.level);
+    // Vérifier si le Monster Trainers est à la ferme
+    const isInFarm = game.farm.monster trainers.some(fp => fp && fp.species === monster trainers.species && fp.level === monster trainers.level);
     if (isInFarm) {
-        showNotification('❌ Ce Pokémon est à la ferme! Récupère-le d\'abord.');
+        showNotification('❌ Ce Monster Trainers est à la ferme! Récupère-le d\'abord.');
         return;
     }
     
     closeAllModals();
-    runBattle(pokemon, enemyPokemon, true);
+    runBattle(monster trainers, enemyMonster Trainers, true);
 }
 
 // ========== GESTION D'ÉQUIPE (RELÂCHER POKÉMON) ==========
@@ -4452,7 +4452,7 @@ window.toggleReleaseMode = function() {
     openTeam();
 };
 
-window.togglePokemonSelection = function(index) {
+window.toggleMonster TrainersSelection = function(index) {
     if (!game.releaseMode) return;
     
     const idx = game.releaseSelection.indexOf(index);
@@ -4468,14 +4468,14 @@ window.confirmReleaseMultiple = function() {
     if (game.releaseSelection.length === 0) return;
     
     if (game.team.length - game.releaseSelection.length < 1) {
-        showNotification('❌ Vous devez garder au moins un Pokémon!');
+        showNotification('❌ Vous devez garder au moins un Monster Trainers!');
         return;
     }
     
     const totalValue = game.releaseSelection.reduce((sum, idx) => sum + (game.team[idx].level * 50), 0);
     const count = game.releaseSelection.length;
     
-    if (confirm(`Voulez-vous vraiment relâcher ${count} Pokémon?\n\nVous gagnerez ${totalValue}💰`)) {
+    if (confirm(`Voulez-vous vraiment relâcher ${count} Monster Trainers?\n\nVous gagnerez ${totalValue}💰`)) {
         // Trier les indices en ordre décroissant pour supprimer sans problème
         game.releaseSelection.sort((a, b) => b - a);
         
@@ -4487,24 +4487,24 @@ window.confirmReleaseMultiple = function() {
         game.releaseSelection = [];
         game.releaseMode = false;
         
-        showNotification(`👋 ${count} Pokémon relâché(s) pour ${totalValue}💰`);
+        showNotification(`👋 ${count} Monster Trainers relâché(s) pour ${totalValue}💰`);
         updateHUD();
         openTeam();
     }
 };
 
-function releasePokemon(index) {
-    const pokemon = game.team[index];
+function releaseMonster Trainers(index) {
+    const monster trainers = game.team[index];
     
     if (game.team.length === 1) {
-        showNotification('❌ Vous devez garder au moins un Pokémon!');
+        showNotification('❌ Vous devez garder au moins un Monster Trainers!');
         return;
     }
     
-    if (confirm(`Voulez-vous vraiment relâcher ${pokemon.emoji} ${getDisplayName(pokemon.species)} Lv${pokemon.level}?\n\nVous gagnerez ${pokemon.level * 50}💰`)) {
-        game.money += pokemon.level * 50;
+    if (confirm(`Voulez-vous vraiment relâcher ${monster trainers.emoji} ${getDisplayName(monster trainers.species)} Lv${monster trainers.level}?\n\nVous gagnerez ${monster trainers.level * 50}💰`)) {
+        game.money += monster trainers.level * 50;
         game.team.splice(index, 1);
-        showNotification(`👋 ${getDisplayName(pokemon.species)} a été relâché pour ${pokemon.level * 50}💰`);
+        showNotification(`👋 ${getDisplayName(monster trainers.species)} a été relâché pour ${monster trainers.level * 50}💰`);
         updateHUD();
         closeTeam();
         openTeam(); // Refresh
@@ -4532,7 +4532,7 @@ function showTeleportConfirm(teleport) {
             <div style="font-size: 2rem; margin-bottom: 15px;">${targetWorld.name}</div>
             <div style="font-size: 0.8rem; margin-bottom: 10px; color: #bdc3c7;">${worldInfo.desc}</div>
             <div style="font-size: 0.7rem; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 5px; margin: 15px 0;">
-                <div style="color: #f1c40f; margin-bottom: 5px;">🎯 Pokémon disponibles:</div>
+                <div style="color: #f1c40f; margin-bottom: 5px;">🎯 Monster Trainers disponibles:</div>
                 <div>${worldInfo.spawns}</div>
             </div>
             <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
@@ -4663,7 +4663,7 @@ function startGymBattle(mapKey) {
     
     const trainerTeam = [];
     for (let i = 0; i < 3; i++) {
-        const speciesPool = gym.pokemon;
+        const speciesPool = gym.monster trainers;
         const randomSpecies = speciesPool[Math.floor(Math.random() * speciesPool.length)];
         const level = baseLevel + Math.floor(Math.random() * 5);
         
@@ -4681,8 +4681,8 @@ function startGymBattle(mapKey) {
             species = evolutionLine[0];
         }
         
-        const pokemon = createPokemon(species, level);
-        trainerTeam.push(pokemon);
+        const monster trainers = createMonster Trainers(species, level);
+        trainerTeam.push(monster trainers);
     }
     
     startTrainerBattle(trainerTeam, `Champion ${gym.name}`, mapKey, true);
@@ -4691,7 +4691,7 @@ function startGymBattle(mapKey) {
 // ========== SYSTÈME DE COMBAT CONTRE DRESSEUR ==========
 function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle = false) {
     if (game.team.length === 0 || game.team.filter(p => p.currentHp > 0).length === 0) {
-        showNotification('❌ Vous n\'avez aucun Pokémon en forme!');
+        showNotification('❌ Vous n\'avez aucun Monster Trainers en forme!');
         return;
     }
     
@@ -4704,7 +4704,7 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
     let playerTeamIndex = 0;
     let enemyTeamIndex = 0;
     
-    // Trouver le premier Pokémon vivant du joueur
+    // Trouver le premier Monster Trainers vivant du joueur
     for (let i = 0; i < game.team.length; i++) {
         if (game.team[i].currentHp > 0) {
             playerTeamIndex = i;
@@ -4712,23 +4712,23 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
         }
     }
     
-    // Ajouter le premier Pokémon aux participants
+    // Ajouter le premier Monster Trainers aux participants
     if (!game.battleParticipants.includes(playerTeamIndex)) {
         game.battleParticipants.push(playerTeamIndex);
     }
     
-    let playerPokemon = game.team[playerTeamIndex];
-    let enemyPokemon = enemyTeam[enemyTeamIndex];
+    let playerMonster Trainers = game.team[playerTeamIndex];
+    let enemyMonster Trainers = enemyTeam[enemyTeamIndex];
     
     const modal = document.getElementById('battleModal');
     const content = document.getElementById('battleContent');
     
-    let battleLog = [`${trainerName} vous défie en combat!`, `${trainerName} envoie ${getDisplayName(enemyPokemon.species)}!`];
+    let battleLog = [`${trainerName} vous défie en combat!`, `${trainerName} envoie ${getDisplayName(enemyMonster Trainers.species)}!`];
     let turn = 'player';
     let battleEnded = false;
     
-    function getHealthColor(pokemon) {
-        const percent = (pokemon.currentHp / pokemon.maxHp) * 100;
+    function getHealthColor(monster trainers) {
+        const percent = (monster trainers.currentHp / monster trainers.maxHp) * 100;
         if (percent > 50) return 'health-high';
         if (percent > 20) return 'health-medium';
         return 'health-low';
@@ -4866,33 +4866,33 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
                 <div style="position: absolute; top: 30px; right: 80px;">
                     <div style="font-size: 0.7rem; color: #bdc3c7; margin-bottom: 5px;">${trainerName}</div>
                     <div class="health-bar" style="margin-bottom: 10px;">
-                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(enemyPokemon.species)}</div>
-                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${enemyPokemon.level} | ${enemyTeamAlive.length}/${enemyTeam.length} Pokémon</div>
+                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(enemyMonster Trainers.species)}</div>
+                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${enemyMonster Trainers.level} | ${enemyTeamAlive.length}/${enemyTeam.length} Monster Trainers</div>
                         <div class="health-bar-inner">
-                            <div class="health-bar-fill ${getHealthColor(enemyPokemon)}" 
-                                 style="width: ${(enemyPokemon.currentHp / enemyPokemon.maxHp) * 100}%;"></div>
+                            <div class="health-bar-fill ${getHealthColor(enemyMonster Trainers)}" 
+                                 style="width: ${(enemyMonster Trainers.currentHp / enemyMonster Trainers.maxHp) * 100}%;"></div>
                         </div>
                         <div style="font-size: 0.7rem; margin-top: 3px;">
-                            ${enemyPokemon.currentHp} / ${enemyPokemon.maxHp} HP
+                            ${enemyMonster Trainers.currentHp} / ${enemyMonster Trainers.maxHp} HP
                         </div>
                     </div>
                 </div>
-                <div class="pokemon-sprite enemy-sprite" style="font-size: 80px;">${enemyPokemon.emoji}</div>
+                <div class="monster trainers-sprite enemy-sprite" style="font-size: 80px;">${enemyMonster Trainers.emoji}</div>
                 
                 <div style="position: absolute; bottom: 30px; left: 20px;">
                     <div class="health-bar">
-                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(playerPokemon.species)}</div>
-                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${playerPokemon.level} | ${playerTeamAlive.length}/${game.team.length} Pokémon</div>
+                        <div style="font-size: 0.8rem; font-weight: bold;">${getDisplayName(playerMonster Trainers.species)}</div>
+                        <div style="font-size: 0.7rem; color: #bdc3c7;">Niv. ${playerMonster Trainers.level} | ${playerTeamAlive.length}/${game.team.length} Monster Trainers</div>
                         <div class="health-bar-inner">
-                            <div class="health-bar-fill ${getHealthColor(playerPokemon)}" 
-                                 style="width: ${(playerPokemon.currentHp / playerPokemon.maxHp) * 100}%;"></div>
+                            <div class="health-bar-fill ${getHealthColor(playerMonster Trainers)}" 
+                                 style="width: ${(playerMonster Trainers.currentHp / playerMonster Trainers.maxHp) * 100}%;"></div>
                         </div>
                         <div style="font-size: 0.7rem; margin-top: 3px;">
-                            ${playerPokemon.currentHp} / ${playerPokemon.maxHp} HP
+                            ${playerMonster Trainers.currentHp} / ${playerMonster Trainers.maxHp} HP
                         </div>
                     </div>
                 </div>
-                <div class="pokemon-sprite player-sprite" style="font-size: 80px;">${playerPokemon.emoji}</div>
+                <div class="monster trainers-sprite player-sprite" style="font-size: 80px;">${playerMonster Trainers.emoji}</div>
             </div>
             
             <div class="battle-log">
@@ -4901,10 +4901,10 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
             
             ${turn === 'player' && !battleEnded ? `
                 <div class="battle-menu">
-                    ${playerPokemon.moves.map((move, index) => {
+                    ${playerMonster Trainers.moves.map((move, index) => {
                         // Calculer l'efficacité du type
-                        const moveType = MOVES_BY_TYPE[playerPokemon.type] ? playerPokemon.type : 'normal';
-                        const multiplier = move.power > 0 ? getTypeMultiplier(moveType, enemyPokemon.type) : 1;
+                        const moveType = MOVES_BY_TYPE[playerMonster Trainers.type] ? playerMonster Trainers.type : 'normal';
+                        const multiplier = move.power > 0 ? getTypeMultiplier(moveType, enemyMonster Trainers.type) : 1;
                         let typeIndicator = '';
                         if (move.power > 0) {
                             if (multiplier > 1) {
@@ -4916,7 +4916,7 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
                         
                         return `
                             <button class="menu-btn" onclick="trainerPlayerAttack(${index})" 
-                                    ${playerPokemon.currentHp <= 0 ? 'disabled' : ''}
+                                    ${playerMonster Trainers.currentHp <= 0 ? 'disabled' : ''}
                                     style="font-size: 0.7rem; padding: 12px;">
                                 ${typeIndicator} ${move.emoji || ''} ${move.name}<br>
                                 <span style="font-size: 0.5rem; color: #bdc3c7;">
@@ -4927,7 +4927,7 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
                     }).join('')}
                 </div>
                 ${playerTeamAlive.length > 1 ? `
-                    <button class="menu-btn" onclick="switchTrainerPokemon()" 
+                    <button class="menu-btn" onclick="switchTrainerMonster Trainers()" 
                             style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, #9b59b6, #8e44ad); font-size: 0.8rem;">
                         🔄 CHANGER DE POKÉMON
                     </button>
@@ -4949,33 +4949,33 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
     window.trainerPlayerAttack = function(moveIndex) {
         if (battleEnded || turn !== 'player') return;
         
-        const move = playerPokemon.moves[moveIndex];
+        const move = playerMonster Trainers.moves[moveIndex];
         if (!move) return;
         
         if (move.power > 0) {
-            const typeMultiplier = getTypeMultiplier(playerPokemon.type, enemyPokemon.type);
+            const typeMultiplier = getTypeMultiplier(playerMonster Trainers.type, enemyMonster Trainers.type);
             const damage = Math.max(1, Math.floor(
-                ((2 * playerPokemon.level / 5 + 2) * move.power * playerPokemon.stats.atk / enemyPokemon.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
+                ((2 * playerMonster Trainers.level / 5 + 2) * move.power * playerMonster Trainers.stats.atk / enemyMonster Trainers.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
             ));
             
-            enemyPokemon.currentHp = Math.max(0, enemyPokemon.currentHp - damage);
-            battleLog.push(`${getDisplayName(playerPokemon.species)} utilise ${move.name}! -${damage} HP`);
+            enemyMonster Trainers.currentHp = Math.max(0, enemyMonster Trainers.currentHp - damage);
+            battleLog.push(`${getDisplayName(playerMonster Trainers.species)} utilise ${move.name}! -${damage} HP`);
             
             if (typeMultiplier > 1) battleLog.push('⚡ C\'est super efficace!');
             else if (typeMultiplier < 1) battleLog.push('💨 Pas très efficace...');
         } else {
-            const heal = Math.floor(playerPokemon.maxHp / 2);
-            playerPokemon.currentHp = Math.min(playerPokemon.maxHp, playerPokemon.currentHp + heal);
-            battleLog.push(`${getDisplayName(playerPokemon.species)} se soigne de ${heal} HP!`);
+            const heal = Math.floor(playerMonster Trainers.maxHp / 2);
+            playerMonster Trainers.currentHp = Math.min(playerMonster Trainers.maxHp, playerMonster Trainers.currentHp + heal);
+            battleLog.push(`${getDisplayName(playerMonster Trainers.species)} se soigne de ${heal} HP!`);
         }
         
         updateTrainerBattle();
         
-        if (enemyPokemon.currentHp <= 0) {
+        if (enemyMonster Trainers.currentHp <= 0) {
             setTimeout(() => {
-                battleLog.push(`💀 ${getDisplayName(enemyPokemon.species)} est K.O.!`);
+                battleLog.push(`💀 ${getDisplayName(enemyMonster Trainers.species)} est K.O.!`);
                 
-                // Chercher le prochain Pokémon ennemi
+                // Chercher le prochain Monster Trainers ennemi
                 let nextEnemyIndex = -1;
                 for (let i = 0; i < enemyTeam.length; i++) {
                     if (enemyTeam[i].currentHp > 0) {
@@ -4986,8 +4986,8 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
                 
                 if (nextEnemyIndex >= 0) {
                     enemyTeamIndex = nextEnemyIndex;
-                    enemyPokemon = enemyTeam[enemyTeamIndex];
-                    battleLog.push(`${trainerName} envoie ${getDisplayName(enemyPokemon.species)}!`);
+                    enemyMonster Trainers = enemyTeam[enemyTeamIndex];
+                    battleLog.push(`${trainerName} envoie ${getDisplayName(enemyMonster Trainers.species)}!`);
                     updateTrainerBattle();
                     setTimeout(() => { turn = 'player'; updateTrainerBattle(); }, 1500);
                 } else {
@@ -5006,31 +5006,31 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
         updateTrainerBattle();
         
         setTimeout(() => {
-            const moveIndex = Math.floor(Math.random() * enemyPokemon.moves.length);
-            const move = enemyPokemon.moves[moveIndex];
+            const moveIndex = Math.floor(Math.random() * enemyMonster Trainers.moves.length);
+            const move = enemyMonster Trainers.moves[moveIndex];
             
             if (move.power > 0) {
-                const typeMultiplier = getTypeMultiplier(enemyPokemon.type, playerPokemon.type);
+                const typeMultiplier = getTypeMultiplier(enemyMonster Trainers.type, playerMonster Trainers.type);
                 const damage = Math.max(1, Math.floor(
-                    ((2 * enemyPokemon.level / 5 + 2) * move.power * enemyPokemon.stats.atk / playerPokemon.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
+                    ((2 * enemyMonster Trainers.level / 5 + 2) * move.power * enemyMonster Trainers.stats.atk / playerMonster Trainers.stats.def / 50 + 2) * typeMultiplier * (0.85 + Math.random() * 0.15)
                 ));
                 
-                playerPokemon.currentHp = Math.max(0, playerPokemon.currentHp - damage);
-                battleLog.push(`${getDisplayName(enemyPokemon.species)} utilise ${move.name}! -${damage} HP`);
+                playerMonster Trainers.currentHp = Math.max(0, playerMonster Trainers.currentHp - damage);
+                battleLog.push(`${getDisplayName(enemyMonster Trainers.species)} utilise ${move.name}! -${damage} HP`);
                 
                 if (typeMultiplier > 1) battleLog.push('⚡ C\'est super efficace!');
                 else if (typeMultiplier < 1) battleLog.push('💨 Pas très efficace...');
             } else {
-                battleLog.push(`${getDisplayName(enemyPokemon.species)} utilise ${move.name}!`);
+                battleLog.push(`${getDisplayName(enemyMonster Trainers.species)} utilise ${move.name}!`);
             }
             
             updateTrainerBattle();
             
-            if (playerPokemon.currentHp <= 0) {
+            if (playerMonster Trainers.currentHp <= 0) {
                 setTimeout(() => {
-                    battleLog.push(`💀 ${getDisplayName(playerPokemon.species)} est K.O.!`);
+                    battleLog.push(`💀 ${getDisplayName(playerMonster Trainers.species)} est K.O.!`);
                     
-                    // Chercher le prochain Pokémon du joueur
+                    // Chercher le prochain Monster Trainers du joueur
                     let nextPlayerIndex = -1;
                     for (let i = 0; i < game.team.length; i++) {
                         if (game.team[i].currentHp > 0) {
@@ -5040,11 +5040,11 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
                     }
                     
                     if (nextPlayerIndex >= 0) {
-                        battleLog.push('💪 Choisissez un autre Pokémon!');
+                        battleLog.push('💪 Choisissez un autre Monster Trainers!');
                         updateTrainerBattle();
                         
                         setTimeout(() => {
-                            showTrainerPokemonSwitch();
+                            showTrainerMonster TrainersSwitch();
                         }, 1500);
                     } else {
                         checkTrainerBattleEnd();
@@ -5057,28 +5057,28 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
         }, 1000);
     }
     
-    window.switchTrainerPokemon = function() {
-        showTrainerPokemonSwitch();
+    window.switchTrainerMonster Trainers = function() {
+        showTrainerMonster TrainersSwitch();
     };
     
-    function showTrainerPokemonSwitch() {
-        const content = document.getElementById('selectPokemonContent');
-        const alivePokemon = game.team.filter(p => p.currentHp > 0);
+    function showTrainerMonster TrainersSwitch() {
+        const content = document.getElementById('selectMonster TrainersContent');
+        const aliveMonster Trainers = game.team.filter(p => p.currentHp > 0);
         
         content.innerHTML = `
             <p style="font-size: 0.8rem; margin-bottom: 15px; text-align: center;">
-                Choisissez un Pokémon pour le combat:
+                Choisissez un Monster Trainers pour le combat:
             </p>
-            <div class="pokemon-grid">
-                ${alivePokemon.map((pokemon, index) => {
-                    const teamIndex = game.team.indexOf(pokemon);
+            <div class="monster trainers-grid">
+                ${aliveMonster Trainers.map((monster trainers, index) => {
+                    const teamIndex = game.team.indexOf(monster trainers);
                     return `
-                        <div class="pokemon-card" onclick="confirmTrainerPokemonSwitch(${teamIndex})">
-                            <div style="font-size: 2rem;">${pokemon.emoji}</div>
-                            <div class="name">${getDisplayName(pokemon.species)}</div>
+                        <div class="monster trainers-card" onclick="confirmTrainerMonster TrainersSwitch(${teamIndex})">
+                            <div style="font-size: 2rem;">${monster trainers.emoji}</div>
+                            <div class="name">${getDisplayName(monster trainers.species)}</div>
                             <div class="stats">
-                                Niv. ${pokemon.level}<br>
-                                ❤️ ${pokemon.currentHp}/${pokemon.maxHp} HP
+                                Niv. ${monster trainers.level}<br>
+                                ❤️ ${monster trainers.currentHp}/${monster trainers.maxHp} HP
                             </div>
                         </div>
                     `;
@@ -5086,22 +5086,22 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
             </div>
         `;
         
-        document.getElementById('selectPokemonModal').style.display = 'block';
+        document.getElementById('selectMonster TrainersModal').style.display = 'block';
         document.getElementById('modalOverlay').style.display = 'block';
     }
     
-    window.confirmTrainerPokemonSwitch = function(teamIndex) {
+    window.confirmTrainerMonster TrainersSwitch = function(teamIndex) {
         closeAllModals();
         
         playerTeamIndex = teamIndex;
-        playerPokemon = game.team[playerTeamIndex];
+        playerMonster Trainers = game.team[playerTeamIndex];
         
-        // Ajouter le nouveau Pokémon aux participants du combat
+        // Ajouter le nouveau Monster Trainers aux participants du combat
         if (!game.battleParticipants.includes(teamIndex)) {
             game.battleParticipants.push(teamIndex);
         }
         
-        battleLog.push(`🔄 Vous envoyez ${getDisplayName(playerPokemon.species)}!`);
+        battleLog.push(`🔄 Vous envoyez ${getDisplayName(playerMonster Trainers.species)}!`);
         
         setTimeout(() => {
             updateTrainerBattle();
@@ -5115,28 +5115,28 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
 }
 
 // ========== SWITCH POKÉMON EN COMBAT ==========
-function showPokemonSwitchInBattle(enemyPokemon, isWild) {
-    const content = document.getElementById('selectPokemonContent');
-    // Filtrer les Pokémon vivants ET non à la ferme
-    const alivePokemon = game.team.filter(p => {
-        const isInFarm = game.farm.pokemon.some(fp => fp && fp.species === p.species && fp.level === p.level);
+function showMonster TrainersSwitchInBattle(enemyMonster Trainers, isWild) {
+    const content = document.getElementById('selectMonster TrainersContent');
+    // Filtrer les Monster Trainers vivants ET non à la ferme
+    const aliveMonster Trainers = game.team.filter(p => {
+        const isInFarm = game.farm.monster trainers.some(fp => fp && fp.species === p.species && fp.level === p.level);
         return p.currentHp > 0 && !isInFarm;
     });
     
     content.innerHTML = `
         <p style="font-size: 0.8rem; margin-bottom: 15px; text-align: center;">
-            Choisissez un Pokémon pour continuer le combat:
+            Choisissez un Monster Trainers pour continuer le combat:
         </p>
-        <div class="pokemon-grid">
-            ${alivePokemon.map((pokemon, index) => {
-                const teamIndex = game.team.indexOf(pokemon);
+        <div class="monster trainers-grid">
+            ${aliveMonster Trainers.map((monster trainers, index) => {
+                const teamIndex = game.team.indexOf(monster trainers);
                 return `
-                    <div class="pokemon-card" onclick="switchPokemonInBattle(${teamIndex}, ${JSON.stringify(enemyPokemon).replace(/"/g, '&quot;')}, ${isWild})">
-                        <div style="font-size: 2rem;">${pokemon.emoji}</div>
-                        <div class="name">${getDisplayName(pokemon.species)}</div>
+                    <div class="monster trainers-card" onclick="switchMonster TrainersInBattle(${teamIndex}, ${JSON.stringify(enemyMonster Trainers).replace(/"/g, '&quot;')}, ${isWild})">
+                        <div style="font-size: 2rem;">${monster trainers.emoji}</div>
+                        <div class="name">${getDisplayName(monster trainers.species)}</div>
                         <div class="stats">
-                            Niv. ${pokemon.level}<br>
-                            ❤️ ${pokemon.currentHp}/${pokemon.maxHp} HP
+                            Niv. ${monster trainers.level}<br>
+                            ❤️ ${monster trainers.currentHp}/${monster trainers.maxHp} HP
                         </div>
                     </div>
                 `;
@@ -5144,58 +5144,58 @@ function showPokemonSwitchInBattle(enemyPokemon, isWild) {
         </div>
     `;
     
-    document.getElementById('selectPokemonModal').style.display = 'block';
+    document.getElementById('selectMonster TrainersModal').style.display = 'block';
     document.getElementById('modalOverlay').style.display = 'block';
 }
 
-window.switchPokemonInBattle = function(teamIndex, enemyPokemon, isWild) {
-    const pokemon = game.team[teamIndex];
+window.switchMonster TrainersInBattle = function(teamIndex, enemyMonster Trainers, isWild) {
+    const monster trainers = game.team[teamIndex];
     
-    // Vérifier si le Pokémon est à la ferme
-    const isInFarm = game.farm.pokemon.some(fp => fp && fp.species === pokemon.species && fp.level === pokemon.level);
+    // Vérifier si le Monster Trainers est à la ferme
+    const isInFarm = game.farm.monster trainers.some(fp => fp && fp.species === monster trainers.species && fp.level === monster trainers.level);
     if (isInFarm) {
-        showNotification('❌ Ce Pokémon est à la ferme!');
+        showNotification('❌ Ce Monster Trainers est à la ferme!');
         return;
     }
     
     closeAllModals();
-    const newPokemon = game.team[teamIndex];
+    const newMonster Trainers = game.team[teamIndex];
     
     setTimeout(() => {
-        runBattle(newPokemon, enemyPokemon, isWild);
-        showNotification(`⚔️ ${getDisplayName(newPokemon.species)} entre en combat!`);
+        runBattle(newMonster Trainers, enemyMonster Trainers, isWild);
+        showNotification(`⚔️ ${getDisplayName(newMonster Trainers.species)} entre en combat!`);
     }, 300);
 };
 
 // ========== CHANGEMENT VOLONTAIRE DE POKÉMON PENDANT LE COMBAT ==========
-window.switchPokemonDuringBattle = function() {
-    // Créer une modal temporaire pour afficher les Pokémon disponibles
-    const alivePokemon = game.team.filter(p => {
-        const isInFarm = game.farm.pokemon.some(fp => fp && fp.species === p.species && fp.level === p.level);
+window.switchMonster TrainersDuringBattle = function() {
+    // Créer une modal temporaire pour afficher les Monster Trainers disponibles
+    const aliveMonster Trainers = game.team.filter(p => {
+        const isInFarm = game.farm.monster trainers.some(fp => fp && fp.species === p.species && fp.level === p.level);
         return p.currentHp > 0 && !isInFarm;
     });
     
-    if (alivePokemon.length <= 1) {
-        showNotification('❌ Aucun autre Pokémon disponible!');
+    if (aliveMonster Trainers.length <= 1) {
+        showNotification('❌ Aucun autre Monster Trainers disponible!');
         return;
     }
     
-    const content = document.getElementById('selectPokemonContent');
+    const content = document.getElementById('selectMonster TrainersContent');
     
     content.innerHTML = `
         <p style="font-size: 0.8rem; margin-bottom: 15px; text-align: center;">
-            Choisissez un Pokémon pour remplacer le Pokémon actuel:
+            Choisissez un Monster Trainers pour remplacer le Monster Trainers actuel:
         </p>
-        <div class="pokemon-grid">
-            ${alivePokemon.map((pokemon, index) => {
-                const teamIndex = game.team.indexOf(pokemon);
+        <div class="monster trainers-grid">
+            ${aliveMonster Trainers.map((monster trainers, index) => {
+                const teamIndex = game.team.indexOf(monster trainers);
                 return `
-                    <div class="pokemon-card" onclick="confirmPokemonSwitch(${teamIndex})">
-                        <div style="font-size: 2rem;">${pokemon.emoji}</div>
-                        <div class="name">${getDisplayName(pokemon.species)}</div>
+                    <div class="monster trainers-card" onclick="confirmMonster TrainersSwitch(${teamIndex})">
+                        <div style="font-size: 2rem;">${monster trainers.emoji}</div>
+                        <div class="name">${getDisplayName(monster trainers.species)}</div>
                         <div class="stats">
-                            Niv. ${pokemon.level}<br>
-                            ❤️ ${pokemon.currentHp}/${pokemon.maxHp} HP
+                            Niv. ${monster trainers.level}<br>
+                            ❤️ ${monster trainers.currentHp}/${monster trainers.maxHp} HP
                         </div>
                     </div>
                 `;
@@ -5203,26 +5203,26 @@ window.switchPokemonDuringBattle = function() {
         </div>
     `;
     
-    document.getElementById('selectPokemonModal').style.display = 'block';
+    document.getElementById('selectMonster TrainersModal').style.display = 'block';
     document.getElementById('modalOverlay').style.display = 'block';
 };
 
-window.confirmPokemonSwitch = function(teamIndex) {
+window.confirmMonster TrainersSwitch = function(teamIndex) {
     closeAllModals();
-    const newPokemon = game.team[teamIndex];
+    const newMonster Trainers = game.team[teamIndex];
     
-    // Ajouter le nouveau Pokémon aux participants du combat
+    // Ajouter le nouveau Monster Trainers aux participants du combat
     if (!game.battleParticipants.includes(teamIndex)) {
         game.battleParticipants.push(teamIndex);
     }
     
     // Récupérer l'ennemi et isWild depuis game.currentEncounter
-    const enemyPokemon = game.currentEncounter;
+    const enemyMonster Trainers = game.currentEncounter;
     
     setTimeout(() => {
-        // Redémarrer le combat avec le nouveau Pokémon
-        runBattle(newPokemon, enemyPokemon, true);
-        showNotification(`🔄 ${getDisplayName(newPokemon.species)} entre en combat!`);
+        // Redémarrer le combat avec le nouveau Monster Trainers
+        runBattle(newMonster Trainers, enemyMonster Trainers, true);
+        showNotification(`🔄 ${getDisplayName(newMonster Trainers.species)} entre en combat!`);
     }, 300);
 };
 
@@ -5234,7 +5234,7 @@ function openFarm() {
         <div style="font-size: 0.8rem; margin-bottom: 20px; padding: 15px; background: rgba(46,204,113,0.1); border: 2px solid #2ecc71; border-radius: 5px;">
             <div style="font-weight: bold; color: #2ecc71; margin-bottom: 10px;">📚 COMMENT ÇA MARCHE ?</div>
             <div style="font-size: 0.7rem; line-height: 1.6;">
-                • Dépose jusqu'à 3 Pokémon dans la ferme<br>
+                • Dépose jusqu'à 3 Monster Trainers dans la ferme<br>
                 • Ils gagnent 50 XP toutes les 2 minutes<br>
                 • Maximum 30 minutes (1500 XP)<br>
                 • Le décompte se poursuit même si tu quittes !
@@ -5245,10 +5245,10 @@ function openFarm() {
     `;
     
     for (let i = 0; i < 3; i++) {
-        const pokemon = game.farm.pokemon[i];
+        const monster trainers = game.farm.monster trainers[i];
         const timestamp = game.farm.timestamps[i];
         
-        if (pokemon) {
+        if (monster trainers) {
             const elapsed = Math.floor((Date.now() - timestamp) / 1000 / 60); // minutes écoulées
             const cappedElapsed = Math.min(elapsed, 30); // max 30 minutes
             const xpGained = Math.floor(cappedElapsed / 2) * 50; // 50 XP toutes les 2 minutes
@@ -5256,9 +5256,9 @@ function openFarm() {
             
             html += `
                 <div style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border: 2px solid #2ecc71; padding: 15px; border-radius: 5px;">
-                    <div style="font-size: 2rem; text-align: center; margin-bottom: 10px;">${pokemon.emoji}</div>
-                    <div style="font-weight: bold; color: #f1c40f; text-align: center; margin-bottom: 5px;">${getDisplayName(pokemon.species)}</div>
-                    <div style="font-size: 0.65rem; color: #bdc3c7; text-align: center; margin-bottom: 10px;">Niv. ${pokemon.level}</div>
+                    <div style="font-size: 2rem; text-align: center; margin-bottom: 10px;">${monster trainers.emoji}</div>
+                    <div style="font-weight: bold; color: #f1c40f; text-align: center; margin-bottom: 5px;">${getDisplayName(monster trainers.species)}</div>
+                    <div style="font-size: 0.65rem; color: #bdc3c7; text-align: center; margin-bottom: 10px;">Niv. ${monster trainers.level}</div>
                     <div style="font-size: 0.7rem; color: #2ecc71; text-align: center; margin-bottom: 5px;">⏱️ ${elapsed} min écoulées</div>
                     <div style="font-size: 0.7rem; color: #3498db; text-align: center; margin-bottom: 10px;">✨ +${xpGained} XP gagnés</div>
                     ${timeLeft > 0 
@@ -5271,7 +5271,7 @@ function openFarm() {
         } else {
             html += `
                 <div style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border: 2px dashed #555; padding: 15px; border-radius: 5px; display: flex; align-items: center; justify-content: center; min-height: 200px;">
-                    <button class="menu-btn secondary" style="font-size: 0.7rem;" onclick="selectPokemonForFarm(${i})">➕ DÉPOSER</button>
+                    <button class="menu-btn secondary" style="font-size: 0.7rem;" onclick="selectMonster TrainersForFarm(${i})">➕ DÉPOSER</button>
                 </div>
             `;
         }
@@ -5289,35 +5289,35 @@ function closeFarm() {
 }
 
 function updateFarmXP() {
-    // Met à jour les XP des Pokémon dans la ferme en fonction du temps écoulé
+    // Met à jour les XP des Monster Trainers dans la ferme en fonction du temps écoulé
     for (let i = 0; i < 3; i++) {
-        const pokemon = game.farm.pokemon[i];
+        const monster trainers = game.farm.monster trainers[i];
         const timestamp = game.farm.timestamps[i];
         
-        if (pokemon && timestamp) {
+        if (monster trainers && timestamp) {
             const elapsed = Math.floor((Date.now() - timestamp) / 1000 / 60); // minutes écoulées
             const cappedElapsed = Math.min(elapsed, 30); // max 30 minutes
             const xpGained = Math.floor(cappedElapsed / 2) * 50; // 50 XP toutes les 2 minutes
             
-            // Trouver le Pokémon original dans l'équipe pour le mettre à jour
+            // Trouver le Monster Trainers original dans l'équipe pour le mettre à jour
             // On ne met à jour que lors de la récupération
         }
     }
 }
 
-function selectPokemonForFarm(slotIndex) {
+function selectMonster TrainersForFarm(slotIndex) {
     let html = `
-        <div style="font-size: 0.8rem; margin-bottom: 15px;">Choisis un Pokémon à déposer :</div>
-        <div class="pokemon-grid">
+        <div style="font-size: 0.8rem; margin-bottom: 15px;">Choisis un Monster Trainers à déposer :</div>
+        <div class="monster trainers-grid">
     `;
     
     game.team.forEach((p, index) => {
-        // Vérifier si le Pokémon n'est pas déjà dans la ferme
-        const alreadyInFarm = game.farm.pokemon.some(fp => fp && fp.species === p.species && fp.level === p.level);
+        // Vérifier si le Monster Trainers n'est pas déjà dans la ferme
+        const alreadyInFarm = game.farm.monster trainers.some(fp => fp && fp.species === p.species && fp.level === p.level);
         
         if (!alreadyInFarm) {
             html += `
-                <div class="pokemon-card" onclick="depositPokemon(${slotIndex}, ${index})">
+                <div class="monster trainers-card" onclick="depositMonster Trainers(${slotIndex}, ${index})">
                     <div style="font-size: 2rem;">${p.emoji}</div>
                     <div class="name">${getDisplayName(p.species)}</div>
                     <div class="stats">Niv. ${p.level}</div>
@@ -5334,72 +5334,72 @@ function selectPokemonForFarm(slotIndex) {
     document.getElementById('farmContent').innerHTML = html;
 }
 
-window.depositPokemon = function(slotIndex, teamIndex) {
-    const pokemon = game.team[teamIndex];
+window.depositMonster Trainers = function(slotIndex, teamIndex) {
+    const monster trainers = game.team[teamIndex];
     
-    // Vérifier combien de Pokémon sont disponibles pour combattre (non-KO et non à la ferme)
+    // Vérifier combien de Monster Trainers sont disponibles pour combattre (non-KO et non à la ferme)
     const availableForBattle = game.team.filter(p => {
-        const isInFarm = game.farm.pokemon.some(fp => fp && fp.species === p.species && fp.level === p.level);
+        const isInFarm = game.farm.monster trainers.some(fp => fp && fp.species === p.species && fp.level === p.level);
         return p.currentHp > 0 && !isInFarm;
     });
     
-    // Si on dépose ce Pokémon et qu'il était disponible, il en restera combien ?
-    if (pokemon.currentHp > 0 && availableForBattle.length <= 1) {
-        showNotification('❌ Garde au moins un Pokémon disponible pour combattre!');
+    // Si on dépose ce Monster Trainers et qu'il était disponible, il en restera combien ?
+    if (monster trainers.currentHp > 0 && availableForBattle.length <= 1) {
+        showNotification('❌ Garde au moins un Monster Trainers disponible pour combattre!');
         return;
     }
     
-    // Créer une copie du Pokémon pour la ferme
-    game.farm.pokemon[slotIndex] = {...pokemon};
+    // Créer une copie du Monster Trainers pour la ferme
+    game.farm.monster trainers[slotIndex] = {...monster trainers};
     game.farm.timestamps[slotIndex] = Date.now();
     
-    showNotification(`🚜 ${getDisplayName(pokemon.species)} déposé à la ferme!`);
+    showNotification(`🚜 ${getDisplayName(monster trainers.species)} déposé à la ferme!`);
     openFarm();
 };
 
 window.retrieveFromFarm = function(slotIndex) {
-    const pokemon = game.farm.pokemon[slotIndex];
+    const monster trainers = game.farm.monster trainers[slotIndex];
     const timestamp = game.farm.timestamps[slotIndex];
     
-    if (!pokemon || !timestamp) return;
+    if (!monster trainers || !timestamp) return;
     
     // Calculer l'XP gagné
     const elapsed = Math.floor((Date.now() - timestamp) / 1000 / 60); // minutes écoulées
     const cappedElapsed = Math.min(elapsed, 30); // max 30 minutes
     const xpGained = Math.floor(cappedElapsed / 2) * 50; // 50 XP toutes les 2 minutes
     
-    // Trouver le Pokémon original dans l'équipe
-    const teamPokemonIndex = game.team.findIndex(p => 
-        p.species === pokemon.species && p.level === pokemon.level
+    // Trouver le Monster Trainers original dans l'équipe
+    const teamMonster TrainersIndex = game.team.findIndex(p => 
+        p.species === monster trainers.species && p.level === monster trainers.level
     );
     
-    if (teamPokemonIndex !== -1) {
-        game.team[teamPokemonIndex].exp += xpGained;
+    if (teamMonster TrainersIndex !== -1) {
+        game.team[teamMonster TrainersIndex].exp += xpGained;
         
         // Vérifier l'évolution
-        while (game.team[teamPokemonIndex].exp >= game.team[teamPokemonIndex].expToNext) {
-            game.team[teamPokemonIndex].level++;
-            game.team[teamPokemonIndex].exp -= game.team[teamPokemonIndex].expToNext;
-            game.team[teamPokemonIndex].expToNext = Math.floor(game.team[teamPokemonIndex].level * 10 * 1.5);
+        while (game.team[teamMonster TrainersIndex].exp >= game.team[teamMonster TrainersIndex].expToNext) {
+            game.team[teamMonster TrainersIndex].level++;
+            game.team[teamMonster TrainersIndex].exp -= game.team[teamMonster TrainersIndex].expToNext;
+            game.team[teamMonster TrainersIndex].expToNext = Math.floor(game.team[teamMonster TrainersIndex].level * 10 * 1.5);
             
             // Augmenter les stats
-            game.team[teamPokemonIndex].maxHp += 2;
-            game.team[teamPokemonIndex].currentHp += 2;
-            game.team[teamPokemonIndex].stats.atk += 1;
-            game.team[teamPokemonIndex].stats.def += 1;
+            game.team[teamMonster TrainersIndex].maxHp += 2;
+            game.team[teamMonster TrainersIndex].currentHp += 2;
+            game.team[teamMonster TrainersIndex].stats.atk += 1;
+            game.team[teamMonster TrainersIndex].stats.def += 1;
             
-            showNotification(`🎉 ${getDisplayName(game.team[teamPokemonIndex].species)} monte au niveau ${game.team[teamPokemonIndex].level}!`);
+            showNotification(`🎉 ${getDisplayName(game.team[teamMonster TrainersIndex].species)} monte au niveau ${game.team[teamMonster TrainersIndex].level}!`);
             
             // Check évolution
-            checkEvolution(game.team[teamPokemonIndex]);
+            checkEvolution(game.team[teamMonster TrainersIndex]);
         }
     }
     
     // Libérer l'emplacement
-    game.farm.pokemon[slotIndex] = null;
+    game.farm.monster trainers[slotIndex] = null;
     game.farm.timestamps[slotIndex] = null;
     
-    showNotification(`📥 ${getDisplayName(pokemon.species)} récupéré! +${xpGained} XP!`);
+    showNotification(`📥 ${getDisplayName(monster trainers.species)} récupéré! +${xpGained} XP!`);
     updateHUD();
     openFarm();
 };
@@ -5410,7 +5410,7 @@ function openFollowers() {
         <div style="font-size: 0.8rem; margin-bottom: 20px; padding: 15px; background: rgba(52,152,219,0.1); border: 2px solid #3498db; border-radius: 5px;">
             <div style="font-weight: bold; color: #3498db; margin-bottom: 10px;">👥 POKÉMON SUIVEURS</div>
             <div style="font-size: 0.7rem; line-height: 1.6;">
-                Choisis jusqu'à 3 Pokémon qui te suivront sur la carte !
+                Choisis jusqu'à 3 Monster Trainers qui te suivront sur la carte !
             </div>
         </div>
         
@@ -5420,10 +5420,10 @@ function openFollowers() {
     `;
     
     if (game.followers.length === 0) {
-        html += `<div style="color: #95a5a6; font-size: 0.7rem;">Aucun Pokémon ne te suit pour le moment.</div>`;
+        html += `<div style="color: #95a5a6; font-size: 0.7rem;">Aucun Monster Trainers ne te suit pour le moment.</div>`;
     } else {
-        game.followers.forEach((pokemonIndex, i) => {
-            const p = game.team[pokemonIndex];
+        game.followers.forEach((monster trainersIndex, i) => {
+            const p = game.team[monster trainersIndex];
             if (p) {
                 html += `
                     <div style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); border: 2px solid #3498db; padding: 10px; border-radius: 5px; text-align: center;">
@@ -5441,7 +5441,7 @@ function openFollowers() {
         </div>
         
         <div style="font-weight: bold; margin-bottom: 10px; color: #2ecc71;">➕ Ajouter un suiveur :</div>
-        <div class="pokemon-grid">
+        <div class="monster trainers-grid">
     `;
     
     game.team.forEach((p, index) => {
@@ -5450,7 +5450,7 @@ function openFollowers() {
         
         if (!isFollowing) {
             html += `
-                <div class="pokemon-card ${disabled ? 'disabled' : ''}" ${!disabled ? `onclick="addFollower(${index})"` : ''} style="${disabled ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                <div class="monster trainers-card ${disabled ? 'disabled' : ''}" ${!disabled ? `onclick="addFollower(${index})"` : ''} style="${disabled ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
                     <div style="font-size: 2rem;">${p.emoji}</div>
                     <div class="name">${getDisplayName(p.species)}</div>
                     <div class="stats">Niv. ${p.level}</div>
@@ -5470,23 +5470,23 @@ function closeFollowers() {
     closeAllModals();
 }
 
-window.addFollower = function(pokemonIndex) {
+window.addFollower = function(monster trainersIndex) {
     if (game.followers.length >= 3) {
         showNotification('❌ Maximum 3 suiveurs!');
         return;
     }
     
-    game.followers.push(pokemonIndex);
-    showNotification(`✅ ${getDisplayName(game.team[pokemonIndex].species)} te suit maintenant!`);
+    game.followers.push(monster trainersIndex);
+    showNotification(`✅ ${getDisplayName(game.team[monster trainersIndex].species)} te suit maintenant!`);
     openFollowers();
 };
 
 window.removeFollower = function(followerIndex) {
-    const pokemonIndex = game.followers[followerIndex];
-    const pokemon = game.team[pokemonIndex];
+    const monster trainersIndex = game.followers[followerIndex];
+    const monster trainers = game.team[monster trainersIndex];
     
     game.followers.splice(followerIndex, 1);
-    showNotification(`❌ ${getDisplayName(pokemon.species)} ne te suit plus.`);
+    showNotification(`❌ ${getDisplayName(monster trainers.species)} ne te suit plus.`);
     openFollowers();
 };
 
