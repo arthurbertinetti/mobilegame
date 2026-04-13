@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>Sonic Runner</title>
+<title>Croissant Runner</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#1a1a2e;display:flex;flex-direction:column;align-items:center;height:100dvh;overflow:hidden;font-family:'Segoe UI',sans-serif;-webkit-user-select:none;user-select:none}
@@ -40,7 +40,7 @@ canvas{flex:1;width:100%;display:block;touch-action:none}
   <button class="act-btn" id="btn-dash">💨<span>DASH</span></button>
 </div>
 <div id="overlay">
-  <h2>🦔 Sonic Runner</h2>
+  <h2>🦔 Croissant Runner</h2>
   <p>Cours, saute et dash à travers les zones !<br>
   ⬆️ Swipe haut = Saut · ➡️ Tap = Dash<br>
   Collecte les anneaux, évite les piques !</p>
@@ -57,14 +57,14 @@ function resize(){dpr=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth
   C.width=W*dpr;C.height=H*dpr;C.style.width=W+'px';C.style.height=H+'px';X.setTransform(dpr,0,0,dpr,0,0)}
 resize();window.addEventListener('resize',resize);
 
-var GROUND_H,SONIC_W,SONIC_H,GRAVITY,JUMP_VEL,DASH_SPEED,BASE_SPEED;
+var GROUND_H,CROISSANT_W,CROISSANT_H,GRAVITY,JUMP_VEL,DASH_SPEED,BASE_SPEED;
 function initSizes(){
-  GROUND_H=H*0.18;SONIC_W=36;SONIC_H=42;GRAVITY=0.65;JUMP_VEL=-14;
+  GROUND_H=H*0.18;CROISSANT_W=36;CROISSANT_H=42;GRAVITY=0.65;JUMP_VEL=-14;
   DASH_SPEED=12;BASE_SPEED=5;
 }
 
 var state='menu',score=0,rings=0,lives=3,dist=0,speed=0;
-var sonic={x:0,y:0,vy:0,grounded:true,dashing:false,dashTimer:0,spinning:false,spinAngle:0,invincible:0,frame:0};
+var croissant={x:0,y:0,vy:0,grounded:true,dashing:false,dashTimer:0,spinning:false,spinAngle:0,invincible:0,frame:0};
 var platforms=[],obstacles=[],ringItems=[],springs=[],particles=[];
 var camX=0,spawnX=0,groundY=0;
 var bgStars=[];for(var i=0;i<100;i++)bgStars.push({x:Math.random()*2000,y:Math.random()*500,s:Math.random()*2+1,b:Math.random()});
@@ -72,7 +72,7 @@ var bgStars=[];for(var i=0;i<100;i++)bgStars.push({x:Math.random()*2000,y:Math.r
 function reset(){
   score=0;rings=0;lives=3;dist=0;speed=BASE_SPEED;
   initSizes();groundY=H-GROUND_H;
-  sonic={x:80,y:groundY-SONIC_H,vy:0,grounded:true,dashing:false,dashTimer:0,spinning:false,spinAngle:0,invincible:0,frame:0};
+  croissant={x:80,y:groundY-CROISSANT_H,vy:0,grounded:true,dashing:false,dashTimer:0,spinning:false,spinAngle:0,invincible:0,frame:0};
   platforms=[];obstacles=[];ringItems=[];springs=[];particles=[];camX=0;spawnX=W+200;
   // Initial ground platforms
   for(var i=0;i<8;i++)spawnContent();
@@ -106,25 +106,25 @@ function spawnContent(){
 }
 
 function jump(){
-  if(sonic.grounded){sonic.vy=JUMP_VEL;sonic.grounded=false;sonic.spinning=true;sonic.spinAngle=0}
-  else if(sonic.spinning){/* double jump */sonic.vy=JUMP_VEL*0.8;sonic.spinning=false}
+  if(croissant.grounded){croissant.vy=JUMP_VEL;croissant.grounded=false;croissant.spinning=true;croissant.spinAngle=0}
+  else if(croissant.spinning){/* double jump */croissant.vy=JUMP_VEL*0.8;croissant.spinning=false}
 }
 function dash(){
-  if(!sonic.dashing){sonic.dashing=true;sonic.dashTimer=15;sonic.spinning=true;sonic.spinAngle=0;
-    for(var i=0;i<8;i++)particles.push({x:sonic.x,y:sonic.y+SONIC_H/2,vx:-Math.random()*4-2,vy:(Math.random()-0.5)*3,life:20,color:'#2196F3'})}
+  if(!croissant.dashing){croissant.dashing=true;croissant.dashTimer=15;croissant.spinning=true;croissant.spinAngle=0;
+    for(var i=0;i<8;i++)particles.push({x:croissant.x,y:croissant.y+CROISSANT_H/2,vx:-Math.random()*4-2,vy:(Math.random()-0.5)*3,life:20,color:'#2196F3'})}
 }
 
-function hitSonic(){
-  if(sonic.invincible>0)return;
+function hitCroissant(){
+  if(croissant.invincible>0)return;
   if(rings>0){
     // Lose rings
     var lost=Math.min(rings,20);
     for(var i=0;i<lost;i++){
-      particles.push({x:sonic.x+SONIC_W/2,y:sonic.y,vx:(Math.random()-0.5)*8,vy:-Math.random()*10-3,life:40,color:'#ffd93d',ring:true});
+      particles.push({x:croissant.x+CROISSANT_W/2,y:croissant.y,vx:(Math.random()-0.5)*8,vy:-Math.random()*10-3,life:40,color:'#ffd93d',ring:true});
     }
-    rings=0;sonic.invincible=90;
+    rings=0;croissant.invincible=90;
   }else{
-    lives--;sonic.invincible=90;
+    lives--;croissant.invincible=90;
     if(lives<=0)gameOver();
   }
   updateHUD();
@@ -133,7 +133,7 @@ function hitSonic(){
 function gameOver(){
   state='over';score=dist+rings*10;
   var name=Leaderboard.promptName();
-  if(name)Leaderboard.add('sonic',score,name);
+  if(name)Leaderboard.add('croissant',score,name);
   document.getElementById('overlay').classList.remove('hidden');
   document.getElementById('overlay').querySelector('h2').textContent='💀 Game Over';
   document.getElementById('overlay').querySelector('p').innerHTML='Distance: '+dist+'m<br>Anneaux: '+rings+'<br>Score: <b>'+score+'</b>';
@@ -157,29 +157,29 @@ function update(){
   if(state!=='play')return;
   speed=BASE_SPEED+dist*0.002;if(speed>16)speed=16;
   
-  // Sonic physics
-  if(sonic.dashing){sonic.dashTimer--;if(sonic.dashTimer<=0)sonic.dashing=false}
-  var moveSpeed=sonic.dashing?speed+DASH_SPEED:speed;
+  // Croissant physics
+  if(croissant.dashing){croissant.dashTimer--;if(croissant.dashTimer<=0)croissant.dashing=false}
+  var moveSpeed=croissant.dashing?speed+DASH_SPEED:speed;
   camX+=moveSpeed;dist=Math.floor(camX/10);
   
-  sonic.vy+=GRAVITY;sonic.y+=sonic.vy;
+  croissant.vy+=GRAVITY;croissant.y+=croissant.vy;
   
   // Ground collision
-  if(sonic.y>=groundY-SONIC_H){sonic.y=groundY-SONIC_H;sonic.vy=0;sonic.grounded=true;sonic.spinning=false}
+  if(croissant.y>=groundY-CROISSANT_H){croissant.y=groundY-CROISSANT_H;croissant.vy=0;croissant.grounded=true;croissant.spinning=false}
   
   // Platform collision
   platforms.forEach(function(p){
-    if(sonic.vy>0&&sonic.x+SONIC_W>p.x-camX&&sonic.x<p.x-camX+p.w&&
-       sonic.y+SONIC_H>=p.y&&sonic.y+SONIC_H<=p.y+16+sonic.vy){
-      sonic.y=p.y-SONIC_H;sonic.vy=0;sonic.grounded=true;sonic.spinning=false;
+    if(croissant.vy>0&&croissant.x+CROISSANT_W>p.x-camX&&croissant.x<p.x-camX+p.w&&
+       croissant.y+CROISSANT_H>=p.y&&croissant.y+CROISSANT_H<=p.y+16+croissant.vy){
+      croissant.y=p.y-CROISSANT_H;croissant.vy=0;croissant.grounded=true;croissant.spinning=false;
     }
   });
   
   // Springs
   springs.forEach(function(s){
     var sx=s.x-camX;
-    if(!s.bounced&&sonic.x+SONIC_W>sx&&sonic.x<sx+s.w&&sonic.y+SONIC_H>=s.y&&sonic.y+SONIC_H<=s.y+20){
-      sonic.vy=JUMP_VEL*1.5;sonic.grounded=false;sonic.spinning=true;s.bounced=true;
+    if(!s.bounced&&croissant.x+CROISSANT_W>sx&&croissant.x<sx+s.w&&croissant.y+CROISSANT_H>=s.y&&croissant.y+CROISSANT_H<=s.y+20){
+      croissant.vy=JUMP_VEL*1.5;croissant.grounded=false;croissant.spinning=true;s.bounced=true;
       setTimeout(function(){s.bounced=false},500);
     }
   });
@@ -188,30 +188,30 @@ function update(){
   ringItems.forEach(function(r){
     if(r.collected)return;
     var rx=r.x-camX;
-    if(Math.abs(sonic.x+SONIC_W/2-rx)<22&&Math.abs(sonic.y+SONIC_H/2-r.y)<22){
+    if(Math.abs(croissant.x+CROISSANT_W/2-rx)<22&&Math.abs(croissant.y+CROISSANT_H/2-r.y)<22){
       r.collected=true;rings++;
       particles.push({x:rx,y:r.y,vx:0,vy:-2,life:15,color:'#ffd93d'});
     }
   });
   
   // Obstacle collision
-  if(sonic.invincible<=0){
+  if(croissant.invincible<=0){
     obstacles.forEach(function(o){
       var ox=o.x-camX;
-      if(sonic.x+SONIC_W-6>ox&&sonic.x+6<ox+o.w&&sonic.y+SONIC_H-4>o.y&&sonic.y+4<o.y+o.h){
-        if((sonic.spinning||sonic.dashing)&&o.type==='enemy'){
+      if(croissant.x+CROISSANT_W-6>ox&&croissant.x+6<ox+o.w&&croissant.y+CROISSANT_H-4>o.y&&croissant.y+4<o.y+o.h){
+        if((croissant.spinning||croissant.dashing)&&o.type==='enemy'){
           o.type='dead';
           for(var i=0;i<10;i++)particles.push({x:ox+o.w/2,y:o.y,vx:(Math.random()-0.5)*6,vy:-Math.random()*6,life:25,color:'#e74c3c'});
           score+=50;
-        }else if(sonic.dashing&&o.type==='spike'){
+        }else if(croissant.dashing&&o.type==='spike'){
           o.type='dead';
           for(var i=0;i<6;i++)particles.push({x:ox+o.w/2,y:o.y+o.h/2,vx:(Math.random()-0.5)*5,vy:-Math.random()*5,life:20,color:'#ccc'});
           score+=30;
-        }else if(o.type!=='dead'){hitSonic()}
+        }else if(o.type!=='dead'){hitCroissant()}
       }
     });
   }
-  if(sonic.invincible>0)sonic.invincible--;
+  if(croissant.invincible>0)croissant.invincible--;
   
   // Spawn new stuff
   while(spawnX-camX<W+400)spawnContent();
@@ -226,7 +226,7 @@ function update(){
   particles.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.life--;if(p.ring)p.vy+=0.3});
   particles=particles.filter(function(p){return p.life>0});
   
-  sonic.frame++;
+  croissant.frame++;
   updateHUD();
 }
 
@@ -286,17 +286,17 @@ function draw(){
     }
   });
   
-  // Sonic
-  if(sonic.invincible<=0||sonic.frame%4<2){
-    var sx=sonic.x,sy=sonic.y;
+  // Croissant
+  if(croissant.invincible<=0||croissant.frame%4<2){
+    var sx=croissant.x,sy=croissant.y;
     X.save();
-    if(sonic.spinning){
-      X.translate(sx+SONIC_W/2,sy+SONIC_H/2);
-      sonic.spinAngle+=0.4;X.rotate(sonic.spinAngle);
-      X.translate(-SONIC_W/2,-SONIC_H/2);
+    if(croissant.spinning){
+      X.translate(sx+CROISSANT_W/2,sy+CROISSANT_H/2);
+      croissant.spinAngle+=0.4;X.rotate(croissant.spinAngle);
+      X.translate(-CROISSANT_W/2,-CROISSANT_H/2);
       // Spin ball
-      X.fillStyle='#2196F3';X.beginPath();X.arc(SONIC_W/2,SONIC_H/2,SONIC_W/2,0,Math.PI*2);X.fill();
-      X.fillStyle='#64B5F6';X.beginPath();X.arc(SONIC_W/2-4,SONIC_H/2-4,8,0,Math.PI*2);X.fill();
+      X.fillStyle='#2196F3';X.beginPath();X.arc(CROISSANT_W/2,CROISSANT_H/2,CROISSANT_W/2,0,Math.PI*2);X.fill();
+      X.fillStyle='#64B5F6';X.beginPath();X.arc(CROISSANT_W/2-4,CROISSANT_H/2-4,8,0,Math.PI*2);X.fill();
     }else{
       X.translate(sx,sy);
       // Body
@@ -316,15 +316,15 @@ function draw(){
       X.fillStyle='#FDD835';X.fillRect(12,18,12,10);
       // Shoes
       X.fillStyle='#e74c3c';
-      var legOff=sonic.grounded?Math.sin(sonic.frame*0.3)*4:0;
+      var legOff=croissant.grounded?Math.sin(croissant.frame*0.3)*4:0;
       X.fillRect(8,34+legOff,12,8);X.fillRect(18,34-legOff,12,8);
     }
     X.restore();
     
     // Dash trail
-    if(sonic.dashing){
+    if(croissant.dashing){
       X.globalAlpha=0.3;X.fillStyle='#2196F3';
-      for(var t=1;t<=3;t++){X.beginPath();X.arc(sx+SONIC_W/2-t*12,sy+SONIC_H/2,SONIC_W/2-t*3,0,Math.PI*2);X.fill()}
+      for(var t=1;t<=3;t++){X.beginPath();X.arc(sx+CROISSANT_W/2-t*12,sy+CROISSANT_H/2,CROISSANT_W/2-t*3,0,Math.PI*2);X.fill()}
       X.globalAlpha=1;
     }
   }
