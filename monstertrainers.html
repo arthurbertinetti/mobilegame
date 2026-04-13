@@ -878,6 +878,7 @@ const ctx = canvas.getContext('2d');
 
 const TILE_SIZE = 32;
 const SAVE_KEY = 'monsterTrainersSave_v2';
+const OLD_SAVE_KEYS = ['pokemonSave_v2', 'pokemonSave', 'ultimatePokemonSave']; // Anciennes clés à migrer
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -930,12 +931,49 @@ const game = {
 };
 
 window.addEventListener('load', () => {
-    const hasSave = checkSaveExists();
-    document.getElementById('newGameBtn').style.display = 'block';
-    if (hasSave) {
-        document.getElementById('continueBtn').style.display = 'block';
+    try {
+        // Migration automatique des anciennes sauvegardes
+        migrateOldSave();
+        
+        const hasSave = checkSaveExists();
+        const newGameBtn = document.getElementById('newGameBtn');
+        const continueBtn = document.getElementById('continueBtn');
+        
+        if (newGameBtn) newGameBtn.style.display = 'block';
+        if (hasSave && continueBtn) {
+            continueBtn.style.display = 'block';
+        }
+    } catch (e) {
+        console.error('Erreur lors du chargement:', e);
+        // Afficher au moins le bouton nouvelle partie en cas d'erreur
+        const newGameBtn = document.getElementById('newGameBtn');
+        if (newGameBtn) newGameBtn.style.display = 'block';
     }
 });
+
+function migrateOldSave() {
+    // Vérifier si on a déjà une sauvegarde avec la nouvelle clé
+    if (localStorage.getItem(SAVE_KEY)) {
+        return; // Pas besoin de migrer
+    }
+    
+    // Chercher une ancienne sauvegarde
+    for (let oldKey of OLD_SAVE_KEYS) {
+        const oldSave = localStorage.getItem(oldKey);
+        if (oldSave) {
+            try {
+                // Migrer vers la nouvelle clé
+                localStorage.setItem(SAVE_KEY, oldSave);
+                console.log(`Sauvegarde migrée depuis ${oldKey} vers ${SAVE_KEY}`);
+                // Optionnel : supprimer l'ancienne clé
+                // localStorage.removeItem(oldKey);
+                return;
+            } catch (e) {
+                console.error('Erreur lors de la migration:', e);
+            }
+        }
+    }
+}
 
 function checkSaveExists() {
     return localStorage.getItem(SAVE_KEY) !== null;
