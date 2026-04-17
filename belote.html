@@ -1909,13 +1909,13 @@
     }
 
     function applyRandomNames() {
-        const taken = [];
-        ['player', 'ai1', 'ai2', 'mate'].forEach(role => {
+        const taken = [state.names.player]; // preserve player name
+        ['ai1', 'ai2', 'mate'].forEach(role => {
             const n = randomNameFrom(taken);
             taken.push(n);
             state.names[role] = n;
         });
-        ['player', 'ai1', 'ai2', 'mate'].forEach(role => {
+        ['ai1', 'ai2', 'mate'].forEach(role => {
             const inp = document.getElementById('name-' + role);
             if (inp) inp.value = state.names[role];
         });
