@@ -910,12 +910,13 @@ const game = {
         superpotion: 8,
         hyperpotion: 5,
         revive: 5,
-        expbook_green: 5,  // Livre vert +100 EXP
-        expbook_blue: 5,   // Livre bleu +200 EXP
-        expbook_red: 5,    // Livre rouge +500 EXP
-        protein: 5,        // Protéine +2 ATK permanent
-        iron: 5,           // Fer +2 DEF permanent
-        hp_up: 5           // PV Plus +5 HP permanent
+        expbook_green: 5,   // Livre vert +100 EXP
+        expbook_blue: 5,    // Livre bleu +200 EXP
+        expbook_red: 5,     // Livre rouge +500 EXP
+        expbook_yellow: 0,  // Livre jaune +1000 EXP (arènes/code uniquement)
+        protein: 5,         // Protéine +2 ATK permanent
+        iron: 5,            // Fer +2 DEF permanent
+        hp_up: 5            // PV Plus +5 HP permanent
     },
     battleParticipants: [], // Indices des Monster ayant participé au combat actuel
     loot: {},
@@ -1035,7 +1036,23 @@ function loadGame() {
         game.player.y = game.player.mapY * TILE_SIZE;
         game.player.direction = saveData.player?.direction || 'down';
         game.team = Array.isArray(saveData.team) ? saveData.team.filter(p => p && p.species) : [];
-        game.bag = saveData.bag || {pokeball: 20, greatball: 5, potion: 15, superpotion: 8, hyperpotion: 5, revive: 1};
+        const defaultBag = {
+            pokeball: 20,
+            superball: 5,
+            ultraball: 2,
+            potion: 15,
+            superpotion: 8,
+            hyperpotion: 5,
+            revive: 5,
+            expbook_green: 5,
+            expbook_blue: 5,
+            expbook_red: 5,
+            expbook_yellow: 0,
+            protein: 5,
+            iron: 5,
+            hp_up: 5
+        };
+        game.bag = { ...defaultBag, ...(saveData.bag || {}) };
         game.pokedex = new Map(saveData.pokedex || []);
         game.badges = saveData.badges || {};
         game.gymsDefeated = saveData.gymsDefeated || 0;
@@ -2386,22 +2403,24 @@ function checkEvolution(monster) {
         const newSpecies = data.evolution.into;
         const newData = MONSTER_DATA[newSpecies];
         if (newData) {
+            const oldData = data;
             // Évolution!
             const oldName = monster.species;
             monster.species = newSpecies;
             monster.emoji = newData.emoji;
             monster.type = newData.type;
             
-            // Mise à jour des stats avec BOOST d'évolution (nouveau système)
-            const iv = monster.iv || Math.floor(Math.random() * 32);
-            const levelBonus = monster.level - 1;
-            const evolutionBoost = 10; // BOOST supplémentaire à l'évolution
-            
-            monster.stats.hp = Math.floor(((2 * newData.hp + iv) * monster.level) / 100) + monster.level + 10 + (levelBonus * 2) + evolutionBoost;
-            monster.stats.atk = Math.floor(((2 * newData.atk + iv) * monster.level) / 100) + monster.level + 10 + (levelBonus * 1.5) + evolutionBoost;
-            monster.stats.def = Math.floor(((2 * newData.def + iv) * monster.level) / 100) + monster.level + 10 + (levelBonus * 1.5) + evolutionBoost;
-            monster.maxHp = monster.stats.hp;
-            monster.currentHp = monster.maxHp;
+            // Conserver les boosts existants: on ajoute seulement l'écart de base
+            // entre la forme actuelle et la forme évoluée (ex: B -> E1, puis E1 -> E2).
+            const hpGain = Math.max(0, (newData.hp || 0) - (oldData.hp || 0));
+            const atkGain = Math.max(0, (newData.atk || 0) - (oldData.atk || 0));
+            const defGain = Math.max(0, (newData.def || 0) - (oldData.def || 0));
+
+            monster.stats.hp += hpGain;
+            monster.stats.atk += atkGain;
+            monster.stats.def += defGain;
+            monster.maxHp += hpGain;
+            monster.currentHp = Math.min(monster.currentHp + hpGain, monster.maxHp);
             
             // Nouvelles attaques
             const moves = MOVES_BY_TYPE[newData.type] || MOVES_BY_TYPE.normal;
@@ -2561,7 +2580,7 @@ function handleMove(direction) {
                 const minTrainerLevel = Math.max(1, maxTeamLevel - 2);
                 const maxTrainerLevel = maxTeamLevel + 3;
                 
-                const trainerTeam = npcHere.trainerMonster.map(speciesName => {
+                const trainerTeam = (npcHere.trainerMonsters || []).map(speciesName => {
                     const level = minTrainerLevel + Math.floor(Math.random() * (maxTrainerLevel - minTrainerLevel + 1));
                     
                     // Forcer B ou E1 seulement (pas E2)
@@ -2576,7 +2595,13 @@ function handleMove(direction) {
                     }
                     
                     return createMonster(species, level);
-                });
+                }).filter(Boolean);
+
+                // Fallback si une sauvegarde contient des espèces obsolètes
+                if (trainerTeam.length === 0) {
+                    const fallbackSpecies = (MAPS[game.currentMap].wildMonsters && MAPS[game.currentMap].wildMonsters[0]) || 'Ratix';
+                    trainerTeam.push(createMonster(fallbackSpecies, minTrainerLevel));
+                }
                 startTrainerBattle(trainerTeam, npcHere.trainerName, null, false);
             }, 300);
         } else if (npcHere.isMonsterCenter) {
@@ -3853,6 +3878,15 @@ function openBag() {
                     </div>
                     <div style="font-size: 1.2rem; font-weight: bold; color: #f1c40f;">×${game.bag.expbook_red || 0}</div>
                 </div>
+
+                <div style="padding: 15px; margin: 8px 0; background: linear-gradient(135deg, #f1c40f, #f39c12); border-left: 4px solid #fff3b0; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 2rem;">📙</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold;">Livre Jaune</div>
+                        <div style="font-size: 0.6rem; color: #fff6d6;">+1000 XP instantanés</div>
+                    </div>
+                    <div style="font-size: 1.2rem; font-weight: bold; color: #2c3e50;">×${game.bag.expbook_yellow || 0}</div>
+                </div>
                 
                 <button class="menu-btn" onclick="showUseExpBookMenu()" 
                         style="width: 100%; margin-top: 10px; font-size: 0.8rem; background: linear-gradient(135deg, #8e44ad, #9b59b6);">
@@ -3932,22 +3966,24 @@ function sellLoot(itemName) {
     }
 }
 
-function showUsePotionMenu() {
+function showUsePotionMenu(focusIndex = null, forcedScrollTop = null) {
     const modal = document.getElementById('usePotionModal');
     const content = document.getElementById('usePotionContent');
+    const previousList = document.getElementById('potionList');
+    const previousScrollTop = previousList ? previousList.scrollTop : 0;
     
     if (game.team.length === 0) {
         content.innerHTML = '<p style="text-align: center;">Aucun monstre dans l\'équipe</p>';
     } else {
         content.innerHTML = `
-            <div style="max-height: 400px; overflow-y: auto;">
+            <div id="potionList" style="max-height: 400px; overflow-y: auto;">
                 ${game.team.map((p, i) => {
                     const hpPercent = (p.currentHp / p.maxHp) * 100;
                     const isKO = p.currentHp === 0;
                     const isFull = p.currentHp === p.maxHp;
                     
                     return `
-                        <div style="background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px;">
+                        <div id="potionCard-${i}" style="background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px;">
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <div style="font-size: 2rem;">${p.emoji}</div>
                                 <div style="flex: 1;">
@@ -3994,6 +4030,22 @@ function showUsePotionMenu() {
     }
     
     modal.style.display = 'block';
+
+    const list = document.getElementById('potionList');
+    if (list) {
+        if (typeof forcedScrollTop === 'number') {
+            list.scrollTop = forcedScrollTop;
+        } else {
+            list.scrollTop = previousScrollTop;
+        }
+
+        if (focusIndex !== null) {
+            const card = document.getElementById(`potionCard-${focusIndex}`);
+            if (card) {
+                card.scrollIntoView({ block: 'nearest' });
+            }
+        }
+    }
 }
 
 function closeUsePotion() {
@@ -4001,22 +4053,24 @@ function closeUsePotion() {
 }
 
 // ========== LIVRES D'EXPÉRIENCE ==========
-function showUseExpBookMenu() {
+function showUseExpBookMenu(focusIndex = null, forcedScrollTop = null) {
     const modal = document.getElementById('usePotionModal');
     const content = document.getElementById('usePotionContent');
+    const previousList = document.getElementById('expBookList');
+    const previousScrollTop = previousList ? previousList.scrollTop : 0;
     
     if (game.team.length === 0) {
         content.innerHTML = '<p style="text-align: center;">Aucun monstre dans l\'équipe</p>';
     } else {
         content.innerHTML = `
-            <div style="max-height: 400px; overflow-y: auto;">
+            <div id="expBookList" style="max-height: 400px; overflow-y: auto;">
                 ${game.team.map((p, i) => {
                     const expPercent = (p.exp / p.expToNext) * 100;
                     const evolutionStage = getEvolutionStage(p.species);
                     const isMaxLevel = (evolutionStage === 'E2' && p.level >= 70) || p.level >= 100;
                     
                     return `
-                        <div style="background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px;">
+                        <div id="expBookCard-${i}" style="background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px;">
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <div style="font-size: 2rem;">${p.emoji}</div>
                                 <div style="flex: 1;">
@@ -4031,7 +4085,7 @@ function showUseExpBookMenu() {
                                     ` : ''}
                                 </div>
                             </div>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px;">
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 10px;">
                                 <button class="menu-btn" 
                                         onclick="useExpBook(${i}, 'expbook_green', 100)" 
                                         ${isMaxLevel || (game.bag.expbook_green || 0) <= 0 ? 'disabled' : ''}
@@ -4050,6 +4104,12 @@ function showUseExpBookMenu() {
                                         style="font-size: 0.6rem; padding: 8px; background: linear-gradient(135deg, #c0392b, #a93226);">
                                     📕 Rouge<br>+500 XP<br>(${game.bag.expbook_red || 0})
                                 </button>
+                                <button class="menu-btn" 
+                                        onclick="useExpBook(${i}, 'expbook_yellow', 1000)" 
+                                        ${isMaxLevel || (game.bag.expbook_yellow || 0) <= 0 ? 'disabled' : ''}
+                                        style="font-size: 0.6rem; padding: 8px; background: linear-gradient(135deg, #f1c40f, #f39c12); color: #2c3e50;">
+                                    📙 Jaune<br>+1000 XP<br>(${game.bag.expbook_yellow || 0})
+                                </button>
                             </div>
                         </div>
                     `;
@@ -4059,6 +4119,22 @@ function showUseExpBookMenu() {
     }
     
     modal.style.display = 'block';
+
+    const list = document.getElementById('expBookList');
+    if (list) {
+        if (typeof forcedScrollTop === 'number') {
+            list.scrollTop = forcedScrollTop;
+        } else {
+            list.scrollTop = previousScrollTop;
+        }
+
+        if (focusIndex !== null) {
+            const card = document.getElementById(`expBookCard-${focusIndex}`);
+            if (card) {
+                card.scrollIntoView({ block: 'nearest' });
+            }
+        }
+    }
 }
 
 function useExpBook(monsterIndex, bookType, expAmount) {
@@ -4104,33 +4180,37 @@ function useExpBook(monsterIndex, bookType, expAmount) {
         checkEvolution(monster);
     }
     
-    const bookEmoji = bookType === 'expbook_green' ? '📗' : bookType === 'expbook_blue' ? '📘' : '📕';
+    const bookEmoji = bookType === 'expbook_green' ? '📗' : bookType === 'expbook_blue' ? '📘' : bookType === 'expbook_red' ? '📕' : '📙';
     if (leveledUp) {
         showNotification(`${bookEmoji} ${monster.species} gagne ${expAmount} XP et monte de niveau!`);
     } else {
         showNotification(`${bookEmoji} ${monster.species} gagne ${expAmount} XP!`);
     }
     
-    // Rafraîchir l'affichage
-    showUseExpBookMenu();
+    // Rafraîchir l'affichage sans perdre la position dans la liste
+    const list = document.getElementById('expBookList');
+    const currentScrollTop = list ? list.scrollTop : 0;
+    showUseExpBookMenu(monsterIndex, currentScrollTop);
     updateHUD();
 }
 
 // ========== OBJETS DE BOOST DE STATS ==========
 // Protéine: +2 ATK | Fer: +2 DEF | PV Plus: +5 HP (permanents)
 // Obtenus en battant (sans capturer) des Monster sauvages (25% de chance)
-function showUseStatBoostMenu() {
+function showUseStatBoostMenu(focusIndex = null, forcedScrollTop = null) {
     const modal = document.getElementById('usePotionModal');
     const content = document.getElementById('usePotionContent');
+    const previousList = document.getElementById('statBoostList');
+    const previousScrollTop = previousList ? previousList.scrollTop : 0;
     
     if (game.team.length === 0) {
         content.innerHTML = '<p style="text-align: center;">Aucun monstre dans l\'équipe</p>';
     } else {
         content.innerHTML = `
-            <div style="max-height: 400px; overflow-y: auto;">
+            <div id="statBoostList" style="max-height: 400px; overflow-y: auto;">
                 ${game.team.map((p, i) => {
                     return `
-                        <div style="background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px;">
+                        <div id="statBoostCard-${i}" style="background: #2c3e50; padding: 15px; margin: 10px 0; border-radius: 5px;">
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <div style="font-size: 2rem;">${p.emoji}</div>
                                 <div style="flex: 1;">
@@ -4168,6 +4248,22 @@ function showUseStatBoostMenu() {
     }
     
     modal.style.display = 'block';
+
+    const list = document.getElementById('statBoostList');
+    if (list) {
+        if (typeof forcedScrollTop === 'number') {
+            list.scrollTop = forcedScrollTop;
+        } else {
+            list.scrollTop = previousScrollTop;
+        }
+
+        if (focusIndex !== null) {
+            const card = document.getElementById(`statBoostCard-${focusIndex}`);
+            if (card) {
+                card.scrollIntoView({ block: 'nearest' });
+            }
+        }
+    }
 }
 
 function useStatBoost(monsterIndex, boostType) {
@@ -4180,19 +4276,21 @@ function useStatBoost(monsterIndex, boostType) {
     // Appliquer le boost permanent
     if (boostType === 'protein') {
         monster.stats.atk += 2;
-        showNotification('💪 ${monster.species} gagne +2 ATK permanent!');
+        showNotification(`💪 ${monster.species} gagne +2 ATK permanent!`);
     } else if (boostType === 'iron') {
         monster.stats.def += 2;
-        showNotification('🛡️ ${monster.species} gagne +2 DEF permanent!');
+        showNotification(`🛡️ ${monster.species} gagne +2 DEF permanent!`);
     } else if (boostType === 'hp_up') {
         monster.stats.hp += 5;
         monster.maxHp += 5;
         monster.currentHp = Math.min(monster.currentHp + 5, monster.maxHp);
-        showNotification('❤️ ${monster.species} gagne +5 HP permanent!');
+        showNotification(`❤️ ${monster.species} gagne +5 HP permanent!`);
     }
     
-    // Rafraîchir l'affichage
-    showUseStatBoostMenu();
+    // Rafraîchir l'affichage sans perdre la position dans la liste
+    const list = document.getElementById('statBoostList');
+    const currentScrollTop = list ? list.scrollTop : 0;
+    showUseStatBoostMenu(monsterIndex, currentScrollTop);
     updateHUD();
 }
 
@@ -4209,7 +4307,7 @@ function useItem(monsterIndex, itemType) {
         game.bag.potion--;
         const healAmount = Math.min(50, monster.maxHp - monster.currentHp);
         monster.currentHp = Math.min(monster.maxHp, monster.currentHp + 50);
-        showNotification('💊 ${monster.species} restaure ${healAmount} HP!');
+        showNotification(`💊 ${monster.species} restaure ${healAmount} HP!`);
     } else if (itemType === 'superpotion' && game.bag.superpotion > 0) {
         if (monster.currentHp === 0) {
             showNotification('❌ Ce monstre est K.O.!');
@@ -4218,7 +4316,7 @@ function useItem(monsterIndex, itemType) {
         game.bag.superpotion--;
         const healAmount = Math.min(100, monster.maxHp - monster.currentHp);
         monster.currentHp = Math.min(monster.maxHp, monster.currentHp + 100);
-        showNotification('� ${monster.species} restaure ${healAmount} HP!');
+        showNotification(`💉 ${monster.species} restaure ${healAmount} HP!`);
     } else if (itemType === 'hyperpotion' && game.bag.hyperpotion > 0) {
         if (monster.currentHp === 0) {
             showNotification('❌ Ce monstre est K.O.!');
@@ -4227,7 +4325,7 @@ function useItem(monsterIndex, itemType) {
         game.bag.hyperpotion--;
         const healAmount = Math.min(200, monster.maxHp - monster.currentHp);
         monster.currentHp = Math.min(monster.maxHp, monster.currentHp + 200);
-        showNotification('🧪 ${monster.species} restaure ${healAmount} HP!');
+        showNotification(`🧪 ${monster.species} restaure ${healAmount} HP!`);
     } else if (itemType === 'revive' && game.bag.revive > 0) {
         if (monster.currentHp > 0) {
             showNotification('❌ Ce monstre n\'est pas K.O.!');
@@ -4235,14 +4333,16 @@ function useItem(monsterIndex, itemType) {
         }
         game.bag.revive--; 
         monster.currentHp = Math.floor(monster.maxHp * 0.5);
-        showNotification('⚡ ${monster.species} est réanimé avec 50% HP!');
+        showNotification(`⚡ ${monster.species} est réanimé avec 50% HP!`);
     } else {
         showNotification('❌ Objet non disponible');
         return;
     }
     
     updateHUD();
-    showUsePotionMenu();
+    const list = document.getElementById('potionList');
+    const currentScrollTop = list ? list.scrollTop : 0;
+    showUsePotionMenu(monsterIndex, currentScrollTop);
 }
 
 function showRules() {
@@ -4407,8 +4507,8 @@ function sellAllLoot(totalValue) {
 
 // ========== CODES SECRETS ==========
 // OR: +500💰 | SBALL/MBALL/UBALL: +5 balls
-// LVERT/LBLEU/LROUGE: +5 livres XP | POTION/SPOTION/HPOTION: +5 potions
-// PROT/IRON/HPUP: +5 objets de boost de stats
+// LVERT/LBLEU/LROUGE/LJAUNE: +5 livres XP | POTION/SPOTION/HPOTION: +5 potions
+// PROT/IRON/HPUP: +50 objets de boost de stats | STARTERPACK: gros pack de démarrage
 window.redeemSecretCode = function() {
     const input = document.getElementById('secretCodeInput');
     const code = input.value.trim().toUpperCase();
@@ -4426,12 +4526,17 @@ window.redeemSecretCode = function() {
         'LVERT': { type: 'item', key: 'expbook_green', amount: 5, message: '📗 +5 Livres Verts reçus!' },
         'LBLEU': { type: 'item', key: 'expbook_blue', amount: 5, message: '📘 +5 Livres Bleus reçus!' },
         'LROUGE': { type: 'item', key: 'expbook_red', amount: 5, message: '📕 +5 Livres Rouges reçus!' },
+        'LJAUNE': { type: 'item', key: 'expbook_yellow', amount: 5, message: '📙 +5 Livres Jaunes reçus!' },
         'POTION': { type: 'item', key: 'potion', amount: 5, message: '💊 +5 Potions reçues!' },
         'SPOTION': { type: 'item', key: 'superpotion', amount: 5, message: '💉 +5 Super Potions reçues!' },
         'HPOTION': { type: 'item', key: 'hyperpotion', amount: 5, message: '🧪 +5 Hyper Potions reçues!' },
-        'PROT': { type: 'item', key: 'protein', amount: 5, message: '💪 +5 Protéines reçues!' },
-        'IRON': { type: 'item', key: 'iron', amount: 5, message: '🛡️ +5 Fer reçus!' },
-        'HPUP': { type: 'item', key: 'hp_up', amount: 5, message: '❤️ +5 PV Plus reçus!' }
+        'PROT': { type: 'item', key: 'protein', amount: 50, message: '💪 +50 Protéines reçues!' },
+        'IRON': { type: 'item', key: 'iron', amount: 50, message: '🛡️ +50 Fer reçus!' },
+        'HPUP': { type: 'item', key: 'hp_up', amount: 50, message: '❤️ +50 PV Plus reçus!' },
+        'STARTERPACK': {
+            type: 'bundle',
+            message: '🎁 STARTERPACK reçu! +2000💰 et ressources ajoutées.'
+        }
     };
     
     if (codes[code]) {
@@ -4441,6 +4546,21 @@ window.redeemSecretCode = function() {
             game.money += reward.amount;
         } else if (reward.type === 'item') {
             game.bag[reward.key] = (game.bag[reward.key] || 0) + reward.amount;
+        } else if (reward.type === 'bundle') {
+            game.money += 2000;
+            game.bag.pokeball = (game.bag.pokeball || 0) + 20;
+            game.bag.superball = (game.bag.superball || 0) + 20;
+            game.bag.ultraball = (game.bag.ultraball || 0) + 20;
+            game.bag.potion = (game.bag.potion || 0) + 25;
+            game.bag.superpotion = (game.bag.superpotion || 0) + 20;
+            game.bag.hyperpotion = (game.bag.hyperpotion || 0) + 15;
+            game.bag.expbook_green = (game.bag.expbook_green || 0) + 1000;
+            game.bag.expbook_blue = (game.bag.expbook_blue || 0) + 1000;
+            game.bag.expbook_red = (game.bag.expbook_red || 0) + 500;
+            game.bag.expbook_yellow = (game.bag.expbook_yellow || 0) + 200;
+            game.bag.protein = (game.bag.protein || 0) + 200;
+            game.bag.iron = (game.bag.iron || 0) + 200;
+            game.bag.hp_up = (game.bag.hp_up || 0) + 200;
         }
         
         showNotification('✅ ' + reward.message);
@@ -4745,7 +4865,7 @@ function startGymBattle(mapKey) {
     
     const trainerTeam = [];
     for (let i = 0; i < 3; i++) {
-        const speciesPool = gym.monster;
+        const speciesPool = gym.monsters;
         const randomSpecies = speciesPool[Math.floor(Math.random() * speciesPool.length)];
         const level = baseLevel + Math.floor(Math.random() * 5);
         
@@ -4772,6 +4892,12 @@ function startGymBattle(mapKey) {
 
 // ========== SYSTÈME DE COMBAT CONTRE DRESSEUR ==========
 function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle = false) {
+    enemyTeam = (enemyTeam || []).filter(Boolean);
+    if (enemyTeam.length === 0) {
+        showNotification('❌ Équipe adverse invalide.');
+        return;
+    }
+
     if (game.team.length === 0 || game.team.filter(p => p.currentHp > 0).length === 0) {
         showNotification('❌ Vous n\'avez aucun Monster en forme!');
         return;
@@ -4833,23 +4959,24 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
         }
         
         if (!enemyAlive) {
-            battleLog.push('🎉 Victoire! Vous avez battu ${trainerName}!');
+            battleLog.push(`🎉 Victoire! Vous avez battu ${trainerName}!`);
             battleEnded = true;
             
             // Drops de livres d'expérience
-            let bookDrops = { green: 0, blue: 0, red: 0 };
+            let bookDrops = { green: 0, blue: 0, red: 0, yellow: 0 };
             
             if (isGymBattle && gymKey) {
                 game.badges[gymKey] = (game.badges[gymKey] || 0) + 1;
                 game.gymsDefeated++;
                 const gym = GYMS[gymKey];
-                battleLog.push('🏆 Badge ${gym.badge} obtenu!');
+                battleLog.push(`🏆 Badge ${gym.badge} obtenu!`);
                 
                 const goldReward = 500 + (game.gymsDefeated * 100);
                 game.money += goldReward;
-                battleLog.push('💰 +${goldReward}💰');
+                battleLog.push(`💰 +${goldReward}💰`);
                 
-                // Arènes : beaucoup de rouge (60%), normal bleu (30%)
+                // Arènes : donnent toujours 1 livre jaune, avec chance bonus rouge/bleu
+                bookDrops.yellow = 1;
                 const dropChance = Math.random();
                 if (dropChance < 0.6) {
                     bookDrops.red = 1; // 60% livre rouge
@@ -4859,7 +4986,7 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
             } else {
                 const goldReward = 200;
                 game.money += goldReward;
-                battleLog.push('💰 +${goldReward}💰');
+                battleLog.push(`💰 +${goldReward}💰`);
                 
                 // Dresseurs : beaucoup de bleu (50%), peu de vert (20%)
                 const dropChance = Math.random();
@@ -4873,15 +5000,19 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
             // Ajouter les livres au sac et afficher notifications
             if (bookDrops.green > 0) {
                 game.bag.expbook_green = (game.bag.expbook_green || 0) + bookDrops.green;
-                battleLog.push('📗 +${bookDrops.green} Livre Vert!');
+                battleLog.push(`📗 +${bookDrops.green} Livre Vert!`);
             }
             if (bookDrops.blue > 0) {
                 game.bag.expbook_blue = (game.bag.expbook_blue || 0) + bookDrops.blue;
-                battleLog.push('📘 +${bookDrops.blue} Livre Bleu!');
+                battleLog.push(`📘 +${bookDrops.blue} Livre Bleu!`);
             }
             if (bookDrops.red > 0) {
                 game.bag.expbook_red = (game.bag.expbook_red || 0) + bookDrops.red;
-                battleLog.push('📕 +${bookDrops.red} Livre Rouge!');
+                battleLog.push(`📕 +${bookDrops.red} Livre Rouge!`);
+            }
+            if (bookDrops.yellow > 0) {
+                game.bag.expbook_yellow = (game.bag.expbook_yellow || 0) + bookDrops.yellow;
+                battleLog.push(`📙 +${bookDrops.yellow} Livre Jaune!`);
             }
             
             // XP pour les participants du combat 3v3
@@ -4938,7 +5069,8 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
     }
     
     function updateTrainerBattle() {
-        if (battleEnded && !checkTrainerBattleEnd()) return;
+        // Ne jamais relancer checkTrainerBattleEnd ici: cela provoque une récursion
+        // quand le combat est déjà terminé et peut faire planter le jeu.
         
         const playerTeamAlive = game.team.filter(p => p.currentHp > 0);
         const enemyTeamAlive = enemyTeam.filter(p => p.currentHp > 0);
@@ -5009,7 +5141,7 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
                     }).join('')}
                 </div>
                 ${playerTeamAlive.length > 1 ? `
-                    <button class="menu-btn" onclick="switchTrainerMonsters()" 
+                    <button class="menu-btn" onclick="switchTrainerMonster()" 
                             style="width: 100%; margin-top: 10px; background: linear-gradient(135deg, #9b59b6, #8e44ad); font-size: 0.8rem;">
                         🔄 CHANGER DE POKÉMON
                     </button>
@@ -5110,7 +5242,7 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
             
             if (playerMonster.currentHp <= 0) {
                 setTimeout(() => {
-                    battleLog.push('💀 ${getDisplayName(playerMonster.species)} est K.O.!');
+                    battleLog.push(`💀 ${getDisplayName(playerMonster.species)} est K.O.!`);
                     
                     // Chercher le prochain Monster du joueur
                     let nextPlayerIndex = -1;
@@ -5173,7 +5305,9 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
     }
     
     window.confirmMonsterSwitch = function(teamIndex) {
-        closeAllModals();
+        // Fermer uniquement la fenêtre de sélection, garder l'écran de combat actif.
+        document.getElementById('selectMonsterModal').style.display = 'none';
+        document.getElementById('modalOverlay').style.display = 'none';
         
         playerTeamIndex = teamIndex;
         playerMonster = game.team[playerTeamIndex];
@@ -5183,9 +5317,10 @@ function startTrainerBattle(enemyTeam, trainerName, gymKey = null, isGymBattle =
             game.battleParticipants.push(teamIndex);
         }
         
-        battleLog.push('🔄 Vous envoyez ${getDisplayName(playerMonster.species)}!');
+        battleLog.push(`🔄 Vous envoyez ${getDisplayName(playerMonster.species)}!`);
         
         setTimeout(() => {
+            document.getElementById('battleModal').style.display = 'block';
             updateTrainerBattle();
             setTimeout(trainerEnemyTurn, 1000);
         }, 300);
@@ -5245,7 +5380,7 @@ window.switchMonsterInBattle = function(teamIndex, enemyMonster, isWild) {
     
     setTimeout(() => {
         runBattle(newMonster, enemyMonster, isWild);
-        showNotification('⚔️ ${getDisplayName(newMonster.species)} entre en combat!');
+        showNotification(`⚔️ ${getDisplayName(newMonster.species)} entre en combat!`);
     }, 300);
 };
 
@@ -5304,7 +5439,7 @@ window.confirmMonsterSwitch = function(teamIndex) {
     setTimeout(() => {
         // Redémarrer le combat avec le nouveau Monster Trainers
         runBattle(newMonster, enemyMonster, true);
-        showNotification('🔄 ${getDisplayName(newMonster.species)} entre en combat!');
+        showNotification(`🔄 ${getDisplayName(newMonster.species)} entre en combat!`);
     }, 300);
 };
 
@@ -5491,7 +5626,7 @@ window.retrieveFromFarm = function(slotIndex) {
 function openFollowers() {
     let html = `
         <div style="font-size: 0.8rem; margin-bottom: 20px; padding: 15px; background: rgba(52,152,219,0.1); border: 2px solid #3498db; border-radius: 5px;">
-            <div style="font-weight: bold; color: #3498db; margin-bottom: 10px;">👥 POKÉMON SUIVEURS</div>
+            <div style="font-weight: bold; color: #3498db; margin-bottom: 10px;">👥 Monstres SUIVEURS</div>
             <div style="font-size: 0.7rem; line-height: 1.6;">
                 Choisis jusqu'à 3 Monster qui te suivront sur la carte !
             </div>
@@ -5533,7 +5668,7 @@ function openFollowers() {
         
         if (!isFollowing) {
             html += `
-                <div class="monsters-card ${disabled ? 'disabled' : ''}" ${!disabled ? 'onclick="addFollower(${index})"' : ''} style="${disabled ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
+                <div class="monsters-card ${disabled ? 'disabled' : ''}" ${!disabled ? `onclick="addFollower(${index})"` : ''} style="${disabled ? 'opacity: 0.5; cursor: not-allowed;' : ''}">
                     <div style="font-size: 2rem;">${p.emoji}</div>
                     <div class="name">${getDisplayName(p.species)}</div>
                     <div class="stats">Niv. ${p.level}</div>

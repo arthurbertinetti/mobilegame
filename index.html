@@ -242,6 +242,10 @@
             background: linear-gradient(135deg, #ffcc00, #e74c3c);
             box-shadow: 0 4px 12px rgba(255,204,0,.3);
         }
+        .icon-belote {
+            background: linear-gradient(135deg, #705322, #263f6c);
+            box-shadow: 0 4px 12px rgba(255,209,102,.33);
+        }
 
         .ranking-link {
             display: block;
@@ -363,6 +367,15 @@
             <div class="game-info">
                 <h2>Tamagotchi</h2>
                 <p>Prends soin de ton monstre virtuel !</p>
+            </div>
+        </a>
+
+        <a href="belote.html" class="game-card">
+            <div class="game-icon icon-belote">🃏</div>
+            <div class="game-info">
+                <h2>Belote Royale</h2>
+                <p>Mode 1v1 ou 2v2, belote-rebelote et mise</p>
+                <p class="game-record" id="rec-belote"></p>
             </div>
         </a>
 
@@ -693,7 +706,7 @@
     <div class="footer">© 2026 Arthur B - Tous droits réservés</div>
 <script src="leaderboard.js"></script>
 <script>
-var GAME_IDS = ['tamagotchi','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','sonic','pacman','bomberman','zingvalley2','worms','worms2','monstertrainers','farmvalley2','pokemon_ultimate'];
+var GAME_IDS = ['tamagotchi','belote','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','croissant','pacman','bomberman','zingvalley2','worms','worms2','monstertrainers','farmvalley2','pokemon_ultimate'];
 var FAV_KEY = 'arcade_favorites';
 var favMode = false;
 

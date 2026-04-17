@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a1025">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Belote vs IA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-a: #0a1025;
+            --bg-b: #13234a;
+            --panel: rgba(8, 14, 32, 0.72);
+            --gold: #ffd166;
+            --accent: #50e3c2;
+            --danger: #ff6b6b;
+            --text: #edf3ff;
+            --muted: #b8c4dd;
+        }
+
+        body {
+            height: 100dvh;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 15% 10%, rgba(255, 209, 102, 0.18), transparent 35%),
+                radial-gradient(circle at 90% 85%, rgba(80, 227, 194, 0.14), transparent 38%),
+                linear-gradient(160deg, var(--bg-a), var(--bg-b));
+            color: var(--text);
+            font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+        }
+
+        /* ─── SCREENS ──────────────────────────────────────────── */
+        .screen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .screen.active { display: flex; }
+
+        /* ─── SCREEN: MODE ─────────────────────────────────────── */
+        .mode-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--gold);
+            text-shadow: 0 0 24px rgba(95, 88, 71, 0.4);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        .mode-sub {
+            color: var(--muted);
+            font-size: .95rem;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .mode-cards { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .mode-card {
+            width: 150px;
+            height: 190px;
+            border-radius: 18px;
+            border: 2px solid rgba(255,255,255,.12);
+            background: linear-gradient(145deg, rgba(33,52,95,.95), rgba(21,36,71,.95));
+            box-shadow: 0 12px 30px rgba(0,0,0,.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform .15s, border-color .2s, box-shadow .2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .mode-card:hover, .mode-card:active {
+            transform: translateY(-5px) scale(1.03);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(255,209,102,.28), 0 20px 40px rgba(0,0,0,.5);
+        }
+        .mode-card .mc-emoji { font-size: 2.6rem; }
+        .mode-card .mc-label { font-size: 1.5rem; font-weight: 800; color: var(--gold); }
+        .mode-card .mc-desc { font-size: .78rem; color: var(--muted); text-align: center; padding: 0 8px; }
+
+        /* ─── SCREEN: BET ──────────────────────────────────────── */
+        .bet-card {
+            background: rgba(8,14,32,.82);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 14px 36px rgba(0,0,0,.45);
+            backdrop-filter: blur(6px);
+            width: min(420px, 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+        .bet-header { display: flex; align-items: center; justify-content: space-between; }
+        .bet-title { font-size: 1.25rem; font-weight: 800; color: var(--gold); }
+        .back-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,.15);
+            color: var(--muted);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: .78rem;
+            cursor: pointer;
+        }
+        .bankroll-box {
+            background: rgba(255,209,102,.07);
+            border: 1px solid rgba(255,209,102,.18);
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .bb-lbl { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; }
+        .bb-val { font-size: 1.4rem; font-weight: 800; color: var(--gold); }
+        .bet-label { font-size: .78rem; color: var(--muted); margin-bottom: 4px; }
+        .bet-row { display: flex; gap: 8px; }
+        .divider { height: 1px; background: rgba(255,255,255,.07); }
+
+        /* ─── INPUTS / BUTTONS ─────────────────────────────────── */
+
+        input {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,.14);
+            background: rgba(8,15,32,.9);
+            color: var(--text);
+            padding: 10px 12px;
+            font-size: .92rem;
+            outline: none;
+        }
+        input:focus { border-color: rgba(255,209,102,.4); }
+
+        button {
+            border: 1px solid rgba(255,255,255,.15);
+            background: linear-gradient(145deg, #21345f, #152447);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 9px 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: .88rem;
+            white-space: nowrap;
+            transition: transform .12s ease, opacity .2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active { transform: scale(.97); }
+        button:disabled { opacity: .38; cursor: not-allowed; }
+        .btn-gold { background: linear-gradient(145deg, #806221, #5f4819); color: #ffe9b2; }
+        .btn-green { background: linear-gradient(145deg, #1f6d4f, #154a37); color: #cafde9; }
+        .btn-red { background: linear-gradient(145deg, #7a2835, #501a23); color: #ffd8dd; }
+        .btn-icon {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,.15);
+            color: var(--muted);
+            border-radius: 8px;
+            padding: 5px 9px;
+            font-size: 1rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .btn-icon:hover { color: var(--gold); border-color: rgba(255,209,102,.5); }
+
+        .trump-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
+
+        /* ─── SCREEN: GAME ─────────────────────────────────────── */
+        #screen-game { justify-content: flex-start; padding: 0; }
+
+        .game-topbar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 8px;
+            background: rgba(5,10,28,.95);
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+            width: 100%;
+            box-shadow: 0 2px 12px rgba(0,0,0,.35);
+        }
+        .tb-kpi {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 7px;
+            padding: 2px 7px;
+        }
+        .tb-kpi .tl { font-size: .56rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+        .tb-kpi .tv { font-size: .84rem; font-weight: 700; }
+        .tb-spacer { flex: 1; }
+
+        /* Arena */
+        .game-arena {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 100px 1fr 100px;
+            grid-template-rows: 100px 1fr 165px;
+            gap: 6px;
+            padding: 6px;
+            min-height: 0;
+            width: 100%;
+        }
+
+        /* Seats */
+        .seat {
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255,255,255,.04), transparent 60%),
+                rgba(0,0,0,.22);
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 12px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 2px 8px rgba(0,0,0,.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .seat.north {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            gap: 0;
+            overflow: hidden;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px 8px 4px;
+        }
+        .seat.south {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            overflow: visible;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 18px 8px 7px;
+            gap: 0;
+        }
+        .seat.west { grid-column: 1; grid-row: 2; flex-direction: column; gap: 0; padding: 22px 5px 5px; align-items: center; justify-content: center; }
+        .seat.east { grid-column: 3; grid-row: 2; flex-direction: column; gap: 0; padding: 22px 5px 5px; align-items: center; justify-content: center; }
+
+        /* Fan layout south */
+        .seat.south .card,
+        .seat.south .card-back { flex-shrink: 0; position: relative; z-index: 1; }
+        .seat.south .card + .card,
+        .seat.south .card-back + .card,
+        .seat.south .card + .card-back,
+        .seat.south .card-back + .card-back { margin-left: -18px; }
+        .seat.south .card:hover { transform: translateY(-14px); z-index: 20; }
+        .seat.south .card.illegal:hover { transform: translateY(-6px); z-index: 20; opacity: .65; }
+        .seat.south .card.selected { transform: translateY(-14px) !important; z-index: 20; }
+        /* Fan layout north (full width row) */
+        .seat.north .card-back { flex-shrink: 0; position: relative; z-index: 1; }
+        .seat.north .card-back + .card-back { margin-left: -32px; }
+        /* Fan layout east/west */
+        .seat.east .card-back,
+        .seat.west .card-back { flex-shrink: 0; position: relative; z-index: 1; }
+        .seat.east .card-back + .card-back,
+        .seat.west .card-back + .card-back { margin-top: -44px; }
+        .suit-gap { width: 8px; flex-shrink: 0; }
+        .seat.south .card.auction-highlight {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 2px rgba(255,209,102,.52), 0 5px 12px rgba(0,0,0,.3);
+        }
+
+        /* Center area (grid col 2 row 2) */
+        .center-area {
+            grid-column: 2;
+            grid-row: 2;
+            background:
+                radial-gradient(ellipse at 50% 50%, rgba(40,100,55,.35), transparent 70%),
+                linear-gradient(170deg, rgba(10,46,22,.98), rgba(5,24,11,.99));
+            border: 1px solid rgba(80,200,100,.12);
+            border-radius: 12px;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.07),
+                inset 0 -1px 0 rgba(0,0,0,.3),
+                0 4px 24px rgba(0,0,0,.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        .center-status {
+            font-size: .72rem;
+            color: #d5e1ff;
+            text-align: center;
+            padding: 3px 8px;
+            background: rgba(0,0,0,.22);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+            flex-shrink: 0;
+        }
+
+        /* Trick zone inside center */
+        .trick-zone {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 3px;
+            padding: 4px;
+            min-height: 0;
+        }
+        #trick-north-slot { grid-column: 2; grid-row: 1; }
+        #trick-west-slot  { grid-column: 1; grid-row: 2; }
+        #trick-east-slot  { grid-column: 3; grid-row: 2; }
+        #trick-south-slot { grid-column: 2; grid-row: 3; }
+        .trick-slot {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 7px;
+            border: 1px dashed rgba(255,255,255,.1);
+            position: relative;
+            min-height: 0;
+        }
+
+        /* Auction overlay (appears over trick zone during auction) */
+        .center-auction {
+            position: absolute;
+            inset: 26px 4px 42px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: rgba(8,14,32,.86);
+            border-radius: 9px;
+            padding: 10px 8px;
+            z-index: 10;
+        }
+        .auction-upcard-lbl { font-size: .72rem; color: var(--muted); }
+        .auction-btns { display: flex; gap: 7px; flex-wrap: wrap; justify-content: center; }
+
+        /* Round-end overlay */
+        .center-round-end {
+            position: absolute;
+            inset: 0;
+            background: rgba(8,14,32,.94);
+            border-radius: 12px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 20;
+            padding: 14px;
+            text-align: center;
+        }
+        .rend-title { font-size: .98rem; font-weight: 700; color: var(--gold); }
+        .rend-scores { font-size: .86rem; font-weight: 700; color: var(--text); }
+        .rend-sub { font-size: .72rem; color: var(--muted); }
+
+        /* Log strip at bottom of center */
+        .center-log {
+            height: 42px;
+            overflow-y: auto;
+            padding: 3px 7px;
+            background: rgba(0,0,0,.28);
+            border-top: 1px solid rgba(255,255,255,.06);
+            font-size: .68rem;
+            line-height: 1.38;
+            color: #c4d4f0;
+            flex-shrink: 0;
+        }
+        .center-log p { margin-bottom: 2px; }
+
+        .kpi-strip {
+            padding: 2px 8px;
+            font-size: .63rem;
+            color: var(--muted);
+            text-align: center;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        /* ─── CARDS ─────────────────────────────────────────────── */
+        .card, .card-back {
+            width: 58px;
+            height: 86px;
+            border-radius: 9px;
+            border: 1px solid rgba(255,255,255,.2);
+            box-shadow: 0 3px 9px rgba(0,0,0,.28);
+            position: relative;
+            user-select: none;
+            transition: transform .12s ease, border-color .18s;
+            flex-shrink: 0;
+        }
+        .card-corner { position: absolute; display: flex; flex-direction: column; align-items: center; }
+        .card-corner.top-left { top: 3px; left: 3px; }
+        .card-corner.bot-right { bottom: 3px; right: 3px; transform: rotate(180deg); }
+        .card-corner .rank { font-size: .76rem; font-weight: 800; line-height: 1; }
+        .card-corner .suit { font-size: .74rem; line-height: 1; margin-top: 1px; }
+        .card-pip {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.9rem; line-height: 1;
+            opacity: .09; pointer-events: none; user-select: none;
+        }
+        .card {
+            background:
+                linear-gradient(145deg, #ffffff, #f0f4ff 55%, #e4ecff);
+            color: #0f1b3f;
+            cursor: pointer;
+        }
+        .card.legal:hover { transform: translateY(-5px); border-color: #8ad5ff; box-shadow: 0 8px 14px rgba(0,0,0,.32); }
+        .card.illegal { opacity: .38; filter: grayscale(.25); cursor: not-allowed; }
+        .card.selected { transform: translateY(-10px); border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255,209,102,.42); }
+        .card-back {
+            background:
+                linear-gradient(135deg, #1a3166 25%, transparent 25%) -10px 0,
+                linear-gradient(225deg, #1a3166 25%, transparent 25%) -10px 0,
+                linear-gradient(315deg, #1a3166 25%, transparent 25%),
+                linear-gradient(45deg,  #1a3166 25%, transparent 25%);
+            background-color: #152954;
+            background-size: 20px 20px;
+            border-color: rgba(100,140,255,.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.08);
+        }
+        .trick-card { animation: trickDrop .22s ease; }
+        @keyframes trickDrop {
+            from { transform: translateY(-8px) scale(.9); opacity: .2; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .heart, .diamond { color: #c02435; }
+        .spade, .club { color: #0f1b3f; }
+        .winner-flash { animation: winnerFlash .5s ease; }
+        @keyframes winnerFlash {
+            50% { box-shadow: 0 0 22px rgba(255,209,102,.58); }
+        }
+        .seat-label {
+            position: absolute; top: 4px; left: 6px;
+            font-size: .62rem; font-weight: 600; color: #d8e4ff;
+            text-transform: uppercase; letter-spacing: .05em;
+            text-shadow: 0 1px 3px rgba(0,0,0,.5);
+        }
+        .slot-label {
+            position: absolute; top: 3px; left: 4px;
+            font-size: .58rem; color: #a9b6d1;
+            text-transform: uppercase; letter-spacing: .04em;
+        }
+
+        /* ─── GAME MENU OVERLAY ──────────────────────────────── */
+        #game-menu {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,.48);
+            z-index: 50;
+            align-items: flex-start;
+            justify-content: flex-end;
+            padding-top: 48px;
+            padding-right: 8px;
+        }
+        .gm-panel {
+            background: #0d1628;
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 190px;
+            box-shadow: 0 8px 28px rgba(0,0,0,.52);
+        }
+        .gm-title {
+            font-size: .82rem; font-weight: 700; color: var(--gold);
+            padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,.1);
+            letter-spacing: .04em;
+        }
+        .gm-btn {
+            padding: 9px 12px; border-radius: 9px; text-align: left;
+            width: 100%; font-size: .84rem; cursor: pointer;
+            background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+            color: var(--text);
+        }
+        .gm-btn:hover { background: rgba(255,255,255,.14); color: var(--gold); }
+
+        /* ─── NAMES SECTION (bet screen) ─────────────────────── */
+        .names-section { margin-top: 4px; }
+        .ns-title {
+            font-size: .7rem; color: var(--muted); margin-bottom: 6px;
+            display: flex; align-items: center; justify-content: space-between;
+            text-transform: uppercase; letter-spacing: .04em;
+        }
+        .name-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+        .name-row label { font-size: .72rem; color: var(--muted); width: 76px; flex-shrink: 0; }
+        .name-row input { flex: 1; min-width: 0; }
+
+        /* ─── RESPONSIVE ────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            .game-arena {
+                grid-template-columns: 72px 1fr 72px;
+                grid-template-rows: 80px 1fr 150px;
+            }
+            .card, .card-back { width: 48px; height: 72px; }
+            .card-corner .rank { font-size: .68rem; }
+            .card-corner .suit { font-size: .66rem; }
+            .seat.south .card + .card,
+            .seat.south .card-back + .card-back { margin-left: -16px; }
+            .seat.north .card-back + .card-back { margin-left: -28px; }
+            .mode-card { width: 135px; height: 170px; }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .game-arena {
+                grid-template-columns: 52px 1fr 52px;
+                grid-template-rows: 52px 1fr 108px;
+                padding: 3px; gap: 3px;
+            }
+            .card, .card-back { width: 36px; height: 55px; border-radius: 5px; }
+            .card-corner .rank { font-size: .6rem; }
+            .card-corner .suit { font-size: .58rem; }
+            .center-log { height: 32px; font-size: .62rem; }
+            .center-status { font-size: .65rem; padding: 2px 6px; }
+            .seat.south { padding: 8px 6px 3px; }
+            .seat.south .card + .card,
+            .seat.south .card-back + .card,
+            .seat.south .card + .card-back,
+            .seat.south .card-back + .card-back { margin-left: -14px; }
+            .seat.north .card-back + .card-back { margin-left: -22px; }
+            .seat.east .card-back + .card-back,
+            .seat.west .card-back + .card-back { margin-top: -32px; }
+            .game-topbar { padding: 3px 7px; gap: 4px; }
+            .tb-kpi .tv { font-size: .72rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCREEN 1 : MODE                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="screen-mode" class="screen active">
+    <div class="mode-title">Belote vs IA</div>
+    <div class="mode-sub">Choisis ton mode de jeu</div>
+    <div class="mode-cards">
+        <div class="mode-card" onclick="chooseMode('1v1')">
+            <div class="mc-emoji">🃏</div>
+            <div class="mc-label">1v1</div>
+            <div class="mc-desc">Toi seul contre l'IA</div>
+        </div>
+        <div class="mode-card" onclick="chooseMode('2v2')">
+            <div class="mc-emoji">👥</div>
+            <div class="mc-label">2v2</div>
+            <div class="mc-desc">Toi + partenaire vs 2 IA</div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCREEN 2 : MISE                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="screen-bet" class="screen">
+    <div class="bet-card">
+        <div class="bet-header">
+            <div class="bet-title" id="bet-mode-label">Belote — 1v1</div>
+            <button class="back-btn btn-icon" onclick="showScreen('screen-mode')">← Mode</button>
+        </div>
+        <div class="bankroll-box">
+            <div>
+                <div class="bb-lbl">Bankroll</div>
+                <div class="bb-val" id="bankroll">700</div>
+            </div>
+            <div>
+                <div class="bb-lbl">Mise du match</div>
+                <div class="bb-val" id="current-bet">-</div>
+            </div>
+        </div>
+        <div>
+            <div class="bet-label">Mise (min 10, multiple de 10)</div>
+            <div class="bet-row">
+                <input id="bet-input" type="number" min="10" step="10" value="50" placeholder="Mise...">
+                <button id="start-round" class="btn-gold">Jouer</button>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="bet-row">
+            <button id="daily-bonus" class="btn-green" style="flex:1">Bonus quotidien</button>
+        </div>
+        <div>
+            <div class="bet-label">Code bonus</div>
+            <div class="bet-row">
+                <input id="code-input" type="text" maxlength="12" placeholder="Code bonus...">
+                <button id="apply-code">Appliquer</button>
+            </div>
+        </div>
+        <div style="font-size:.7rem; color:var(--muted); line-height:1.4;">
+            Objectif : 501 pts. Mise engagée pour tout le match (victoire ×2, défaite perdue).
+        </div>
+        <div class="divider"></div>
+        <div class="names-section">
+            <div class="ns-title">
+                Personnages
+                <button id="btn-rand-names" class="btn-icon" style="font-size:.68rem;padding:3px 8px">🎲 Aléatoire</button>
+            </div>
+            <div class="name-row">
+                <label>Toi</label>
+                <input id="name-player" type="text" maxlength="12" placeholder="Ton nom…">
+            </div>
+            <div class="name-row" id="row-name-ai1">
+                <label id="lbl-name-ai1">IA Nord</label>
+                <input id="name-ai1" type="text" maxlength="12" placeholder="IA…">
+            </div>
+            <div class="name-row" id="row-name-ai2" style="display:none">
+                <label>IA Ouest</label>
+                <input id="name-ai2" type="text" maxlength="12" placeholder="IA…">
+            </div>
+            <div class="name-row" id="row-name-mate" style="display:none">
+                <label>Partenaire</label>
+                <input id="name-mate" type="text" maxlength="12" placeholder="Partenaire…">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SCREEN 3 : TAPIS DE JEU                               -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div id="screen-game" class="screen">
+
+    <!-- Barre supérieure -->
+    <div class="game-topbar">
+        <div class="tb-kpi"><div class="tl" id="tb-player-name">Toi</div><div class="tv" id="score-player">0</div></div>
+        <div class="tb-kpi"><div class="tl" id="tb-ai-name">IA</div><div class="tv" id="score-ai">0</div></div>
+        <div class="tb-kpi"><div class="tl">Atout</div><div class="tv" id="tb-trump">-</div></div>
+        <div class="tb-kpi"><div class="tl">Pli</div><div class="tv" id="tb-trick">0/8</div></div>
+        <div class="tb-spacer"></div>
+        <button id="fullscreen-btn" class="btn-icon" title="Plein écran">⛶</button>
+        <button class="btn-icon" onclick="toggleGameMenu()" title="Menu">☰</button>
+    </div>
+
+    <!-- Menu overlay -->
+    <div id="game-menu" style="display:none" onclick="toggleGameMenu()">
+        <div class="gm-panel" onclick="event.stopPropagation()">
+            <div class="gm-title">☰ Menu</div>
+            <button class="gm-btn" onclick="confirmNewGame()">🔄 Nouvelle partie</button>
+            <button class="gm-btn" onclick="menuGoToBet()">💰 Menu mise</button>
+            <button class="gm-btn" onclick="menuGoToMode()">🎮 Choisir mode</button>
+            <div style="margin-top:4px;border-top:1px solid rgba(255,255,255,.1);padding-top:6px;">
+                <button class="gm-btn" onclick="toggleGameMenu()">✕ Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tapis (grille 3×3) -->
+    <div class="game-arena">
+
+        <!-- Nord -->
+        <section class="seat north" id="north-hand">
+            <span class="seat-label" id="north-label"></span>
+        </section>
+
+        <!-- Ouest (2v2) -->
+        <section class="seat west" id="west-hand">
+            <span class="seat-label" id="west-label"></span>
+        </section>
+
+        <!-- CENTRE : upcard + pli + log -->
+        <div class="center-area">
+            <div class="center-status" id="status">Prête à jouer.</div>
+
+            <!-- Zone de pli (toujours présente) -->
+            <div class="trick-zone" id="trick-zone">
+                <div class="trick-slot" id="trick-north-slot"></div>
+                <div class="trick-slot" id="trick-west-slot"></div>
+                <div class="trick-slot" id="trick-east-slot"></div>
+                <div class="trick-slot" id="trick-south-slot"></div>
+            </div>
+
+            <!-- Overlay enchère -->
+            <div class="center-auction" id="auction-area">
+                <div class="auction-upcard-lbl" id="upcard-label">Carte retournée : -</div>
+                <div id="upcard-view"></div>
+                <div class="auction-btns" id="auction-actions">
+                    <button id="take-upcard" class="btn-gold">Prendre</button>
+                    <button id="pass-auction">Passer</button>
+                </div>
+                <div class="trump-picker" id="trump-picker" style="display:none">
+                    <button data-suit="S">♠ Pique</button>
+                    <button data-suit="H">♥ Cœur</button>
+                    <button data-suit="D">♦ Carreau</button>
+                    <button data-suit="C">♣ Trèfle</button>
+                </div>
+            </div>
+
+            <!-- Overlay fin de manche -->
+            <div class="center-round-end" id="round-end-overlay">
+                <div class="rend-title" id="rend-title">Manche terminée</div>
+                <div class="rend-scores" id="rend-scores"></div>
+                <div class="rend-sub" id="rend-sub"></div>
+                <button id="btn-next-round" class="btn-gold" style="width:100%">Manche suivante</button>
+                <button class="btn-red" style="width:100%" onclick="goToMenu()">Retour au menu</button>
+            </div>
+
+            <!-- Log en bas du centre -->
+            <div class="center-log" id="log"></div>
+        </div>
+
+        <!-- Est (2v2) -->
+        <section class="seat east" id="east-hand">
+            <span class="seat-label" id="east-label"></span>
+        </section>
+
+        <!-- Sud (joueur) -->
+        <section class="seat south" id="south-hand">
+            <span class="seat-label" id="south-label"></span>
+        </section>
+
+    </div><!-- .game-arena -->
+
+    <div class="kpi-strip" id="round-kpi">Manche : - | Atout : - | Pli : 0/8</div>
+
+</div><!-- #screen-game -->
+
+<script src="leaderboard.js"></script>
+<script>
+(() => {
+    const SUITS = ['S', 'H', 'D', 'C'];
+    const SUIT_LABEL = { S: 'Pique', H: 'Coeur', D: 'Carreau', C: 'Trefle' };
+    const SUIT_SYMBOL = { S: '♠', H: '♥', D: '♦', C: '♣' };
+    const RANKS = ['7', '8', '9', 'J', 'Q', 'K', '10', 'A'];
+
+    const TRUMP_ORDER = ['J', '9', 'A', '10', 'K', 'Q', '8', '7'];
+    const PLAIN_ORDER = ['A', '10', 'K', 'Q', 'J', '9', '8', '7'];
+
+    const TRUMP_POINTS = { '7': 0, '8': 0, '9': 14, 'J': 20, 'Q': 3, 'K': 4, '10': 10, 'A': 11 };
+    const PLAIN_POINTS = { '7': 0, '8': 0, '9': 0, 'J': 2, 'Q': 3, 'K': 4, '10': 10, 'A': 11 };
+
+    const STORAGE = {
+        BANKROLL: 'belote-bankroll-v1',
+        DAILY: 'belote-daily-v1',
+        CODE: 'belote-code-mise-v1'
+    };
+
+    const state = {
+        mode: '1v1',
+        order: ['player', 'ai1'],
+        seat: {
+            player: 'south',
+            ai1: 'north',
+            mate: 'north',
+            ai2: 'east'
+        },
+        names: {
+            player: 'Toi',
+            ai1: 'IA Nord',
+            ai2: 'IA Est',
+            mate: 'Partenaire'
+        },
+        dealerIndex: -1,
+        playerScore: 0,
+        aiScore: 0,
+        bankroll: 700,
+        currentBet: 0,
+        matchBet: 0,
+        matchInProgress: false,
+
+        roundActive: false,
+        trumpSuit: null,
+        trickCount: 0,
+        leaderIndex: 0,
+        currentTurnIndex: 0,
+        upcard: null,
+        talon: [],
+        contractTaker: null,
+
+        auction: {
+            active: false,
+            phase: 1,
+            passCount: 0,
+            startTurnIndex: 0,
+            upcardSuit: null
+        },
+
+        hands: {
+            player: [],
+            ai1: [],
+            mate: [],
+            ai2: []
+        },
+        trick: [],
+
+        roundPoints: { you: 0, opp: 0 },
+        roundCardPoints: { you: 0, opp: 0 },
+        roundTricks: { you: 0, opp: 0 },
+        belote: {}
+    };
+
+    const els = {
+        scorePlayer: document.getElementById('score-player'),
+        scoreAi: document.getElementById('score-ai'),
+        bankroll: document.getElementById('bankroll'),
+        currentBet: document.getElementById('current-bet'),
+        status: document.getElementById('status'),
+        roundKpi: document.getElementById('round-kpi'),
+        tbTrump: document.getElementById('tb-trump'),
+        tbTrick: document.getElementById('tb-trick'),
+        northHand: document.getElementById('north-hand'),
+        eastHand: document.getElementById('east-hand'),
+        westHand: document.getElementById('west-hand'),
+        southHand: document.getElementById('south-hand'),
+        northLabel: document.getElementById('north-label'),
+        eastLabel: document.getElementById('east-label'),
+        westLabel: document.getElementById('west-label'),
+        southLabel: document.getElementById('south-label'),
+        trickNorthSlot: document.getElementById('trick-north-slot'),
+        trickEastSlot: document.getElementById('trick-east-slot'),
+        trickWestSlot: document.getElementById('trick-west-slot'),
+        trickSouthSlot: document.getElementById('trick-south-slot'),
+        trickZone: document.getElementById('trick-zone'),
+        log: document.getElementById('log'),
+
+        tbPlayerName: document.getElementById('tb-player-name'),
+        tbAiName: document.getElementById('tb-ai-name'),
+        betInput: document.getElementById('bet-input'),
+        startRound: document.getElementById('start-round'),
+        dailyBonus: document.getElementById('daily-bonus'),
+        codeInput: document.getElementById('code-input'),
+        applyCode: document.getElementById('apply-code'),
+        trumpPicker: document.getElementById('trump-picker'),
+        upcardView: document.getElementById('upcard-view'),
+        upcardLabel: document.getElementById('upcard-label'),
+        takeUpcard: document.getElementById('take-upcard'),
+        passAuction: document.getElementById('pass-auction')
+    };
+
+    function activePlayers() {
+        return state.mode === '2v2' ? ['player', 'ai2', 'mate', 'ai1'] : ['player', 'ai1'];
+    }
+
+    function teamOf(player) {
+        if (player === 'player' || player === 'mate') return 'you';
+        return 'opp';
+    }
+
+    function starFor(player) {
+        return state.contractTaker === player ? ' ⭐' : '';
+    }
+
+    function seatLabel(seat) {
+        const p = playerAtSeat(seat);
+        if (!p) return '';
+        return state.names[p] + starFor(p);
+    }
+
+    function labelOf(player) {
+        return state.names[player] || player;
+    }
+
+    function seatOf(player) {
+        return state.seat[player];
+    }
+
+    function playerAtSeat(seat) {
+        for (let i = 0; i < state.order.length; i++) {
+            if (seatOf(state.order[i]) === seat) return state.order[i];
+        }
+        return null;
+    }
+
+    function currentPlayer() {
+        return state.order[state.currentTurnIndex];
+    }
+
+    function dealerPlayer() {
+        if (state.dealerIndex < 0) return state.order[0];
+        return state.order[state.dealerIndex];
+    }
+
+    function loadBankroll() {
+        const raw = Number(localStorage.getItem(STORAGE.BANKROLL));
+        if (Number.isFinite(raw) && raw >= 0) state.bankroll = raw;
+        else state.bankroll = 700;
+    }
+
+    function saveBankroll() {
+        localStorage.setItem(STORAGE.BANKROLL, String(Math.floor(state.bankroll)));
+    }
+
+    function todayKey() {
+        const d = new Date();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + m + '-' + day;
+    }
+
+    function log(msg, cls) {
+        const p = document.createElement('p');
+        p.textContent = msg;
+        if (cls === 'good') p.style.color = '#97f7da';
+        if (cls === 'bad') p.style.color = '#ffb2bb';
+        if (cls === 'gold') p.style.color = '#ffe19f';
+        els.log.prepend(p);
+    }
+
+    function updateHud() {
+        els.scorePlayer.textContent = state.playerScore;
+        els.scoreAi.textContent = state.aiScore;
+        els.bankroll.textContent = state.bankroll;
+        els.currentBet.textContent = state.matchInProgress ? state.matchBet : '-';
+
+        const trump = state.trumpSuit ? SUIT_LABEL[state.trumpSuit] : '-';
+        els.tbTrump.textContent = trump;
+        els.tbTrick.textContent = state.trickCount + '/8';
+        els.roundKpi.textContent = 'Manche : ' + (state.roundActive ? 'En cours' : '-') +
+            ' | Atout : ' + trump + ' | Pli : ' + state.trickCount + '/8';
+
+        const inMatch = state.matchInProgress;
+        els.startRound.disabled = state.roundActive || inMatch;
+        els.betInput.disabled = inMatch;
+
+        // Overlay enchère : visible pendant toute la phase d'enchère
+        const inAuction = state.roundActive && state.auction.active;
+        document.getElementById('auction-area').style.display = inAuction ? 'flex' : 'none';
+
+        const playerAuctionTurn = inAuction && currentPlayer() === 'player';
+        const showTake = playerAuctionTurn && state.auction.phase === 1;
+        const showSuitPick = playerAuctionTurn && state.auction.phase === 2;
+
+        els.takeUpcard.disabled = !showTake;
+        els.passAuction.disabled = !playerAuctionTurn;
+        els.takeUpcard.style.display = showTake ? '' : 'none';
+        els.passAuction.style.display = playerAuctionTurn ? '' : 'none';
+        els.trumpPicker.style.display = showSuitPick ? 'grid' : 'none';
+
+        Array.from(els.trumpPicker.querySelectorAll('button')).forEach(btn => {
+            const suit = btn.dataset.suit;
+            const hasSuit = state.hands.player.some(c => c.suit === suit);
+            const blocked = state.auction.phase === 2 && suit === state.auction.upcardSuit;
+            btn.disabled = !showSuitPick || !hasSuit || blocked;
+        });
+
+        if (els.tbPlayerName) els.tbPlayerName.textContent = seatLabel('south');
+        if (els.tbAiName) els.tbAiName.textContent = state.mode === '2v2' ? 'Adversaires' : seatLabel('north');
+        if (els.northLabel) els.northLabel.textContent = seatLabel('north');
+        if (els.eastLabel) els.eastLabel.textContent = seatLabel('east');
+        if (els.westLabel) els.westLabel.textContent = seatLabel('west');
+        if (els.southLabel) els.southLabel.textContent = seatLabel('south');
+
+        els.eastHand.style.display = state.mode === '2v2' ? '' : 'none';
+        els.westHand.style.display = state.mode === '2v2' ? '' : 'none';
+        els.trickEastSlot.style.display = state.mode === '2v2' ? '' : 'none';
+        els.trickWestSlot.style.display = state.mode === '2v2' ? '' : 'none';
+
+        if (state.upcard) {
+            els.upcardLabel.textContent = 'Carte retournée : ' + state.upcard.rank + SUIT_SYMBOL[state.upcard.suit] +
+                ' (' + SUIT_LABEL[state.upcard.suit] + ')';
+        } else {
+            els.upcardLabel.textContent = 'Carte retournée : -';
+        }
+    }
+
+    function setStatus(text) {
+        els.status.textContent = text;
+    }
+
+    function makeDeck() {
+        const deck = [];
+        SUITS.forEach(suit => {
+            RANKS.forEach(rank => {
+                deck.push({ suit, rank, id: suit + rank + Math.random().toString(36).slice(2, 8) });
+            });
+        });
+        return deck;
+    }
+
+    function shuffle(deck) {
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const tmp = deck[i];
+            deck[i] = deck[j];
+            deck[j] = tmp;
+        }
+        return deck;
+    }
+
+    function cardPoints(card, trumpSuit) {
+        return card.suit === trumpSuit ? TRUMP_POINTS[card.rank] : PLAIN_POINTS[card.rank];
+    }
+
+    function rankPower(card, trumpSuit) {
+        const arr = card.suit === trumpSuit ? TRUMP_ORDER : PLAIN_ORDER;
+        return 100 - arr.indexOf(card.rank);
+    }
+
+    // Trie la main du joueur: atout d'abord (par force), puis par signe et force
+    function sortHand(hand) {
+        if (!state.trumpSuit || !hand || hand.length === 0) return;
+        const SUIT_PLAIN_ORDER = ['S', 'H', 'D', 'C'];
+        hand.sort((a, b) => {
+            const aTrump = a.suit === state.trumpSuit;
+            const bTrump = b.suit === state.trumpSuit;
+            if (aTrump !== bTrump) return aTrump ? -1 : 1;
+            if (a.suit !== b.suit) return SUIT_PLAIN_ORDER.indexOf(a.suit) - SUIT_PLAIN_ORDER.indexOf(b.suit);
+            const order = aTrump ? TRUMP_ORDER : PLAIN_ORDER;
+            return order.indexOf(a.rank) - order.indexOf(b.rank);
+        });
+    }
+
+    function isHigher(a, b, leadSuit, trumpSuit) {
+        const aTrump = a.suit === trumpSuit;
+        const bTrump = b.suit === trumpSuit;
+
+        if (aTrump && !bTrump) return true;
+        if (!aTrump && bTrump) return false;
+
+        if (aTrump && bTrump) {
+            return TRUMP_ORDER.indexOf(a.rank) < TRUMP_ORDER.indexOf(b.rank);
+        }
+
+        const aLead = a.suit === leadSuit;
+        const bLead = b.suit === leadSuit;
+
+        if (aLead && !bLead) return true;
+        if (!aLead && bLead) return false;
+
+        if (aLead && bLead) {
+            return PLAIN_ORDER.indexOf(a.rank) < PLAIN_ORDER.indexOf(b.rank);
+        }
+
+        return false;
+    }
+
+    function trickWinner(trick, trumpSuit) {
+        const lead = trick[0].card.suit;
+        let best = trick[0];
+        for (let i = 1; i < trick.length; i++) {
+            const candidate = trick[i];
+            if (isHigher(candidate.card, best.card, lead, trumpSuit)) best = candidate;
+        }
+        return best.player;
+    }
+
+    function legalMoves(player, hand, trick, trumpSuit) {
+        if (trick.length === 0) return hand.slice();
+
+        const leadSuit = trick[0].card.suit;
+        const hasLead = hand.some(c => c.suit === leadSuit);
+        if (hasLead) return hand.filter(c => c.suit === leadSuit);
+
+        const winner = trickWinner(trick, trumpSuit);
+        const allyWinning = teamOf(winner) === teamOf(player);
+        if (allyWinning) return hand.slice();
+
+        const trumps = hand.filter(c => c.suit === trumpSuit);
+        if (trumps.length === 0) return hand.slice();
+
+        const currentBest = trick.find(t => t.card.suit === trumpSuit)?.card || null;
+        const higherTrumps = trumps.filter(c => {
+            if (!currentBest || currentBest.suit !== trumpSuit) return true;
+            return TRUMP_ORDER.indexOf(c.rank) < TRUMP_ORDER.indexOf(currentBest.rank);
+        });
+
+        return higherTrumps.length > 0 ? higherTrumps : trumps;
+    }
+
+    function cardNode(card, clickable, legal, onClick) {
+        const node = document.createElement('div');
+        node.className = 'card ' + (legal ? 'legal' : 'illegal');
+
+        const suitClass = (card.suit === 'H' || card.suit === 'D') ? 'heart' : 'spade';
+        function makeCorner(cls) {
+            const corner = document.createElement('div');
+            corner.className = 'card-corner ' + cls;
+            const r = document.createElement('div');
+            r.className = 'rank ' + suitClass;
+            r.textContent = card.rank;
+            const s = document.createElement('div');
+            s.className = 'suit ' + suitClass;
+            s.textContent = SUIT_SYMBOL[card.suit];
+            corner.appendChild(r);
+            corner.appendChild(s);
+            return corner;
+        }
+        node.appendChild(makeCorner('top-left'));
+        node.appendChild(makeCorner('bot-right'));
+        const pip = document.createElement('div');
+        pip.className = 'card-pip ' + suitClass;
+        pip.textContent = SUIT_SYMBOL[card.suit];
+        node.appendChild(pip);
+
+        if (clickable && legal) {
+            node.onclick = onClick;
+        }
+
+        return node;
+    }
+
+    function renderUpcard() {
+        els.upcardView.innerHTML = '';
+        if (!state.upcard) return;
+        const node = cardNode(state.upcard, false, true, null);
+        els.upcardView.appendChild(node);
+    }
+
+    function renderHands() {
+        // Update seat labels (preserve the span elements, only update text)
+        if (els.southLabel) els.southLabel.textContent = seatLabel('south');
+        if (els.northLabel) els.northLabel.textContent = seatLabel('north');
+        if (els.eastLabel) els.eastLabel.textContent = seatLabel('east');
+        if (els.westLabel) els.westLabel.textContent = seatLabel('west');
+
+        // Clear card elements but keep seat-label spans
+        function clearCards(seat) {
+            Array.from(seat.children).forEach(child => {
+                if (!child.classList.contains('seat-label')) child.remove();
+            });
+        }
+        clearCards(els.northHand);
+        clearCards(els.eastHand);
+        clearCards(els.westHand);
+        clearCards(els.southHand);
+
+        function addBacks(target, count, dim) {
+            for (let i = 0; i < count; i++) {
+                const b = document.createElement('div');
+                b.className = 'card-back';
+                if (dim) b.style.opacity = '.62';
+                target.appendChild(b);
+            }
+        }
+
+        const northPlayer = playerAtSeat('north');
+        const eastPlayer = playerAtSeat('east');
+        const westPlayer = playerAtSeat('west');
+
+        addBacks(els.northHand, northPlayer ? state.hands[northPlayer].length : 0, northPlayer === 'mate');
+        addBacks(els.eastHand, eastPlayer ? state.hands[eastPlayer].length : 0, false);
+        addBacks(els.westHand, westPlayer ? state.hands[westPlayer].length : 0, false);
+
+        sortHand(state.hands.player);
+        const playerCanPlay = state.roundActive && state.trumpSuit && currentPlayer() === 'player';
+        const legal = playerCanPlay ? legalMoves('player', state.hands.player, state.trick, state.trumpSuit) : [];
+
+        const auctionPhase1 = state.roundActive && state.auction.active && state.auction.phase === 1;
+        const auctionPhase2 = state.roundActive && state.auction.active && state.auction.phase === 2;
+
+        if (auctionPhase2) {
+            // Groupes par signe avec séparateurs
+            const groups = {};
+            state.hands.player.forEach((card, idx) => {
+                if (!groups[card.suit]) groups[card.suit] = [];
+                groups[card.suit].push({ card, idx });
+            });
+            const suitOrder = ['S', 'H', 'D', 'C'];
+            let firstGroup = true;
+            suitOrder.forEach(suit => {
+                if (!groups[suit] || groups[suit].length === 0) return;
+                if (!firstGroup) {
+                    const gap = document.createElement('div');
+                    gap.className = 'suit-gap';
+                    els.southHand.appendChild(gap);
+                }
+                firstGroup = false;
+                groups[suit].forEach(({ card, idx }, i) => {
+                    const node = cardNode(card, false, true, null);
+                    if (i > 0) node.style.marginLeft = '-20px';
+                    els.southHand.appendChild(node);
+                });
+            });
+        } else {
+            state.hands.player.forEach((card, idx) => {
+                const allowed = playerCanPlay ? legal.includes(card) : true;
+                const node = cardNode(card, playerCanPlay, allowed, () => onPlayerCard(idx));
+                if (auctionPhase1) {
+                    // Mettre en avant les cartes de la couleur retournée
+                    if (card.suit === state.auction.upcardSuit) {
+                        node.className = 'card legal auction-highlight';
+                    } else {
+                        node.className = 'card illegal';
+                    }
+                }
+                els.southHand.appendChild(node);
+            });
+        }
+    }
+
+    function renderTrick() {
+        els.trickNorthSlot.innerHTML = '';
+        els.trickEastSlot.innerHTML = '';
+        els.trickWestSlot.innerHTML = '';
+        els.trickSouthSlot.innerHTML = '';
+
+        state.trick.forEach(entry => {
+            const n = cardNode(entry.card, false, true, null);
+            n.classList.add('trick-card');
+            const seat = seatOf(entry.player);
+            if (seat === 'north') els.trickNorthSlot.appendChild(n);
+            else if (seat === 'east') els.trickEastSlot.appendChild(n);
+            else if (seat === 'west') els.trickWestSlot.appendChild(n);
+            else els.trickSouthSlot.appendChild(n);
+        });
+    }
+
+    function resetBelote() {
+        state.belote = {};
+        state.order.forEach(p => {
+            state.belote[p] = { hasPair: false, q: false, k: false, awarded: false };
+        });
+    }
+
+    function setupBeloteFlags() {
+        state.order.forEach(player => {
+            const h = state.hands[player];
+            const q = h.some(c => c.suit === state.trumpSuit && c.rank === 'Q');
+            const k = h.some(c => c.suit === state.trumpSuit && c.rank === 'K');
+            state.belote[player].hasPair = q && k;
+        });
+    }
+
+    function checkBeloteAnnouncement(owner, card) {
+        const b = state.belote[owner];
+        if (!b.hasPair || b.awarded) return;
+        if (card.suit !== state.trumpSuit) return;
+        if (card.rank !== 'Q' && card.rank !== 'K') return;
+
+        if (card.rank === 'Q' && !b.q) {
+            b.q = true;
+            log(labelOf(owner) + ' annonce Belote (D♥ de l\'atout).', 'gold');
+        }
+        if (card.rank === 'K' && !b.k) {
+            b.k = true;
+            if (b.q) {
+                log(labelOf(owner) + ' annonce Rebelote (R♥ de l\'atout) !', 'gold');
+            } else {
+                log(labelOf(owner) + ' annonce Belote (R♥ de l\'atout).', 'gold');
+            }
+        }
+
+        if (b.q && b.k && !b.awarded) {
+            b.awarded = true;
+            state.roundPoints[teamOf(owner)] += 20;
+            log('Belote-Rebelote validée pour ' + labelOf(owner) + ' → +20 pts au score !', 'gold');
+        }
+    }
+
+    function setMode(mode) {
+        if (state.roundActive) return;
+        state.mode = mode === '2v2' ? '2v2' : '1v1';
+        if (state.mode === '2v2') {
+            state.seat = { player: 'south', mate: 'north', ai1: 'east', ai2: 'west' };
+        } else {
+            state.seat = { player: 'south', ai1: 'north', mate: 'north', ai2: 'west' };
+        }
+        state.order = activePlayers();
+        resetMatch();
+        log('Mode active: ' + state.mode + '.', 'gold');
+    }
+
+    function dealInitialHands() {
+        const deck = shuffle(makeDeck());
+        const players = state.order;
+        const n = players.length;
+        const start = (state.dealerIndex + 1 + n) % n;
+
+        players.forEach(p => {
+            state.hands[p] = [];
+        });
+
+        let ptr = 0;
+
+        // First pass: 3 cards each.
+        for (let i = 0; i < n; i++) {
+            const p = players[(start + i) % n];
+            for (let k = 0; k < 3; k++) state.hands[p].push(deck[ptr++]);
+        }
+
+        // Second pass: 2 cards each => 5 cards per player before bidding.
+        for (let i = 0; i < n; i++) {
+            const p = players[(start + i) % n];
+            for (let k = 0; k < 2; k++) state.hands[p].push(deck[ptr++]);
+        }
+
+        state.upcard = deck[ptr++];
+        state.talon = deck.slice(ptr);
+
+        if (state.mode === '1v1') {
+            state.hands.mate = [];
+            state.hands.ai2 = [];
+        }
+    }
+
+    function startAuction() {
+        state.auction.active = true;
+        state.auction.phase = 1;
+        state.auction.passCount = 0;
+        state.auction.startTurnIndex = (state.dealerIndex + 1 + state.order.length) % state.order.length;
+        state.auction.upcardSuit = state.upcard ? state.upcard.suit : null;
+        state.currentTurnIndex = state.auction.startTurnIndex;
+
+        setStatus('Tour de prise: ' + labelOf(currentPlayer()) + ' doit prendre ou passer.');
+        renderUpcard();
+        updateHud();
+        renderHands();
+
+        if (currentPlayer() !== 'player') {
+            window.setTimeout(aiAuctionTurn, 650);
+        }
+    }
+
+    function strengthForSuit(hand, suit) {
+        let score = 0;
+        hand.forEach(card => {
+            if (card.suit !== suit) return;
+            score += TRUMP_POINTS[card.rank] + 4;
+            if (card.rank === 'J') score += 10;
+            if (card.rank === '9') score += 7;
+            if (card.rank === 'A' || card.rank === '10') score += 3;
+        });
+        return score;
+    }
+
+    function completeDealAfterAuction(taker, phase) {
+        const players = state.order;
+        const dealer = dealerPlayer();
+        const n = players.length;
+        const start = (state.dealerIndex + 1 + n) % n;
+
+        // Final pass in table order: 3 cards to everyone, except one player who gets 2.
+        // In phase 1, taker gets 2 (+ the upcard). In phase 2, dealer gets 2 (+ keeps upcard).
+        for (let i = 0; i < n; i++) {
+            const p = players[(start + i) % n];
+            const extra = (phase === 1)
+                ? (p === taker ? 2 : 3)
+                : (p === dealer ? 2 : 3);
+            for (let k = 0; k < extra; k++) {
+                const c = state.talon.shift();
+                if (c) state.hands[p].push(c);
+            }
+        }
+
+        if (state.upcard) {
+            if (phase === 1) state.hands[taker].push(state.upcard);
+            else state.hands[dealer].push(state.upcard);
+        }
+
+        state.upcard = null;
+        state.talon = [];
+    }
+
+    function finalizeAuction(taker, trumpSuit, phase) {
+        state.auction.active = false;
+        state.contractTaker = taker;
+        state.trumpSuit = trumpSuit;
+
+        completeDealAfterAuction(taker, phase);
+        setupBeloteFlags();
+
+        state.leaderIndex = (state.dealerIndex + 1 + state.order.length) % state.order.length;
+        state.currentTurnIndex = state.leaderIndex;
+
+        log(labelOf(taker) + ' prend. Atout: ' + SUIT_LABEL[trumpSuit] + '.', 'good');
+        setStatus('Atout ' + SUIT_LABEL[trumpSuit] + '. ' + labelOf(currentPlayer()) + ' entame.');
+
+        renderUpcard();
+        renderHands();
+        renderTrick();
+        updateHud();
+
+        if (currentPlayer() !== 'player') {
+            window.setTimeout(aiPlay, 650);
+        }
+    }
+
+    function restartAuctionAfterFullPass() {
+        log('Tout le monde passe. Nouvelle distribution 5 cartes + carte retournee.', 'gold');
+        dealInitialHands();
+        renderTrick();
+        startAuction();
+    }
+
+    function nextAuctionTurn() {
+        state.currentTurnIndex = (state.currentTurnIndex + 1) % state.order.length;
+        updateHud();
+
+        if (currentPlayer() === 'player') {
+            if (state.auction.phase === 1) {
+                setStatus('A toi: prendre ' + SUIT_LABEL[state.auction.upcardSuit] + ' ou passer.');
+            } else {
+                setStatus('A toi: choisir un atout (sauf ' + SUIT_LABEL[state.auction.upcardSuit] + ') ou passer.');
+            }
+        } else {
+            setStatus(labelOf(currentPlayer()) + ' reflechit...');
+            window.setTimeout(aiAuctionTurn, 650);
+        }
+    }
+
+    function auctionPass() {
+        if (!state.roundActive || !state.auction.active) return;
+        const p = currentPlayer();
+        log(labelOf(p) + ' passe.', 'gold');
+
+        state.auction.passCount += 1;
+
+        if (state.auction.phase === 1 && state.auction.passCount >= state.order.length) {
+            state.auction.phase = 2;
+            state.auction.passCount = 0;
+            state.currentTurnIndex = state.auction.startTurnIndex;
+            log('Deuxieme tour: choisissez un atout depuis votre main (sauf ' + SUIT_LABEL[state.auction.upcardSuit] + ').', 'gold');
+            updateHud();
+            if (currentPlayer() !== 'player') {
+                setStatus(labelOf(currentPlayer()) + ' reflechit...');
+                window.setTimeout(aiAuctionTurn, 650);
+            } else {
+                setStatus('A toi de choisir un atout depuis ta main, ou passer.');
+            }
+            return;
+        }
+
+        if (state.auction.phase === 2 && state.auction.passCount >= state.order.length) {
+            restartAuctionAfterFullPass();
+            return;
+        }
+
+        nextAuctionTurn();
+    }
+
+    function playerTakeUpcard() {
+        if (!state.roundActive || !state.auction.active || currentPlayer() !== 'player') return;
+        if (state.auction.phase !== 1) return;
+        finalizeAuction('player', state.auction.upcardSuit, 1);
+    }
+
+    function playerChooseSuit(suit) {
+        if (!state.roundActive || !state.auction.active || currentPlayer() !== 'player') return;
+        if (state.auction.phase !== 2) return;
+        if (suit === state.auction.upcardSuit) {
+            log('Tu ne peux pas reprendre la couleur retournee au 2e tour.', 'bad');
+            return;
+        }
+        const hasSuit = state.hands.player.some(c => c.suit === suit);
+        if (!hasSuit) {
+            log('Choisis une couleur presente dans ta main.', 'bad');
+            return;
+        }
+        finalizeAuction('player', suit, 2);
+    }
+
+    function aiAuctionTurn() {
+        if (!state.roundActive || !state.auction.active) return;
+        const player = currentPlayer();
+        if (player === 'player') return;
+
+        const hand = state.hands[player];
+        if (state.auction.phase === 1) {
+            const s = state.auction.upcardSuit;
+            const score = strengthForSuit(hand, s) + Math.random() * 6;
+            const takeThreshold = state.mode === '2v2' ? 33 : 30;
+            if (score >= takeThreshold) {
+                finalizeAuction(player, s, 1);
+                return;
+            }
+            auctionPass();
+            return;
+        }
+
+        let bestSuit = null;
+        let bestScore = -1;
+        SUITS.forEach(s => {
+            if (s === state.auction.upcardSuit) return;
+            if (!hand.some(c => c.suit === s)) return;
+            const score = strengthForSuit(hand, s);
+            if (score > bestScore) {
+                bestScore = score;
+                bestSuit = s;
+            }
+        });
+
+        const chooseThreshold = state.mode === '2v2' ? 35 : 32;
+        if (bestSuit && bestScore + Math.random() * 6 >= chooseThreshold) {
+            finalizeAuction(player, bestSuit, 2);
+            return;
+        }
+
+        auctionPass();
+    }
+
+    function startRound() {
+        let bet = state.matchBet;
+        if (!state.matchInProgress) {
+            const requested = Number(els.betInput.value);
+            bet = Math.floor(requested / 10) * 10;
+            if (!Number.isFinite(bet) || bet < 10) {
+                alert('Mise invalide (minimum 10).');
+                return;
+            }
+            if (bet > state.bankroll) {
+                alert('Bankroll insuffisante pour cette mise.');
+                return;
+            }
+            // Nouveau match : remettre les scores à zéro
+            state.playerScore = 0;
+            state.aiScore = 0;
+            state.matchBet = bet;
+            state.matchInProgress = true;
+        }
+
+        // Afficher le tapis et masquer l'overlay fin de manche
+        document.getElementById('round-end-overlay').style.display = 'none';
+        showScreen('screen-game');
+
+        state.currentBet = bet;
+        state.roundActive = true;
+        state.order = activePlayers();
+        state.dealerIndex = (state.dealerIndex + 1 + state.order.length) % state.order.length;
+        state.trumpSuit = null;
+        state.currentTurnIndex = 0;
+        state.leaderIndex = 0;
+        state.trickCount = 0;
+        state.trick = [];
+        state.roundPoints = { you: 0, opp: 0 };
+        state.roundCardPoints = { you: 0, opp: 0 };
+        state.roundTricks = { you: 0, opp: 0 };
+        state.contractTaker = null;
+        resetBelote();
+
+        dealInitialHands();
+        renderHands();
+        renderTrick();
+        renderUpcard();
+        updateHud();
+
+        log('Nouvelle manche ' + state.mode + '. Mise: ' + state.currentBet + '.', 'gold');
+        log('Distribution: 5 cartes chacun + 1 carte retournee.', 'gold');
+        startAuction();
+    }
+
+    function removeFromHand(hand, idx) {
+        const c = hand[idx];
+        hand.splice(idx, 1);
+        return c;
+    }
+
+    function onPlayerCard(idx) {
+        if (!state.roundActive || currentPlayer() !== 'player' || !state.trumpSuit) return;
+
+        const card = state.hands.player[idx];
+        const legal = legalMoves('player', state.hands.player, state.trick, state.trumpSuit);
+        if (!legal.includes(card)) {
+            log('Carte non autorisee par les regles de belote.', 'bad');
+            return;
+        }
+
+        const played = removeFromHand(state.hands.player, idx);
+        state.trick.push({ player: 'player', card: played });
+        checkBeloteAnnouncement('player', played);
+        state.currentTurnIndex = (state.currentTurnIndex + 1) % state.order.length;
+
+        renderHands();
+        renderTrick();
+
+        if (state.trick.length < state.order.length) {
+            setStatus(labelOf(currentPlayer()) + ' reflechit...');
+            window.setTimeout(aiPlay, 550);
+        } else {
+            resolveTrickSoon();
+        }
+    }
+
+    function aiChooseCard(player) {
+        const hand = state.hands[player];
+        const legal = legalMoves(player, hand, state.trick, state.trumpSuit);
+
+        if (state.trick.length === 0) {
+            legal.sort((a, b) => {
+                const va = rankPower(a, state.trumpSuit) + cardPoints(a, state.trumpSuit) * 1.6;
+                const vb = rankPower(b, state.trumpSuit) + cardPoints(b, state.trumpSuit) * 1.6;
+                return vb - va;
+            });
+            return legal[0];
+        }
+
+        const leadSuit = state.trick[0].card.suit;
+        const currentBestPlayer = trickWinner(state.trick, state.trumpSuit);
+        const currentBest = state.trick.find(t => t.player === currentBestPlayer).card;
+
+        // Si l'allié gagne déjà le pli : ne pas couper, jouer la carte la moins utile
+        const allyWinning = teamOf(currentBestPlayer) === teamOf(player);
+        if (allyWinning) {
+            const nonTrumps = legal.filter(c => c.suit !== state.trumpSuit);
+            const pool = nonTrumps.length > 0 ? nonTrumps : legal;
+            pool.sort((a, b) => cardPoints(a, state.trumpSuit) - cardPoints(b, state.trumpSuit));
+            return pool[0];
+        }
+
+        const winning = legal.filter(c => isHigher(c, currentBest, leadSuit, state.trumpSuit));
+
+        if (winning.length > 0) {
+            winning.sort((a, b) => {
+                const pa = rankPower(a, state.trumpSuit) - cardPoints(a, state.trumpSuit) * 0.4;
+                const pb = rankPower(b, state.trumpSuit) - cardPoints(b, state.trumpSuit) * 0.4;
+                return pa - pb;
+            });
+            return winning[0];
+        }
+
+        legal.sort((a, b) => cardPoints(a, state.trumpSuit) - cardPoints(b, state.trumpSuit));
+        return legal[0];
+    }
+
+    function aiPlay() {
+        if (!state.roundActive || !state.trumpSuit || state.auction.active) return;
+        const player = currentPlayer();
+        if (player === 'player') return;
+
+        const card = aiChooseCard(player);
+        const idx = state.hands[player].indexOf(card);
+        const played = removeFromHand(state.hands[player], idx);
+
+        state.trick.push({ player, card: played });
+        checkBeloteAnnouncement(player, played);
+        state.currentTurnIndex = (state.currentTurnIndex + 1) % state.order.length;
+        log(labelOf(player) + ' joue ' + played.rank + SUIT_SYMBOL[played.suit] + '.', 'gold');
+
+        renderHands();
+        renderTrick();
+
+        if (state.trick.length < state.order.length) {
+            if (currentPlayer() === 'player') setStatus('A toi de jouer.');
+            else {
+                setStatus(labelOf(currentPlayer()) + ' reflechit...');
+                window.setTimeout(aiPlay, 500);
+            }
+        } else {
+            resolveTrickSoon();
+        }
+    }
+
+    function trickPoints(trick) {
+        return trick.reduce((sum, t) => sum + cardPoints(t.card, state.trumpSuit), 0);
+    }
+
+    function resolveTrickSoon() {
+        window.setTimeout(resolveTrick, 500);
+    }
+
+    function resolveTrick() {
+        const winner = trickWinner(state.trick, state.trumpSuit);
+        const points = trickPoints(state.trick);
+        const winnerTeam = teamOf(winner);
+        state.roundPoints[winnerTeam] += points;
+        state.roundCardPoints[winnerTeam] += points;
+        state.roundTricks[winnerTeam] += 1;
+
+        state.trickCount += 1;
+
+        if (state.trickCount === 8) {
+            state.roundPoints[winnerTeam] += 10;
+            state.roundCardPoints[winnerTeam] += 10;
+            log('Dix de der ! Dernier pli : +10 pts pour ' + (winnerTeam === 'you' ? 'ton equipe' : 'l\'equipe IA') + '.', winnerTeam === 'you' ? 'good' : 'bad');
+        }
+
+        state.leaderIndex = state.order.indexOf(winner);
+        state.currentTurnIndex = state.leaderIndex;
+
+        log(labelOf(winner) + ' remporte le pli (' + points + ' pts).', winnerTeam === 'you' ? 'good' : 'bad');
+
+        state.trick = [];
+        renderTrick();
+        renderHands();
+
+        if (state.trickCount >= 8) {
+            endRound();
+            return;
+        }
+
+        setStatus(labelOf(currentPlayer()) + ' a la main. Pli suivant...');
+        updateHud();
+
+        if (currentPlayer() !== 'player') {
+            window.setTimeout(aiPlay, 700);
+        }
+    }
+
+    function endRound() {
+        state.roundActive = false;
+        state.auction.active = false;
+
+        const takerTeam = teamOf(state.contractTaker || 'player');
+        const defenderTeam = takerTeam === 'you' ? 'opp' : 'you';
+
+        const beloteYou = state.roundPoints.you - state.roundCardPoints.you;
+        const beloteOpp = state.roundPoints.opp - state.roundCardPoints.opp;
+
+        const awarded = { you: 0, opp: 0 };
+
+        if (state.roundTricks.you === 8 || state.roundTricks.opp === 8) {
+            const capotTeam = state.roundTricks.you === 8 ? 'you' : 'opp';
+            awarded[capotTeam] = 250 + (capotTeam === 'you' ? beloteYou : beloteOpp);
+            awarded[capotTeam === 'you' ? 'opp' : 'you'] = capotTeam === 'you' ? beloteOpp : beloteYou;
+            log('Capot ! ' + (capotTeam === 'you' ? 'Ton equipe' : 'Equipe IA') + ' marque 250 points.', capotTeam === 'you' ? 'good' : 'bad');
+        } else {
+            const takerCards = state.roundCardPoints[takerTeam];
+            const takerMadeContract = takerCards >= 82;
+
+            if (takerMadeContract) {
+                awarded.you = state.roundPoints.you;
+                awarded.opp = state.roundPoints.opp;
+                log('Contrat reussi par ' + (takerTeam === 'you' ? 'ton equipe' : 'l\'equipe IA') + ' (' + takerCards + ' points cartes).', takerTeam === 'you' ? 'good' : 'bad');
+            } else {
+                awarded[takerTeam] = takerTeam === 'you' ? beloteYou : beloteOpp;
+                awarded[defenderTeam] = 162 + (defenderTeam === 'you' ? beloteYou : beloteOpp);
+                log('Contrat chute ! Le preneur reste a ' + takerCards + ' points cartes, la defense prend 162.', defenderTeam === 'you' ? 'good' : 'bad');
+            }
+        }
+
+        state.playerScore += awarded.you;
+        state.aiScore += awarded.opp;
+
+        // Détail des points
+        const detailYou = 'Toi: ' + state.roundCardPoints.you + ' cartes' + (beloteYou > 0 ? ' +' + beloteYou + ' Belote' : '');
+        const detailOpp = 'IA: ' + state.roundCardPoints.opp + ' cartes' + (beloteOpp > 0 ? ' +' + beloteOpp + ' Belote' : '');
+        log('Détail → ' + detailYou + ' | ' + detailOpp + ' (total cartes: ' + (state.roundCardPoints.you + state.roundCardPoints.opp) + ' dont 10 dix-de-der)', 'gold');
+        log('Scores accordés → Toi: ' + awarded.you + ' | IA: ' + awarded.opp + '.', 'gold');
+
+        if (awarded.you >= awarded.opp) {
+            log('Manche favorable (' + awarded.you + ' vs ' + awarded.opp + ').', 'good');
+            setStatus('Manche favorable. Score du match: ' + state.playerScore + ' / ' + state.aiScore + '. Lance la suivante !');
+        } else {
+            log('Manche defavorable (' + awarded.you + ' vs ' + awarded.opp + ').', 'bad');
+            setStatus('Manche defavorable. Score du match: ' + state.playerScore + ' / ' + state.aiScore + '. Lance la suivante !');
+        }
+
+        checkMatchEnd();
+        updateHud();
+        renderHands();
+        showRoundEndOverlay(awarded);
+    }
+
+    function checkMatchEnd() {
+        if (state.playerScore < 501 && state.aiScore < 501) return;
+
+        state.matchInProgress = false;
+
+        if (state.playerScore >= 501 && state.playerScore >= state.aiScore) {
+            const gain = state.matchBet * 2;
+            state.bankroll += gain;
+            saveBankroll();
+            log('Match gagné ! Gain +' + gain + ' bankroll.', 'good');
+
+            if (typeof Leaderboard !== 'undefined' && Leaderboard && Leaderboard.promptName) {
+                Leaderboard.promptName(state.playerScore, function(name) {
+                    if (!name) return;
+                    Leaderboard.add('belote', name, state.playerScore);
+                });
+            }
+        } else {
+            state.bankroll = Math.max(0, state.bankroll - state.matchBet);
+            saveBankroll();
+            log('Match perdu. Tu perds ta mise -' + state.matchBet + '.', 'bad');
+        }
+    }
+
+    function showRoundEndOverlay(awarded) {
+        const matchEnded = !state.matchInProgress;
+        const youWon = state.playerScore >= state.aiScore;
+        const title = matchEnded
+            ? (state.playerScore >= 501 && youWon ? '🏆 Victoire de match !' : '😢 Défaite du match')
+            : (awarded.you >= awarded.opp ? '✓ Manche favorable' : '✗ Manche défavorable');
+        document.getElementById('rend-title').textContent = title;
+        document.getElementById('rend-scores').textContent =
+            'Toi ' + state.playerScore + ' pts — IA ' + state.aiScore + ' pts';
+        document.getElementById('rend-sub').textContent =
+            'Manche : Toi ' + awarded.you + ' | IA ' + awarded.opp;
+        document.getElementById('btn-next-round').style.display = matchEnded ? 'none' : '';
+        document.getElementById('round-end-overlay').style.display = 'flex';
+    }
+
+    function applyDailyBonus() {
+        const key = todayKey();
+        const already = localStorage.getItem(STORAGE.DAILY);
+        if (already === key) {
+            log('Bonus quotidien deja recupere aujourd\'hui.', 'bad');
+            return;
+        }
+        localStorage.setItem(STORAGE.DAILY, key);
+        state.bankroll += 300;
+        saveBankroll();
+        updateHud();
+        log('Bonus quotidien +300 bankroll.', 'good');
+    }
+
+    function applyCode() {
+        const code = (els.codeInput.value || '').trim().toUpperCase();
+        if (!code) return;
+
+        if (code !== 'MISE') {
+            log('Code invalide.', 'bad');
+            return;
+        }
+
+        const key = todayKey();
+        const lock = localStorage.getItem(STORAGE.CODE);
+        if (lock === key) {
+            log('Code MISE deja utilise aujourd\'hui.', 'bad');
+            return;
+        }
+
+        localStorage.setItem(STORAGE.CODE, key);
+        state.bankroll += 500;
+        saveBankroll();
+        updateHud();
+        log('Code MISE accepte: +500 bankroll.', 'good');
+        els.codeInput.value = '';
+    }
+
+    function resetMatch() {
+        state.playerScore = 0;
+        state.aiScore = 0;
+        state.roundActive = false;
+        state.matchInProgress = false;
+        state.matchBet = 0;
+        state.order = activePlayers();
+        state.dealerIndex = -1;
+        state.trumpSuit = null;
+        state.currentBet = 0;
+        state.upcard = null;
+        state.talon = [];
+        state.contractTaker = null;
+        state.trickCount = 0;
+        state.roundPoints = { you: 0, opp: 0 };
+        state.roundCardPoints = { you: 0, opp: 0 };
+        state.roundTricks = { you: 0, opp: 0 };
+        state.hands.player = [];
+        state.hands.ai1 = [];
+        state.hands.mate = [];
+        state.hands.ai2 = [];
+        state.trick = [];
+        state.currentTurnIndex = 0;
+        state.leaderIndex = 0;
+        state.auction.active = false;
+        state.auction.phase = 1;
+        state.auction.passCount = 0;
+        state.auction.startTurnIndex = 0;
+        state.auction.upcardSuit = null;
+        resetBelote();
+
+        setStatus('Match reinitialise. Definis ta mise et lance une manche.');
+        log('Match remis a zero.', 'gold');
+
+        renderHands();
+        renderTrick();
+        renderUpcard();
+        updateHud();
+    }
+
+    function toggleFullscreen() {
+        const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        const el = document.documentElement;
+        if (!isFs) {
+            const req = el.requestFullscreen || el.webkitRequestFullscreen;
+            if (req) req.call(el).catch(() => {});
+        } else {
+            const exit = document.exitFullscreen || document.webkitExitFullscreen;
+            if (exit) exit.call(document);
+        }
+    }
+
+    /* ── Navigation entre écrans ─────────────────────────────── */
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function chooseMode(mode) {
+        if (state.roundActive) return;
+        state.mode = mode === '2v2' ? '2v2' : '1v1';
+        if (state.mode === '2v2') {
+            state.seat = { player: 'south', mate: 'north', ai1: 'east', ai2: 'west' };
+        } else {
+            state.seat = { player: 'south', ai1: 'north', mate: 'north', ai2: 'west' };
+        }
+        state.order = activePlayers();
+        document.getElementById('bet-mode-label').textContent = 'Belote — ' + mode.toUpperCase();
+        const is2v2 = state.mode === '2v2';
+        const rowAi2 = document.getElementById('row-name-ai2');
+        const rowMate = document.getElementById('row-name-mate');
+        const lblAi1 = document.getElementById('lbl-name-ai1');
+        if (rowAi2) rowAi2.style.display = is2v2 ? '' : 'none';
+        if (rowMate) rowMate.style.display = is2v2 ? '' : 'none';
+        if (lblAi1) lblAi1.textContent = is2v2 ? 'IA Est' : 'IA Nord';
+        updateHud();
+        showScreen('screen-bet');
+    }
+
+    function goToMenu() {
+        if (state.roundActive) return;
+        document.getElementById('round-end-overlay').style.display = 'none';
+        showScreen('screen-bet');
+        updateHud();
+    }
+
+    const RANDOM_NAMES = ['Alice', 'Bruno', 'Carmen', 'Didier', 'Elena', 'Fabio', 'Grace', 'Hugo',
+        'Iris', 'Jules', 'Kévin', 'Laura', 'Max', 'Nina', 'Oscar', 'Pauline',
+        'Quentin', 'Rosa', 'Sam', 'Théa', 'Ugo', 'Vera', 'William', 'Yann', 'Zoé'];
+
+    function randomNameFrom(taken) {
+        let name;
+        do { name = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)]; }
+        while (taken.includes(name));
+        return name;
+    }
+
+    function applyRandomNames() {
+        const taken = [];
+        ['player', 'ai1', 'ai2', 'mate'].forEach(role => {
+            const n = randomNameFrom(taken);
+            taken.push(n);
+            state.names[role] = n;
+        });
+        ['player', 'ai1', 'ai2', 'mate'].forEach(role => {
+            const inp = document.getElementById('name-' + role);
+            if (inp) inp.value = state.names[role];
+        });
+        updateHud();
+    }
+
+    function toggleGameMenu() {
+        const menu = document.getElementById('game-menu');
+        menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function confirmNewGame() {
+        toggleGameMenu();
+        resetMatch();
+        showScreen('screen-bet');
+        updateHud();
+    }
+
+    function menuGoToBet() {
+        toggleGameMenu();
+        document.getElementById('round-end-overlay').style.display = 'none';
+        showScreen('screen-bet');
+        updateHud();
+    }
+
+    function menuGoToMode() {
+        toggleGameMenu();
+        resetMatch();
+        document.getElementById('round-end-overlay').style.display = 'none';
+        showScreen('screen-mode');
+    }
+    /* ─────────────────────────────────────────────────────────── */
+
+    function bindEvents() {
+        els.startRound.onclick = startRound;
+        els.dailyBonus.onclick = applyDailyBonus;
+        els.applyCode.onclick = applyCode;
+
+        // Name inputs
+        ['player', 'ai1', 'ai2', 'mate'].forEach(role => {
+            const inp = document.getElementById('name-' + role);
+            if (inp) {
+                inp.value = state.names[role];
+                inp.addEventListener('input', () => {
+                    const v = inp.value.trim();
+                    if (v) state.names[role] = v;
+                });
+            }
+        });
+        const randBtn = document.getElementById('btn-rand-names');
+        if (randBtn) randBtn.onclick = applyRandomNames;
+        els.takeUpcard.onclick = playerTakeUpcard;
+        els.passAuction.onclick = auctionPass;
+
+        const nextRoundBtn = document.getElementById('btn-next-round');
+        if (nextRoundBtn) {
+            nextRoundBtn.onclick = () => {
+                document.getElementById('round-end-overlay').style.display = 'none';
+                startRound();
+            };
+        }
+
+        const fsBtn = document.getElementById('fullscreen-btn');
+        if (fsBtn) {
+            fsBtn.onclick = toggleFullscreen;
+            const onFsChange = () => {
+                const active = !!(document.fullscreenElement || document.webkitFullscreenElement);
+                fsBtn.textContent = active ? '✕' : '⛶';
+                fsBtn.title = active ? 'Quitter le plein écran' : 'Plein écran';
+            };
+            document.addEventListener('fullscreenchange', onFsChange);
+            document.addEventListener('webkitfullscreenchange', onFsChange);
+        }
+
+        els.codeInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') applyCode();
+        });
+
+        Array.from(els.trumpPicker.querySelectorAll('button')).forEach(btn => {
+            btn.onclick = () => playerChooseSuit(btn.dataset.suit);
+        });
+    }
+
+    // Exposer les fonctions appelées depuis les onclick HTML inline
+    window.chooseMode = chooseMode;
+    window.goToMenu = goToMenu;
+    window.showScreen = showScreen;
+    window.toggleGameMenu = toggleGameMenu;
+    window.confirmNewGame = confirmNewGame;
+    window.menuGoToBet = menuGoToBet;
+    window.menuGoToMode = menuGoToMode;
+
+    function init() {
+        loadBankroll();
+        state.order = activePlayers();
+        bindEvents();
+        updateHud();
+        showScreen('screen-mode');
+    }
+
+    init();
+})();
+</script>
+</body>
+</html>
