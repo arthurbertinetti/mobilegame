@@ -3909,6 +3909,7 @@ var QUIZ_EVENT_COOLDOWN=1;// comes back every 1 month after ending
 var QUIZ_QUESTIONS=[
 // Vrai/Faux questions (type:'vf')
 {q:'La Carotte est la première culture disponible dès le niveau 1.',a:true,type:'vf'},
+{q:'Ma femme est la plus belle.',a:true,type:'vf'},
 {q:'Le Blé se débloque au niveau 2.',a:false,type:'vf',hint:'Niveau 3'},
 {q:'La Fleur dorée est la culture la plus chère du jeu.',a:true,type:'vf'},
 {q:'Les arbres nécessitent plus d\'eau que les cultures.',a:true,type:'vf'},
@@ -3936,6 +3937,7 @@ var QUIZ_QUESTIONS=[
 {q:'Il y a 10 mini-jeux différents dans le jeu.',a:true,type:'vf'},
 {q:'Chaque mini-jeu a 100 niveaux.',a:true,type:'vf'},
 {q:'Le mini-jeu Snake est disponible dans le jeu.',a:true,type:'vf'},
+{q:'Ma femme aime les tomates ?',a:true,type:'vf'},
 {q:'Le puits produit de l\'eau automatiquement.',a:true,type:'vf'},
 {q:'Le bois peut être coupé dans la section Puits & Bois.',a:true,type:'vf'},
 {q:'Le Canard produit des œufs.',a:false,type:'vf',hint:'Des plumes'},
@@ -4073,6 +4075,7 @@ var QUIZ_QUESTIONS=[
 {q:'Quel ingrédient faut-il pour la Fondue ?',opts:['Fromage','Beurre'],a:0,type:'choice'},
 {q:'Combien coûte le Moulin ?',opts:['3 000 💰','2 500 💰'],a:0,type:'choice'},
 {q:'La Compote se fabrique à quel atelier ?',opts:['Pressoir','Cuisinette'],a:0,type:'choice'},
+{q:'Quel est le surnom de ma femme ?',opts:['Bijou','Caillou'],a:1,type:'choice'},
 {q:'Le Pop-corn nécessite quel ingrédient principal ?',opts:['Maïs','Blé'],a:0,type:'choice'},
 {q:'Combien de Tomates faut-il pour la Sauce tomate ?',opts:['3','2'],a:0,type:'choice'},
 {q:'La Pelote se fabrique au Mag. laine avec combien de Laine ?',opts:['2','3'],a:0,type:'choice'},
@@ -4155,6 +4158,7 @@ var QUIZ_QUESTIONS=[
 {q:'Le Lait de coco nécessite combien de Noix de coco ?',opts:['2','3'],a:0,type:'choice'},
 {q:'Le Parfum nécessite combien de Fleurs ?',opts:['3','2'],a:0,type:'choice'},
 {q:'La Bougie nécessite du Lait de coco ?',opts:['Oui','Non'],a:0,type:'choice'},
+{q:'Ma femme aime-t-elle la paella ?',opts:['Oui','Non'],a:0,type:'choice'},
 {q:'Le Coussin nécessite de la Fourrure et quoi d\'autre ?',opts:['Plumes et Laine','Lait et Oeufs'],a:0,type:'choice'},
 {q:'Combien coûte la Maison du jardin ?',opts:['30 000 💰','20 000 💰'],a:0,type:'choice'}
 ];
@@ -4502,17 +4506,17 @@ function buildWheelPlay(c){
   // Wheel sectors
   var sectors=[
     {label:'⭐ 1',type:'star',qty:1,color:'#f1c40f'},
-    {label:'💧 20',type:'water',qty:20,color:'#3498db'},
+    {label:'💧 200',type:'water',qty:200,color:'#3498db'},
     {label:'❌ Rien',type:'nothing',qty:0,color:'#95a5a6'},
-    {label:'💰 200',type:'coins',qty:200,color:'#e67e22'},
-    {label:'🪵 10',type:'wood',qty:10,color:'#8d6e63'},
-    {label:'❌ Rien',type:'nothing',qty:0,color:'#bdc3c7'},
+    {label:'💰 2000',type:'coins',qty:2000,color:'#e67e22'},
+    {label:'🪵 100',type:'wood',qty:100,color:'#8d6e63'},
+    {label:'⭐ 10',type:'star',qty:10,color:'#bdc3c7'},
     {label:'⭐ 2',type:'star',qty:2,color:'#f39c12'},
-    {label:'🎁 Ressource',type:'random',qty:5,color:'#9b59b6'},
+    {label:'🎁 25 Ressources',type:'random',qty:25,color:'#9b59b6'},
     {label:'❌ Rien',type:'nothing',qty:0,color:'#95a5a6'},
-    {label:'💰 500',type:'coins',qty:500,color:'#e74c3c'},
-    {label:'💧 50',type:'water',qty:50,color:'#2980b9'},
-    {label:'🎁 Ressource',type:'random',qty:10,color:'#8e44ad'}
+    {label:'💰 5000',type:'coins',qty:5000,color:'#e74c3c'},
+    {label:'💧 500',type:'water',qty:500,color:'#2980b9'},
+    {label:'🎁 10 Ressources',type:'random',qty:10,color:'#8e44ad'}
   ];
   // Canvas wheel
   var canvas=document.createElement('canvas');

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Bataille</title>
+<style>
+:root{--felt:#1a5c38;--felt-light:#226645;--card-face:#fefcf8;--card-shadow:0 4px 12px rgba(0,0,0,.45),0 1px 3px rgba(0,0,0,.5);--red:#d62b2b;--gold:#f5c842;--accent:#3fd9b8;}
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{background:var(--felt);display:flex;flex-direction:column;align-items:center;
+     font-family:'Segoe UI',sans-serif;color:#fff;height:100vh;height:100dvh;overflow:hidden;user-select:none;padding-bottom:env(safe-area-inset-bottom,0px);}
+#topbar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;
+        padding:8px 14px 4px;flex-shrink:0;}
+#home-btn{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.2);color:#fff;
+          padding:5px 11px;border-radius:18px;font-size:12px;cursor:pointer;text-decoration:none;}
+#topbar h1{font-size:18px;font-weight:900;letter-spacing:2px;color:var(--gold);text-shadow:1px 1px 4px rgba(0,0,0,.6);}
+#score-row{width:100%;max-width:480px;display:flex;justify-content:space-between;align-items:center;
+           padding:0 14px 6px;flex-shrink:0;}
+.score-pill{background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);border-radius:20px;
+            padding:5px 14px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.score-num{font-size:18px;font-weight:900;color:var(--gold);}
+#round-info{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;}
+
+/* TABLE */
+#table{flex:1;width:100%;max-width:480px;display:flex;flex-direction:column;
+       align-items:center;justify-content:space-between;padding:4px 14px 8px;}
+
+/* PLAYER ZONES */
+.player-zone{width:100%;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.zone-label{font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.5);text-transform:uppercase;}
+.deck-stack{position:relative;width:64px;height:92px;cursor:pointer;}
+.deck-stack .stack-shadow{position:absolute;top:4px;left:4px;width:64px;height:92px;
+  background:#0a3d20;border-radius:9px;opacity:.6;}
+.deck-stack .stack-mid{position:absolute;top:2px;left:2px;width:64px;height:92px;
+  background:#1e3580;border-radius:9px;border:1px solid rgba(120,160,255,.25);}
+.deck-top{position:absolute;top:0;left:0;width:64px;height:92px;border-radius:9px;
+  background-color:#1e3580;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.1) 25%,transparent 25%),
+    linear-gradient(-45deg,rgba(255,255,255,.1) 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,rgba(255,255,255,.1) 75%),
+    linear-gradient(-45deg,transparent 75%,rgba(255,255,255,.1) 75%),
+    radial-gradient(ellipse at 50% 50%,rgba(90,130,255,.4),transparent 65%);
+  background-size:12px 12px,12px 12px,12px 12px,12px 12px,100% 100%;
+  background-position:0 0,0 6px,6px -6px,-6px 0px,0 0;
+  border:1px solid rgba(120,160,255,.4);
+  box-shadow:var(--card-shadow);}
+.card-count-badge{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
+  font-size:11px;font-weight:800;color:rgba(255,255,255,.7);white-space:nowrap;}
+
+/* CENTER PLAY */
+#center{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;}
+#round-label{font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.45);min-height:14px;}
+#play-row{display:flex;align-items:center;justify-content:center;gap:24px;min-height:100px;}
+#result-text{font-size:14px;font-weight:800;min-height:18px;text-align:center;}
+#battle-pile{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;min-height:20px;max-width:280px;}
+.pile-mini{width:18px;height:26px;border-radius:3px;
+  background-color:#1e3580;
+  background-image:linear-gradient(45deg,rgba(255,255,255,.12) 25%,transparent 25%),linear-gradient(-45deg,rgba(255,255,255,.12) 25%,transparent 25%);
+  background-size:6px 6px;border:1px solid rgba(120,160,255,.3);}
+#action-btn{background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:14px;
+            color:#fff;padding:11px 36px;font-size:14px;font-weight:800;cursor:pointer;
+            box-shadow:0 4px 12px rgba(0,0,0,.4);transition:all .15s;letter-spacing:.5px;}
+#action-btn:active{transform:scale(.96);}
+#action-btn:disabled{background:rgba(255,255,255,.12);color:rgba(255,255,255,.4);}
+
+/* CARD */
+.play-card{width:64px;height:92px;border-radius:9px;background:var(--card-face);
+  border:1px solid rgba(0,0,0,.12);box-shadow:var(--card-shadow);
+  position:relative;display:flex;flex-direction:column;justify-content:space-between;
+  padding:5px;}
+.play-card.red{color:var(--red);}
+.play-card.black{color:#111;}
+.card-corner{display:flex;flex-direction:column;align-items:center;line-height:1;}
+.card-corner .cr{font-size:14px;font-weight:900;}
+.card-corner .cs{font-size:12px;margin-top:1px;}
+.card-pip{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);
+  font-size:30px;opacity:.15;pointer-events:none;}
+.card-corner.bot{align-self:flex-end;transform:rotate(180deg);}
+
+@keyframes dealIn{from{transform:translateY(-30px) scale(.85);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.deal-anim{animation:dealIn .28s cubic-bezier(.34,1.4,.64,1);}
+@keyframes winPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.win-anim{animation:winPulse .35s ease;}
+
+/* RESULT OVERLAY */
+#end-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);
+             align-items:center;justify-content:center;z-index:100;}
+#end-overlay.show{display:flex;}
+#end-box{background:linear-gradient(160deg,#0f3d1c,#0a2810);border:2px solid var(--gold);
+         border-radius:20px;padding:28px 32px;text-align:center;width:85%;max-width:340px;
+         box-shadow:0 20px 60px rgba(0,0,0,.7);}
+#end-box h2{font-size:26px;margin-bottom:8px;}
+#end-box p{color:rgba(255,255,255,.6);margin-bottom:18px;font-size:13px;}
+#end-box button{background:var(--gold);color:#0a2810;border:none;border-radius:12px;
+                padding:10px 26px;font-size:14px;font-weight:800;cursor:pointer;margin:4px;}
+#end-box button.sec{background:rgba(255,255,255,.1);color:#eee;}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="index.html" id="home-btn">← Accueil</a>
+  <h1>⚔️ BATAILLE</h1>
+  <div style="width:70px"></div>
+</div>
+<div id="score-row">
+  <div class="score-pill">🃏 Vous <span class="score-num" id="player-count">26</span></div>
+  <div id="round-info">ROUND 0</div>
+  <div class="score-pill"><span class="score-num" id="ia-count">26</span> IA 🤖</div>
+</div>
+
+<div id="table">
+  <!-- IA -->
+  <div class="player-zone">
+    <div class="zone-label">Intelligence Artificielle</div>
+    <div class="deck-stack" id="ia-deck">
+      <div class="stack-shadow"></div>
+      <div class="stack-mid"></div>
+      <div class="deck-top"></div>
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <div id="center">
+    <div id="round-label">— Cliquez pour jouer —</div>
+    <div id="play-row">
+      <div id="ia-slot"></div>
+      <div style="font-size:22px;font-weight:800;color:rgba(255,255,255,.3)">VS</div>
+      <div id="player-slot"></div>
+    </div>
+    <div id="battle-pile"></div>
+    <div id="result-text"></div>
+    <button id="action-btn" onclick="playRound()">🃏 Jouer</button>
+  </div>
+
+  <!-- PLAYER -->
+  <div class="player-zone">
+    <div class="deck-stack" id="player-deck" onclick="playRound()" style="cursor:pointer;">
+      <div class="stack-shadow"></div>
+      <div class="stack-mid"></div>
+      <div class="deck-top"></div>
+    </div>
+    <div class="zone-label">Vous</div>
+  </div>
+</div>
+
+<div id="end-overlay">
+  <div id="end-box">
+    <h2 id="end-title"></h2>
+    <p id="end-sub"></p>
+    <button onclick="newGame()">🔄 Rejouer</button>
+    <button class="sec" onclick="location.href='index.html'">🏠 Accueil</button>
+  </div>
+</div>
+
+<script>
+const SUITS=['♠','♥','♦','♣'], VALUES=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+const RED=new Set(['♥','♦']);
+function makeCard(v,s){return{v,s,rank:VALUES.indexOf(v),red:RED.has(s)};}
+function buildDeck(){const d=[];for(const s of SUITS)for(const v of VALUES)d.push(makeCard(v,s));return shuffle([...d]);}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function cardHTML(c){
+  const col=c.red?'red':'black';
+  return `<div class="play-card ${col} deal-anim">
+    <div class="card-corner"><div class="cr">${c.v}</div><div class="cs">${c.s}</div></div>
+    <div class="card-pip">${c.s}</div>
+    <div class="card-corner bot"><div class="cr">${c.v}</div><div class="cs">${c.s}</div></div>
+  </div>`;
+}
+
+let playerDeck=[], iaDeck=[], battlePile=[], round=0, busy=false;
+
+function newGame(){
+  document.getElementById('end-overlay').classList.remove('show');
+  busy=false; round=0; battlePile=[];
+  const deck=buildDeck(); playerDeck=deck.slice(0,26); iaDeck=deck.slice(26);
+  clearSlots(); updateCounts(); renderBattlePile();
+  document.getElementById('round-label').textContent='— Cliquez pour jouer —';
+  document.getElementById('result-text').textContent='';
+  document.getElementById('action-btn').disabled=false;
+  document.getElementById('ia-deck').style.opacity='1';
+  document.getElementById('player-deck').style.opacity='1';
+}
+
+function updateCounts(){
+  document.getElementById('player-count').textContent=playerDeck.length;
+  document.getElementById('ia-count').textContent=iaDeck.length;
+  document.getElementById('ia-deck').style.opacity=iaDeck.length>0?'1':'0.2';
+  document.getElementById('player-deck').style.opacity=playerDeck.length>0?'1':'0.2';
+  document.getElementById('round-info').textContent=`ROUND ${round}`;
+}
+
+function clearSlots(){
+  document.getElementById('ia-slot').innerHTML='';
+  document.getElementById('player-slot').innerHTML='';
+}
+
+function playRound(){
+  if(busy||playerDeck.length===0||iaDeck.length===0){checkEnd();return;}
+  busy=true; round++;
+  const pc=playerDeck.shift(), ic=iaDeck.shift();
+  document.getElementById('ia-slot').innerHTML=cardHTML(ic);
+  document.getElementById('player-slot').innerHTML=cardHTML(pc);
+  document.getElementById('round-label').textContent=`ROUND ${round}`;
+  battlePile.push(pc,ic);
+  updateCounts();
+  setTimeout(()=>resolveRound(pc,ic),500);
+}
+
+function resolveRound(pc,ic){
+  if(pc.rank>ic.rank){
+    const won=battlePile.splice(0); shuffle(won); playerDeck.push(...won);
+    document.getElementById('result-text').innerHTML=`<span style="color:#4ade80">✅ Vous gagnez ${won.length} cartes !</span>`;
+    document.getElementById('player-slot').querySelector('.play-card')?.classList.add('win-anim');
+    battlePile=[];
+  } else if(ic.rank>pc.rank){
+    const won=battlePile.splice(0); shuffle(won); iaDeck.push(...won);
+    document.getElementById('result-text').innerHTML=`<span style="color:#f87171">❌ IA gagne ${won.length} cartes</span>`;
+    document.getElementById('ia-slot').querySelector('.play-card')?.classList.add('win-anim');
+    battlePile=[];
+  } else {
+    doBattle(pc,ic); return;
+  }
+  renderBattlePile(); updateCounts();
+  setTimeout(()=>{busy=false; clearSlots(); checkEnd();},750);
+}
+
+function doBattle(pc,ic){
+  document.getElementById('round-label').textContent='⚔️ BATAILLE ! ⚔️';
+  document.getElementById('result-text').innerHTML=`<span style="color:#fbbf24">⚔️ Égalité ${pc.v}${pc.s} = ${ic.v}${ic.s}</span>`;
+  if(playerDeck.length<1||iaDeck.length<1){
+    // Not enough — give pile to player with more cards
+    const won=battlePile.splice(0); shuffle(won);
+    if(playerDeck.length>=iaDeck.length) playerDeck.push(...won);
+    else iaDeck.push(...won);
+    battlePile=[]; renderBattlePile(); updateCounts();
+    setTimeout(()=>{busy=false; clearSlots(); checkEnd();},1000); return;
+  }
+  const take=Math.min(3,playerDeck.length,iaDeck.length);
+  for(let i=0;i<take;i++) battlePile.push(playerDeck.shift(),iaDeck.shift());
+  updateCounts(); renderBattlePile();
+  setTimeout(()=>{
+    const pc2=playerDeck.shift(), ic2=iaDeck.shift();
+    battlePile.push(pc2,ic2);
+    document.getElementById('ia-slot').innerHTML=cardHTML(ic2);
+    document.getElementById('player-slot').innerHTML=cardHTML(pc2);
+    updateCounts(); renderBattlePile();
+    setTimeout(()=>resolveRound(pc2,ic2),500);
+  },900);
+}
+
+function renderBattlePile(){
+  const el=document.getElementById('battle-pile');
+  el.innerHTML=battlePile.length?battlePile.map(()=>'<div class="pile-mini"></div>').join(''):'';
+}
+
+function checkEnd(){
+  if(playerDeck.length===0&&iaDeck.length===0) endGame('draw');
+  else if(playerDeck.length===0) endGame('lose');
+  else if(iaDeck.length===0) endGame('win');
+}
+
+function endGame(r){
+  document.getElementById('action-btn').disabled=true;
+  const t={win:'🎉 Victoire !',lose:'💀 Défaite',draw:'🤝 Égalité'};
+  const s={win:`Vous avez remporté les 52 cartes en ${round} rounds !`,lose:`L'IA a gagné en ${round} rounds.`,draw:`Partie nulle en ${round} rounds !`};
+  document.getElementById('end-title').textContent=t[r];
+  document.getElementById('end-title').style.color=r==='win'?'#4ade80':r==='lose'?'#f87171':'#fbbf24';
+  document.getElementById('end-sub').textContent=s[r];
+  setTimeout(()=>document.getElementById('end-overlay').classList.add('show'),700);
+}
+
+newGame();
+</script>
+</body>
+</html>

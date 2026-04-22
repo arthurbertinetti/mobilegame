@@ -146,6 +146,10 @@
             background: linear-gradient(135deg, #00cec9, #0984e3);
             box-shadow: 0 4px 12px rgba(0,206,201,.3);
         }
+        .icon-flappybird {
+            background: linear-gradient(135deg, #ff8c00, #cc2200);
+            box-shadow: 0 4px 12px rgba(255,140,0,.4);
+        }
         .icon-megajumpy {
             background: linear-gradient(135deg, #5c94fc, #87ceeb);
             box-shadow: 0 4px 12px rgba(92,148,252,.3);
@@ -214,6 +218,14 @@
             background: linear-gradient(135deg, #e74c3c, #3498db);
             box-shadow: 0 4px 12px rgba(231,76,60,.3);
         }
+        .icon-othello {
+            background: linear-gradient(135deg, #1a5c2a, #0f3d1c);
+            box-shadow: 0 4px 12px rgba(74,222,128,.3);
+        }
+        .icon-towerdefense {
+            background: linear-gradient(135deg, #b45309, #92400e);
+            box-shadow: 0 4px 12px rgba(180,83,9,.3);
+        }
         .icon-nutsandbolts {
             background: linear-gradient(135deg, #f39c12, #7f8c8d);
             box-shadow: 0 4px 12px rgba(243,156,18,.3);
@@ -242,6 +254,10 @@
             background: linear-gradient(135deg, #8e44ad, #6c3483);
             box-shadow: 0 4px 12px rgba(142,68,173,.3);
         }
+        .icon-noodlejump {
+            background: linear-gradient(135deg, #e67e22, #c0392b);
+            box-shadow: 0 4px 12px rgba(230,126,34,.3);
+        }
         .icon-pokemon {
             background: linear-gradient(135deg, #ffcc00, #e74c3c);
             box-shadow: 0 4px 12px rgba(255,204,0,.3);
@@ -250,6 +266,32 @@
             background: linear-gradient(135deg, #705322, #263f6c);
             box-shadow: 0 4px 12px rgba(255,209,102,.33);
         }
+        .icon-tamagotchi {
+            background: linear-gradient(135deg, #ff9ff3, #f368e0);
+            box-shadow: 0 4px 12px rgba(243,104,224,.3);
+        }
+        .icon-zingvalley2 {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            box-shadow: 0 4px 12px rgba(0,184,148,.3);
+        }
+        .icon-monstertrainers {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            box-shadow: 0 4px 12px rgba(253,203,110,.3);
+        }
+        .icon-croissant {
+            background: linear-gradient(135deg, #f6b93b, #e55039);
+            box-shadow: 0 4px 12px rgba(246,185,59,.3);
+        }
+        .icon-trouvemot { background: linear-gradient(135deg,#538d4e,#3a6b35); box-shadow: 0 4px 12px rgba(83,141,78,.3); }
+        .icon-memory    { background: linear-gradient(135deg,#6d28d9,#4c1d95); box-shadow: 0 4px 12px rgba(109,40,217,.3); }
+        .icon-quiz      { background: linear-gradient(135deg,#d97706,#92400e); box-shadow: 0 4px 12px rgba(217,119,6,.3); }
+        .icon-hanoi     { background: linear-gradient(135deg,#7c3aed,#4c1d95); box-shadow: 0 4px 12px rgba(124,58,237,.3); }
+        .icon-bataille  { background: linear-gradient(135deg,#1d4ed8,#1e3a8a); box-shadow: 0 4px 12px rgba(29,78,216,.3); }
+        .icon-oun       { background: linear-gradient(135deg,#dc2626,#991b1b); box-shadow: 0 4px 12px rgba(220,38,38,.3); }
+        .icon-poker     { background: linear-gradient(135deg,#065f46,#064e3b); box-shadow: 0 4px 12px rgba(6,95,70,.3); }
+        .icon-clicker   { background: linear-gradient(135deg,#ca8a04,#854d0e); box-shadow: 0 4px 12px rgba(202,138,4,.3); }
+        .icon-aquarium  { background: linear-gradient(135deg,#0284c7,#075985); box-shadow: 0 4px 12px rgba(2,132,199,.3); }
+        .icon-terrarium { background: linear-gradient(135deg,#16a34a,#14532d); box-shadow: 0 4px 12px rgba(22,163,74,.3); }
 
         .ranking-link {
             display: block;
@@ -267,9 +309,14 @@
             -webkit-tap-highlight-color: transparent;
         }
         .ranking-link:active { transform: scale(.96); }
+        .ranking-link {
+            width: 90%;
+            max-width: 340px;
+            margin-top: 14px;
+        }
 
         .game-list {
-            max-height: calc(100dvh - 160px);
+            max-height: calc(100dvh - 190px);
             overflow-y: auto;
             scrollbar-width: thin;
             scrollbar-color: rgba(255,255,255,.1) transparent;
@@ -282,30 +329,76 @@
             color: #ffffff;
         }
 
-        /* ===== FAVORITES ===== */
-        .fav-toggle {
+        /* ===== CATEGORIES GRID ===== */
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            width: 90%;
+            max-width: 340px;
+        }
+        .cat-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 24px 12px;
+            background: linear-gradient(145deg, #14203a, #0d1829);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px;
+            cursor: pointer;
+            color: #eee;
+            font-size: 0.95rem;
+            font-weight: bold;
+            box-shadow: 0 6px 25px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+            -webkit-tap-highlight-color: transparent;
+            transition: transform .15s, box-shadow .15s;
+        }
+        .cat-card:active { transform: scale(.95); box-shadow: 0 2px 10px rgba(0,0,0,.6); }
+        .cat-card .cat-icon { font-size: 2.4rem; }
+        .cat-card.cat-favoris { border-color: rgba(255,217,61,.3); background: linear-gradient(145deg, #1a1a0a, #141000); grid-column: span 2; flex-direction: row; gap: 14px; padding: 18px 24px; justify-content: center; }
+        .cat-card.cat-favoris .cat-icon { filter: drop-shadow(0 0 8px #ffd93d); font-size: 1.8rem; }
+        .cat-card.cat-reflexion { border-color: rgba(142,68,173,.2); }
+        .cat-card.cat-plateforme { border-color: rgba(92,148,252,.2); }
+        .cat-card.cat-course { border-color: rgba(225,112,85,.2); }
+        .cat-card.cat-arcade  { border-color: rgba(116,185,255,.2); }
+        .cat-card.cat-puzzle  { border-color: rgba(162,155,254,.2); }
+        .cat-card.cat-cartes  { border-color: rgba(255,107,129,.2); }
+        .cat-card.cat-strategie { border-color: rgba(46,204,113,.2); }
+        .cat-card.cat-simulation { border-color: rgba(243,156,18,.2); }
+
+        /* ===== BACK BUTTON ===== */
+        .back-header {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            width: 90%;
+            max-width: 340px;
+            margin-bottom: 8px;
+        }
+        .back-header.visible { display: flex; }
+        .back-btn {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 18px;
-            border-radius: 14px;
-            border: 2px solid rgba(255,217,61,.3);
-            background: rgba(255,217,61,.08);
-            color: #ffd93d;
-            font-size: 1rem;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,.12);
+            background: rgba(255,255,255,.06);
+            color: #aaa;
+            font-size: 0.88rem;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 10px;
             -webkit-tap-highlight-color: transparent;
-            transition: background .2s, border-color .2s, transform .15s;
+            transition: background .2s, color .2s, transform .15s;
         }
-        .fav-toggle:active { transform: scale(.95); }
-        .fav-toggle.active {
-            background: rgba(255,217,61,.2);
-            border-color: #ffd93d;
-            box-shadow: 0 0 16px rgba(255,217,61,.25);
+        .back-btn:active { transform: scale(.95); }
+        .back-header-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #eee;
         }
-        .fav-toggle .fav-star { font-size: 1.3rem; }
 
         .fav-btn {
             position: absolute;
@@ -333,13 +426,64 @@
 <body>
 
     <h1>🕹️ Retro Game Hub</h1>
-    <h3 class="subtitle">Choisis ton CHALLENGE</h3>
+    <h3 class="subtitle">Choisis ta catégorie</h3>
 
-    <button class="fav-toggle" id="fav-toggle" onclick="toggleFavMode()">
-        <span class="fav-star">⭐</span> Favoris
-    </button>
+    <!-- Vue catégories -->
+    <div class="category-grid" id="category-grid">
+        <div class="cat-card cat-favoris" data-cat="favoris">
+            <span class="cat-icon">⭐</span>
+            <span>Favoris</span>
+        </div>
+        <div class="cat-card cat-plateforme" data-cat="plateforme">
+            <span class="cat-icon">🦘</span>
+            <span>Plateforme</span>
+        </div>
+        <div class="cat-card cat-arcade" data-cat="arcade">
+            <span class="cat-icon">🕹️</span>
+            <span>Arcade</span>
+        </div>
+        <div class="cat-card cat-course" data-cat="course">
+            <span class="cat-icon">🏎️</span>
+            <span>Course</span>
+        </div>
+        <div class="cat-card cat-puzzle" data-cat="puzzle">
+            <span class="cat-icon">🧩</span>
+            <span>Puzzle</span>
+        </div>
+        <div class="cat-card cat-reflexion" data-cat="reflexion">
+            <span class="cat-icon">🧠</span>
+            <span>Réflexion</span>
+        </div>
+        <div class="cat-card cat-cartes" data-cat="cartes">
+            <span class="cat-icon">🃏</span>
+            <span>Cartes</span>
+        </div>
+        <div class="cat-card cat-strategie" data-cat="strategie">
+            <span class="cat-icon">♟️</span>
+            <span>Stratégie</span>
+        </div>
+        <div class="cat-card cat-simulation" data-cat="simulation">
+            <span class="cat-icon">🌾</span>
+            <span>Simulation</span>
+        </div>
+    </div>
 
-    <div class="game-list" id="game-list">
+    <!-- Header retour (visible quand on est dans une catégorie) -->
+    <div class="back-header" id="back-header">
+        <button class="back-btn" id="back-btn">← Retour</button>
+        <span class="back-header-title" id="back-header-title"></span>
+    </div>
+
+    <div class="game-list" id="game-list" style="display:none;">
+
+        <a href="flappybird.html" class="game-card">
+            <div class="game-icon icon-flappybird">🦋</div>
+            <div class="game-info">
+                <h2>Woody</h2>
+                <p>Guide le papillon entre les obstacles !</p>
+                <p class="game-record" id="rec-flappybird"></p>
+            </div>
+        </a>
 
         <a href="megajumpy.html" class="game-card">
             <div class="game-icon icon-megajumpy">🦘</div>
@@ -364,6 +508,15 @@
                 <h2>Worms 2</h2>
                 <p>Artillerie tactique, terrain destructible !</p>
                 <p class="game-record" id="rec-worms2"></p>
+            </div>
+        </a>
+
+        <a href="noodlejump.html" class="game-card">
+            <div class="game-icon icon-noodlejump">🍜</div>
+            <div class="game-info">
+                <h2>Noodle Jump</h2>
+                <p>Saute de plateforme en plateforme pour éviter l'eau bouillante !</p>
+                <p class="game-record" id="rec-noodlejump"></p>
             </div>
         </a>
 
@@ -662,6 +815,24 @@
             </div>
         </a>
 
+        <a href="othello.html" class="game-card">
+            <div class="game-icon icon-othello">⚫</div>
+            <div class="game-info">
+                <h2>Othello</h2>
+                <p>Retourne les pions adverses, contrôle le plateau !</p>
+                <p class="game-record" id="rec-othello"></p>
+            </div>
+        </a>
+
+        <a href="towerdefense.html" class="game-card">
+            <div class="game-icon icon-towerdefense">🏰</div>
+            <div class="game-info">
+                <h2>Tower Defense</h2>
+                <p>Place des tours, stoppe les vagues d'ennemis !</p>
+                <p class="game-record" id="rec-towerdefense"></p>
+            </div>
+        </a>
+
         <a href="nutsandbolts.html" class="game-card">
             <div class="game-icon icon-nutsandbolts">🔩</div>
             <div class="game-info">
@@ -707,21 +878,141 @@
             </div>
         </a>
 
-        <a href="farmvalley2.html" class="game-card">
-            <div class="game-icon icon-farmvalley" style="background:linear-gradient(135deg,#3da832,#f5c542)">✨</div>
+        <!-- 🧠 RÉFLEXION -->
+        <a href="trouvemot.html" class="game-card">
+            <div class="game-icon icon-trouvemot">🟩</div>
             <div class="game-info">
-                <h2>Farm Valley 2 ✨</h2>
+                <h2>TrouveMot</h2>
+                <p>Devine le mot en 6 essais — style Wordle</p>
+                <p class="game-record" id="rec-trouvemot"></p>
             </div>
         </a>
 
-        <a href="ranking.html" class="ranking-link">🏆 Classement général</a>
+        <a href="memory.html" class="game-card">
+            <div class="game-icon icon-memory">🃏</div>
+            <div class="game-info">
+                <h2>Memory</h2>
+                <p>Retrouve toutes les paires de cartes !</p>
+                <p class="game-record" id="rec-memory"></p>
+            </div>
+        </a>
+
+        <a href="quiz.html" class="game-card">
+            <div class="game-icon icon-quiz">❓</div>
+            <div class="game-info">
+                <h2>Quiz Général</h2>
+                <p>20 questions culture générale, timer et streak</p>
+                <p class="game-record" id="rec-quiz"></p>
+            </div>
+        </a>
+
+        <a href="hanoi.html" class="game-card">
+            <div class="game-icon icon-hanoi">🗼</div>
+            <div class="game-info">
+                <h2>Tour de Hanoï</h2>
+                <p>Déplace les disques en un minimum de coups</p>
+                <p class="game-record" id="rec-hanoi"></p>
+            </div>
+        </a>
+
+        <!-- 🃏 CARTES -->
+        <a href="bataille.html" class="game-card">
+            <div class="game-icon icon-bataille">♠️</div>
+            <div class="game-info">
+                <h2>Bataille</h2>
+                <p>Le jeu de cartes classique contre l'IA</p>
+                <p class="game-record" id="rec-bataille"></p>
+            </div>
+        </a>
+
+        <a href="oun.html" class="game-card">
+            <div class="game-icon icon-oun">🌈</div>
+            <div class="game-info">
+                <h2>OUN</h2>
+                <p>Le jeu de cartes colorées — jusqu'à 4 joueurs</p>
+                <p class="game-record" id="rec-oun"></p>
+            </div>
+        </a>
+
+        <a href="poker.html" class="game-card">
+            <div class="game-icon icon-poker">♥️</div>
+            <div class="game-info">
+                <h2>Poker</h2>
+                <p>Texas Hold'em vs IA — Cash Game ou Tournoi</p>
+                <p class="game-record" id="rec-poker"></p>
+            </div>
+        </a>
+
+        <!-- 🌾 SIMULATION -->
+        <a href="clicker.html" class="game-card">
+            <div class="game-icon icon-clicker">⭐</div>
+            <div class="game-info">
+                <h2>Étoile Clicker</h2>
+                <p>Clique, upgrades, bâtiments et prestige</p>
+                <p class="game-record" id="rec-clicker"></p>
+            </div>
+        </a>
+
+        <a href="aquarium.html" class="game-card">
+            <div class="game-icon icon-aquarium">🐠</div>
+            <div class="game-info">
+                <h2>Aquarium</h2>
+                <p>Nourris tes poissons, gère ton aquarium</p>
+                <p class="game-record" id="rec-aquarium"></p>
+            </div>
+        </a>
+
+        <a href="terrarium.html" class="game-card">
+            <div class="game-icon icon-terrarium">🌿</div>
+            <div class="game-info">
+                <h2>Terrarium</h2>
+                <p>Fais pousser tes plantes, arrose et fertilise</p>
+                <p class="game-record" id="rec-terrarium"></p>
+            </div>
+        </a>
+
     </div>
+
+    <a href="ranking.html" class="ranking-link" id="ranking-link">🏆 Classement général</a>
     <div class="footer">© 2026 Arthur B - Tous droits réservés</div>
 <script src="leaderboard.js"></script>
 <script>
-var GAME_IDS = ['megajumpy','tamagotchi','belote','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','nutsandbolts','farmvalley','croissant','pacman','bomberman','zingvalley2','worms','worms2','monstertrainers','farmvalley2','pokemon_ultimate'];
+var GAME_IDS = ['flappybird','megajumpy','tamagotchi','belote','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','othello','towerdefense','nutsandbolts','farmvalley','croissant','pacman','bomberman','zingvalley2','worms','worms2','noodlejump','monstertrainers','trouvemot','memory','quiz','hanoi','bataille','oun','poker','clicker','aquarium','terrarium'];
+
+var GAME_CATS = {
+    snake: 'arcade', breakout: 'arcade', asteroids: 'arcade',
+    spaceinvaders: 'arcade', neonwar: 'arcade', fruitninja: 'arcade',
+    poolclub: 'arcade', maze: 'arcade',
+    flappybird: 'plateforme', megajumpy: 'plateforme', croissant: 'plateforme', pacman: 'plateforme', bomberman: 'plateforme',
+    cardodge: 'course', retrohighway: 'course', motodge: 'course', crossyroad: 'course',
+    belote: 'cartes', solitaire: 'cartes', blackjack: 'cartes',
+    mastermind: 'reflexion', tetris: 'puzzle', minesweeper: 'reflexion',
+    candycrush: 'puzzle', bubbleshooter: 'puzzle', sudoku: 'reflexion', zuma: 'puzzle',
+    mahjong: 'puzzle', onelinedraw: 'puzzle', watercolorsort: 'puzzle', nutsandbolts: 'puzzle',
+    connect4: 'strategie', battleship: 'strategie', checkers: 'strategie',
+    chess: 'strategie', tictactoe: 'strategie', othello: 'strategie', towerdefense: 'strategie',
+    worms: 'plateforme', worms2: 'plateforme', noodlejump: 'plateforme',
+    tamagotchi: 'simulation', farmvalley: 'simulation',
+    zingvalley2: 'simulation', monstertrainers: 'simulation',
+    trouvemot: 'reflexion', memory: 'reflexion', quiz: 'reflexion', hanoi: 'reflexion',
+    bataille: 'cartes', oun: 'cartes', poker: 'cartes',
+    clicker: 'simulation', aquarium: 'simulation', terrarium: 'simulation'
+};
+
+var CAT_LABELS = {
+    favoris: '⭐ Favoris',
+    plateforme: '🦘 Plateforme',
+    arcade: '🕹️ Arcade',
+    course: '🏎️ Course',
+    puzzle: '🧩 Puzzle',
+    reflexion: '🧠 Réflexion',
+    cartes: '🃏 Cartes',
+    strategie: '♟️ Stratégie',
+    simulation: '🌾 Simulation'
+};
+
 var FAV_KEY = 'arcade_favorites';
-var favMode = false;
+var currentCat = null;
 
 function getFavs() {
     try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; } catch(e) { return []; }
@@ -730,13 +1021,13 @@ function saveFavs(arr) {
     localStorage.setItem(FAV_KEY, JSON.stringify(arr));
 }
 
-// Add star to each game card + records
-var cards = document.querySelectorAll('.game-card');
-cards.forEach(function(card) {
+var allCards = document.querySelectorAll('.game-card');
+allCards.forEach(function(card) {
     var href = card.getAttribute('href') || '';
     var id = href.replace('.html','');
     if (GAME_IDS.indexOf(id) === -1) return;
     card.dataset.gameId = id;
+    card.dataset.category = GAME_CATS[id] || 'arcade';
     // Fav star
     var star = document.createElement('span');
     star.className = 'fav-btn' + (getFavs().indexOf(id) !== -1 ? ' is-fav' : '');
@@ -749,7 +1040,7 @@ cards.forEach(function(card) {
         if (idx !== -1) { favs.splice(idx, 1); star.classList.remove('is-fav'); }
         else { favs.push(id); star.classList.add('is-fav'); }
         saveFavs(favs);
-        if (favMode) applyFavFilter();
+        if (currentCat === 'favoris') applyFilter();
     });
     card.appendChild(star);
     // Record
@@ -759,23 +1050,49 @@ cards.forEach(function(card) {
     else if (el) el.textContent = 'Aucun record';
 });
 
-function toggleFavMode() {
-    favMode = !favMode;
-    document.getElementById('fav-toggle').classList.toggle('active', favMode);
-    applyFavFilter();
+// Catégorie cards
+document.querySelectorAll('.cat-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+        openCategory(card.dataset.cat);
+    });
+});
+
+// Bouton retour
+document.getElementById('back-btn').addEventListener('click', function() {
+    goBack();
+});
+
+function openCategory(cat) {
+    currentCat = cat;
+    document.getElementById('category-grid').style.display = 'none';
+    document.getElementById('ranking-link').style.display = 'none';
+    document.getElementById('back-header').classList.add('visible');
+    document.getElementById('back-header-title').textContent = CAT_LABELS[cat] || cat;
+    document.getElementById('game-list').style.display = '';
+    applyFilter();
 }
 
-function applyFavFilter() {
+function goBack() {
+    currentCat = null;
+    document.getElementById('category-grid').style.display = '';
+    document.getElementById('ranking-link').style.display = '';
+    document.getElementById('back-header').classList.remove('visible');
+    document.getElementById('game-list').style.display = 'none';
+}
+
+function applyFilter() {
     var favs = getFavs();
-    cards.forEach(function(card) {
+    allCards.forEach(function(card) {
         var id = card.dataset.gameId;
         if (!id) return;
-        if (favMode) {
-            card.style.display = favs.indexOf(id) !== -1 ? '' : 'none';
-        } else {
-            card.style.display = '';
-        }
+        var show = false;
+        if (currentCat === 'favoris') show = favs.indexOf(id) !== -1;
+        else show = (card.dataset.category === currentCat);
+        card.style.display = show ? '' : 'none';
     });
+    // ranking link
+    var rl = document.querySelector('.ranking-link');
+    if (rl) rl.style.display = '';
 }
 </script>
 

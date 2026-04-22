@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Étoile Clicker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{background:#080818;display:flex;flex-direction:column;align-items:center;
+     font-family:'Segoe UI',sans-serif;color:#fff;height:100vh;height:100dvh;overflow:hidden;user-select:none;padding-bottom:env(safe-area-inset-bottom,0px);}
+#topbar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;
+        padding:8px 12px 4px;flex-shrink:0;}
+#home-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;
+          padding:5px 11px;border-radius:18px;font-size:12px;cursor:pointer;text-decoration:none;}
+#topbar h1{font-size:18px;font-weight:800;color:#fbbf24;letter-spacing:2px;}
+#prestige-btn{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);color:#c084fc;
+              padding:5px 10px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;}
+#stars-display{width:100%;max-width:480px;text-align:center;padding:6px 0 2px;flex-shrink:0;}
+#stars-count{font-size:30px;font-weight:900;color:#fbbf24;}
+#stars-label{font-size:11px;color:rgba(255,255,255,.5);}
+#per-sec{font-size:13px;color:rgba(255,255,255,.6);margin-top:2px;}
+
+/* CLICK ZONE */
+#click-zone{flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:6px 0;}
+#star-btn{width:100px;height:100px;background:radial-gradient(circle,#fbbf24,#f59e0b,#d97706);
+          border-radius:50%;border:none;cursor:pointer;font-size:52px;
+          box-shadow:0 0 30px rgba(251,191,36,.5),0 0 60px rgba(251,191,36,.2);
+          transition:transform .08s,box-shadow .08s;display:flex;align-items:center;justify-content:center;}
+#star-btn:active{transform:scale(.9);box-shadow:0 0 15px rgba(251,191,36,.3);}
+#per-click{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;}
+
+/* TABS */
+#tabs{width:100%;max-width:480px;display:flex;gap:0;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.1);}
+.tab{flex:1;padding:7px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;
+     color:rgba(255,255,255,.4);transition:all .15s;border-bottom:2px solid transparent;}
+.tab.active{color:#fbbf24;border-color:#fbbf24;}
+
+/* CONTENT */
+#content{flex:1;width:100%;max-width:480px;overflow-y:auto;padding:6px 10px 12px;}
+#content::-webkit-scrollbar{width:3px;}
+#content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+
+/* UPGRADE */
+.upg-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+          border-radius:14px;padding:10px 12px;display:flex;align-items:center;
+          gap:10px;margin-bottom:6px;cursor:pointer;transition:all .15s;}
+.upg-card.buyable{border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.05);}
+.upg-card.buyable:hover{background:rgba(251,191,36,.1);}
+.upg-card:not(.buyable){opacity:.45;cursor:default;}
+.upg-icon{font-size:26px;flex-shrink:0;width:36px;text-align:center;}
+.upg-info{flex:1;}
+.upg-name{font-size:13px;font-weight:700;}
+.upg-desc{font-size:10px;color:#aaa;margin-top:1px;}
+.upg-right{text-align:right;}
+.upg-cost{font-size:12px;font-weight:800;color:#fbbf24;}
+.upg-owned{font-size:10px;color:rgba(255,255,255,.5);}
+.upg-lvl{font-size:11px;color:#60a5fa;margin-top:1px;}
+
+/* BUILDING */
+.bld-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+         border-radius:12px;padding:8px 10px;display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.bld-icon{font-size:22px;width:30px;text-align:center;flex-shrink:0;}
+.bld-info{flex:1;}
+.bld-name{font-size:12px;font-weight:700;}
+.bld-prod{font-size:10px;color:#4ade80;}
+.bld-owned{font-size:11px;font-weight:800;color:#60a5fa;min-width:20px;text-align:center;}
+.bld-buy{background:rgba(251,191,36,.8);color:#000;border:none;border-radius:8px;
+         padding:5px 10px;font-size:11px;font-weight:800;cursor:pointer;flex-shrink:0;}
+.bld-buy:disabled{background:rgba(255,255,255,.1);color:#555;cursor:default;}
+
+/* STATS */
+.stat-card{background:rgba(255,255,255,.04);border-radius:12px;padding:10px 14px;margin-bottom:6px;}
+.stat-card h3{font-size:12px;color:#aaa;margin-bottom:6px;letter-spacing:1px;}
+.stat-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;}
+.stat-row .val{color:#fbbf24;font-weight:700;}
+.prestige-info{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);
+               border-radius:12px;padding:12px;margin-bottom:8px;text-align:center;}
+.prestige-info h3{color:#c084fc;font-size:14px;margin-bottom:6px;}
+.prestige-info p{font-size:12px;color:#aaa;margin-bottom:10px;}
+.prestige-do{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;
+             border-radius:12px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;}
+
+/* PARTICLES */
+.star-part{position:fixed;pointer-events:none;z-index:200;font-size:16px;font-weight:800;
+           color:#fbbf24;animation:starPop .8s ease forwards;}
+@keyframes starPop{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(.6)}}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="index.html" id="home-btn">← Accueil</a>
+  <h1>✨ ÉTOILE CLICKER</h1>
+  <button id="prestige-btn" onclick="showTab('prestige')">⚡ Prestige</button>
+</div>
+<div id="stars-display">
+  <div id="stars-count">0</div>
+  <div id="stars-label">⭐ Étoiles</div>
+  <div id="per-sec">+0 /sec</div>
+</div>
+<div id="click-zone">
+  <button id="star-btn" id="star-btn">⭐</button>
+  <div id="per-click">+1 par clic</div>
+</div>
+<div id="tabs">
+  <div class="tab active" onclick="showTab('upgrades')">⚡ Upgrades</div>
+  <div class="tab" onclick="showTab('buildings')">🏗️ Bâtiments</div>
+  <div class="tab" onclick="showTab('stats')">📊 Stats</div>
+</div>
+<div id="content"></div>
+
+<script>
+// ══ GAME DATA ═══════════════════════════
+const UPGRADES=[
+  {id:'click1',name:'Clic amélioré',icon:'👆',desc:'×2 étoiles par clic',cost:50,mult:'click',val:2,req:0},
+  {id:'click2',name:'Double tap',icon:'✌️',desc:'×3 étoiles par clic',cost:300,mult:'click',val:3,req:'click1'},
+  {id:'click3',name:'Turbo doigts',icon:'🖐️',desc:'×5 étoiles par clic',cost:2000,mult:'click',val:5,req:'click2'},
+  {id:'click4',name:'Clic cosmique',icon:'🌌',desc:'×10 étoiles par clic',cost:50000,mult:'click',val:10,req:'click3'},
+  {id:'prod1',name:'Accélérateur',icon:'⚡',desc:'×2 production auto',cost:500,mult:'prod',val:2,req:0},
+  {id:'prod2',name:'Supraconducteur',icon:'🔋',desc:'×3 production auto',cost:5000,mult:'prod',val:3,req:'prod1'},
+  {id:'prod3',name:'Réacteur stellaire',icon:'☀️',desc:'×5 production auto',cost:50000,mult:'prod',val:5,req:'prod2'},
+  {id:'prod4',name:'Singularité',icon:'🌀',desc:'×10 production auto',cost:1e6,mult:'prod',val:10,req:'prod3'},
+  {id:'star1',name:'Astres dorés',icon:'🌟',desc:'Les étoiles brillent +50%',cost:200,mult:'click',val:1.5,req:0},
+  {id:'star2',name:'Constellation',icon:'💫',desc:'×2 sur tout',cost:10000,mult:'all',val:2,req:'star1'},
+  {id:'combo1',name:'Combo Fever',icon:'🔥',desc:'+20% prod par bâtiment distinct',cost:8000,mult:'combo',val:0.2,req:0},
+];
+
+const BUILDINGS=[
+  {id:'cursor',name:'Curseur',icon:'🖱️',baseCost:15,baseProd:0.1,desc:'Auto-clic lent'},
+  {id:'mine',name:'Mine stellaire',icon:'⛏️',baseCost:100,baseProd:0.5,desc:'Extrait des étoiles'},
+  {id:'farm',name:'Ferme d\'étoiles',icon:'🌾',baseCost:500,baseProd:2,desc:'Cultive des étoiles'},
+  {id:'factory',name:'Usine cosmique',icon:'🏭',baseCost:3000,baseProd:10,desc:'Production massive'},
+  {id:'bank',name:'Banque galactique',icon:'🏦',baseCost:15000,baseProd:40,desc:'Intérêts stellaires'},
+  {id:'lab',name:'Laboratoire',icon:'🔬',baseCost:100000,baseProd:150,desc:'Recherche avancée'},
+  {id:'portal',name:'Portail',icon:'🌀',baseCost:700000,baseProd:600,desc:'Importe d\'autres dimensions'},
+  {id:'blackhole',name:'Trou noir',icon:'⚫',baseCost:6e6,baseProd:3000,desc:'Aspire des étoiles'},
+];
+
+// ══ STATE ════════════════════════════════
+let stars=0, totalEarned=0, totalClicks=0, prestigeCount=0, prestigeBonus=1;
+let perClick=1, perSec=0;
+let owned={}, bought={};
+BUILDINGS.forEach(b=>{owned[b.id]=0;});
+UPGRADES.forEach(u=>{bought[u.id]=false;});
+let clickMulti=1, prodMulti=1;
+
+function load(){
+  try{
+    const s=JSON.parse(localStorage.getItem('starclicker')||'{}');
+    if(s.stars!==undefined){
+      stars=s.stars; totalEarned=s.totalEarned||0; totalClicks=s.totalClicks||0;
+      prestigeCount=s.prestigeCount||0; prestigeBonus=s.prestigeBonus||1;
+      owned=s.owned||owned; bought=s.bought||bought;
+      recalc();
+    }
+  }catch(e){}
+}
+function save(){ localStorage.setItem('starclicker',JSON.stringify({stars,totalEarned,totalClicks,prestigeCount,prestigeBonus,owned,bought})); }
+
+function recalc(){
+  clickMulti=1; prodMulti=1;
+  let comboBonus=1, allMulti=1;
+  for(const u of UPGRADES){
+    if(!bought[u.id]) continue;
+    if(u.mult==='click') clickMulti*=u.val;
+    else if(u.mult==='prod') prodMulti*=u.val;
+    else if(u.mult==='all') allMulti*=u.val;
+    else if(u.mult==='combo'){
+      const distinct=BUILDINGS.filter(b=>owned[b.id]>0).length;
+      comboBonus=1+u.val*distinct;
+    }
+  }
+  perClick=Math.max(1,Math.round(clickMulti*allMulti*prestigeBonus));
+  perSec=BUILDINGS.reduce((s,b)=>s+b.baseProd*owned[b.id],0)*prodMulti*allMulti*prestigeBonus*comboBonus;
+}
+
+function fmt(n){
+  if(n>=1e18) return (n/1e18).toFixed(1)+'Qi';
+  if(n>=1e15) return (n/1e15).toFixed(1)+'Qa';
+  if(n>=1e12) return (n/1e12).toFixed(1)+'T';
+  if(n>=1e9)  return (n/1e9).toFixed(1)+'G';
+  if(n>=1e6)  return (n/1e6).toFixed(1)+'M';
+  if(n>=1e3)  return (n/1e3).toFixed(1)+'K';
+  return Math.floor(n).toString();
+}
+
+function bldCost(b){ return Math.round(b.baseCost*Math.pow(1.15,owned[b.id])); }
+
+// ══ INTERACTIONS ══════════════════════════
+document.getElementById('star-btn').addEventListener('click',doClick);
+document.getElementById('star-btn').addEventListener('touchstart',e=>{ e.preventDefault(); doClick(e); },{passive:false});
+
+function doClick(e){
+  stars+=perClick; totalEarned+=perClick; totalClicks++;
+  spawnParticle(e);
+  updateDisplay();
+}
+
+function spawnParticle(e){
+  const btn=document.getElementById('star-btn');
+  const rect=btn.getBoundingClientRect();
+  const el=document.createElement('div'); el.className='star-part';
+  el.textContent='+'+fmt(perClick);
+  el.style.left=(rect.left+rect.width/2)+'px';
+  el.style.top=(rect.top-10)+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),900);
+}
+
+function buyUpgrade(id){
+  const u=UPGRADES.find(x=>x.id===id);
+  if(!u||bought[u.id]||stars<u.cost) return;
+  stars-=u.cost; bought[u.id]=true;
+  recalc(); updateDisplay(); renderContent();
+}
+
+function buyBuilding(id){
+  const b=BUILDINGS.find(x=>x.id===id);
+  if(!b) return;
+  const cost=bldCost(b);
+  if(stars<cost) return;
+  stars-=cost; owned[b.id]++;
+  recalc(); updateDisplay(); renderContent();
+}
+
+function doPrestige(){
+  if(totalEarned<1e6) return;
+  prestigeCount++;
+  prestigeBonus*=2;
+  stars=0; totalEarned=0; totalClicks=0;
+  BUILDINGS.forEach(b=>owned[b.id]=0);
+  UPGRADES.forEach(u=>bought[u.id]=false);
+  recalc(); updateDisplay(); renderContent();
+  showTab('upgrades');
+}
+
+// ══ RENDER ════════════════════════════════
+let activeTab='upgrades';
+function showTab(t){
+  activeTab=t;
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    el.classList.toggle('active',['upgrades','buildings','stats'][i]===t);
+  });
+  renderContent();
+}
+
+function renderContent(){
+  const c=document.getElementById('content');
+  if(activeTab==='upgrades'){
+    c.innerHTML=UPGRADES.map(u=>{
+      const canBuy=stars>=u.cost&&!bought[u.id];
+      const reqMet=!u.req||bought[u.req];
+      if(!reqMet&&!bought[u.id]) return '';
+      return `<div class="upg-card${bought[u.id]?' ':canBuy?' buyable':''}" onclick="buyUpgrade('${u.id}')">
+        <div class="upg-icon">${u.icon}</div>
+        <div class="upg-info">
+          <div class="upg-name">${u.name}</div>
+          <div class="upg-desc">${u.desc}</div>
+        </div>
+        <div class="upg-right">
+          ${bought[u.id]?'<div class="upg-owned">✅ Acheté</div>':
+          `<div class="upg-cost">${fmt(u.cost)} ⭐</div>`}
+        </div>
+      </div>`;
+    }).join('');
+  } else if(activeTab==='buildings'){
+    c.innerHTML=BUILDINGS.map(b=>{
+      const cost=bldCost(b); const can=stars>=cost;
+      return `<div class="bld-row">
+        <div class="bld-icon">${b.icon}</div>
+        <div class="bld-info">
+          <div class="bld-name">${b.name} <span style="color:#aaa;font-size:10px">${b.desc}</span></div>
+          <div class="bld-prod">${fmt(b.baseProd*prodMulti)} ⭐/s chacun · Total: ${fmt(b.baseProd*owned[b.id]*prodMulti)}/s</div>
+        </div>
+        <div class="bld-owned">${owned[b.id]}</div>
+        <button class="bld-buy" ${can?'':'disabled'} onclick="buyBuilding('${b.id}')">${fmt(cost)} ⭐</button>
+      </div>`;
+    }).join('');
+  } else if(activeTab==='stats'){
+    c.innerHTML=`
+      <div class="stat-card">
+        <h3>📊 STATISTIQUES</h3>
+        <div class="stat-row"><span>Étoiles actuelles</span><span class="val">${fmt(stars)}</span></div>
+        <div class="stat-row"><span>Total gagné</span><span class="val">${fmt(totalEarned)}</span></div>
+        <div class="stat-row"><span>Clics totaux</span><span class="val">${fmt(totalClicks)}</span></div>
+        <div class="stat-row"><span>Étoiles/clic</span><span class="val">${fmt(perClick)}</span></div>
+        <div class="stat-row"><span>Étoiles/sec</span><span class="val">${fmt(perSec)}</span></div>
+        <div class="stat-row"><span>Prestige</span><span class="val">×${prestigeBonus} (${prestigeCount}×)</span></div>
+      </div>
+      <div class="prestige-info">
+        <h3>⚡ PRESTIGE</h3>
+        <p>Réinitialise votre partie en échange d'un bonus permanent ×2<br>
+        Débloché à 1 000 000 ⭐ totales</p>
+        <p style="color:${totalEarned>=1e6?'#4ade80':'#f87171'}">Total gagné : ${fmt(totalEarned)} / 1M</p>
+        <button class="prestige-do" ${totalEarned>=1e6?'':'disabled'} onclick="doPrestige()">
+          ⚡ Prestige ! (bonus ×${prestigeBonus*2})
+        </button>
+      </div>`;
+  }
+}
+
+function updateDisplay(){
+  document.getElementById('stars-count').textContent=fmt(stars);
+  document.getElementById('per-sec').textContent=`+${fmt(perSec)} /sec`;
+  document.getElementById('per-click').textContent=`+${fmt(perClick)} par clic`;
+}
+
+// ══ GAME LOOP ════════════════════════════
+let lastTick=Date.now();
+function gameTick(){
+  const now=Date.now(), dt=(now-lastTick)/1000; lastTick=now;
+  if(perSec>0){ stars+=perSec*dt; totalEarned+=perSec*dt; }
+  updateDisplay();
+  save();
+  requestAnimationFrame(gameTick);
+}
+
+// ══ CONTENT REFRESH (less frequent) ══════
+setInterval(renderContent,2000);
+
+load(); recalc(); updateDisplay(); renderContent(); requestAnimationFrame(gameTick);
+</script>
+</body>
+</html>

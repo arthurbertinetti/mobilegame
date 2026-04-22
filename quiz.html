@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Quiz Général</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{background:#0d0d1a;display:flex;flex-direction:column;align-items:center;
+     font-family:'Segoe UI',sans-serif;color:#fff;min-height:100vh;height:100dvh;user-select:none;}
+#topbar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;
+        padding:8px 12px 4px;flex-shrink:0;}
+#home-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;
+          padding:5px 11px;border-radius:18px;font-size:12px;cursor:pointer;text-decoration:none;}
+#topbar h1{font-size:19px;font-weight:800;letter-spacing:2px;color:#f59e0b;}
+#infobar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;
+         padding:4px 14px 8px;gap:8px;}
+.pill{background:rgba(255,255,255,.07);border-radius:10px;padding:5px 12px;
+      font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;}
+#score-val{color:#f59e0b;}#streak-val{color:#f87171;}#q-val{color:#60a5fa;}
+#timer-bar-wrap{width:100%;max-width:480px;padding:0 14px 8px;}
+#timer-bar{height:6px;border-radius:3px;background:#1e293b;overflow:hidden;}
+#timer-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#f59e0b,#ef4444);
+            transition:width .2s linear;}
+#question-wrap{width:100%;max-width:480px;padding:0 14px;flex:1;display:flex;flex-direction:column;gap:12px;}
+#cat-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;
+           margin-bottom:4px;background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+#question-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+              border-radius:16px;padding:18px;min-height:90px;display:flex;align-items:center;
+              justify-content:center;text-align:center;font-size:16px;font-weight:600;line-height:1.5;}
+.answer-btn{width:100%;padding:14px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.12);
+            background:rgba(255,255,255,.05);color:#fff;font-size:14px;font-weight:600;
+            cursor:pointer;text-align:left;transition:all .15s;line-height:1.4;}
+.answer-btn:hover:not(:disabled){background:rgba(245,158,11,.15);border-color:#f59e0b;}
+.answer-btn.correct{background:rgba(16,185,129,.2)!important;border-color:#10b981!important;
+                    animation:correctPop .4s ease;}
+.answer-btn.wrong{background:rgba(239,68,68,.2)!important;border-color:#ef4444!important;
+                  animation:wrongShake .3s ease;}
+@keyframes correctPop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes wrongShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.answer-btn:disabled{cursor:default;}
+
+/* RESULT */
+#result{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
+        align-items:center;justify-content:center;flex-direction:column;z-index:100;}
+#result.show{display:flex;}
+#res-box{background:#1a1a2e;border:2px solid #f59e0b;border-radius:20px;padding:28px;
+         text-align:center;width:90%;max-width:380px;}
+#res-box h2{font-size:26px;margin-bottom:6px;}
+#res-box .sub{color:#aaa;font-size:14px;margin-bottom:16px;}
+.stat-row{display:flex;justify-content:space-around;margin-bottom:16px;}
+.res-stat .val{font-size:28px;font-weight:800;color:#f59e0b;}
+.res-stat .lbl{font-size:11px;color:#aaa;}
+.cat-breakdown{text-align:left;margin-bottom:16px;background:rgba(255,255,255,.05);
+               border-radius:12px;padding:12px;max-height:140px;overflow-y:auto;}
+.cat-line{font-size:12px;padding:3px 0;display:flex;justify-content:space-between;}
+.cat-line span{color:#f59e0b;}
+#res-box button{background:#f59e0b;color:#0d0d1a;border:none;border-radius:12px;
+                padding:10px 26px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+#res-box button.sec{background:rgba(255,255,255,.1);color:#eee;}
+
+/* FLOATING FEEDBACK */
+.float-txt{position:fixed;font-size:22px;font-weight:800;pointer-events:none;z-index:200;
+           animation:floatUp .9s ease forwards;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-60px)}}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="index.html" id="home-btn">← Accueil</a>
+  <h1>QUIZ GÉNÉRAL</h1>
+  <div style="width:70px"></div>
+</div>
+<div id="infobar">
+  <div class="pill">⭐ <span id="score-val">0</span></div>
+  <div class="pill">🔥 <span id="streak-val">0</span></div>
+  <div class="pill">📝 <span id="q-val">1/20</span></div>
+</div>
+<div id="timer-bar-wrap">
+  <div id="timer-bar"><div id="timer-fill" style="width:100%"></div></div>
+</div>
+<div id="question-wrap">
+  <div><div id="cat-badge">...</div></div>
+  <div id="question-box">Chargement...</div>
+  <button class="answer-btn" id="a0"></button>
+  <button class="answer-btn" id="a1"></button>
+  <button class="answer-btn" id="a2"></button>
+  <button class="answer-btn" id="a3"></button>
+</div>
+
+<div id="result">
+  <div id="res-box">
+    <h2 id="res-title">🎉</h2>
+    <div class="sub" id="res-sub"></div>
+    <div class="stat-row">
+      <div class="res-stat"><div class="val" id="r-score"></div><div class="lbl">Score</div></div>
+      <div class="res-stat"><div class="val" id="r-correct"></div><div class="lbl">Bonnes rép.</div></div>
+      <div class="res-stat"><div class="val" id="r-best"></div><div class="lbl">Record</div></div>
+    </div>
+    <div class="cat-breakdown" id="cat-breakdown"></div>
+    <button onclick="startGame()">🔄 Rejouer</button>
+    <button class="sec" onclick="location.href='index.html'">🏠 Accueil</button>
+  </div>
+</div>
+
+<script>
+// ══ QUESTIONS ══════════════════════════════════════════════════════
+const QUESTIONS = [
+  // 🌍 Géographie
+  {cat:'🌍 Géo',q:"Quelle est la capitale de l'Australie ?",a:["Canberra","Sydney","Melbourne","Brisbane"],c:0},
+  {cat:'🌍 Géo',q:"Quel est le plus long fleuve du monde ?",a:["Nil","Amazone","Yangtsé","Mississippi"],c:0},
+  {cat:'🌍 Géo',q:"Combien de pays forme l'Union Européenne (2024) ?",a:["27","25","30","28"],c:0},
+  {cat:'🌍 Géo',q:"Quel pays possède le plus de lacs au monde ?",a:["Canada","Russie","Brésil","Finlande"],c:0},
+  {cat:'🌍 Géo',q:"Quelle est la plus haute montagne du monde ?",a:["Everest","K2","Kangchenjunga","Lhotse"],c:0},
+  {cat:'🌍 Géo',q:"Quel océan est le plus grand ?",a:["Pacifique","Atlantique","Indien","Arctique"],c:0},
+  {cat:'🌍 Géo',q:"Dans quel pays se trouve le Machu Picchu ?",a:["Pérou","Bolivie","Chili","Équateur"],c:0},
+  {cat:'🌍 Géo',q:"Quelle ville est appelée la 'Ville Éternelle' ?",a:["Rome","Paris","Athènes","Istanbul"],c:0},
+  // 📚 Histoire
+  {cat:'📚 Histoire',q:"En quelle année a eu lieu la Révolution française ?",a:["1789","1776","1815","1804"],c:0},
+  {cat:'📚 Histoire',q:"Qui était le premier président des États-Unis ?",a:["George Washington","Abraham Lincoln","Thomas Jefferson","John Adams"],c:0},
+  {cat:'📚 Histoire',q:"Quelle guerre s'est terminée en 1945 ?",a:["Seconde Guerre mondiale","Guerre de Corée","Guerre du Vietnam","Guerre froide"],c:0},
+  {cat:'📚 Histoire',q:"En quelle année l'homme a-t-il marché sur la Lune ?",a:["1969","1967","1971","1965"],c:0},
+  {cat:'📚 Histoire',q:"Qui a peint la Joconde ?",a:["Léonard de Vinci","Michel-Ange","Raphaël","Botticelli"],c:0},
+  {cat:'📚 Histoire',q:"Quelle civilisation a construit les pyramides de Gizeh ?",a:["Égyptiens","Romains","Grecs","Mésopotamiens"],c:0},
+  {cat:'📚 Histoire',q:"Quel empire était gouverné par Jules César ?",a:["Romain","Grec","Perse","Byzantin"],c:0},
+  {cat:'📚 Histoire',q:"En quelle année le mur de Berlin est-il tombé ?",a:["1989","1991","1985","1993"],c:0},
+  // 🔬 Science
+  {cat:'🔬 Science',q:"Quelle est la formule chimique de l'eau ?",a:["H₂O","CO₂","O₂","H₂SO₄"],c:0},
+  {cat:'🔬 Science',q:"Quel est l'élément chimique de symbole 'Au' ?",a:["Or","Argent","Aluminium","Argon"],c:0},
+  {cat:'🔬 Science',q:"Combien d'os y a-t-il dans le corps humain adulte ?",a:["206","208","195","212"],c:0},
+  {cat:'🔬 Science',q:"Quelle planète est la plus grande du système solaire ?",a:["Jupiter","Saturne","Neptune","Uranus"],c:0},
+  {cat:'🔬 Science',q:"Qui a découvert la pénicilline ?",a:["Alexander Fleming","Louis Pasteur","Marie Curie","Albert Einstein"],c:0},
+  {cat:'🔬 Science',q:"Quelle est la vitesse de la lumière (arrondie) ?",a:["300 000 km/s","150 000 km/s","500 000 km/s","1 000 km/s"],c:0},
+  {cat:'🔬 Science',q:"Quel gaz représente environ 78% de l'atmosphère terrestre ?",a:["Azote","Oxygène","CO₂","Argon"],c:0},
+  {cat:'🔬 Science',q:"Combien de chromosomes possède une cellule humaine normale ?",a:["46","48","44","23"],c:0},
+  // ⚽ Sport
+  {cat:'⚽ Sport',q:"Quelle équipe a remporté la Coupe du Monde 2018 ?",a:["France","Croatie","Belgique","Angleterre"],c:0},
+  {cat:'⚽ Sport',q:"Dans quel sport peut-on réaliser un 'slam dunk' ?",a:["Basketball","Volleyball","Handball","Baseball"],c:0},
+  {cat:'⚽ Sport',q:"Combien de joueurs composent une équipe de rugby à XV ?",a:["15","13","11","17"],c:0},
+  {cat:'⚽ Sport',q:"Quelle ville a accueilli les JO d'été 2024 ?",a:["Paris","Tokyo","Los Angeles","Brisbane"],c:0},
+  {cat:'⚽ Sport',q:"Quel sport se joue avec un volant ?",a:["Badminton","Tennis","Squash","Ping-pong"],c:0},
+  {cat:'⚽ Sport',q:"Combien de sets faut-il gagner pour remporter Wimbledon (homme) ?",a:["3","2","4","5"],c:0},
+  // 🎬 Cinéma & Culture
+  {cat:'🎬 Cinéma',q:"Qui a réalisé Titanic et Avatar ?",a:["James Cameron","Steven Spielberg","Christopher Nolan","Peter Jackson"],c:0},
+  {cat:'🎬 Cinéma',q:"Dans quel film trouve-t-on le personnage 'Forrest Gump' ?",a:["Forrest Gump","Cast Away","The Green Mile","Philadelphia"],c:0},
+  {cat:'🎬 Cinéma',q:"Quelle saga de films se déroule dans 'la Terre du Milieu' ?",a:["Le Seigneur des Anneaux","Game of Thrones","Narnia","Star Wars"],c:0},
+  {cat:'🎬 Cinéma',q:"Quel acteur joue Iron Man dans le MCU ?",a:["Robert Downey Jr.","Chris Evans","Chris Hemsworth","Mark Ruffalo"],c:0},
+  {cat:'🎬 Cinéma',q:"Quel studio a créé les personnages Woody et Buzz ?",a:["Pixar","Disney","DreamWorks","Studio Ghibli"],c:0},
+  // 🎵 Musique
+  {cat:'🎵 Musique',q:"Combien de cordes possède une guitare classique ?",a:["6","4","7","8"],c:0},
+  {cat:'🎵 Musique',q:"De quel pays vient le groupe ABBA ?",a:["Suède","Norvège","Danemark","Finlande"],c:0},
+  {cat:'🎵 Musique',q:"Quel instrument joue Beethoven ?",a:["Piano","Violon","Flûte","Trompette"],c:0},
+  {cat:'🎵 Musique',q:"Quelle chanteuse s'appelle 'Queen of Pop' ?",a:["Madonna","Mariah Carey","Céline Dion","Whitney Houston"],c:0},
+  // 🍕 Gastronomie
+  {cat:'🍕 Cuisine',q:"De quel pays est originaire la paella ?",a:["Espagne","Italie","Portugal","Mexique"],c:0},
+  {cat:'🍕 Cuisine',q:"Quel fromage est utilisé dans la fondue suisse traditionnelle ?",a:["Gruyère","Emmental","Raclette","Comté"],c:0},
+  {cat:'🍕 Cuisine',q:"Quelle épice donne sa couleur au safran au risotto milanais ?",a:["Safran","Curcuma","Paprika","Curry"],c:0},
+  // 💡 Culture générale
+  {cat:'💡 Culture',q:"Combien de couleurs y a-t-il dans l'arc-en-ciel ?",a:["7","6","8","5"],c:0},
+  {cat:'💡 Culture',q:"Quelle est la langue la plus parlée au monde ?",a:["Mandarin","Anglais","Hindi","Espagnol"],c:0},
+  {cat:'💡 Culture',q:"Quel est le symbole monétaire de l'euro ?",a:["€","£","$","¥"],c:0},
+  {cat:'💡 Culture',q:"Combien de jours dure une année bissextile ?",a:["366","365","367","364"],c:0},
+  {cat:'💡 Culture',q:"Quel animal est le symbole de l'Australie ?",a:["Kangourou","Koala","Wombat","Émeu"],c:0},
+  {cat:'💡 Culture',q:"En combien de parties est divisé le cerveau humain ?",a:["2","3","4","6"],c:0},
+  {cat:'💡 Culture',q:"Quel est le plus petit pays du monde ?",a:["Vatican","Monaco","Saint-Marin","Liechtenstein"],c:0},
+  {cat:'💡 Culture',q:"Combien de secondes y a-t-il dans une heure ?",a:["3600","360","60","7200"],c:0},
+];
+
+const TOTAL_Q = 20;
+const TIME_PER_Q = 20; // seconds
+
+let qList=[], qIdx=0, score=0, streak=0, correct=0, timerSec=0, timerInt=null, answered=false;
+let catStats={};
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function startGame(){
+  document.getElementById('result').classList.remove('show');
+  // Shuffle and pick TOTAL_Q questions, shuffle answers
+  qList = shuffle([...QUESTIONS]).slice(0,TOTAL_Q).map(q=>{
+    const shuffled=[...q.a];
+    const correctAns=shuffled[q.c];
+    shuffle(shuffled);
+    return {...q, a:shuffled, c:shuffled.indexOf(correctAns)};
+  });
+  qIdx=0; score=0; streak=0; correct=0; catStats={};
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(qIdx>=TOTAL_Q){ endGame(); return; }
+  answered=false;
+  clearInterval(timerInt); timerSec=TIME_PER_Q;
+  const q=qList[qIdx];
+  document.getElementById('cat-badge').textContent=q.cat;
+  document.getElementById('question-box').textContent=q.q;
+  document.getElementById('q-val').textContent=`${qIdx+1}/${TOTAL_Q}`;
+  for(let i=0;i<4;i++){
+    const btn=document.getElementById('a'+i);
+    btn.textContent=q.a[i];
+    btn.className='answer-btn'; // reset all color classes
+    btn.disabled=false; btn.onclick=()=>answer(i);
+  }
+  updateTimerBar(1);
+  timerInt=setInterval(()=>{
+    timerSec--;
+    updateTimerBar(timerSec/TIME_PER_Q);
+    if(timerSec<=0){ clearInterval(timerInt); timeOut(); }
+  },1000);
+}
+
+function updateTimerBar(pct){
+  document.getElementById('timer-fill').style.width=(pct*100)+'%';
+}
+
+function answer(idx){
+  if(answered) return;
+  answered=true;
+  clearInterval(timerInt);
+  const q=qList[qIdx];
+  const isCorrect=idx===q.c;
+  document.getElementById('a'+idx).classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect) document.getElementById('a'+q.c).classList.add('correct');
+  for(let i=0;i<4;i++) document.getElementById('a'+i).disabled=true;
+  if(isCorrect){
+    streak++; correct++;
+    const pts=100+streak*10;
+    score+=pts;
+    spawnFloat(isCorrect,`+${pts}`);
+    catStats[q.cat]=(catStats[q.cat]||{ok:0,tot:0});
+    catStats[q.cat].ok++; catStats[q.cat].tot++;
+  } else {
+    streak=0;
+    spawnFloat(false,'✗');
+    catStats[q.cat]=(catStats[q.cat]||{ok:0,tot:0});
+    catStats[q.cat].tot++;
+  }
+  document.getElementById('score-val').textContent=score;
+  document.getElementById('streak-val').textContent=streak>1?`🔥${streak}`:streak;
+  qIdx++;
+  setTimeout(nextQuestion, 1400);
+}
+
+function timeOut(){
+  if(answered) return;
+  answered=true;
+  const q=qList[qIdx];
+  document.getElementById('a'+q.c).classList.add('correct');
+  for(let i=0;i<4;i++) document.getElementById('a'+i).disabled=true;
+  streak=0;
+  catStats[q.cat]=(catStats[q.cat]||{ok:0,tot:0}); catStats[q.cat].tot++;
+  spawnFloat(false,'⏰');
+  qIdx++;
+  setTimeout(nextQuestion, 1400);
+}
+
+function spawnFloat(ok, txt){
+  const el=document.createElement('div'); el.className='float-txt';
+  el.textContent=txt; el.style.color=ok?'#10b981':'#ef4444';
+  el.style.left='50%'; el.style.top='40%';
+  el.style.transform='translateX(-50%)';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1000);
+}
+
+function endGame(){
+  const pct=Math.round(correct/TOTAL_Q*100);
+  const best=Math.max(score, parseInt(localStorage.getItem('quiz_best')||'0'));
+  localStorage.setItem('quiz_best',best);
+  document.getElementById('res-title').textContent = pct>=80?'🏆 Excellent !':pct>=50?'👍 Bien joué !':'💪 Continue !';
+  document.getElementById('res-sub').textContent=`${correct}/${TOTAL_Q} bonnes réponses · ${pct}%`;
+  document.getElementById('r-score').textContent=score;
+  document.getElementById('r-correct').textContent=`${correct}/${TOTAL_Q}`;
+  document.getElementById('r-best').textContent=best;
+  const bd=document.getElementById('cat-breakdown'); bd.innerHTML='';
+  Object.entries(catStats).forEach(([cat,s])=>{
+    bd.innerHTML+=`<div class="cat-line">${cat}<span>${s.ok}/${s.tot}</span></div>`;
+  });
+  document.getElementById('result').classList.add('show');
+}
+
+startGame();
+</script>
+</body>
+</html>

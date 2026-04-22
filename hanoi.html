@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Tour de Hanoï</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{background:#1a0a2e;display:flex;flex-direction:column;align-items:center;
+     font-family:'Segoe UI',sans-serif;color:#fff;height:100vh;height:100dvh;overflow:hidden;user-select:none;padding-bottom:env(safe-area-inset-bottom,0px);}
+#topbar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;
+        padding:8px 12px 4px;flex-shrink:0;}
+#home-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;
+          padding:5px 11px;border-radius:18px;font-size:12px;cursor:pointer;text-decoration:none;}
+#topbar h1{font-size:18px;font-weight:800;letter-spacing:2px;color:#c084fc;}
+#infobar{width:100%;max-width:480px;display:flex;justify-content:center;gap:10px;
+         padding:4px 12px 6px;flex-shrink:0;}
+.pill{background:rgba(255,255,255,.07);border-radius:10px;padding:5px 12px;
+      font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+#moves-val{color:#c084fc;}#min-val{color:#60a5fa;}#timer-val{color:#4ade80;}
+#diff-bar{width:100%;max-width:480px;display:flex;justify-content:center;gap:6px;
+          padding:0 12px 6px;flex-shrink:0;}
+.diff-btn{flex:1;max-width:90px;padding:6px;border-radius:10px;border:2px solid rgba(255,255,255,.15);
+          background:rgba(255,255,255,.06);color:#ccc;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;}
+.diff-btn.active{border-color:#c084fc;background:rgba(192,132,252,.15);color:#c084fc;}
+#canvas-wrap{flex:1;width:100%;max-width:480px;position:relative;overflow:hidden;}
+canvas{display:block;}
+#btns{width:100%;max-width:480px;display:flex;gap:8px;padding:6px 12px 10px;flex-shrink:0;}
+#auto-btn{flex:1;background:rgba(192,132,252,.15);border:1px solid rgba(192,132,252,.3);
+          color:#c084fc;border-radius:12px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;}
+#reset-btn{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+           color:#ccc;border-radius:12px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;}
+/* RESULT */
+#result{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);
+        align-items:center;justify-content:center;z-index:100;}
+#result.show{display:flex;}
+#res-box{background:#1a0a2e;border:2px solid #c084fc;border-radius:20px;padding:28px 32px;text-align:center;width:85%;max-width:340px;}
+#res-box h2{font-size:26px;margin-bottom:8px;}
+#res-box p{color:#aaa;margin-bottom:18px;font-size:14px;}
+#res-box button{background:#c084fc;color:#1a0a2e;border:none;border-radius:12px;
+                padding:10px 26px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+#res-box button.sec{background:rgba(255,255,255,.1);color:#eee;}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="index.html" id="home-btn">← Accueil</a>
+  <h1>TOUR DE HANOÏ</h1>
+  <div style="width:70px"></div>
+</div>
+<div id="infobar">
+  <div class="pill">🖱️ <span id="moves-val">0</span> coups</div>
+  <div class="pill">⚡ min. <span id="min-val">7</span></div>
+  <div class="pill">⏱️ <span id="timer-val">0:00</span></div>
+</div>
+<div id="diff-bar">
+  <button class="diff-btn active" onclick="setDisks(3)">3 disques</button>
+  <button class="diff-btn" onclick="setDisks(4)">4 disques</button>
+  <button class="diff-btn" onclick="setDisks(5)">5 disques</button>
+  <button class="diff-btn" onclick="setDisks(6)">6 disques</button>
+  <button class="diff-btn" onclick="setDisks(7)">7 disques</button>
+</div>
+<div id="canvas-wrap"><canvas id="gc"></canvas></div>
+<div id="btns">
+  <button id="auto-btn" onclick="toggleAutoSolve()">🤖 Auto-résoudre</button>
+  <button id="reset-btn" onclick="resetGame()">🔄 Recommencer</button>
+</div>
+
+<div id="result">
+  <div id="res-box">
+    <h2>🎉 Résolu !</h2>
+    <p id="res-sub"></p>
+    <button onclick="resetGame()">🔄 Rejouer</button>
+    <button class="sec" onclick="location.href='index.html'">🏠 Accueil</button>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('gc');
+const ctx=canvas.getContext('2d');
+const wrap=document.getElementById('canvas-wrap');
+
+let N=3, pegs=[[],[],[]], moves=0, selected=-1, animating=false;
+let timerSec=0, timerInt=null, started=false, solved=false;
+let autoMode=false, autoQueue=[], autoAF=null;
+
+// Disk colors gradient
+const DISK_COLORS=[
+  ['#f87171','#dc2626'],['#fb923c','#ea580c'],['#fbbf24','#d97706'],
+  ['#a3e635','#65a30d'],['#34d399','#059669'],['#38bdf8','#0284c7'],['#c084fc','#9333ea'],
+];
+
+function setDisks(n){
+  document.querySelectorAll('.diff-btn').forEach((b,i)=>{
+    b.classList.toggle('active',[3,4,5,6,7][i]===n);
+  });
+  N=n; resetGame();
+}
+
+function resetGame(){
+  clearAuto();
+  pegs=[[],[],[]];
+  for(let i=N;i>=1;i--) pegs[0].push(i); // largest at bottom
+  moves=0; selected=-1; animating=false; solved=false;
+  clearInterval(timerInt); timerSec=0; started=false;
+  document.getElementById('moves-val').textContent='0';
+  document.getElementById('min-val').textContent=(Math.pow(2,N)-1);
+  document.getElementById('timer-val').textContent='0:00';
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('auto-btn').textContent='🤖 Auto-résoudre';
+  autoMode=false;
+  draw();
+}
+
+// ── Geometry ──────────────────────────────
+let CW,CH,PEG_W=8,BASE_H,DISK_H,PEG_X=[],PEG_TOP;
+function resize(){
+  CW=wrap.clientWidth;
+  CH=wrap.clientHeight;
+  if(CW===0||CH===0) return;
+  canvas.width=CW; canvas.height=CH;
+  canvas.style.width = CW+'px';
+  canvas.style.height = CH+'px';
+  // Compute geometry from actual canvas size
+  BASE_H = Math.round(CH * 0.11);
+  DISK_H = Math.round((CH - BASE_H - 40) / (N + 3));
+  PEG_X  = [Math.round(CW*0.2), Math.round(CW*0.5), Math.round(CW*0.8)];
+  draw();
+}
+window.addEventListener('resize', resize);
+setTimeout(resize, 0);
+
+function diskW(size){ return Math.round(CW*.12 + (size/N)*(CW*.26)); }
+function diskY(peg,pos){ return CH-BASE_H-DISK_H*(pos+1); }
+
+function draw(){
+  ctx.clearRect(0,0,CW,CH);
+  // Background gradient
+  const bg=ctx.createLinearGradient(0,0,0,CH);
+  bg.addColorStop(0,'#1a0a2e'); bg.addColorStop(1,'#0d0020');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,CW,CH);
+  // Base platform
+  const pl=ctx.createLinearGradient(0,CH-BASE_H,0,CH);
+  pl.addColorStop(0,'#3b1f5e'); pl.addColorStop(1,'#1a0a2e');
+  ctx.fillStyle=pl; ctx.fillRect(0,CH-BASE_H,CW,BASE_H);
+  ctx.fillStyle='rgba(192,132,252,0.3)'; ctx.fillRect(0,CH-BASE_H,CW,2);
+  // Pegs
+  PEG_X.forEach((px,pi)=>{
+    const pegH=CH-BASE_H-20;
+    const pg=ctx.createLinearGradient(px-PEG_W/2,0,px+PEG_W/2,0);
+    pg.addColorStop(0,'#6b21a8'); pg.addColorStop(0.5,'#a855f7'); pg.addColorStop(1,'#6b21a8');
+    ctx.fillStyle=pg;
+    ctx.beginPath(); ctx.roundRect?ctx.roundRect(px-PEG_W/2,20,PEG_W,pegH,4):ctx.fillRect(px-PEG_W/2,20,PEG_W,pegH);
+    ctx.fill();
+    // Highlight selected peg
+    if(pi===selected){
+      ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.roundRect?ctx.roundRect(px-PEG_W/2-2,20,PEG_W+4,pegH,4):ctx.strokeRect(px-PEG_W/2-2,20,PEG_W+4,pegH);
+      ctx.stroke();
+    }
+    // Peg label
+    ctx.font='bold 13px Segoe UI'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(192,132,252,0.8)';
+    ctx.fillText(['A','B','C'][pi],px,CH-BASE_H/2);
+  });
+  // Disks
+  pegs.forEach((peg,pi)=>{
+    peg.forEach((disk,pos)=>{
+      drawDisk(PEG_X[pi],diskY(pi,pos),disk,pi===selected&&pos===peg.length-1);
+    });
+  });
+}
+
+function drawDisk(x,y,size,highlight){
+  const w=diskW(size), h=DISK_H-3;
+  const ci=size-1;
+  const [c1,c2]=DISK_COLORS[ci%DISK_COLORS.length];
+  // Shadow
+  ctx.fillStyle='rgba(0,0,0,0.4)';
+  ctx.beginPath(); ctx.ellipse(x+3,y+h/2+3,w/2,h/3,0,0,Math.PI*2); ctx.fill();
+  // Body gradient
+  const g=ctx.createLinearGradient(x-w/2,y,x-w/2,y+h);
+  g.addColorStop(0, highlight?'#fff':c1); g.addColorStop(1,c2);
+  ctx.fillStyle=g;
+  ctx.beginPath();
+  const r=h/2;
+  ctx.moveTo(x-w/2+r,y); ctx.lineTo(x+w/2-r,y);
+  ctx.arc(x+w/2-r,y+r,r,-Math.PI/2,Math.PI/2);
+  ctx.lineTo(x-w/2+r,y+h);
+  ctx.arc(x-w/2+r,y+r,r,Math.PI/2,Math.PI*1.5);
+  ctx.closePath(); ctx.fill();
+  // Shine
+  ctx.fillStyle='rgba(255,255,255,0.25)';
+  ctx.beginPath();
+  ctx.moveTo(x-w/2+r,y+2); ctx.lineTo(x+w/2-r,y+2);
+  ctx.arc(x+w/2-r,y+r,r-2,-Math.PI/2,0);
+  ctx.lineTo(x+w/2-r,y+h/2); ctx.lineTo(x-w/2+r,y+h/2);
+  ctx.arc(x-w/2+r,y+r,r-2,Math.PI,Math.PI*1.5);
+  ctx.closePath(); ctx.fill();
+  // Size label
+  ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.font=`bold ${Math.round(h*.6)}px Segoe UI`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(size,x,y+h/2);
+}
+
+// ── Input ─────────────────────────────────
+canvas.addEventListener('click',e=>{
+  if(animating||autoMode) return;
+  const rect=canvas.getBoundingClientRect();
+  const mx=(e.clientX-rect.left)*(CW/rect.width);
+  // Find which peg was clicked
+  const pi=PEG_X.reduce((best,px,i)=>Math.abs(px-mx)<Math.abs(PEG_X[best]-mx)?i:best,0);
+  handlePegClick(pi);
+});
+canvas.addEventListener('touchend',e=>{
+  e.preventDefault();
+  if(animating||autoMode) return;
+  const t=e.changedTouches[0];
+  const rect=canvas.getBoundingClientRect();
+  const mx=(t.clientX-rect.left)*(CW/rect.width);
+  const pi=PEG_X.reduce((best,px,i)=>Math.abs(px-mx)<Math.abs(PEG_X[best]-mx)?i:best,0);
+  handlePegClick(pi);
+},{passive:false});
+
+function handlePegClick(pi){
+  if(solved) return;
+  if(selected===-1){
+    if(pegs[pi].length===0) return;
+    selected=pi; draw();
+  } else {
+    if(pi===selected){ selected=-1; draw(); return; }
+    const top=pegs[selected][pegs[selected].length-1];
+    const dest=pegs[pi];
+    if(dest.length>0&&dest[dest.length-1]<top){
+      selected=-1; draw(); return; // invalid
+    }
+    // Valid move — animate
+    const fromPeg=selected; selected=-1;
+    animateMove(fromPeg,pi,()=>{
+      if(!started){ started=true; timerInt=setInterval(()=>{ timerSec++; updateTimerDisplay(); },1000); }
+      moves++;
+      document.getElementById('moves-val').textContent=moves;
+      draw();
+      if(pegs[2].length===N) victory();
+    });
+  }
+}
+
+// ── Animate ───────────────────────────────
+function animateMove(from,to,cb){
+  animating=true;
+  const disk=pegs[from].pop();
+  const startX=PEG_X[from], endX=PEG_X[to];
+  const startY=diskY(from,pegs[from].length);
+  const liftY=30;
+  const endY=diskY(to,pegs[to].length);
+  const w=diskW(disk), h=DISK_H-3;
+  let t=0;
+  function frame(){
+    t+=0.04;
+    let cx,cy;
+    if(t<0.3){ // lift
+      cy=startY-liftY*(t/0.3);
+      cx=startX;
+    } else if(t<0.7){ // travel
+      const p=(t-0.3)/0.4;
+      cx=startX+(endX-startX)*p;
+      cy=startY-liftY;
+    } else if(t<1){ // descend
+      const p=(t-0.7)/0.3;
+      cx=endX; cy=(startY-liftY)+(endY-(startY-liftY))*p;
+    } else {
+      cx=endX; cy=endY; animating=false;
+      pegs[to].push(disk); cb(); return;
+    }
+    draw();
+    drawDisk(cx,cy,disk,false);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+// ── Auto-solve ─────────────────────────────
+function toggleAutoSolve(){
+  if(autoMode){ clearAuto(); return; }
+  autoMode=true;
+  document.getElementById('auto-btn').textContent='⏹ Arrêter';
+  autoQueue=[];
+  hanoi(N,0,2,1);
+  runAutoQueue();
+}
+function hanoi(n,from,to,via){
+  if(n===0) return;
+  hanoi(n-1,from,via,to);
+  autoQueue.push([from,to]);
+  hanoi(n-1,via,to,from);
+}
+function runAutoQueue(){
+  if(!autoMode||autoQueue.length===0){ clearAuto(); return; }
+  const [from,to]=autoQueue.shift();
+  if(pegs[from].length===0){ clearAuto(); return; }
+  animateMove(from,to,()=>{
+    if(!started){ started=true; timerInt=setInterval(()=>{ timerSec++; updateTimerDisplay(); },1000); }
+    moves++;
+    document.getElementById('moves-val').textContent=moves;
+    draw();
+    if(pegs[2].length===N){ clearAuto(); victory(); return; }
+    setTimeout(runAutoQueue,300);
+  });
+}
+function clearAuto(){
+  autoMode=false; autoQueue=[];
+  document.getElementById('auto-btn').textContent='🤖 Auto-résoudre';
+}
+
+function victory(){
+  clearInterval(timerInt); solved=true;
+  const min=Math.pow(2,N)-1;
+  const m=Math.floor(timerSec/60), s=timerSec%60;
+  const perfect=moves===min;
+  document.getElementById('res-sub').textContent=
+    `${moves} coups (min. ${min})${perfect?' · 🏆 Solution optimale !':''}\nTemps : ${m}:${s.toString().padStart(2,'0')}`;
+  setTimeout(()=>document.getElementById('result').classList.add('show'),600);
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timerSec/60), s=timerSec%60;
+  document.getElementById('timer-val').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+}
+
+resetGame();
+setTimeout(()=>{ resize(); },50);
+</script>
+</body>
+</html>

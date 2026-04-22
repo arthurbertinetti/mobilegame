@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Memory</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{background:#0f172a;display:flex;flex-direction:column;align-items:center;
+     font-family:'Segoe UI',sans-serif;color:#fff;min-height:100vh;height:100dvh;user-select:none;}
+#topbar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;
+        padding:8px 12px 4px;flex-shrink:0;}
+#home-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;
+          padding:5px 11px;border-radius:18px;font-size:12px;cursor:pointer;text-decoration:none;}
+#topbar h1{font-size:20px;font-weight:800;letter-spacing:2px;color:#a78bfa;}
+#infobar{width:100%;max-width:480px;display:flex;justify-content:center;gap:12px;
+         padding:4px 12px 6px;}
+.pill{background:rgba(255,255,255,.07);border-radius:12px;padding:5px 14px;
+      font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.pill span{color:#a78bfa;}
+
+/* DIFFICULTY */
+#diff-bar{width:100%;max-width:480px;display:flex;justify-content:center;gap:8px;
+          padding:0 12px 8px;}
+.diff-btn{flex:1;max-width:120px;padding:7px;border-radius:12px;border:2px solid rgba(255,255,255,.15);
+          background:rgba(255,255,255,.06);color:#ccc;font-size:12px;font-weight:700;cursor:pointer;
+          transition:all .2s;}
+.diff-btn.active{border-color:#a78bfa;background:rgba(167,139,250,.15);color:#a78bfa;}
+
+/* GRID */
+#board{width:100%;max-width:480px;padding:2px 8px;flex:1;
+       display:grid;gap:4px;place-items:center;overflow:hidden;}
+
+/* CARD */
+.card{width:100%;cursor:pointer;perspective:600px;}
+.card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;
+            transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.card.flipped .card-inner,.card.matched .card-inner{transform:rotateY(180deg);}
+.card-front,.card-back{
+  position:absolute;inset:0;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.card-front{background:linear-gradient(135deg,#1e293b,#0f172a);
+            border:2px solid #334155;font-size:28px;}
+.card-front::after{content:'?';font-size:22px;color:#475569;font-weight:800;}
+.card-back{background:linear-gradient(135deg,#312e81,#1e1b4b);
+           border:2px solid #6d28d9;
+           transform:rotateY(180deg);font-size:clamp(20px,6vw,36px);}
+.card.matched .card-back{
+  background:linear-gradient(135deg,#065f46,#064e3b);
+  border-color:#10b981;
+  animation:matchPulse .5s ease;
+}
+@keyframes matchPulse{0%{transform:rotateY(180deg) scale(1)}50%{transform:rotateY(180deg) scale(1.15)}100%{transform:rotateY(180deg) scale(1)}}
+.card.wrong .card-back{border-color:#ef4444;animation:wrongShake .3s ease;}
+@keyframes wrongShake{0%,100%{transform:rotateY(180deg) translateX(0)}25%{transform:rotateY(180deg) translateX(-5px)}75%{transform:rotateY(180deg) translateX(5px)}}
+
+/* PARTICLES */
+.burst{position:fixed;pointer-events:none;z-index:200;font-size:18px;
+       animation:burst .8s ease forwards;}
+@keyframes burst{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(0)}}
+
+/* RESULT */
+#result{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);
+        align-items:center;justify-content:center;z-index:100;}
+#result.show{display:flex;}
+#res-box{background:#1e1b4b;border:2px solid #a78bfa;border-radius:20px;padding:28px 32px;text-align:center;width:85%;max-width:340px;}
+#res-box h2{font-size:26px;margin-bottom:8px;}
+#res-box p{color:#aaa;margin-bottom:18px;}
+#res-box button{background:#a78bfa;color:#0f172a;border:none;border-radius:12px;
+                padding:10px 26px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+#res-box button.sec{background:rgba(255,255,255,.1);color:#eee;}
+#best-disp{font-size:12px;color:#a78bfa;margin-top:6px;}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <a href="index.html" id="home-btn">← Accueil</a>
+  <h1>MEMORY</h1>
+  <div style="width:70px"></div>
+</div>
+<div id="infobar">
+  <div class="pill">🎴 <span id="pairs-val">0/0</span></div>
+  <div class="pill">🖱️ <span id="moves-val">0</span></div>
+  <div class="pill">⏱️ <span id="timer-val">0:00</span></div>
+</div>
+<div id="diff-bar">
+  <button class="diff-btn" onclick="setDiff(4,4)">4×4<br><small>8 paires</small></button>
+  <button class="diff-btn active" onclick="setDiff(4,5)">4×5<br><small>10 paires</small></button>
+  <button class="diff-btn" onclick="setDiff(5,6)">5×6<br><small>15 paires</small></button>
+</div>
+<div id="board"></div>
+<div id="best-disp"></div>
+
+<div id="result">
+  <div id="res-box">
+    <h2>🎉 Bravo !</h2>
+    <p id="res-sub"></p>
+    <button onclick="restart()">🔄 Rejouer</button>
+    <button class="sec" onclick="location.href='index.html'">🏠 Accueil</button>
+  </div>
+</div>
+
+<script>
+const EMOJIS=['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐸','🐵','🐔','🐧','🐦','🦆','🦅','🦉','🦋','🐝','🐛','🐌','🐞','🐜','🦀','🦞','🐡','🎸','🎺','🎻','🎹','🥁','🎮','🎲','♟️','🎯','🎳','⚽','🏀','🎾','🏐','🏈','🎱','🏓','🏸','🥊','🎿','🛸'];
+
+let cols=4,rows=5,cards=[],flipped=[],matched=0,moves=0,lock=false,timer=0,timerInt=null,started=false;
+
+function setDiff(c,r){
+  document.querySelectorAll('.diff-btn').forEach((b,i)=>{
+    b.classList.toggle('active',[[4,4],[4,5],[5,6]][i][0]===c&&[[4,4],[4,5],[5,6]][i][1]===r);
+  });
+  cols=c; rows=r; restart();
+}
+
+function restart(){
+  clearInterval(timerInt); timer=0; moves=0; matched=0; flipped=[]; lock=false; started=false;
+  updateUI(cols*rows/2);
+  const n=cols*rows/2;
+  const pool=EMOJIS.slice(0,n);
+  const deck=[...pool,...pool].sort(()=>Math.random()-.5);
+  cards=deck.map((e,i)=>({id:i,emoji:e,flipped:false,matched:false}));
+  buildBoard();
+}
+
+function buildBoard(){
+  const board=document.getElementById('board');
+  board.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  // Compute row height so all rows fit in the available board height
+  const boardH = board.clientHeight || (window.innerHeight - 160);
+  const rowH = Math.floor((boardH - (rows-1)*4) / rows * 0.67);
+  board.style.gridAutoRows = rowH+'px';
+  board.innerHTML='';
+  cards.forEach(c=>{
+    const div=document.createElement('div');
+    div.className='card'; div.id='card-'+c.id;
+    div.innerHTML=`<div class="card-inner"><div class="card-front"></div><div class="card-back">${c.emoji}</div></div>`;
+    div.style.height=rowH+'px';
+    div.addEventListener('click',()=>flipCard(c.id));
+    board.appendChild(div);
+  });
+  updateTimerDisplay();
+}
+
+function flipCard(id){
+  if(lock||!started&&(started=true,startTimer())) return;
+  if(lock) return;
+  const c=cards[id];
+  if(c.matched||c.flipped||flipped.length>=2) return;
+  c.flipped=true;
+  document.getElementById('card-'+id).classList.add('flipped');
+  flipped.push(id);
+  if(flipped.length===2){
+    moves++;
+    document.getElementById('moves-val').textContent=moves;
+    lock=true;
+    const [a,b]=flipped;
+    if(cards[a].emoji===cards[b].emoji){
+      setTimeout(()=>{ markMatch(a,b); }, 400);
+    } else {
+      setTimeout(()=>{ unflip(a,b); }, 900);
+    }
+  }
+}
+// Trick to allow startTimer to return falsy so the || chain still works
+function startTimer(){ timerInt=setInterval(()=>{ timer++; updateTimerDisplay(); },1000); return false; }
+
+function markMatch(a,b){
+  cards[a].matched=cards[b].matched=true;
+  document.getElementById('card-'+a).classList.add('matched');
+  document.getElementById('card-'+b).classList.add('matched');
+  spawnBurst(document.getElementById('card-'+a));
+  spawnBurst(document.getElementById('card-'+b));
+  matched++; flipped=[]; lock=false;
+  document.getElementById('pairs-val').textContent=`${matched}/${cols*rows/2}`;
+  if(matched===cols*rows/2) setTimeout(gameOver,500);
+}
+
+function unflip(a,b){
+  cards[a].flipped=cards[b].flipped=false;
+  const ca=document.getElementById('card-'+a), cb=document.getElementById('card-'+b);
+  ca.classList.add('wrong'); cb.classList.add('wrong');
+  setTimeout(()=>{
+    ca.classList.remove('flipped','wrong'); cb.classList.remove('flipped','wrong');
+    flipped=[]; lock=false;
+  },300);
+}
+
+function spawnBurst(cardEl){
+  const rect=cardEl.getBoundingClientRect();
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  for(let i=0;i<6;i++){
+    const s=document.createElement('div'); s.className='burst';
+    const a=Math.random()*Math.PI*2, d=40+Math.random()*40;
+    s.style.cssText=`left:${cx}px;top:${cy}px;--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d}px;`;
+    s.textContent=['✨','⭐','💫','🌟'][Math.floor(Math.random()*4)];
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),900);
+  }
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timer/60), s=timer%60;
+  document.getElementById('timer-val').textContent=`${m}:${s.toString().padStart(2,'0')}`;
+}
+function updateUI(total){
+  document.getElementById('pairs-val').textContent=`0/${total}`;
+  document.getElementById('moves-val').textContent='0';
+  document.getElementById('timer-val').textContent='0:00';
+}
+
+function gameOver(){
+  clearInterval(timerInt);
+  const key=`memory_best_${cols}x${rows}`;
+  const prev=parseInt(localStorage.getItem(key)||'99999');
+  const better=moves<prev;
+  if(better) localStorage.setItem(key,moves);
+  const m=Math.floor(timer/60), s=timer%60;
+  document.getElementById('res-sub').textContent=
+    `${moves} coups · ${m}:${s.toString().padStart(2,'0')}${better?' · 🏆 Nouveau record !':''}`;
+  document.getElementById('result').classList.add('show');
+}
+
+setDiff(4,5);
+</script>
+</body>
+</html>

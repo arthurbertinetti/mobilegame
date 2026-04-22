@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<title>TrouveMot</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;}
+body{background:#121213;display:flex;flex-direction:column;align-items:center;
+     font-family:'Segoe UI',sans-serif;color:#fff;height:100vh;height:100dvh;overflow:hidden;user-select:none;padding-bottom:env(safe-area-inset-bottom,0px);}
+#topbar{width:100%;max-width:480px;display:flex;align-items:center;justify-content:space-between;
+        padding:8px 12px 4px;border-bottom:1px solid #333;flex-shrink:0;}
+#home-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;
+          padding:5px 11px;border-radius:18px;font-size:12px;cursor:pointer;text-decoration:none;}
+#topbar h1{font-size:20px;font-weight:800;letter-spacing:3px;}
+#lang-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;
+          padding:5px 11px;border-radius:18px;font-size:12px;cursor:pointer;}
+
+/* LANGUAGE SCREEN */
+#lang-screen{position:fixed;inset:0;background:#121213;display:flex;flex-direction:column;
+             align-items:center;justify-content:center;gap:24px;z-index:200;}
+#lang-screen h2{font-size:28px;font-weight:800;letter-spacing:2px;}
+#lang-screen p{color:#aaa;font-size:14px;}
+.lang-choice{display:flex;gap:16px;}
+.lang-btn{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);
+          border-radius:16px;padding:18px 32px;cursor:pointer;font-size:16px;font-weight:700;
+          transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.lang-btn:hover{background:rgba(99,241,153,.15);border-color:#63f199;}
+.lang-btn span{font-size:32px;}
+
+/* GRID */
+#grid-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 0;}
+#grid{display:grid;grid-template-rows:repeat(6,1fr);gap:5px;height:100%;max-height:340px;aspect-ratio:5/6;}
+.row{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;}
+.tile{display:flex;align-items:center;justify-content:center;font-size:clamp(18px,5vw,26px);
+      font-weight:800;border:2px solid #333;border-radius:4px;background:#121213;
+      transition:border-color .1s;position:relative;overflow:hidden;}
+.tile.filled{border-color:#555;animation:pop .1s ease;}
+.tile.revealed{border:none;}
+.tile .front,.tile .back{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  font-size:inherit;font-weight:inherit;border-radius:3px;
+}
+.tile .front{background:#121213;border:2px solid #555;}
+.tile .back{transform:rotateX(180deg);}
+.tile.flip{animation:flipTile .5s ease forwards;}
+.tile.correct .back,.tile.correct .front{background:#538d4e;border-color:#538d4e;color:#fff;}
+.tile.present .back,.tile.present .front{background:#b59f3b;border-color:#b59f3b;color:#fff;}
+.tile.absent  .back,.tile.absent  .front{background:#3a3a3c;border-color:#3a3a3c;color:#fff;}
+
+@keyframes flipTile{
+  0%  {transform:rotateX(0);}
+  49% {transform:rotateX(-90deg);}
+  50% {transform:rotateX(90deg);}
+  100%{transform:rotateX(0deg);}
+}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.row.shake{animation:shake .4s ease;}
+@keyframes bounce{0%,20%,50%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}60%{transform:translateY(-4px)}}
+.tile.bounce{animation:bounce .6s ease;}
+
+/* KEYBOARD */
+#keyboard{width:100%;max-width:480px;padding:2px 4px 8px;padding-bottom:calc(8px + env(safe-area-inset-bottom));flex-shrink:0;}
+.kb-row{display:flex;justify-content:center;gap:3px;margin-bottom:3px;}
+.key{height:40px;min-width:0;flex:1;background:#818384;border:none;border-radius:6px;
+     color:#fff;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;
+     display:flex;align-items:center;justify-content:center;padding:0 2px;}
+.key.wide{flex:1.5;font-size:10px;}
+.key.correct{background:#538d4e !important;}
+.key.present{background:#b59f3b !important;}
+.key.absent {background:#3a3a3c !important;}
+.key:active{opacity:.7;}
+
+/* TOAST */
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);
+       background:#fff;color:#000;padding:10px 20px;border-radius:8px;
+       font-weight:700;font-size:14px;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;}
+#toast.show{opacity:1;}
+
+/* STATS */
+#stats-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);
+               align-items:center;justify-content:center;z-index:100;}
+#stats-overlay.show{display:flex;}
+#stats-box{background:#1a1a1b;border:1px solid #333;border-radius:20px;padding:24px;
+           width:90%;max-width:380px;text-align:center;}
+#stats-box h2{font-size:16px;letter-spacing:2px;margin-bottom:16px;color:#aaa;}
+.stats-row{display:flex;justify-content:center;gap:20px;margin-bottom:18px;}
+.stat{text-align:center;}.stat .val{font-size:28px;font-weight:800;}.stat .lbl{font-size:11px;color:#aaa;}
+.distrib{margin-bottom:16px;}
+.dist-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-size:13px;}
+.dist-bar{height:20px;background:#538d4e;border-radius:3px;min-width:6px;
+          display:flex;align-items:center;justify-content:flex-end;padding-right:6px;
+          font-size:12px;font-weight:700;transition:width .5s;}
+#stats-box button{background:#538d4e;color:#fff;border:none;border-radius:12px;
+                  padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;}
+#stats-box button.sec{background:#333;}</style>
+</head>
+<body>
+
+<!-- Language selection -->
+<div id="lang-screen">
+  <h2>🟩 TROUVEMOT</h2>
+  <p>Choisissez la langue des instructions :</p>
+  <div class="lang-choice">
+    <div class="lang-btn" onclick="setLang('fr')"><span>🇫🇷</span>Français</div>
+    <div class="lang-btn" onclick="setLang('en')"><span>🇬🇧</span>English</div>
+  </div>
+  <a href="index.html" style="color:rgba(255,255,255,.4);font-size:12px;text-decoration:none;margin-top:8px;">← Accueil</a>
+</div>
+
+<div id="topbar">
+  <a href="index.html" id="home-btn">← Accueil</a>
+  <h1>TROUVEMOT</h1>
+  <div style="display:flex;gap:5px;">
+    <button id="lang-btn" onclick="openLangScreen()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;padding:5px 8px;border-radius:18px;font-size:12px;cursor:pointer;">🌐</button>
+    <button onclick="showStats()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ccc;padding:5px 8px;border-radius:18px;font-size:12px;cursor:pointer;">📊</button>
+  </div>
+</div>
+
+<div id="grid-wrap">
+  <div id="grid"></div>
+</div>
+
+<div id="keyboard">
+  <div class="kb-row" id="kb-row-0"></div>
+  <div class="kb-row" id="kb-row-1"></div>
+  <div class="kb-row" id="kb-row-2"></div>
+</div>
+
+<div id="toast"></div>
+
+<div id="stats-overlay">
+  <div id="stats-box">
+    <h2 id="stats-title">STATISTIQUES</h2>
+    <div class="stats-row">
+      <div class="stat"><div class="val" id="s-played">0</div><div class="lbl" id="s-played-lbl">Joués</div></div>
+      <div class="stat"><div class="val" id="s-wins">0</div><div class="lbl" id="s-wins-lbl">Victoires</div></div>
+      <div class="stat"><div class="val" id="s-streak">0</div><div class="lbl" id="s-streak-lbl">Série</div></div>
+      <div class="stat"><div class="val" id="s-best">0</div><div class="lbl" id="s-best-lbl">Meilleure</div></div>
+    </div>
+    <div class="distrib" id="distrib"></div>
+    <button onclick="newGame()">🔄 <span id="btn-new">Nouveau</span></button>
+    <button class="sec" onclick="closeStats()">✕</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// WORDS LIST — mots français de 5 lettres (avec accents)
+// ══════════════════════════════════════════
+const WORDS_RAW = `
+abime abord abris achat acide acier actif adore adule affût agace agile aider aimer aioli ainsi
+ajout algue allée alors amant ambré amène amour ample ancre anime appel après arbre arène argot
+armer armée arôme arrêt asile astre atome atout avale avant avare avide avoir avons ayant bague
+bâche baies balle bande barbu barre belle bénir berge biche bière biome bison blanc blasé boire
+boite bombe bonus bosse bouée bourg brave bravo brève brume bulle buste câble cadre calme carie
+carpe carte cause céder champ chaos chaud chêne chien choix cible cidre clair clone cœur colle
+comté conte copie coude coupé court crâne créer crève crime cruel cuire culte cycle delta dense
+dépôt désir diète divin droit drone duvet écart éclat élan élève émois enfer envie épice étage
+étang étape étude éveil fable faute fauve félon fibre fière filet fleur flore force forge foyer
+franc fugue fumet garde gâter genre germe glace globe grève guide hanap hante hardi harpe herbe
+hiver hôtel huile hurle hyène icône image impur issue jabot jouer jouir jurer lance lapin laser
+latin légal liège liste livre loupe lourd lueur lutte lycée magot manie marge masse match mêler
+melon merci métal meule mixte monde moral morse moule munir myope naïve nappe natte neige nerfs
+noble norme oasis obèse offre orage ordre orner outil outre ozone paire palme panne parce parer
+passé patin pause peine pelle pendu perdu péril phare plage pleur plier plomb poche poème poilu
+pomme porte poser prise prône puant purin queue ragot rapin rébus récit régie règle remis repas
+repli rider rince robot roche roman ronde rouge sable saint sauce selon signe somme tapis tempe
+tenir terme terre titre tombe tonne trône tuile vague valse ville virer virus voile voler votre
+vraie abîme abyme accès acmée acnée adage adieu aérer agave agent agora ajonc aigle alèse alité
+alpha amibe amict ampli amuse angon antre aoûté aphte arack arcot ardre aride arpen arson aspic
+atoll augur aulne azote azyme babil badre bagou banal baver bayou béant béton bette biler bisou
+bivac bœufs boral botté brade brèche bridge brome brout brûle burin buter calot caïeu camée
+caner canon capon capot carde cargo cavan caver cepée ceint celer cense chape choré chose chuté
+chyme cippe citer civil clame clamp claré cleps clore cobol coche cogne combi coral corme corne
+corps craie crépu croch cruse curie cuvée daïra damné darce darne daube davée décor délai delco
+délit dense desté deuil devin dicté didot diète dirge dobro doigt donné doris douce drace drège
+drone droit durée début dèche dirai débat dégel délié démon dépôt déran didon djinn dolce dompu
+dyade ébahi ébène ébats écale écart échos éclat écran écrit écume édile éjour élite email émane
+émeut embus émeri encre enfer enfui enjou ennui enrôl entée érode essor étain étale étant éther
+étier étuve évade éveil évide exact exhum fable fagot fanal fanon farce faste fatum faune féaux
+fémur féodé fétid fibré firme fléau flirt fluet flûte folie folio fonce fonte foret forte foule
+fouet fraie frais frêle frère frise frost fuite furax furie fusil gadis gamin gaude géant génie
+gigue giron gîter glane glapi gnome gorge goret gouge goulu grave grenu grime griot grole grume
+guppy guéri gyrin hampe harde hauts héler heurt hibou hisse hulot iambe iléon imago impôt incis
+inepte infus inné inter irais irise jauge javot jeûne jihad jobin joual juron jutte kafir kebab
+kyste laïus laize lança laque larve laure lavis laxer lèche légat léger lérot linon limon limbe
+lodge lotir louve lucre lupin luron lusus lysis macis mafia magma maïze malte marin méché médoc
+mérou mètre mufle musée mutin narco nasal navet navel nette neveu nexus nihil nitre nœuds noroi
+nuage nubuc octet oflag oison omble opale orale ornai otage ourdi ourle pardi payer pelé penne
+perle pécan pilaf plaid plain plein plume polio porté potin prime prion probe proue prune pygmé
+radin rampe raout raser rénal renne retro riant risée rivet sacré saïga saper saule sauve saxo
+sébum séide sérum sirex sixte sobre soeur soins sonde songe sorbe soute squab squat sueur suint
+surgi surin surbi syrte tabac tafia talon tamis tapir tarse tatin taulé taupe taure tavel téton
+thème thune thyse timon tissu toile totem trabu tracé trame trape tridi tripe troll trope trova
+troue trust tulle turbo turne tyran ulule unité urger usant usité usure vaner vapid varia vaste
+veule vexer viand vigil viole viral vomis voûte vulve yodal zèbre zeste zappe zoome zoril zorba
+abèle acore agami agnat agora ajour albot aldéa alène alèse alfas algue altan ambre amict amure
+anier anile axial badis baffe baguet baïse barge baron batée bénil béout berce béret berne beryl
+binde bitum bivel blare blasé blémi blets blini bocal boète bonze borée borin boude bourre budge
+bysse caban cacou cadet caron cauld cavée cenci cesti chiée chipo chyme cirre cippe cisti clamp
+claré coble cobue cogit coïon combe cossu couic coule couze crapi crépe crépu crins criot croch
+cruse daïra dépôt derme dicot dimon dirge dolce dompu dopé drège duche dupli dyade ébène écume
+éfond éjour élite émeri émine épars épave épine époux équer erses esule étain étuve évide exhum
+exils fagot fanum faune féaux fémur féodé fétid fiand firme fléau flirt fluet flûte folio fraie
+frêle frise furie fusil gabor gamme gaude giron gîter glapi gnome goret gouge grenu griot grume
+guppy gyrin hampe harde hauts héler heurt hibou hisse hulot iambe iléon imago impôt incis inepte
+irais jauge jihad jobin joual juron laïus laize lança larve laure lavis lèche légat lérot linon
+lusus lysis macis maïze malte médoc mètre mufle mutin narco navet nexus nitre noroi nubuc oflag
+oison omble opale ornai otage ourle pardi pelé pécan pilaf prion probe proue pygmé radin rénal
+renne retro rivet saïga sébum séide sérum sirex sobre soute suint surbi syrte tabac tafia tapir
+tarse tatin taulé thyse timon totem trabu trape tridi trope trova ulule urger usure vapid veule
+vexer vigil vomis voûte vulve zèbre zeste zorba zoril agnat aoûté agave amibe ardre arpen bossu
+binom bicot caber caïeu cavel coïon crépu crans dacty darce darne depôt dirge drège ébats émane
+embus encre érode fanal faste fatum folio frêle furie fusil giron gnome gouge grume hampe héler
+iambe iléon infus irise jauge jeûne laïus larve laxer légat lérot linon lusus lysis macis magma
+narco navet nexus noroi oflag oison opale ornai ourle pelé pilaf prion probe proue pygmé radin
+rénal renne retro rivet saïga séide sérum sirex sorbe soute syrte tabac tafia tapir tarse tatin
+thyse timon totem trabu trape trova ulule urger vapid veule vigil vomis vulve zèbre zeste zorba
+assez aussi autre avant après avait avons bonne belle carte cette chose comme cours croix corps
+dance dette doigt donné droit durée écart enfin entre envoi femme fière fleur forte foule franc
+fuite garde genre glace grace grave grand grise guide heure homme honte jeune jouer juste larme
+lèvre libre lieux ligne livre longe lourd mardi masse merci monde moyen noire notre nuage objet
+ordre oubli outre parle passe patir plein place pomme prude prose quart rayon revue rival rouge
+sable saint sapin selon sœur soins soiré soirs tache tenir terme terre tiret traie tripe tuile
+voile vraie ville vieux vieil valse verbe zappe zèbre zeste ainsi porte poser point perdu prise
+acéré acute agote ahuri allié alpin amont arcot ardus arque atèle atlas atour butor cèdre cobra
+colza coque corde cornu couac cousu couve criée crise curry dalot datif dinde dopée école égale
+élire élute endos engin envol épave épine erses falot fatal ficus filer filou final gilet givre
+glane groin guêpe gyron hanté harki hayon jalap jante jarre jupon képi lacer laize lavis légat
+lilas limon liste lotus louée loyal lundi luron lydie mafia magma malte mèche méner métal morue
+motif mulet nuque olive ongle orque ortie osier ourse palan pampe panda poney prose pucer pulpe
+rabat ramer raton renne retro rivet salut saïga singe sobre soeur soins soute squab suint surbi
+tabac tafia talus tapir tarse tatin taulé tavel tibia tigre timon tissu toile totem trabu trape
+tridi troll trova ulule unité urger varan veine veule vexer vigne vigil vison vomis vulve yodel
+aboli album alène alité angel annot apode ardre arôme assis atone atout avens avoir ayons băton
+beige bémol béret beryl bêtes bidon bijou binal biper bisou bison boire borée bovin boxer brèche
+brûot burin busse camée carex carvi céder cense cépée cerne chaîne chair chape chère choir choré
+civil close cobue codex coing colts comet comis corin coude couru crake culot curée délot derme
+didon djinn doigt dopée drège durci dyade ébats écale échec école écran efface éjour élite email
+émane embue encre érode essor étale étant éther étier évade évide exact exhum fagot fanal fanon
+farce faste fatum féaux figée firma flanc flirt fluet flûte folie fonte foret forte frais fraie
+frêle frère frise furie fusil gadis gaude géant génie gigue giron gîter glapi gnome gorge goret
+gouge goulu grave grenu grime griot grole gruau guppy hampe harde hauts héler heurt hisse hulot
+iambe iléon imago inepte infus inné inter irais irise jauge javot jeûne jiber jobin joual juron
+kafir kebab kyste laïus laize lança laque larve laure laxer légat léger lérot linon limon lodge
+lotir louve lucre lupin luron lusus lysis macis malte médoc mérou mètre mufle musée mutin narco
+nasal navel nette neveu nexus nihil nitre nœuds noroi nuage nubuc octet oison omble opale ornai
+otage ourdi ourle pardi payer pelé penne perle pécan pilaf plaid plain plein plume polio porté
+potin prime prion probe proue pygmé radin rénal renne risée rivet sacré sapte séide sixte soute
+syrte tabac taulé tavel thyse timon tissu totem trape tridi trova turbo turne tyran urger usure
+vapid veule vexer vigil vomis voûte
+avion bazar bidon bogue boxon bribe bride brise butte canal canne carat carré catch chaux chiot
+civet clefs clerc cocon colis colon coton coupe crabe creux cuite cumin danse dîner doser duper
+faire fumer garer gérer givre griot halte jambe joyau juger kermx lande large linot louet lutin
+malin manga mince miner miser moque muret naifs noria noter nouer opéra ovale palet panic patch
+patte paver pénal pente peser pilon pinot pinte piste poker preux radar rater rêver riche roder
+rouet ruche rugby russe sabot salir savon sceau scène sénat tango tarif taxer tiède titan toise
+topic trace trêve trier tronc tuber usine valve verso veste vitre zombi zapper zappe abcès agrès
+alose amble anche arête aubin autan axone bagne banco banjo battu bauge bégue belge béret béton
+blème bogué bolet borné boson boxer boyau brèle broch burin butte câlin calao caler capre carré
+cédez cerne chaux chiot clerc cocon colis colon coton coupe crabe criée croup cumin cyber
+abîme adage adieu agave aigle ampli avens badge bagou béant bicot biper bocal borée boxer brèle
+brion budge buron burne cabin cafde cagou calan camée capot carvi cazot ceins celse chéri choré
+cigüe ciste clamp codex cogit colis comis coner crave dague darne davée devin dogue doyot échec
+élute encas envol épode erses escot étave évide exhum facto feint firma flanc forge frein freux
+furet gagne gaffe gazon genêt genou glène gonze graie groin gyron harki hayon imago jalap jante
+jarre jiber labié lanér lapon lauro léger lilas linon lodge lotir lotus louée lundi macis malte
+méché méner mérou meurt minot motif mulet nasal navel nette nexus noroi nudge nuque olive ongle
+orque ortie osier ourse pampe panda pique piton pixel plain plaid polio poney prude pucer pulpe
+rabat ramer raton ribot rogné ronce sacré salut sapré singe sixte soiré talus tarse tatin tibia
+tigre tissu trova turne unité varan veine veule vigil vigne vison yodel ardre arpen balai bambu
+barde baret basme bauge béche bénil berne biaue binel bitel bivac blafe blaire blaze blore brede
+brote buxom bysse cabot cahot cairn canel céder chèle cirré clamp codex colts comet comis dague
+datif derby deuil dinde dolce dopée dorer doris durci école égale élire embus endos engin envoi
+épave épine fagot fanal farce faste fatum ficus filer filou flint kafir kebab kyste laïus laize
+lança laque laure laxer lérot luron lusus lysis macis magma médoc mérou mètre mufle musée mutin
+narco navec nitre nubuc octet oflag oison omble ornai otage ourdi ourle pardi payer penne pécan
+pilaf prion proue radin rénal renne risée rivet séide sérum sirex sobre soute squab suint syrte
+tafia tapir taulé tavel thyse totem trabu trape tridi trova ulule urger vigil vomis voûte vulve
+bolet bolus borné boson boyau brèle butte câlin calao caler canne carré catch cédez cerne chaux
+chiot clerc cocon coupe crabe criée croup cyber dîner doser duper fumer garer gérer halte jambe
+joyau juger lande large linot louet lutin malin manga mince miner miser moque muret noria noter
+nouer opéra ovale palet panic patch patte paver pénal pente peser pilon pinot pinte piste poker
+preux radar rater rêver riche roder rouet ruche rugby russe sabot salir savon sceau scène sénat
+tango tarif taxer tiède titan toise topic trace trêve trier tronc tuber usine valve verso veste
+vitre zombi agrès alose amble anche arête aubin autan axone bagne banco banjo battu bauge bégue
+belge béret blème bogué boxer boyau broch burin butte câlin capre cédez cerne chiot clerc colon
+coton croît croup cumin cyber radar riche rugby russe sabot savon scène titan topic trêve usine
+alter amble amict amour ampou amure ancré angon anale anets angle anile anime anion anode anset
+antée aoûts apéro apers apode aphte apnée arack arcus ardre argen ariel arkos arpen arset arsis
+artel artus aryen asdic aspic astre ataré atèle athos atone atour atout augue aulne azote azyme
+bacon badge baffe baïse balai bambu banit banni barde baret barge basme bauge bayou béant béche
+bénil béout berge berme berne beryl biaue bicot bière bidon bijou binal bipée birre bisou bitel
+bivac blafe blaire blanc blasé blaze blème blond blore bocal bogué bonus borée bosse botté boxon
+brade brèle brime brion brise brote brout bûche bubon budge bunon buron burne butin buxom bysse
+cabin câble cabot cache cacou cafde cagou cahot caïeu cairn calan calop calot camée canon capot
+carde cargo carvi cavée cazot cèdre céder ceins celse cense chair chèle chéri chère choir choré
+cicux cigüe cirre ciste citée civil claie close cobra codex cogit coïon colis colts comet comis
+coner coque corde cornu couac coude cousu couze couve crave criée crise croît culot curry cyber
+dague dalot darne datif daube davée derby deuil devin dinde dogue dolce dompu dopée dorer doris
+doyot durci école écale échec égale élire élute embus encre engin envol épode époux ersot escot
+étale étave évade évide exact exhum facto fagot fanal farce faste fatum feint ficus filer filou
+final firme flint forge frais frein freux furet gagne gaffe gamin gazon genêt genou gilet givre
+glène gonze goret graie groin grume guêpe gyron harki hayon hibou hyène image imago jalap jante
+jarre jiber jupon képi knout labié lacer lanér lance lapon larve lauro laxer légat léger lilas
+linon liste lodge lotir lotus louée loyal lundi macis maïze malte méché méner mérou métal meurt
+minot morue motif mulet nasal navel nette nexus nitre noroi nudge nuque olive ongle orque ortie
+osier ourse palan pampe panda panne peine penne pique piton pixel plaid plain plume polio poney
+porté prise prude pucer pulpe pygmé rabat ragot rader ramer raron ribot rider rivet rogné ronce
+sacré salut saper sapré singe sixte sobre soiré talus tarse tatin tibia tigre tissu totem trova
+turne tyran unité varan veine veule vigil vigne vison voter yodel zaper zombi
+acuit aïoli alèse album alibi alpin amont anche angle ardus arque assis atone atour avens
+baume beige bémol blême boxon bride brime brise broit bûche bubon cache cahot cairn calix camas
+canem carpe caser céans céder cense chair chère choir cible cidre cirée ciste citée civil claie
+close cobra colza coque corde cornu crane criée crise croît cumin curée cyber dagot danse datif
+débat décor délai délit derby deuil dîner dingo dogme droit durée école écale égale élire
+elote empan encre engin envol épave époux exact exode fagot fanal farce fatal ficus filer filou
+finir flint flore forge foyer frais frein fumet furie gaffe gamin gazon genou genêt gilet givre
+glène gonze graie groin guêpe hanté harki hibou hyène imago jalap jante jarre jiber jupon képi
+labié lacer larve lauro laxer légat lilas linon lodge lotus louée loyal lundi macis maïze malte
+méner morue motif mulet navet nette nexus nitre nudge olive ongle orque ortie osier ourse pampe
+panda piton pixel plain plume polio poney porté probe prude pucer pulpe pygmé rabat ramer raton
+ribot rivet rogné ronce sacré salut saper singe sobre tafia talus tarse tibia tigre tissu trova
+turne unité varan veine vigil vigne vison voter yodel zombi amict amène antre aigle aïeux
+aigre aimée bâtir bible bille botte brème cajou camer canal canne carat carré catch cèdre cerne
+chaux chiot civet clefs cocon colon coton coupe crabe crawl crepe creux croit croup cumin dalle
+dater digne dîner doser duper errer exact fécal félin ferme ficus figer finir frise froid fugue
+gaffe gamin gaule gazon genou genêt gilet grège grive ibère joute lapon latín large laver léser
+limer loire lodge lotte lutin lotte malin manga marne mauve meuse miche mince miner miser moite
+morue motif muter nager nîmes niort noter nouer nubuc nuire okapi olive opale opera ortie ovale
+palet paner panic paris passer patch patte paver pénal pente perle peser pilon pinot pinte piste
+poker preux radar radis ramen rater reims rêver rhone riche rider roboc roder rogné rouge rouet
+ruche rugby russe sabre sabot saler salir santo savon sceau scène score seine sénat skate skier
+soupe sport stade steak store sucre sushi taire tango tapas tarte tasse taxer tiède titan tirse
+toise topic trace trêve trier tronc tuber usine varan valve verre verso veste vitre vital voter
+volet verre zombi agave arabe arête aubin autan axone bagne banco banjo battu bauge bégue belge
+béret blême bogué borné boson boxer boyau brech bride brise brûle burin butte câlin calao caler
+capre carré cédez coati crabe criée croup curry cyber dagot dalot derby deuil élite embus endos
+engin envol épave époux erses escot exact exode fagot fanal faste fatum feint firma flint forge
+frein freux furet gagne gazon genêt givre glène gonze graie groin guêpe gyron harki hayon hibou
+ibère imago jalap jante jarre jiber joute jupon képi knout labié lacer lance lapon larve lauro
+laxer léger lilas linon lodge lotus louée loyal lundi macis malte méché méner mérou meurt minot
+mulet nasal navel nexus nitre noroi nudge nuque ongle orque osier ourse pampe panda piton pixel
+plain plaid polio poney probe pucer pulpe pygmé rabat ramer raton ribot rogné ronce sacré sapré
+singe sixte soiré talus tatin tibia tigre tissu totem trova turne vigil vigne vison yodel zombi
+abcès acuté aient aioli aïeul alèse alecs algol alios alise allée alofs alter amble amour ancré
+anets anile anion anode anset antée apéro apers aphte apnée arack arcus ardre argen ariel arkos
+arset arsis artel artus aryen asdic astre ataré atèle athos atour augue azyme bacon baffe baïse
+balai bambu banit banni barde baret basme bauge bayou béche bénil béout berme beryl biaue bicot
+bipée birre bisou bitel bivac blafe blaire blaze blore bocal bogué borée borin brèle brime brion
+brote brout budge bunon buron burne butin buxom bysse cabin cafde cagou calan calop camée capot
+carvi cazot ceins celse choré cicux cirre ciste clamp codex cogit colis colts comet comis coner
+crave dagot darne davée devin dogue doyot durci élute encas épode escot étave évide exhum facto
+feint firma flanc freux furet gagne gaffe gamin gonze graie groin grume gyron harki hayon hulot
+iambe iléon imago inepte infus inter irais irise jalap jante jarre jiber kafir kebab kyste laïus
+laize lança laque laure laxer lérot linon lotir louve lucre lupin luron lusus lysis macis mafia
+magma maïze méché médoc mérou mètre mufle musée mutin narco nasal navel nette nexus nihil nitre
+nœuds noroi nubuc octet oflag oison omble opale ornai otage ourdi ourle pardi payer penne pécan
+pilaf prion proue rénal renne risée rivet séide sérum sirex sobre soute squab suint syrte tafia
+tarse taulé tavel thyse timon totem trabu trape tridi trova ulule urger vapid vigil vomis voûte
+bœuf bolet bolus boyau brèle butte câlin calao caler canne catch cédez cerne chaux chiot coupe
+crabe criée cumin dalle dater digne errer félin ferme figer grive ibère joute laver léser limer
+loire lotte mauve miche miner miser moite muter nager niort noter nouer nuire okapi ovale paner
+piton poker preux radis ramen rater rêver riche roder rouet ruche sabre saler sceau score seine
+skate skier soupe sport stade steak store sucre sushi taire tapas tarte tasse taxer tiède titan
+toise topic trace trêve trier tronc tuber valve verso veste vitre volet verre gaule grèce marne
+meuse paris reims rhone tours
+`;
+
+
+
+
+
+// Normalise : supprime les accents, met en minuscule
+function normalize(s){
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+
+// Filtrer : uniquement les mots de exactement 5 lettres latines
+const WORDS = [...new Set(
+  WORDS_RAW.trim().split(/\s+/).filter(w=>{
+    const n=normalize(w);
+    return n.length===5 && /^[a-z]{5}$/.test(n);
+  })
+)];
+
+// Index normalisé pour validation rapide
+const WORDS_NORM = new Set(WORDS.map(normalize));
+
+
+
+const LANG = {
+  fr: {
+    title:'TROUVEMOT', rule:'Trouvez le mot en 6 essais',
+    notWord:'Mot non reconnu', win6:'Pas trop facile !',
+    win:['Génial !','Excellent !','Bien joué !','Pas mal !','Ouf !','Sauvé !'],
+    stats:'STATISTIQUES', played:'Joués', wins:'Victoires', streak:'Série', best:'Meilleure',
+    newGame:'Nouveau mot', close:'Fermer', enterKey:'ENTRER', delKey:'⌫',
+    rows:['AZERTYUIOP','QSDFGHJKLM','WXCVBN'],
+  },
+  en: {
+    title:'TROUVEMOT', rule:'Find the 5-letter French word in 6 tries',
+    notWord:'Unknown word', win6:'That was close!',
+    win:['Genius!','Excellent!','Great!','Good!','Phew!','Lucky!'],
+    stats:'STATISTICS', played:'Played', wins:'Wins', streak:'Streak', best:'Best',
+    newGame:'New word', close:'Close', enterKey:'ENTER', delKey:'⌫',
+    rows:['AZERTYUIOP','QSDFGHJKLM','WXCVBN'],
+  }
+};
+
+let lang='fr', L=LANG.fr;
+let secret='', guesses=[], current='', gameOver=false;
+let stats={played:0,wins:0,streak:0,best:0,dist:[0,0,0,0,0,0]};
+
+function setLang(l){
+  lang=l; L=LANG[l];
+  document.getElementById('lang-screen').style.display='none';
+  loadStats(); newGame();
+}
+function openLangScreen(){
+  document.getElementById('lang-screen').style.display='flex';
+}
+
+function loadStats(){
+  try{ const s=JSON.parse(localStorage.getItem('trouvemot_stats')||'{}');
+    if(s.played!==undefined) stats=s;
+  }catch(e){}
+}
+function saveStats(){ localStorage.setItem('trouvemot_stats',JSON.stringify(stats)); }
+
+function newGame(){
+  closeStats();
+  const word = WORDS[Math.floor(Math.random()*WORDS.length)];
+  secret = normalize(word).toUpperCase(); // stored normalized, uppercase
+  guesses=[]; current=''; gameOver=false;
+  buildGrid(); buildKeyboard();
+}
+
+// ══ GRID ══
+function buildGrid(){
+  const g=document.getElementById('grid'); g.innerHTML='';
+  for(let r=0;r<6;r++){
+    const row=document.createElement('div'); row.className='row'; row.id='row-'+r;
+    for(let c=0;c<5;c++){
+      const tile=document.createElement('div'); tile.className='tile'; tile.id=`t-${r}-${c}`;
+      tile.innerHTML='<div class="front"></div><div class="back"></div>';
+      row.appendChild(tile);
+    }
+    g.appendChild(row);
+  }
+}
+
+function updateCurrentRow(){
+  const row=guesses.length;
+  for(let c=0;c<5;c++){
+    const tile=document.getElementById(`t-${row}-${c}`);
+    const front=tile.querySelector('.front');
+    front.textContent = current[c]||'';
+    tile.classList.toggle('filled', c<current.length);
+  }
+}
+
+// ══ KEYBOARD ══
+function buildKeyboard(){
+  const rows=['AZERTYUIOP','QSDFGHJKLM','WXCVBN'];
+  rows.forEach((row,ri)=>{
+    const el=document.getElementById('kb-row-'+ri); el.innerHTML='';
+    if(ri===2){
+      const enter=document.createElement('button');
+      enter.className='key wide'; enter.textContent=L.enterKey;
+      enter.onclick=()=>submitGuess(); el.appendChild(enter);
+    }
+    [...row].forEach(ch=>{
+      const btn=document.createElement('button');
+      btn.className='key'; btn.textContent=ch; btn.id='key-'+ch;
+      btn.onclick=()=>typeLetter(ch); el.appendChild(btn);
+    });
+    if(ri===2){
+      const del=document.createElement('button');
+      del.className='key wide'; del.textContent=L.delKey;
+      del.onclick=()=>deleteLetter(); el.appendChild(del);
+    }
+  });
+}
+
+function typeLetter(ch){
+  if(gameOver||current.length>=5) return;
+  current+=ch; updateCurrentRow();
+}
+function deleteLetter(){
+  if(gameOver||current.length===0) return;
+  current=current.slice(0,-1); updateCurrentRow();
+}
+
+function submitGuess(){
+  if(gameOver||current.length<5){ if(current.length<5) shakeRow(); return; }
+  const normInput = normalize(current);
+  if(!WORDS_NORM.has(normInput)){ toast(L.notWord); shakeRow(); return; }
+  const row=guesses.length;
+  const result=evaluate(current);
+  guesses.push({word:current,result});
+  revealRow(row,result,()=>{
+    updateKeyboard(current,result);
+    if(result.every(r=>r==='correct')){
+      setTimeout(()=>{ bounceRow(row); toast(L.win[row]||L.win[5]); }, 300);
+      gameOver=true; recordWin(row+1);
+      setTimeout(showStats,2000);
+    } else if(guesses.length===6){
+      gameOver=true; recordLoss();
+      setTimeout(()=>toast(secret,4000),500);
+      setTimeout(showStats,3000);
+    }
+    current=''; updateCurrentRow();
+  });
+}
+
+function evaluate(word){
+  // Both word and secret are already normalized uppercase (no accents)
+  const res=Array(5).fill('absent');
+  const secArr=[...secret], wordArr=[...normalize(word).toUpperCase()];
+  // Correct pass
+  for(let i=0;i<5;i++) if(wordArr[i]===secArr[i]){ res[i]='correct'; secArr[i]=null; wordArr[i]=null; }
+  // Present pass
+  for(let i=0;i<5;i++){
+    if(wordArr[i]===null) continue;
+    const idx=secArr.indexOf(wordArr[i]);
+    if(idx!==-1){ res[i]='present'; secArr[idx]=null; }
+  }
+  return res;
+}
+
+function revealRow(row,result,cb){
+  for(let c=0;c<5;c++){
+    const tile=document.getElementById(`t-${row}-${c}`);
+    const back=tile.querySelector('.back');
+    back.textContent=[...guesses[row].word][c];
+    const delay=c*300;
+    setTimeout(()=>{
+      tile.classList.add('flip',result[c]);
+      tile.classList.add('revealed');
+    }, delay);
+  }
+  setTimeout(cb, 5*300+200);
+}
+
+function bounceRow(row){
+  for(let c=0;c<5;c++){
+    setTimeout(()=>{ const t=document.getElementById(`t-${row}-${c}`); t.classList.add('bounce'); setTimeout(()=>t.classList.remove('bounce'),700); }, c*80);
+  }
+}
+
+function shakeRow(){
+  const row=document.getElementById('row-'+guesses.length);
+  row.classList.add('shake'); setTimeout(()=>row.classList.remove('shake'),500);
+}
+
+function updateKeyboard(word,result){
+  const priority={correct:3,present:2,absent:1};
+  for(let i=0;i<5;i++){
+    const ch=word[i], btn=document.getElementById('key-'+ch);
+    if(!btn) continue;
+    const cur=btn.classList.contains('correct')?3:btn.classList.contains('present')?2:btn.classList.contains('absent')?1:0;
+    if((priority[result[i]]||0)>cur){
+      btn.classList.remove('correct','present','absent');
+      btn.classList.add(result[i]);
+    }
+  }
+}
+
+let toastT=null;
+function toast(msg,dur=1800){
+  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+// ══ STATS ══
+function recordWin(tries){
+  stats.played++; stats.wins++; stats.streak++; stats.best=Math.max(stats.best,stats.streak);
+  if(tries>=1&&tries<=6) stats.dist[tries-1]++;
+  saveStats();
+}
+function recordLoss(){
+  stats.played++; stats.streak=0; saveStats();
+}
+
+function showStats(){
+  document.getElementById('s-played').textContent=stats.played;
+  document.getElementById('s-wins').textContent=stats.wins;
+  document.getElementById('s-streak').textContent=stats.streak;
+  document.getElementById('s-best').textContent=stats.best;
+  document.getElementById('stats-title').textContent=L.stats;
+  document.getElementById('s-played-lbl').textContent=L.played;
+  document.getElementById('s-wins-lbl').textContent=L.wins;
+  document.getElementById('s-streak-lbl').textContent=L.streak;
+  document.getElementById('s-best-lbl').textContent=L.best;
+  document.getElementById('btn-new').textContent=L.newGame;
+  const max=Math.max(1,...stats.dist);
+  const d=document.getElementById('distrib'); d.innerHTML='';
+  stats.dist.forEach((v,i)=>{
+    const w=Math.round(v/max*180);
+    d.innerHTML+=`<div class="dist-row"><span style="width:12px;text-align:right">${i+1}</span>
+      <div class="dist-bar" style="width:${Math.max(6,w)}px">${v}</div></div>`;
+  });
+  document.getElementById('stats-overlay').classList.add('show');
+}
+function closeStats(){ document.getElementById('stats-overlay').classList.remove('show'); }
+
+// ══ KEYBOARD INPUT ══
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter') submitGuess();
+  else if(e.key==='Backspace') deleteLetter();
+  else if(/^[a-zA-ZÀ-ÿ]$/.test(e.key)) typeLetter(e.key.toUpperCase());
+});
+</script>
+</body>
+</html>

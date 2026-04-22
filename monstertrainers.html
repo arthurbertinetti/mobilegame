@@ -220,6 +220,17 @@ canvas {
 .save-btn:active {
     transform: translate(1px, 1px);
 }
+#burgerMenu button:active, #burgerMenu a:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 #000;
+}
+#burgerMenu {
+    animation: slideInLeft .2s ease;
+}
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+}
 .modal {
     position: absolute;
     top: 50%;
@@ -518,9 +529,18 @@ canvas {
     <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #555;">
         <div id="teamPreview" style="font-size: 0.6rem;"></div>
     </div>
-    <button class="save-btn" onclick="showBadges()" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">🏆 BADGES</button>
-    <button class="save-btn" onclick="showSavePrompt()">💾 SAUVEGARDER</button>
-    <button class="save-btn" onclick="toggleFullscreen()" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">🖥️ PLEIN ÉCRAN</button>
+    <button class="save-btn burger-open-btn" onclick="toggleBurgerMenu()" style="background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%); letter-spacing: 2px;">☰ MENU</button>
+</div>
+
+<!-- Menu burger overlay -->
+<div id="burgerOverlay" onclick="closeBurgerMenu()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;backdrop-filter:blur(3px);"></div>
+<div id="burgerMenu" style="display:none;position:fixed;top:0;left:0;width:220px;height:100%;background:linear-gradient(180deg,#0f0f1a 0%,#1a1a2e 100%);border-right:3px solid #fff;z-index:501;padding:24px 16px;box-shadow:6px 0 30px rgba(0,0,0,.7);font-family:'Press Start 2P',monospace;">
+    <div style="color:#ffd93d;font-size:0.75rem;margin-bottom:20px;text-align:center;border-bottom:2px solid #333;padding-bottom:12px;">⚙ OPTIONS</div>
+    <a href="index.html" style="display:block;margin-bottom:12px;padding:12px;background:linear-gradient(135deg,#e74c3c,#c0392b);border:2px solid #fff;color:#fff;text-decoration:none;font-size:0.6rem;text-align:center;box-shadow:2px 2px 0 #000;cursor:pointer;">🏠 ACCUEIL</a>
+    <button onclick="closeBurgerMenu();showBadges();" style="display:block;width:100%;margin-bottom:12px;padding:12px;background:linear-gradient(135deg,#f39c12,#e67e22);border:2px solid #fff;color:#fff;font-size:0.6rem;font-family:inherit;box-shadow:2px 2px 0 #000;cursor:pointer;">🏆 BADGES</button>
+    <button onclick="closeBurgerMenu();showSavePrompt();" style="display:block;width:100%;margin-bottom:12px;padding:12px;background:linear-gradient(135deg,#2ecc71,#27ae60);border:2px solid #fff;color:#fff;font-size:0.6rem;font-family:inherit;box-shadow:2px 2px 0 #000;cursor:pointer;">💾 SAUVEGARDER</button>
+    <button onclick="closeBurgerMenu();toggleFullscreen();" style="display:block;width:100%;padding:12px;background:linear-gradient(135deg,#9b59b6,#8e44ad);border:2px solid #fff;color:#fff;font-size:0.6rem;font-family:inherit;box-shadow:2px 2px 0 #000;cursor:pointer;">🖥️ PLEIN ÉCRAN</button>
+    <button onclick="closeBurgerMenu();" style="display:block;width:100%;margin-top:20px;padding:10px;background:transparent;border:1px solid #555;color:#888;font-size:0.55rem;font-family:inherit;cursor:pointer;">✕ FERMER</button>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="closeAllModals()"></div>
@@ -4768,6 +4788,18 @@ function confirmTeleport(teleport) {
 }
 
 // ========== PLEIN ÉCRAN ==========
+function toggleBurgerMenu() {
+    var overlay = document.getElementById('burgerOverlay');
+    var menu = document.getElementById('burgerMenu');
+    var open = menu.style.display !== 'none';
+    overlay.style.display = open ? 'none' : 'block';
+    menu.style.display = open ? 'none' : 'block';
+}
+function closeBurgerMenu() {
+    document.getElementById('burgerOverlay').style.display = 'none';
+    document.getElementById('burgerMenu').style.display = 'none';
+}
+
 function toggleFullscreen() {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(err => {
