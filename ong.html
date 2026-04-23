@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ong</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#000;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:100vh; height:100dvh;
+    overflow:hidden;
+    font-family:'Segoe UI', sans-serif;
+    user-select:none;
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  #gameCanvas { display:block; touch-action:none; }
+
+  #overlay {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:28px;
+    pointer-events:all;
+  }
+  #overlay h1 {
+    font-size:3.2rem; letter-spacing:6px;
+    background:linear-gradient(135deg,#ffe000,#fff,#ffe000);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    filter:drop-shadow(0 0 18px #ffe000);
+    margin-bottom:10px;
+  }
+  #overlay p  { color:#aaa; font-size:.95rem; line-height:1.7; margin-bottom:4px; }
+  #overlay .score-display { font-size:2rem; color:#fff; margin:16px 0 8px; }
+  #overlay .winner { font-size:1.4rem; font-weight:bold; margin:8px 0; }
+  #overlay button {
+    margin-top:18px; padding:13px 40px; font-size:1.1rem; font-weight:bold;
+    background:linear-gradient(135deg,#7f4f00,#ffe000);
+    color:#000; border:none; border-radius:14px; cursor:pointer;
+    box-shadow:0 0 18px rgba(255,220,0,.4);
+    transition:transform .1s;
+  }
+  #overlay button:active { transform:scale(.95); }
+  #overlay.hidden { display:none; }
+  #diff-row { display:flex; gap:10px; margin:14px 0 4px; }
+  .diff-btn {
+    padding:7px 18px; border-radius:20px; border:1.5px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.05); color:#aaa; font-size:.85rem; cursor:pointer; transition:all .2s;
+  }
+  .diff-btn.active { background:rgba(255,220,0,.18); border-color:#ffe000; color:#ffe000; }
+  #home-btn {
+    position:absolute; top:max(12px,env(safe-area-inset-top,0px)); left:16px;
+    background:rgba(0,0,0,0.55); border:1px solid rgba(255,255,255,0.2);
+    border-radius:10px; padding:6px 14px; color:#fff; font-size:14px;
+    text-decoration:none; z-index:10;
+  }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas"></canvas>
+<a id="home-btn" href="index.html">← Accueil</a>
+
+<div id="overlay">
+  <h1>ONG</h1>
+  <p>Glisse le doigt <strong>haut / bas</strong> pour déplacer ta raquette (droite)<br>Premier à 7 points gagne</p>
+  <div id="diff-row">
+    <div class="diff-btn active" data-d="facile">Facile</div>
+    <div class="diff-btn" data-d="normal">Normal</div>
+    <div class="diff-btn" data-d="difficile">Difficile</div>
+  </div>
+  <button id="startBtn">Jouer</button>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+let W, H;
+function resize() {
+  W = canvas.width  = Math.min(window.innerWidth,  480);
+  H = canvas.height = Math.min(window.innerHeight, 860);
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ── Config ──
+const WIN_SCORE = 7;
+function PAD_H()  { return H * 0.15; }   // paddle height (vertical)
+function PAD_W()  { return W * 0.025; }  // paddle thickness
+function BALL_R() { return W * 0.022; }
+function PAD_OFFSET() { return W * 0.04; } // distance from wall
+
+const DIFF = {
+  facile:   { aiSpeed: () => H * 0.006,  react: 0.50 },
+  normal:   { aiSpeed: () => H * 0.0095, react: 0.68 },
+  difficile:{ aiSpeed: () => H * 0.015,  react: 0.86 },
+};
+let difficulty = 'facile';
+
+// ── State ──
+let state = 'idle';
+let pScore = 0, aiScore = 0;
+let pPadY  = 0;   // player paddle top-y (RIGHT side)
+let aiPadY = 0;   // AI    paddle top-y (LEFT  side)
+let bx, by, bvx, bvy, ballSpeed;
+let particles = [], trailPoints = [];
+let flashTimer = 0;
+
+// ── Init ──
+function resetBall(dir) {
+  bx = W / 2; by = H / 2;
+  ballSpeed = H * 0.006;
+  const angle = (Math.random() * 0.7 - 0.35);
+  bvx = ballSpeed * Math.cos(angle) * dir;
+  bvy = ballSpeed * Math.sin(angle);
+  trailPoints = [];
+}
+
+function startGame() {
+  state = 'playing';
+  pScore = 0; aiScore = 0;
+  pPadY  = H/2 - PAD_H()/2;
+  aiPadY = H/2 - PAD_H()/2;
+  particles = []; trailPoints = [];
+  resetBall(Math.random() < 0.5 ? 1 : -1);
+  document.getElementById('overlay').classList.add('hidden');
+}
+document.getElementById('startBtn').addEventListener('click', startGame);
+
+function bindDiffBtns(root) {
+  root.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      root.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      difficulty = btn.dataset.d;
+    });
+  });
+}
+bindDiffBtns(document);
+
+// ── Input: touch moves player paddle (right side) ──
+let lastTouchY = null;
+canvas.addEventListener('touchstart', e => {
+  lastTouchY = e.touches[0].clientY;
+  e.preventDefault();
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  if (state !== 'playing') return;
+  const ny = e.touches[0].clientY;
+  const dy = ny - lastTouchY;
+  lastTouchY = ny;
+  pPadY = Math.max(0, Math.min(H - PAD_H(), pPadY + dy));
+  e.preventDefault();
+}, { passive: false });
+canvas.addEventListener('touchend', () => { lastTouchY = null; }, { passive: false });
+
+// Mouse support
+canvas.addEventListener('mousemove', e => {
+  if (state !== 'playing') return;
+  const rect = canvas.getBoundingClientRect();
+  pPadY = Math.max(0, Math.min(H - PAD_H(), (e.clientY - rect.top) - PAD_H()/2));
+});
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (state !== 'playing') return;
+  const step = H * 0.045;
+  if (e.key === 'ArrowUp')   pPadY = Math.max(0, pPadY - step);
+  if (e.key === 'ArrowDown') pPadY = Math.min(H - PAD_H(), pPadY + step);
+});
+
+// ── AI ──
+function updateAI(dt) {
+  const cfg = DIFF[difficulty];
+  // AI tracks ball when it's coming toward it (bvx < 0 → going left)
+  const targetY = by - PAD_H() / 2;
+  if (bvx < 0) {
+    const diff = targetY - aiPadY;
+    aiPadY += Math.sign(diff) * Math.min(Math.abs(diff) * cfg.react, cfg.aiSpeed() * dt);
+  } else {
+    // Drift toward center when ball moves away
+    aiPadY += (H/2 - PAD_H()/2 - aiPadY) * 0.025 * dt;
+  }
+  aiPadY = Math.max(0, Math.min(H - PAD_H(), aiPadY));
+}
+
+// ── Physics ──
+function updateBall(dt) {
+  // Trail
+  trailPoints.unshift({ x: bx, y: by });
+  if (trailPoints.length > 16) trailPoints.pop();
+
+  bx += bvx * dt;
+  by += bvy * dt;
+
+  const r  = BALL_R();
+  const pw = PAD_W();
+  const ph = PAD_H();
+  const po = PAD_OFFSET();
+
+  // Top / bottom wall bounce
+  if (by - r <= 0)  { by = r;     bvy =  Math.abs(bvy); wallBounce(bx, r); }
+  if (by + r >= H)  { by = H - r; bvy = -Math.abs(bvy); wallBounce(bx, H - r); }
+
+  // Player paddle (RIGHT side): x from W - po - pw to W - po
+  const playerPadX = W - po - pw;
+  if (bvx > 0 && bx + r >= playerPadX && bx - r <= playerPadX + pw) {
+    if (by >= pPadY && by <= pPadY + ph) {
+      bx = playerPadX - r - 1;
+      hitPaddle('player', pPadY);
+    }
+  }
+
+  // AI paddle (LEFT side): x from po to po + pw
+  const aiPadX = po;
+  if (bvx < 0 && bx - r <= aiPadX + pw && bx + r >= aiPadX) {
+    if (by >= aiPadY && by <= aiPadY + ph) {
+      bx = aiPadX + pw + r + 1;
+      hitPaddle('ai', aiPadY);
+    }
+  }
+
+  // Score: ball exits left → player scores; exits right → AI scores
+  if (bx + r < 0)  { pScore++;  scored('player'); }
+  if (bx - r > W)  { aiScore++; scored('ai'); }
+}
+
+function hitPaddle(who, padY) {
+  const ph = PAD_H();
+  const relHit = (by - (padY + ph/2)) / (ph/2); // -1..1
+  const maxAngle = Math.PI * 0.36;
+  const angle = relHit * maxAngle;
+
+  ballSpeed = Math.min(ballSpeed * 1.06, H * 0.016);
+  bvy = ballSpeed * Math.sin(angle);
+  bvx = ballSpeed * Math.cos(angle) * (who === 'player' ? -1 : 1);
+
+  addParticles(bx, by, '#ffe000', 9);
+  flashTimer = 4;
+}
+
+function wallBounce(x, y) {
+  addParticles(x, y, 'rgba(255,255,255,0.8)', 4);
+}
+
+function scored(who) {
+  addParticles(bx, by, who === 'player' ? '#ff44cc' : '#00aaff', 20);
+  flashTimer = 8;
+  if (pScore >= WIN_SCORE || aiScore >= WIN_SCORE) {
+    state = 'over';
+    setTimeout(showGameOver, 700);
+    return;
+  }
+  state = 'paused';
+  setTimeout(() => {
+    if (state === 'paused') {
+      // ball goes toward the scorer
+      resetBall(who === 'player' ? -1 : 1);
+      state = 'playing';
+    }
+  }, 700);
+}
+
+function showGameOver() {
+  const win = pScore >= WIN_SCORE;
+  const prev = parseInt(localStorage.getItem('ong_wins') || '0');
+  if (win) localStorage.setItem('ong_wins', String(prev + 1));
+  const wins = win ? prev + 1 : prev;
+  const ov = document.getElementById('overlay');
+  ov.innerHTML = `
+    <h1>ONG</h1>
+    <p class="winner" style="color:${win?'#ff44cc':'#00aaff'}">${win ? '🏆 Victoire !' : '💀 Défaite'}</p>
+    <p class="score-display">${aiScore} &nbsp;—&nbsp; ${pScore}</p>
+    <p style="color:#777">IA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Toi</p>
+    <p style="color:#888;font-size:.85rem;margin-top:8px">Victoires totales : ${wins}</p>
+    <div id="diff-row">
+      <div class="diff-btn ${difficulty==='facile'?'active':''}" data-d="facile">Facile</div>
+      <div class="diff-btn ${difficulty==='normal'?'active':''}" data-d="normal">Normal</div>
+      <div class="diff-btn ${difficulty==='difficile'?'active':''}" data-d="difficile">Difficile</div>
+    </div>
+    <button id="startBtn">Rejouer</button>`;
+  ov.classList.remove('hidden');
+  document.getElementById('startBtn').addEventListener('click', startGame);
+  bindDiffBtns(ov);
+}
+
+// ── Particles ──
+function addParticles(x, y, color, n) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, sp = 1.2 + Math.random() * 4.5;
+    particles.push({ x, y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:1, decay:0.04+Math.random()*0.04, r:2+Math.random()*4, color });
+  }
+}
+function updateParticles(dt) {
+  particles = particles.filter(p => p.life > 0);
+  particles.forEach(p => { p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=0.07*dt; p.life-=p.decay*dt; });
+}
+
+// ── Draw ──
+function draw() {
+  ctx.fillStyle = '#050a12';
+  ctx.fillRect(0, 0, W, H);
+
+  if (flashTimer > 0) {
+    ctx.fillStyle = `rgba(255,220,0,${0.05 * flashTimer})`;
+    ctx.fillRect(0, 0, W, H);
+    flashTimer--;
+  }
+
+  drawArena();
+  drawTrail();
+  drawBall();
+  drawPaddles();
+  drawScores();
+  drawParticlesCanvas();
+}
+
+function drawArena() {
+  // Center dashed line
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([14, 10]);
+  ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, H); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Top & bottom wall glow
+  const topGlow = ctx.createLinearGradient(0, 0, 0, 6);
+  topGlow.addColorStop(0, 'rgba(255,220,0,0.25)');
+  topGlow.addColorStop(1, 'rgba(255,220,0,0)');
+  ctx.fillStyle = topGlow; ctx.fillRect(0, 0, W, 6);
+
+  const botGlow = ctx.createLinearGradient(0, H-6, 0, H);
+  botGlow.addColorStop(0, 'rgba(255,220,0,0)');
+  botGlow.addColorStop(1, 'rgba(255,220,0,0.25)');
+  ctx.fillStyle = botGlow; ctx.fillRect(0, H-6, W, 6);
+
+  // Subtle grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.022)'; ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += W/10) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += H/16) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Center circle
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(W/2, H/2, H*0.09, 0, Math.PI*2); ctx.stroke();
+}
+
+function drawPaddles() {
+  const pw = PAD_W(), ph = PAD_H(), po = PAD_OFFSET();
+
+  function drawPad(x, y, color, glowColor) {
+    // Outer glow
+    const gw = ctx.createRadialGradient(x + pw/2, y + ph/2, 0, x + pw/2, y + ph/2, ph * 0.65);
+    gw.addColorStop(0, glowColor + '44');
+    gw.addColorStop(1, glowColor + '00');
+    ctx.fillStyle = gw;
+    ctx.fillRect(x - ph*0.3, y - ph*0.2, pw + ph*0.6, ph*1.4);
+
+    // Body
+    const grad = ctx.createLinearGradient(x, y, x + pw, y);
+    grad.addColorStop(0, color + 'cc');
+    grad.addColorStop(0.5, color);
+    grad.addColorStop(1, color + '99');
+    ctx.fillStyle = grad;
+    rr(ctx, x, y, pw, ph, pw * 0.45);
+    ctx.fill();
+
+    // Highlight stripe
+    ctx.fillStyle = 'rgba(255,255,255,0.22)';
+    rr(ctx, x + pw*0.15, y + ph*0.06, pw*0.38, ph*0.88, pw*0.18);
+    ctx.fill();
+  }
+
+  // AI: LEFT, color blue
+  drawPad(po, aiPadY, '#00aaff', '#00aaff');
+  // Player: RIGHT, color pink/rose
+  drawPad(W - po - pw, pPadY, '#ff44cc', '#ff44cc');
+}
+
+function rr(ctx, x, y, w, h, r) {
+  r = Math.min(r, w/2, h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+r, y); ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function drawTrail() {
+  trailPoints.forEach((p, i) => {
+    const alpha = (1 - i/trailPoints.length) * 0.5;
+    const r = BALL_R() * (1 - i/trailPoints.length) * 0.85;
+    ctx.fillStyle = `rgba(255,230,0,${alpha})`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.5, r), 0, Math.PI*2); ctx.fill();
+  });
+}
+
+function drawBall() {
+  const r = BALL_R();
+  // Outer glow
+  const glow = ctx.createRadialGradient(bx, by, 0, bx, by, r * 4);
+  glow.addColorStop(0,   'rgba(255,240,0,0.6)');
+  glow.addColorStop(0.35,'rgba(255,200,0,0.22)');
+  glow.addColorStop(1,   'rgba(255,150,0,0)');
+  ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(bx, by, r*4, 0, Math.PI*2); ctx.fill();
+
+  // Core
+  const core = ctx.createRadialGradient(bx - r*0.3, by - r*0.3, 0, bx, by, r);
+  core.addColorStop(0, '#ffffff');
+  core.addColorStop(0.4, '#ffe000');
+  core.addColorStop(1, '#ff8800');
+  ctx.fillStyle = core; ctx.beginPath(); ctx.arc(bx, by, r, 0, Math.PI*2); ctx.fill();
+}
+
+function drawScores() {
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const sz = H * 0.058;
+  ctx.font = `bold ${sz}px 'Segoe UI', sans-serif`;
+
+  // AI score (left half)
+  ctx.fillStyle = 'rgba(0,170,255,0.8)';
+  ctx.fillText(aiScore, W * 0.27, H * 0.5);
+
+  // Player score (right half)
+  ctx.fillStyle = 'rgba(255,68,204,0.8)';
+  ctx.fillText(pScore, W * 0.73, H * 0.5);
+
+  // Labels
+  ctx.font = `${H*0.022}px 'Segoe UI', sans-serif`;
+  ctx.fillStyle = 'rgba(0,170,255,0.35)';
+  ctx.fillText('IA', W * 0.27, H * 0.5 + sz * 0.95);
+  ctx.fillStyle = 'rgba(255,68,204,0.35)';
+  ctx.fillText('TOI', W * 0.73, H * 0.5 + sz * 0.95);
+}
+
+function drawParticlesCanvas() {
+  particles.forEach(p => {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.5, p.r), 0, Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+// ── Loop ──
+let last = 0;
+function loop(ts) {
+  requestAnimationFrame(loop);
+  const dt = Math.min((ts - last) / 16.667, 2.5); last = ts;
+  if (state === 'playing') {
+    updateAI(dt);
+    updateBall(dt);
+    updateParticles(dt);
+  } else if (state === 'paused' || state === 'over') {
+    updateParticles(dt);
+  }
+  draw();
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

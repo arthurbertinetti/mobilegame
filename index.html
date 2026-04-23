@@ -292,6 +292,15 @@
         .icon-clicker   { background: linear-gradient(135deg,#ca8a04,#854d0e); box-shadow: 0 4px 12px rgba(202,138,4,.3); }
         .icon-aquarium  { background: linear-gradient(135deg,#0284c7,#075985); box-shadow: 0 4px 12px rgba(2,132,199,.3); }
         .icon-terrarium { background: linear-gradient(135deg,#16a34a,#14532d); box-shadow: 0 4px 12px rgba(22,163,74,.3); }
+        .icon-mazerun   { background: linear-gradient(135deg,#92400e,#78350f); box-shadow: 0 4px 12px rgba(146,64,14,.4); }
+        .icon-ong       { background: linear-gradient(135deg,#0e4d6b,#0a2a40); box-shadow: 0 4px 12px rgba(0,200,224,.35); }
+        .icon-alaga     { background: linear-gradient(135deg,#003322,#00ff88); box-shadow: 0 4px 12px rgba(0,255,136,.35); }
+        .icon-f1top     { background: linear-gradient(135deg,#880000,#ff3333); box-shadow: 0 4px 12px rgba(255,50,50,.35); }
+        .icon-bikerush  { background: linear-gradient(135deg,#663300,#ff8800); box-shadow: 0 4px 12px rgba(255,136,0,.35); }
+        .icon-2048      { background: linear-gradient(135deg,#8b6914,#edc22e); box-shadow: 0 4px 12px rgba(237,194,46,.35); }
+        .icon-boxban    { background: linear-gradient(135deg,#5a3620,#c4a882); box-shadow: 0 4px 12px rgba(196,168,130,.35); }
+        .icon-pixels    { background: linear-gradient(135deg,#8a1538,#e94560); box-shadow: 0 4px 12px rgba(233,69,96,.35); }
+        .icon-claquebug { background: linear-gradient(135deg,#4a0072,#7b2ff7); box-shadow: 0 4px 12px rgba(180,50,255,.35); }
 
         .ranking-link {
             display: block;
@@ -545,6 +554,33 @@
             </div>
         </a>
 
+        <a href="alaga.html" class="game-card">
+            <div class="game-icon icon-alaga">&#128640;</div>
+            <div class="game-info">
+                <h2>Alaga</h2>
+                <p>Clone de Galaga avec boutique, garage et classement local !</p>
+                <p class="game-record" id="rec-alaga"></p>
+            </div>
+        </a>
+
+        <a href="claquebug.html" class="game-card">
+            <div class="game-icon icon-claquebug">🦟</div>
+            <div class="game-info">
+                <h2>ClaqueBug</h2>
+                <p>Tape les insectes avant qu'ils disparaissent !</p>
+                <p class="game-record" id="rec-claquebug"></p>
+            </div>
+        </a>
+
+        <a href="ong.html" class="game-card">
+            <div class="game-icon icon-ong">🏓</div>
+            <div class="game-info">
+                <h2>Ong</h2>
+                <p>Pong néon 1 vs IA, premier à 7 points</p>
+                <p class="game-record" id="rec-ong"></p>
+            </div>
+        </a>
+
         <a href="snake.html" class="game-card">
             <div class="game-icon icon-snake">🐍</div>
             <div class="game-info">
@@ -641,6 +677,15 @@
                 <h2>Démineur</h2>
                 <p>3 niveaux : facile, moyen, difficile</p>
                 <p class="game-record" id="rec-minesweeper"></p>
+            </div>
+        </a>
+
+        <a href="mazerun.html" class="game-card">
+            <div class="game-icon icon-mazerun">🏛️</div>
+            <div class="game-info">
+                <h2>MazeRun</h2>
+                <p>Runner infini pseudo-3D, temple et jungle</p>
+                <p class="game-record" id="rec-mazerun"></p>
             </div>
         </a>
 
@@ -971,20 +1016,65 @@
             </div>
         </a>
 
+        <a href="f1top.html" class="game-card">
+            <div class="game-icon icon-f1top">🏎️</div>
+            <div class="game-info">
+                <h2>F1 Top-Down</h2>
+                <p>Course de F1 vue de dessus, dépasse tes adversaires !</p>
+                <p class="game-record" id="rec-f1top"></p>
+            </div>
+        </a>
+
+        <a href="bikerush.html" class="game-card">
+            <div class="game-icon icon-bikerush">🏍️</div>
+            <div class="game-info">
+                <h2>Bike Rush</h2>
+                <p>Fonce en moto sur l'autoroute, évite le trafic !</p>
+                <p class="game-record" id="rec-bikerush"></p>
+            </div>
+        </a>
+
+        <a href="2048.html" class="game-card">
+            <div class="game-icon icon-2048">🔢</div>
+            <div class="game-info">
+                <h2>2048</h2>
+                <p>Fusionne les tuiles pour atteindre 2048 !</p>
+                <p class="game-record" id="rec-2048"></p>
+            </div>
+        </a>
+
+        <a href="boxban.html" class="game-card">
+            <div class="game-icon icon-boxban">📦</div>
+            <div class="game-info">
+                <h2>BoxBan</h2>
+                <p>Pousse les caisses sur les cibles, casse-tête Sokoban !</p>
+                <p class="game-record" id="rec-boxban"></p>
+            </div>
+        </a>
+
+        <a href="pixels.html" class="game-card">
+            <div class="game-icon icon-pixels">🖼️</div>
+            <div class="game-info">
+                <h2>Pixels</h2>
+                <p>Résous des grilles Picross et révèle l'image cachée !</p>
+                <p class="game-record" id="rec-pixels"></p>
+            </div>
+        </a>
+
     </div>
 
     <a href="ranking.html" class="ranking-link" id="ranking-link">🏆 Classement général</a>
     <div class="footer">© 2026 Arthur B - Tous droits réservés</div>
 <script src="leaderboard.js"></script>
 <script>
-var GAME_IDS = ['flappybird','megajumpy','tamagotchi','belote','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','othello','towerdefense','nutsandbolts','farmvalley','croissant','pacman','bomberman','zingvalley2','worms','worms2','noodlejump','monstertrainers','trouvemot','memory','quiz','hanoi','bataille','oun','poker','clicker','aquarium','terrarium'];
+var GAME_IDS = ['flappybird','megajumpy','tamagotchi','belote','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','othello','towerdefense','nutsandbolts','farmvalley','croissant','pacman','bomberman','zingvalley2','worms','worms2','noodlejump','monstertrainers','trouvemot','memory','quiz','hanoi','bataille','oun','poker','clicker','aquarium','terrarium','mazerun','ong','claquebug','alaga','f1top','bikerush','2048','boxban','pixels'];
 
 var GAME_CATS = {
     snake: 'arcade', breakout: 'arcade', asteroids: 'arcade',
     spaceinvaders: 'arcade', neonwar: 'arcade', fruitninja: 'arcade',
-    poolclub: 'arcade', maze: 'arcade',
+    poolclub: 'arcade', maze: 'arcade', ong: 'arcade', claquebug: 'arcade', alaga: 'arcade',
     flappybird: 'plateforme', megajumpy: 'plateforme', croissant: 'plateforme', pacman: 'plateforme', bomberman: 'plateforme',
-    cardodge: 'course', retrohighway: 'course', motodge: 'course', crossyroad: 'course',
+    cardodge: 'course', retrohighway: 'course', motodge: 'course', crossyroad: 'course', mazerun: 'course', f1top: 'course', bikerush: 'course',
     belote: 'cartes', solitaire: 'cartes', blackjack: 'cartes',
     mastermind: 'reflexion', tetris: 'puzzle', minesweeper: 'reflexion',
     candycrush: 'puzzle', bubbleshooter: 'puzzle', sudoku: 'reflexion', zuma: 'puzzle',
@@ -996,7 +1086,8 @@ var GAME_CATS = {
     zingvalley2: 'simulation', monstertrainers: 'simulation',
     trouvemot: 'reflexion', memory: 'reflexion', quiz: 'reflexion', hanoi: 'reflexion',
     bataille: 'cartes', oun: 'cartes', poker: 'cartes',
-    clicker: 'simulation', aquarium: 'simulation', terrarium: 'simulation'
+    clicker: 'simulation', aquarium: 'simulation', terrarium: 'simulation',
+    '2048': 'puzzle', boxban: 'puzzle', pixels: 'puzzle'
 };
 
 var CAT_LABELS = {
@@ -1049,6 +1140,26 @@ allCards.forEach(function(card) {
     if (best && el) el.textContent = '\u{1F3C6} ' + best.name + ' — ' + best.score + ' pts';
     else if (el) el.textContent = 'Aucun record';
 });
+// Override records for games using direct localStorage
+(function() {
+    var overrides = {
+        'mazerun':   function(){ var v=localStorage.getItem('mazerun_best');   return v ? '\uD83C\uDFC6 Record : '+v+' pts' : null; },
+        'ong':       function(){ var v=localStorage.getItem('ong_wins');        return v ? '\uD83C\uDFC6 Victoires : '+v : null; },
+        'claquebug': function(){ var v=localStorage.getItem('claquebug_best'); return v ? '\uD83C\uDFC6 Record : '+v+' pts' : null; },
+        'alaga':     function(){ var v=localStorage.getItem('alaga_hi');        return v&&v!=='0' ? '\uD83C\uDFC6 Hi-Score : '+v+' pts' : null; },
+        'f1top':     function(){ var v=localStorage.getItem('f1top_best');     return v ? '\uD83C\uDFC6 Record : '+v+' pts' : null; },
+        'bikerush':  function(){ var v=localStorage.getItem('bikerush_best');  return v ? '\uD83C\uDFC6 Record : '+v+' pts' : null; },
+        '2048':      function(){ var v=localStorage.getItem('2048_best');      return v ? '\uD83C\uDFC6 Record : '+v+' pts' : null; },
+        'boxban':    function(){ var v=localStorage.getItem('boxban_level');   return v ? '\uD83C\uDFC6 Niveau : '+v : null; },
+        'pixels':    function(){ var v=localStorage.getItem('pixels_best');    return v ? '\uD83C\uDFC6 Record : '+v+' pts' : null; },
+    };
+    Object.keys(overrides).forEach(function(id) {
+        var el = document.getElementById('rec-'+id);
+        if (!el) return;
+        var txt = overrides[id]();
+        if (txt) el.textContent = txt;
+    });
+})();
 
 // Catégorie cards
 document.querySelectorAll('.cat-card').forEach(function(card) {

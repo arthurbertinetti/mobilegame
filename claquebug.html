@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ClaqueBug</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+  background:#0d001a;
+  width:100%; height:100%; height:100dvh;
+  overflow:hidden;
+  font-family:'Segoe UI', sans-serif;
+  user-select:none;
+  -webkit-user-select:none;
+}
+#gameCanvas {
+  display:block;
+  position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  touch-action:none;
+}
+#overlay {
+  position:fixed; inset:0; z-index:50;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  background:rgba(10,0,20,0.90);
+  color:#fff; text-align:center; padding:24px;
+}
+#overlay h1 { font-size:2.4rem; margin-bottom:10px; }
+#overlay p  { color:#ccc; font-size:.92rem; line-height:1.75; margin-bottom:4px; }
+#overlay .big { font-size:1.5rem; font-weight:bold; margin:10px 0; }
+#overlay .rec { color:#ffd700; font-size:1rem; margin-bottom:4px; }
+#overlay .new { color:#ffd700; font-size:1.1rem; font-weight:bold; }
+#startBtn {
+  margin-top:20px; padding:14px 44px; font-size:1.15rem; font-weight:bold;
+  background:linear-gradient(135deg,#7b2ff7,#e040fb);
+  color:#fff; border:none; border-radius:14px; cursor:pointer;
+  box-shadow:0 0 22px rgba(200,60,255,.5);
+  -webkit-tap-highlight-color:transparent;
+}
+#overlay.hidden { display:none; }
+#home-btn {
+  position:fixed; top:max(12px,env(safe-area-inset-top,0px)); left:16px;
+  background:rgba(0,0,0,.6); border:1px solid rgba(255,255,255,.2);
+  border-radius:10px; padding:6px 14px; color:#fff; font-size:14px;
+  text-decoration:none; z-index:60;
+}
+</style>
+</head>
+<body>
+
+<canvas id="gameCanvas"></canvas>
+<a id="home-btn" href="index.html">&#8592; Accueil</a>
+
+<div id="overlay">
+  <h1>&#127031; ClaqueBug</h1>
+  <p>Tape les insectes avant qu'ils disparaissent !<br>
+     Moustique +1 &nbsp;|&nbsp; Abeille +2 &nbsp;|&nbsp; Scorpion +3<br>
+     Crane : -2 &nbsp;|&nbsp; Rater 3x = perdre une vie</p>
+  <button id="startBtn">Jouer</button>
+</div>
+
+<script>
+// ── CANVAS SETUP ───────────────────────────────────────────────────────────
+var canvas = document.getElementById('gameCanvas');
+var ctx    = canvas.getContext('2d');
+var W = 1, H = 1;
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  buildHoles();
+}
+
+// ── HOLES ──────────────────────────────────────────────────────────────────
+var COLS = 3, ROWS = 4;
+var holes = [];
+
+function buildHoles() {
+  holes = [];
+  var topOff    = Math.max(72, H * 0.1);
+  var botOff    = Math.max(60, H * 0.08);
+  var usableH   = H - topOff - botOff;
+  var cellW     = W / COLS;
+  var cellH     = usableH / ROWS;
+  var holeR     = Math.min(cellW, cellH) * 0.30;
+  for (var r = 0; r < ROWS; r++) {
+    for (var c = 0; c < COLS; c++) {
+      holes.push({
+        x:    cellW * (c + 0.5),
+        y:    topOff + cellH * (r + 0.5),
+        r:    holeR,
+        bug:  null
+      });
+    }
+  }
+}
+
+// ── BUG TYPES ──────────────────────────────────────────────────────────────
+var BUGS = [
+  { id:'mosquito', pts:1,  color:'#88cc44', dur: function(){ return 1900 + Math.random()*600; } },
+  { id:'bee',      pts:2,  color:'#ffcc00', dur: function(){ return 1500 + Math.random()*500; } },
+  { id:'scorpion', pts:3,  color:'#ff7722', dur: function(){ return 1200 + Math.random()*400; } },
+  { id:'skull',    pts:-2, color:'#cc44ff', dur: function(){ return 1600 + Math.random()*500; } }
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+var state    = 'idle';
+var score    = 0;
+var lives    = 3;
+var timeLeft = 45000;
+var bugs     = [];
+var particles= [];
+var splats   = [];
+var missedCount = 0;
+var frame    = 0;
+var bgPhase  = 0;
+var lastSpawn= 0;
+var spawnInterval = 900;
+var lastNow  = 0;
+
+// ── START ──────────────────────────────────────────────────────────────────
+function startGame() {
+  score     = 0;
+  lives     = 3;
+  timeLeft  = 45000;
+  bugs      = [];
+  particles = [];
+  splats    = [];
+  missedCount = 0;
+  frame     = 0;
+  bgPhase   = 0;
+  lastSpawn = 0;
+  spawnInterval = 900;
+  for (var i = 0; i < holes.length; i++) holes[i].bug = null;
+  state = 'playing';
+  document.getElementById('overlay').classList.add('hidden');
+}
+
+// wire button
+document.getElementById('startBtn').onclick = startGame;
+
+// ── SPAWN ──────────────────────────────────────────────────────────────────
+function spawnBug() {
+  var free = [];
+  for (var i = 0; i < holes.length; i++) { if (!holes[i].bug) free.push(holes[i]); }
+  if (free.length === 0) return;
+  var hole = free[Math.floor(Math.random() * free.length)];
+
+  var progress = 1 - timeLeft / 45000;
+  var w = [40, 25, 10 + progress*15, 8 + progress*12];
+  var total = w[0]+w[1]+w[2]+w[3];
+  var rnd = Math.random() * total;
+  var ti = 0;
+  rnd -= w[0]; if (rnd > 0) { rnd -= w[1]; ti = 1; }
+  if (rnd > 0) { rnd -= w[2]; ti = 2; }
+  if (rnd > 0) { ti = 3; }
+
+  var type = BUGS[ti];
+  var bug = {
+    hole:     hole,
+    type:     type,
+    phase:    'rising',
+    riseT:    0,
+    showMs:   type.dur(),
+    alpha:    0,
+    pop:      0,
+    wobble:   Math.random() * Math.PI * 2,
+    legT:     0
+  };
+  hole.bug = bug;
+  bugs.push(bug);
+}
+
+// ── HIT ────────────────────────────────────────────────────────────────────
+function hitBug(bug) {
+  if (bug.phase === 'dead' || bug.phase === 'falling') return;
+  bug.phase = 'dead';
+  bug.hole.bug = null;
+  score = Math.max(0, score + bug.type.pts);
+  splats.push({ x:bug.hole.x, y:bug.hole.y, color:bug.type.color, alpha:1, scale:0.1, pts:bug.type.pts, timer:1200 });
+  addP(bug.hole.x, bug.hole.y, bug.type.color, 12);
+  bugs = bugs.filter(function(b){ return b !== bug; });
+}
+
+function missed(bug) {
+  bug.hole.bug = null;
+  if (bug.type.pts > 0) {
+    missedCount++;
+    if (missedCount % 3 === 0) { lives = Math.max(0, lives - 1); }
+  }
+  bugs = bugs.filter(function(b){ return b !== bug; });
+  if (lives <= 0) endGame();
+}
+
+function endGame() {
+  state = 'over';
+  for (var i = 0; i < holes.length; i++) holes[i].bug = null;
+  bugs = [];
+  setTimeout(showOver, 500);
+}
+
+function showOver() {
+  var s    = score;
+  var prev = parseInt(localStorage.getItem('claquebug_best') || '0');
+  var isNew= s > prev;
+  if (isNew) localStorage.setItem('claquebug_best', String(s));
+  var best = Math.max(s, prev);
+  var ov = document.getElementById('overlay');
+  ov.innerHTML =
+    '<h1>&#127031; ClaqueBug</h1>' +
+    '<p class="big">Score : <strong>' + s + '</strong></p>' +
+    (isNew ? '<p class="new">Nouveau record !</p>' : '<p class="rec">Record : ' + best + '</p>') +
+    '<p style="color:#aaa;font-size:.82rem;margin-top:6px">Moustique +1 | Abeille +2 | Scorpion +3 | Crane -2</p>' +
+    '<button id="startBtn">Rejouer</button>';
+  ov.classList.remove('hidden');
+  document.getElementById('startBtn').onclick = startGame;
+}
+
+// ── PARTICLES ──────────────────────────────────────────────────────────────
+function addP(x, y, color, n) {
+  for (var i = 0; i < n; i++) {
+    var a  = Math.random() * Math.PI * 2;
+    var sp = 2 + Math.random() * 6;
+    particles.push({ x:x, y:y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 1,
+      life:1, decay:0.03+Math.random()*0.04, r:3+Math.random()*5, color:color });
+  }
+}
+
+// ── UPDATE ─────────────────────────────────────────────────────────────────
+function update(now) {
+  var rawDt = Math.min(now - lastNow, 100);
+  lastNow   = now;
+  var dt    = rawDt / 16.667;
+
+  if (state !== 'playing') return;
+
+  bgPhase += 0.008 * dt;
+  timeLeft -= rawDt;
+  if (timeLeft <= 0) { timeLeft = 0; endGame(); return; }
+
+  var progress = 1 - timeLeft / 45000;
+  spawnInterval = Math.max(380, 900 - progress * 480);
+
+  if (lastSpawn === 0) lastSpawn = now;
+  if (now - lastSpawn >= spawnInterval) { spawnBug(); lastSpawn = now; }
+
+  // update bugs
+  for (var i = bugs.length - 1; i >= 0; i--) {
+    var b = bugs[i];
+    b.wobble += 0.06 * dt;
+    b.legT   += 0.18 * dt;
+    if (b.phase === 'rising') {
+      b.riseT += dt * 0.07;
+      b.alpha  = Math.min(1, b.riseT);
+      b.pop    = Math.min(1, b.riseT * 1.3);
+      if (b.riseT >= 1) b.phase = 'visible';
+    } else if (b.phase === 'visible') {
+      b.showMs -= rawDt;
+      if (b.showMs <= 0) b.phase = 'falling';
+    } else if (b.phase === 'falling') {
+      b.riseT -= dt * 0.1;
+      b.alpha  = Math.max(0, b.riseT);
+      if (b.riseT <= 0) missed(b);
+    }
+  }
+
+  // splats
+  splats = splats.filter(function(s){ return s.timer > 0; });
+  splats.forEach(function(s){
+    s.timer -= rawDt;
+    if (s.scale < 1) s.scale = Math.min(1, s.scale + 0.08 * dt);
+    s.alpha = Math.min(1, s.timer / 400);
+  });
+
+  // particles
+  particles = particles.filter(function(p){ return p.life > 0; });
+  particles.forEach(function(p){
+    p.x += p.vx * dt; p.y += p.vy * dt;
+    p.vy += 0.2 * dt;
+    p.life -= p.decay * dt;
+  });
+
+  frame++;
+}
+
+// ── DRAW ───────────────────────────────────────────────────────────────────
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawBg();
+  drawHoles();
+  drawSplats();
+  drawBugs();
+  drawParticlesFn();
+  drawHUD();
+}
+
+function drawBg() {
+  var g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#0d001a');
+  g.addColorStop(0.5, '#1a0a2e');
+  g.addColorStop(1, '#0a1a08');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = 'rgba(20,50,10,0.3)';
+  for (var i = 0; i < 16; i++) {
+    ctx.beginPath();
+    ctx.arc((i*137+50) % W, (i*89+80) % H, 20+(i*53)%38, 0, Math.PI*2);
+    ctx.fill();
+  }
+
+  ctx.strokeStyle = 'rgba(150,50,255,0.06)';
+  ctx.lineWidth = 1;
+  for (var y2 = 0; y2 < H; y2 += H/14) {
+    var wave = Math.sin(bgPhase + y2 * 0.02) * 8;
+    ctx.beginPath(); ctx.moveTo(0, y2 + wave); ctx.lineTo(W, y2 + wave); ctx.stroke();
+  }
+}
+
+function drawHoles() {
+  for (var i = 0; i < holes.length; i++) {
+    var h = holes[i];
+    var r = h.r;
+
+    // Dirt ring
+    var og = ctx.createRadialGradient(h.x, h.y, r*0.4, h.x, h.y, r*1.4);
+    og.addColorStop(0, 'rgba(60,35,10,0.9)');
+    og.addColorStop(0.6,'rgba(80,50,20,0.6)');
+    og.addColorStop(1, 'rgba(80,50,20,0)');
+    ctx.fillStyle = og;
+    ctx.beginPath(); ctx.arc(h.x, h.y, r*1.4, 0, Math.PI*2); ctx.fill();
+
+    // Dark hole (oval via scale transform)
+    ctx.save();
+    ctx.translate(h.x, h.y);
+    ctx.scale(1, 0.52);
+    var hg = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+    hg.addColorStop(0, '#050205');
+    hg.addColorStop(0.7, '#0f060f');
+    hg.addColorStop(1, 'rgba(20,10,20,0)');
+    ctx.fillStyle = hg;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.fill();
+    // Rim
+    ctx.strokeStyle = 'rgba(100,70,30,0.75)';
+    ctx.lineWidth = 2.5 / 0.52;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function drawSplats() {
+  splats.forEach(function(s) {
+    ctx.save();
+    ctx.globalAlpha = s.alpha;
+    ctx.translate(s.x, s.y);
+    ctx.scale(s.scale, s.scale);
+    var sr = holes.length > 0 ? holes[0].r * 0.55 : 30;
+    ctx.fillStyle = s.color;
+    ctx.beginPath();
+    ctx.arc(0, 0, sr, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = s.pts >= 0 ? '#fff' : '#ff4444';
+    ctx.font = 'bold ' + Math.round(sr * 0.85) + 'px Segoe UI,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText((s.pts >= 0 ? '+' : '') + s.pts, 0, -sr * 0.85);
+    ctx.restore();
+  });
+}
+
+function drawBugs() {
+  var sorted = bugs.slice().sort(function(a,b){ return a.hole.y - b.hole.y; });
+  for (var i = 0; i < sorted.length; i++) drawOneBug(sorted[i]);
+}
+
+function drawOneBug(b) {
+  if (b.alpha <= 0) return;
+  var h   = b.hole;
+  var r   = h.r;
+  var pop = b.pop;
+  var ey  = h.y - pop * r * 1.6;
+
+  ctx.save();
+  ctx.globalAlpha = b.alpha;
+
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.beginPath();
+  ctx.arc(h.x, h.y, r * 0.55 * pop, 0, Math.PI*2);
+  ctx.fill();
+
+  // Clip so bug emerges from hole
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, W, h.y + r * 0.25);
+  ctx.clip();
+
+  var sz  = r * 0.82;
+  var wx  = Math.sin(b.wobble) * sz * 0.06;
+
+  switch (b.type.id) {
+    case 'mosquito': drawMosquito(h.x + wx, ey, sz, b.legT); break;
+    case 'bee':      drawBee     (h.x + wx, ey, sz, b.legT); break;
+    case 'scorpion': drawScorpion(h.x + wx, ey, sz, b.legT); break;
+    case 'skull':    drawSkullBug(h.x + wx, ey, sz, b.wobble); break;
+  }
+
+  ctx.restore(); // clip
+  ctx.restore(); // alpha
+}
+
+// ── INSECT RENDERERS ────────────────────────────────────────────────────────
+
+function drawMosquito(x, y, sz, t) {
+  var wf = Math.abs(Math.sin(t * 2.2));
+  // Wings
+  ctx.fillStyle = 'rgba(180,230,180,' + (0.3 + wf*0.3) + ')';
+  ctx.save(); ctx.translate(x - sz*0.55, y - sz*0.5); ctx.rotate(-0.4);
+  ctx.beginPath(); ctx.arc(0, 0, sz*0.45, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  ctx.save(); ctx.translate(x + sz*0.55, y - sz*0.5); ctx.rotate(0.4);
+  ctx.beginPath(); ctx.arc(0, 0, sz*0.45, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  // Body
+  ctx.fillStyle = '#558833';
+  ctx.save(); ctx.translate(x, y - sz*0.3); ctx.scale(0.18, 0.6);
+  ctx.beginPath(); ctx.arc(0, 0, sz, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  // Stripes
+  ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = sz*0.07;
+  for (var s = 0; s < 3; s++) {
+    ctx.beginPath();
+    ctx.moveTo(x - sz*0.18, y - sz*0.5 + s*sz*0.28);
+    ctx.lineTo(x + sz*0.18, y - sz*0.5 + s*sz*0.28);
+    ctx.stroke();
+  }
+  // Head
+  ctx.fillStyle = '#446622';
+  ctx.beginPath(); ctx.arc(x, y - sz*0.95, sz*0.2, 0, Math.PI*2); ctx.fill();
+  // Eyes
+  ctx.fillStyle = '#ff3333';
+  ctx.beginPath(); ctx.arc(x - sz*0.09, y - sz*1.0, sz*0.07, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + sz*0.09, y - sz*1.0, sz*0.07, 0, Math.PI*2); ctx.fill();
+  // Proboscis
+  ctx.strokeStyle = '#446622'; ctx.lineWidth = sz*0.06;
+  ctx.beginPath(); ctx.moveTo(x, y - sz*0.75); ctx.lineTo(x, y - sz*0.22); ctx.stroke();
+  // Legs
+  ctx.strokeStyle = 'rgba(60,100,30,0.8)'; ctx.lineWidth = sz*0.05;
+  for (var li = 0; li < 3; li++) {
+    var dy = (-0.35 + li*0.35) * sz;
+    [-1, 1].forEach(function(side) {
+      ctx.beginPath();
+      ctx.moveTo(x + side*sz*0.18, y + dy);
+      ctx.quadraticCurveTo(x + side*sz*0.55, y + dy + Math.sin(t+li)*sz*0.1, x + side*sz*0.75, y + dy + sz*0.22*side);
+      ctx.stroke();
+    });
+  }
+}
+
+function drawBee(x, y, sz, t) {
+  var wf = Math.abs(Math.sin(t * 2.8));
+  // Wings
+  ctx.fillStyle = 'rgba(220,240,255,' + (0.38 + wf*0.35) + ')';
+  ctx.save(); ctx.translate(x - sz*0.6, y - sz*0.6); ctx.rotate(-0.35);
+  ctx.beginPath(); ctx.arc(0, 0, sz*0.42, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  ctx.save(); ctx.translate(x + sz*0.6, y - sz*0.6); ctx.rotate(0.35);
+  ctx.beginPath(); ctx.arc(0, 0, sz*0.42, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  ctx.save(); ctx.translate(x - sz*0.5, y - sz*0.32); ctx.rotate(-0.5);
+  ctx.beginPath(); ctx.arc(0, 0, sz*0.28, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  ctx.save(); ctx.translate(x + sz*0.5, y - sz*0.32); ctx.rotate(0.5);
+  ctx.beginPath(); ctx.arc(0, 0, sz*0.28, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  // Abdomen
+  var ag = ctx.createLinearGradient(x, y - sz*0.9, x, y + sz*0.3);
+  ag.addColorStop(0, '#ffcc00'); ag.addColorStop(1, '#ff8800');
+  ctx.fillStyle = ag;
+  ctx.save(); ctx.translate(x, y - sz*0.22); ctx.scale(0.22, 0.58);
+  ctx.beginPath(); ctx.arc(0, 0, sz, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  // Black stripes
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  [0.1, 0.42, 0.72].forEach(function(p) {
+    ctx.save(); ctx.translate(x, y - sz*0.82 + p*sz); ctx.scale(0.22, 0.1);
+    ctx.beginPath(); ctx.arc(0, 0, sz, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  });
+  // Head
+  ctx.fillStyle = '#333';
+  ctx.beginPath(); ctx.arc(x, y - sz*0.92, sz*0.2, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#88ddff';
+  ctx.beginPath(); ctx.arc(x - sz*0.1, y - sz*0.96, sz*0.07, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + sz*0.1, y - sz*0.96, sz*0.07, 0, Math.PI*2); ctx.fill();
+  // Stinger
+  ctx.strokeStyle = '#cc6600'; ctx.lineWidth = sz*0.08;
+  ctx.beginPath(); ctx.moveTo(x, y + sz*0.28); ctx.lineTo(x, y + sz*0.52); ctx.stroke();
+  // Antennae
+  ctx.strokeStyle = '#333'; ctx.lineWidth = sz*0.05;
+  ctx.beginPath(); ctx.moveTo(x - sz*0.1, y - sz*1.05); ctx.quadraticCurveTo(x - sz*0.38, y - sz*1.35, x - sz*0.5, y - sz*1.18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x + sz*0.1, y - sz*1.05); ctx.quadraticCurveTo(x + sz*0.38, y - sz*1.35, x + sz*0.5, y - sz*1.18); ctx.stroke();
+  ctx.fillStyle = '#333';
+  ctx.beginPath(); ctx.arc(x - sz*0.5, y - sz*1.18, sz*0.07, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + sz*0.5, y - sz*1.18, sz*0.07, 0, Math.PI*2); ctx.fill();
+}
+
+function drawScorpion(x, y, sz, t) {
+  // Tail arc
+  ctx.strokeStyle = '#cc4400'; ctx.lineWidth = sz*0.14;
+  ctx.beginPath();
+  ctx.moveTo(x, y + sz*0.3);
+  ctx.quadraticCurveTo(x + sz*0.8, y + sz*0.35, x + sz*0.88, y - sz*0.22);
+  ctx.quadraticCurveTo(x + sz*0.82, y - sz*0.7, x + sz*0.42, y - sz*0.88);
+  ctx.stroke();
+  ctx.fillStyle = '#ff6600';
+  ctx.beginPath(); ctx.arc(x + sz*0.42, y - sz*0.88, sz*0.1, 0, Math.PI*2); ctx.fill();
+  // Body
+  ctx.fillStyle = '#cc4400';
+  ctx.save(); ctx.translate(x, y - sz*0.15); ctx.scale(0.28, 0.52);
+  ctx.beginPath(); ctx.arc(0, 0, sz, 0, Math.PI*2); ctx.fill(); ctx.restore();
+  // Segment lines
+  ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = sz*0.06;
+  for (var s = 0; s < 3; s++) {
+    ctx.beginPath();
+    ctx.moveTo(x - sz*0.28, y - sz*0.5 + s*sz*0.3);
+    ctx.lineTo(x + sz*0.28, y - sz*0.5 + s*sz*0.3);
+    ctx.stroke();
+  }
+  // Head
+  ctx.fillStyle = '#bb3900';
+  ctx.beginPath(); ctx.arc(x, y - sz*0.78, sz*0.22, 0, Math.PI*2); ctx.fill();
+  // Pincers
+  ctx.strokeStyle = '#ff7722'; ctx.lineWidth = sz*0.1;
+  ctx.beginPath(); ctx.moveTo(x - sz*0.2, y - sz*0.85); ctx.quadraticCurveTo(x - sz*0.55, y - sz*0.95, x - sz*0.68, y - sz*0.75); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x + sz*0.2, y - sz*0.85); ctx.quadraticCurveTo(x + sz*0.55, y - sz*0.95, x + sz*0.68, y - sz*0.75); ctx.stroke();
+  // Eyes
+  ctx.fillStyle = '#ffff00';
+  ctx.beginPath(); ctx.arc(x - sz*0.1, y - sz*0.82, sz*0.07, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + sz*0.1, y - sz*0.82, sz*0.07, 0, Math.PI*2); ctx.fill();
+  // Legs
+  ctx.strokeStyle = 'rgba(180,60,0,0.8)'; ctx.lineWidth = sz*0.06;
+  [-0.45, -0.15, 0.15, 0.45].forEach(function(dy, li) {
+    [-1, 1].forEach(function(side) {
+      var swg = Math.sin(t + li*0.8) * sz * 0.08;
+      ctx.beginPath();
+      ctx.moveTo(x + side*sz*0.28, y + dy*sz);
+      ctx.lineTo(x + side*sz*0.72, y + dy*sz + swg);
+      ctx.stroke();
+    });
+  });
+}
+
+function drawSkullBug(x, y, sz, w) {
+  // Glow
+  var glow = ctx.createRadialGradient(x, y - sz*0.4, 0, x, y - sz*0.4, sz*1.2);
+  glow.addColorStop(0, 'rgba(180,0,255,0.28)');
+  glow.addColorStop(1, 'rgba(180,0,255,0)');
+  ctx.fillStyle = glow;
+  ctx.beginPath(); ctx.arc(x, y - sz*0.4, sz*1.2, 0, Math.PI*2); ctx.fill();
+  // Robe
+  ctx.fillStyle = '#220033';
+  ctx.beginPath();
+  ctx.moveTo(x - sz*0.35, y - sz*0.5); ctx.lineTo(x + sz*0.35, y - sz*0.5);
+  ctx.lineTo(x + sz*0.45, y + sz*0.4); ctx.lineTo(x - sz*0.45, y + sz*0.4);
+  ctx.closePath(); ctx.fill();
+  // Skull dome
+  ctx.fillStyle = '#e8e0f0';
+  ctx.beginPath(); ctx.arc(x, y - sz*0.9, sz*0.38, Math.PI, 0); ctx.fill();
+  ctx.beginPath(); ctx.arc(x, y - sz*0.62, sz*0.28, 0, Math.PI); ctx.fill();
+  // Eye sockets
+  ctx.fillStyle = 'rgba(60,0,90,0.9)';
+  ctx.beginPath(); ctx.arc(x - sz*0.14, y - sz*0.95, sz*0.11, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + sz*0.14, y - sz*0.95, sz*0.11, 0, Math.PI*2); ctx.fill();
+  // Glowing eyes
+  var eyeA = 0.7 + Math.sin(w*2) * 0.3;
+  ctx.fillStyle = 'rgba(200,0,255,' + eyeA + ')';
+  ctx.beginPath(); ctx.arc(x - sz*0.14, y - sz*0.95, sz*0.06, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x + sz*0.14, y - sz*0.95, sz*0.06, 0, Math.PI*2); ctx.fill();
+  // Nose
+  ctx.fillStyle = 'rgba(60,0,90,0.8)';
+  ctx.beginPath(); ctx.moveTo(x, y - sz*0.78); ctx.lineTo(x - sz*0.06, y - sz*0.65); ctx.lineTo(x + sz*0.06, y - sz*0.65); ctx.closePath(); ctx.fill();
+  // Teeth
+  ctx.fillStyle = '#e8e0f0';
+  for (var t = 0; t < 4; t++) ctx.fillRect(x - sz*0.22 + t*sz*0.14, y - sz*0.64, sz*0.1, sz*0.14);
+}
+
+// ── HUD ────────────────────────────────────────────────────────────────────
+function drawHUD() {
+  var safeT = 0;
+  var hudH  = Math.max(48, H * 0.07);
+
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  ctx.fillRect(0, safeT, W, hudH);
+  ctx.strokeStyle = 'rgba(150,50,255,0.35)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, safeT+hudH); ctx.lineTo(W, safeT+hudH); ctx.stroke();
+
+  var cy   = safeT + hudH * 0.5;
+  var fs   = Math.round(hudH * 0.5);
+  ctx.textBaseline = 'middle';
+
+  // Score
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold ' + fs + 'px Segoe UI,sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(score + ' pts', 16, cy);
+
+  // Lives
+  ctx.textAlign = 'center';
+  ctx.font = Math.round(fs*0.9) + 'px sans-serif';
+  var hearts = '';
+  for (var l = 0; l < 3; l++) hearts += (l < lives ? '\u2764' : '\u2661') + ' ';
+  ctx.fillStyle = lives > 1 ? '#ff6688' : '#ff2244';
+  ctx.fillText(hearts, W * 0.5, cy);
+
+  // Timer
+  var secs = Math.ceil(timeLeft / 1000);
+  ctx.textAlign = 'right';
+  ctx.font = 'bold ' + fs + 'px Segoe UI,sans-serif';
+  ctx.fillStyle = secs <= 10 ? (frame%20<10 ? '#ff4444' : '#ffaa44') : '#ffd700';
+  ctx.fillText(secs + 's', W - 16, cy);
+
+  // Best
+  var best = parseInt(localStorage.getItem('claquebug_best') || '0');
+  if (best > 0 && state !== 'idle') {
+    ctx.textAlign = 'center';
+    ctx.font = Math.round(hudH*0.28) + 'px Segoe UI,sans-serif';
+    ctx.fillStyle = 'rgba(255,215,0,0.45)';
+    ctx.fillText('Record : ' + best, W*0.5, safeT + hudH + Math.round(hudH*0.35));
+  }
+}
+
+function drawParticlesFn() {
+  for (var i = 0; i < particles.length; i++) {
+    var p = particles[i];
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle   = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(0.5, p.r), 0, Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ── INPUT ──────────────────────────────────────────────────────────────────
+canvas.addEventListener('pointerdown', function(e) {
+  if (state !== 'playing') return;
+  var rect = canvas.getBoundingClientRect();
+  var cx   = (e.clientX - rect.left)  * (W / rect.width);
+  var cy   = (e.clientY - rect.top)   * (H / rect.height);
+  var hit  = false;
+  for (var i = bugs.length - 1; i >= 0; i--) {
+    var b  = bugs[i];
+    if (b.alpha <= 0) continue;
+    // Visual center of the bug (above the hole)
+    var bugY = b.hole.y - b.pop * b.hole.r * 1.6;
+    // Hit zone: union of hole area + bug body area
+    var inHole = Math.sqrt(Math.pow(cx - b.hole.x, 2) + Math.pow(cy - b.hole.y, 2)) < b.hole.r * 1.5;
+    var inBug  = Math.sqrt(Math.pow(cx - b.hole.x, 2) + Math.pow(cy - bugY,    2)) < b.hole.r * 1.3;
+    if (inHole || inBug) {
+      hitBug(b); hit = true; break;
+    }
+  }
+  if (!hit) addP(cx, cy, 'rgba(255,255,255,0.4)', 3);
+  e.preventDefault();
+}, { passive: false });
+
+// ── LOOP ───────────────────────────────────────────────────────────────────
+function loop(ts) {
+  requestAnimationFrame(loop);
+  update(ts);
+  draw();
+}
+
+window.addEventListener('resize', resize);
+resize();
+requestAnimationFrame(function(ts) { lastNow = ts; requestAnimationFrame(loop); });
+</script>
+</body>
+</html>
