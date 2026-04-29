@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="cm_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cm_jar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c8e8f8"/>
+      <stop offset="30%" stop-color="#f0f8ff"/>
+      <stop offset="70%" stop-color="#e0f0fa"/>
+      <stop offset="100%" stop-color="#a8d0e8"/>
+    </linearGradient>
+    <linearGradient id="cm_jam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0e860"/>
+      <stop offset="100%" stop-color="#d0d050"/>
+    </linearGradient>
+    <linearGradient id="cm_lid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#80c040"/>
+      <stop offset="100%" stop-color="#408010"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="10" ry="2.5" fill="url(#cm_shadow)"/>
+  <!-- Jar body -->
+  <rect x="8" y="13" width="16" height="15" rx="3" ry="3" fill="url(#cm_jar)" stroke="#90b8d0" stroke-width="0.8"/>
+  <!-- Jam fill -->
+  <rect x="9" y="17" width="14" height="10" rx="2" ry="2" fill="url(#cm_jam)" opacity="0.9"/>
+  <!-- Jar shine -->
+  <rect x="10" y="14" width="2.5" height="8" rx="1" fill="white" opacity="0.45"/>
+  <!-- Label background -->
+  <rect x="10" y="19" width="12" height="7" rx="1.5" fill="white" opacity="0.85"/>
+  <!-- Melon arc on label -->
+  <path d="M13 24 Q16 19.5 19 24" stroke="#80b030" stroke-width="1.2" fill="#d8e850" stroke-linecap="round"/>
+  <line x1="16" y1="21.5" x2="16" y2="23.5" stroke="#80b030" stroke-width="0.7"/>
+  <line x1="14" y1="21.8" x2="14.5" y2="23.5" stroke="#80b030" stroke-width="0.7"/>
+  <line x1="18" y1="21.8" x2="17.5" y2="23.5" stroke="#80b030" stroke-width="0.7"/>
+  <!-- Neck ring -->
+  <rect x="9" y="12" width="14" height="2" rx="1" fill="#b0cfe0" stroke="#90b0c8" stroke-width="0.5"/>
+  <!-- Lid -->
+  <rect x="9" y="8" width="14" height="5" rx="2" fill="url(#cm_lid)" stroke="#306010" stroke-width="0.6"/>
+  <!-- Lid shine -->
+  <rect x="11" y="9" width="3" height="2" rx="1" fill="white" opacity="0.3"/>
+</svg>

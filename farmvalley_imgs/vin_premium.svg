@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="vp_bottle" cx="35%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#3a1a50"/>
+      <stop offset="60%" stop-color="#1a0830"/>
+      <stop offset="100%" stop-color="#0a0418"/>
+    </radialGradient>
+    <radialGradient id="vp_liquid" cx="40%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#c02060"/>
+      <stop offset="100%" stop-color="#600830"/>
+    </radialGradient>
+    <linearGradient id="vp_label" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f8f0d8"/>
+      <stop offset="100%" stop-color="#e8d8b0"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="7" ry="0.7" fill="#00000020"/>
+  <!-- Bottle body -->
+  <path d="M11,28 Q11,31 16,31 Q21,31 21,28 L21,16 Q21,14 19,13 L19,9 L17,7 L17,5 L15,5 L15,7 L13,9 L13,13 Q11,14 11,16 Z" fill="url(#vp_bottle)"/>
+  <!-- Liquid -->
+  <path d="M12,28 Q12,30 16,30 Q20,30 20,28 L20,18 L12,18 Z" fill="url(#vp_liquid)" opacity="0.85"/>
+  <!-- Premium label (gold/cream) -->
+  <rect x="12" y="19" width="8" height="7" rx="0.5" fill="url(#vp_label)"/>
+  <!-- Gold star on label -->
+  <polygon points="16,20.5 16.5,22 18,22 16.8,23 17.2,24.5 16,23.5 14.8,24.5 15.2,23 14,22 15.5,22" fill="#d4a020" opacity="0.9"/>
+  <!-- Label decoration -->
+  <rect x="12.3" y="25.3" width="7.4" height="0.4" fill="#d4a020" opacity="0.7"/>
+  <!-- Bottle shine -->
+  <path d="M13,16 Q13.5,15 15,15.5" stroke="rgba(255,200,255,.35)" stroke-width="0.9" fill="none"/>
+  <!-- Gold foil at top -->
+  <rect x="13.5" y="3" width="5" height="3" rx="0.8" fill="#d4a020"/>
+  <rect x="14" y="2.5" width="4" height="1" rx="0.4" fill="#f0c030"/>
+</svg>

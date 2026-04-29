@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_sv" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bottle_sv" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8d8b8"/>
+      <stop offset="40%" stop-color="#f8f0e0"/>
+      <stop offset="100%" stop-color="#d0c090"/>
+    </linearGradient>
+    <linearGradient id="dropper_sv" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c8a020"/>
+      <stop offset="40%" stop-color="#f0d060"/>
+      <stop offset="100%" stop-color="#b08010"/>
+    </linearGradient>
+    <linearGradient id="bulb_sv" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d0a030"/>
+      <stop offset="50%" stop-color="#f8d870"/>
+      <stop offset="100%" stop-color="#b08020"/>
+    </linearGradient>
+    <linearGradient id="neck_sv" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c8b880"/>
+      <stop offset="50%" stop-color="#e8d8a8"/>
+      <stop offset="100%" stop-color="#b0a060"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="6" ry="1.6" fill="url(#shadow_sv)"/>
+  <!-- Bottle body (elegant, slightly wider at bottom) -->
+  <path d="M12 15 Q11 22 11 27 Q11 29 16 29 Q21 29 21 27 Q21 22 20 15 Z" fill="url(#bottle_sv)"/>
+  <!-- Bottle body outline -->
+  <path d="M12 15 Q11 22 11 27 Q11 29 16 29 Q21 29 21 27 Q21 22 20 15 Z" fill="none" stroke="#c0b070" stroke-width="0.5" opacity="0.5"/>
+  <!-- Serum color tint at base -->
+  <path d="M12.5 24 Q11.5 27 11 27 Q11 29 16 29 Q21 29 21 27 Q20.5 27 19.5 24 Z" fill="#e8c840" opacity="0.25"/>
+  <!-- Neck -->
+  <rect x="13.5" y="11" width="5" height="5" rx="1" fill="url(#neck_sv)"/>
+  <!-- Dropper collar (gold) -->
+  <rect x="12.5" y="9.5" width="7" height="2.5" rx="1.2" fill="url(#dropper_sv)"/>
+  <!-- Dropper stem -->
+  <rect x="15" y="4" width="2" height="6.5" rx="1" fill="url(#dropper_sv)"/>
+  <!-- Dropper bulb -->
+  <ellipse cx="16" cy="3.5" rx="3" ry="2" fill="url(#bulb_sv)"/>
+  <!-- Gold ring detail -->
+  <rect x="13" y="12.5" width="6" height="1" rx="0.3" fill="#d0a820" opacity="0.6"/>
+  <!-- Bottle shine -->
+  <path d="M13 16 Q12.5 22 12.5 26" stroke="#fff" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.45"/>
+  <!-- Dropper tip -->
+  <circle cx="16" cy="10" r="0.8" fill="#f0c820" opacity="0.8"/>
+</svg>

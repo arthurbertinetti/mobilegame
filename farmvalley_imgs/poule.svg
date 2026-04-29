@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pg_body" cx="42%" cy="42%" r="52%">
+      <stop offset="0%" stop-color="#e0813c"/>
+      <stop offset="45%" stop-color="#b85c24"/>
+      <stop offset="100%" stop-color="#7a3510"/>
+    </radialGradient>
+    <radialGradient id="pg_head" cx="38%" cy="38%" r="50%">
+      <stop offset="0%" stop-color="#cc7030"/>
+      <stop offset="100%" stop-color="#8a3e12"/>
+    </radialGradient>
+    <linearGradient id="pg_comb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff5555"/>
+      <stop offset="100%" stop-color="#bb1111"/>
+    </linearGradient>
+    <radialGradient id="pg_wing" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#f0a060"/>
+      <stop offset="55%" stop-color="#c06828"/>
+      <stop offset="100%" stop-color="#6b2e0e"/>
+    </radialGradient>
+  </defs>
+  <!-- Ground shadow -->
+  <ellipse cx="16" cy="30.5" rx="8" ry="1" fill="#00000018"/>
+  <!-- Body -->
+  <path d="M8,22 Q8,15 14,14 Q22,13 24,18 Q26,22 24,26 Q20,29 14,28 Q8,27 8,22 Z" fill="url(#pg_body)"/>
+  <!-- Wing -->
+  <path d="M11,19 Q15,15 22,17 Q21,21 16,23 Q12,23 11,19 Z" fill="url(#pg_wing)"/>
+  <!-- Wing highlight -->
+  <path d="M12,18.5 Q16,15.5 21,17.5 Q19,20 14.5,21.5 Z" fill="#f0b070" opacity="0.35"/>
+  <!-- Tail feathers -->
+  <path d="M23,19 Q28,14 28,11 Q26,14 25,16 Q27,11 25,10 Q24,13 23,15 Q25,11 23,10 Q22,13 21,15 Q22,17 23,19 Z" fill="#6b2e0e"/>
+  <!-- Neck -->
+  <path d="M12,17 Q11,13 13,10.5 Q15,11.5 14,17 Z" fill="url(#pg_head)"/>
+  <!-- Head -->
+  <ellipse cx="11.5" cy="9.5" rx="3.8" ry="3.2" fill="url(#pg_head)"/>
+  <!-- Comb -->
+  <path d="M10,7.2 Q10.8,4.5 11.3,6.2 Q12,3.8 12.5,5.8 Q13.2,4.2 13.5,6 Q13,8 11,7.8 Z" fill="url(#pg_comb)"/>
+  <!-- Wattle -->
+  <path d="M9.2,11 Q7.8,12.5 8.5,13.8 Q10.2,13.2 9.8,11 Z" fill="#cc2222"/>
+  <!-- Eye -->
+  <circle cx="10.2" cy="8.8" r="1.2" fill="#1a0800"/>
+  <circle cx="10" cy="8.55" r="0.42" fill="#e8a820"/>
+  <circle cx="10.5" cy="8.3" r="0.22" fill="#ffffff55"/>
+  <!-- Beak -->
+  <path d="M8.5,9.8 L6.2,9.2 L6,10.1 L8.5,10.3 Z" fill="#e8a030"/>
+  <path d="M8.5,10 L6,10.1" stroke="#c07820" stroke-width="0.3" fill="none"/>
+  <!-- Legs -->
+  <path d="M14,27.5 L13.2,30.5" stroke="#d49020" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M13.2,30.5 L11.8,31.5 M13.2,30.5 L14.5,31.5 M13.2,30.5 L13,31.8" stroke="#d49020" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M17.5,27.8 L17,30.8" stroke="#d49020" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M17,30.8 L15.6,31.8 M17,30.8 L18.3,31.8 M17,30.8 L16.8,32" stroke="#d49020" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+</svg>

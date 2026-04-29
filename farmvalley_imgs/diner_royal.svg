@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="cloche_grad" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#f0f0f0"/>
+      <stop offset="70%" stop-color="#d0d0d0"/>
+      <stop offset="100%" stop-color="#a0a0a0"/>
+    </radialGradient>
+    <linearGradient id="tablecloth_royal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3050c0"/>
+      <stop offset="100%" stop-color="#1030a0"/>
+    </linearGradient>
+    <linearGradient id="cloche_knob" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0d060"/>
+      <stop offset="100%" stop-color="#c09020"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Royal blue tablecloth strip -->
+  <rect x="2" y="25" width="28" height="5" rx="1" fill="url(#tablecloth_royal)"/>
+  <rect x="2" y="25" width="28" height="5" rx="1" fill="none" stroke="#2040b0" stroke-width="0.5"/>
+  <!-- Gold trim on tablecloth -->
+  <line x1="2" y1="26.5" x2="30" y2="26.5" stroke="#f0d060" stroke-width="0.7"/>
+  <!-- Plate base -->
+  <ellipse cx="16" cy="25.5" rx="10" ry="3" fill="#f8f8f8" stroke="#c0c0c0" stroke-width="0.5"/>
+  <!-- Cloche dome -->
+  <path d="M6 25 Q6 10 16 9 Q26 10 26 25 Z" fill="url(#cloche_grad)"/>
+  <!-- Cloche outline -->
+  <path d="M6 25 Q6 10 16 9 Q26 10 26 25" fill="none" stroke="#909090" stroke-width="0.8"/>
+  <!-- Cloche sheen highlight -->
+  <path d="M8 23 Q8 14 14 11" stroke="#ffffff" stroke-width="1.2" fill="none" opacity="0.5"/>
+  <!-- Crown emblem on cloche -->
+  <path d="M13 19 L13 16 L14.5 17.5 L16 15 L17.5 17.5 L19 16 L19 19 Z" fill="url(#cloche_knob)" stroke="#a07010" stroke-width="0.3"/>
+  <rect x="13" y="19" width="6" height="1.5" rx="0.3" fill="#d4a020"/>
+  <!-- Knob on top -->
+  <ellipse cx="16" cy="9.5" rx="1.5" ry="1" fill="url(#cloche_knob)"/>
+  <circle cx="16" cy="9" r="0.8" fill="#f0d060"/>
+</svg>

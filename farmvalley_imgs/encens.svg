@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_en" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="holder_en" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a6848"/>
+      <stop offset="50%" stop-color="#b08858"/>
+      <stop offset="100%" stop-color="#685030"/>
+    </linearGradient>
+    <linearGradient id="stick_en" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8a5830"/>
+      <stop offset="50%" stop-color="#c08050"/>
+      <stop offset="100%" stop-color="#6a3818"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="6" ry="1.5" fill="url(#shadow_en)"/>
+  <!-- Holder (small boat/oval holder) -->
+  <ellipse cx="16" cy="29" rx="7" ry="2" fill="#5a4020" opacity="0.5"/>
+  <path d="M9 27 Q9 29.5 16 30 Q23 29.5 23 27 Q23 24.5 16 24 Q9 24.5 9 27 Z" fill="url(#holder_en)"/>
+  <!-- Holder top rim -->
+  <ellipse cx="16" cy="24" rx="7" ry="2" fill="#b89060"/>
+  <!-- Holder indent/channel -->
+  <ellipse cx="16" cy="24" rx="5" ry="1.2" fill="#9a7040" opacity="0.6"/>
+  <!-- Incense stick (thin, diagonal) -->
+  <line x1="16" y1="24" x2="14" y2="3" stroke="url(#stick_en)" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Ash section near base (gray) -->
+  <line x1="16" y1="24" x2="15.5" y2="18" stroke="#a09080" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Glowing tip (orange dot) -->
+  <circle cx="14" cy="3" r="1.2" fill="#ff8020"/>
+  <circle cx="14" cy="3" r="0.6" fill="#ffdd00"/>
+  <!-- Smoke wisps (wispy gray curves rising) -->
+  <path d="M14 3 C12 1 14 -1 13 -3" stroke="#b0a898" stroke-width="0.7" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M14 5 C16 3 13 1 15 -1" stroke="#c0b8b0" stroke-width="0.6" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M14 7 C11 5.5 13.5 3.5 12 1.5" stroke="#c8c0b8" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+  <!-- Wisp clipped at top will show inside viewbox -->
+  <path d="M14.5 8 C16.5 6 13.5 4 15.5 2" stroke="#b8b0a8" stroke-width="0.5" fill="none" stroke-linecap="round" opacity="0.35"/>
+  <!-- Holder shine -->
+  <ellipse cx="13" cy="23.3" rx="3" ry="0.8" fill="#fff" opacity="0.35"/>
+</svg>

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="sc_cube" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fefcf8"/>
+      <stop offset="100%" stop-color="#e4dfd5"/>
+    </linearGradient>
+    <linearGradient id="sc_side" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ddd8ce"/>
+      <stop offset="100%" stop-color="#c8c4b8"/>
+    </linearGradient>
+    <linearGradient id="sc_top" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ede9e0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="10" ry="0.7" fill="#00000018"/>
+  <!-- Back cube -->
+  <rect x="14" y="13" width="10" height="8" rx="1" fill="url(#sc_side)"/>
+  <rect x="14" y="9" width="10" height="5" rx="0.5" fill="url(#sc_top)"/>
+  <!-- Front cube left -->
+  <rect x="6" y="19" width="10" height="8" rx="1" fill="url(#sc_side)"/>
+  <rect x="6" y="15" width="10" height="5" rx="0.5" fill="url(#sc_top)"/>
+  <!-- Front cube center top -->
+  <rect x="10" y="10" width="10" height="8" rx="1" fill="url(#sc_cube)"/>
+  <rect x="10" y="7" width="10" height="4" rx="0.5" fill="url(#sc_top)"/>
+  <!-- Cube grid lines on top cube -->
+  <line x1="15" y1="10" x2="15" y2="18" stroke="#d0cac0" stroke-width="0.5"/>
+  <line x1="10" y1="13.5" x2="20" y2="13.5" stroke="#d0cac0" stroke-width="0.5"/>
+  <!-- Sparkle highlights -->
+  <circle cx="12.5" cy="8.5" r="0.7" fill="#ffffff" opacity="0.9"/>
+  <circle cx="18" cy="9" r="0.5" fill="#ffffff" opacity="0.7"/>
+  <circle cx="8" cy="16.5" r="0.5" fill="#ffffff" opacity="0.7"/>
+</svg>

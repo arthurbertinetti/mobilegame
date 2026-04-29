@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ci_lem" cx="35%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffffa0"/>
+      <stop offset="50%" stop-color="#f0d010"/>
+      <stop offset="100%" stop-color="#b08000"/>
+    </radialGradient>
+    <radialGradient id="ci_can" cx="35%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#48a828"/>
+      <stop offset="60%" stop-color="#206810"/>
+      <stop offset="100%" stop-color="#0c4008"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="7.5" ry="0.7" fill="#00000022"/>
+  <!-- Trunk (short — lemon trees are compact) -->
+  <path d="M13.5,31 Q13,27 13.5,24 Q14.5,22.5 16,23 Q17.5,22.5 18.5,24 Q19,27 18.5,31 Z" fill="#6b3a1f"/>
+  <path d="M14.5,31 Q14,27 14.5,24.5 Q15.2,23.5 16,23.7 Q16.8,23.5 17.5,24.5 Q18,27 17.5,31 Z" fill="#905430"/>
+  <!-- Canopy (compact, dense, dark-green — citrus have glossy dark leaves) -->
+  <ellipse cx="16" cy="15.5" rx="12" ry="9.5" fill="#155810"/>
+  <ellipse cx="16" cy="14.5" rx="11" ry="8.5" fill="#1e7014"/>
+  <ellipse cx="9.5" cy="17" rx="7" ry="5.5" fill="#155810"/>
+  <ellipse cx="22.5" cy="17" rx="7" ry="5.5" fill="#155810"/>
+  <ellipse cx="16" cy="9" rx="8.5" ry="5.5" fill="url(#ci_can)"/>
+  <!-- Canopy shine (glossy effect) -->
+  <ellipse cx="12" cy="11" rx="3.5" ry="2" fill="rgba(100,220,80,.25)"/>
+  <!-- Lemons (oval with pointed ends — distinctive lemon shape) -->
+  <!-- Left lemon -->
+  <ellipse cx="7" cy="18.5" rx="3.5" ry="2.3" fill="url(#ci_lem)"/>
+  <ellipse cx="3.8" cy="18.5" rx="0.9" ry="0.7" fill="#f0d010"/>
+  <ellipse cx="10.2" cy="18.5" rx="0.9" ry="0.7" fill="#e8c808"/>
+  <!-- Right lemon -->
+  <ellipse cx="25" cy="17.5" rx="3.5" ry="2.3" fill="url(#ci_lem)"/>
+  <ellipse cx="21.8" cy="17.5" rx="0.9" ry="0.7" fill="#f0d010"/>
+  <ellipse cx="28.2" cy="17.5" rx="0.9" ry="0.7" fill="#e8c808"/>
+  <!-- Bottom lemon -->
+  <ellipse cx="16" cy="22" rx="3.5" ry="2.3" fill="url(#ci_lem)"/>
+  <ellipse cx="12.8" cy="22" rx="0.9" ry="0.7" fill="#f0d010"/>
+  <ellipse cx="19.2" cy="22" rx="0.9" ry="0.7" fill="#e8c808"/>
+  <!-- Upper lemons -->
+  <ellipse cx="11" cy="12.5" rx="2.8" ry="1.8" fill="url(#ci_lem)"/>
+  <ellipse cx="21" cy="11.5" rx="2.8" ry="1.8" fill="url(#ci_lem)"/>
+  <!-- Lemon shines -->
+  <ellipse cx="6" cy="17.5" rx="1" ry="0.8" fill="rgba(255,255,200,.5)"/>
+  <ellipse cx="24" cy="16.5" rx="1" ry="0.8" fill="rgba(255,255,200,.5)"/>
+</svg>

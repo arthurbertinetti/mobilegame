@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="platter_grad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#f0c060"/>
+      <stop offset="100%" stop-color="#a07020"/>
+    </radialGradient>
+    <radialGradient id="turkey_grad" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#d89040"/>
+      <stop offset="100%" stop-color="#8a5010"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Oval golden platter -->
+  <ellipse cx="16" cy="24" rx="13" ry="5" fill="#806010"/>
+  <ellipse cx="16" cy="23" rx="13" ry="5" fill="url(#platter_grad)"/>
+  <ellipse cx="16" cy="23" rx="13" ry="5" fill="none" stroke="#c09020" stroke-width="0.8"/>
+  <!-- Turkey body -->
+  <ellipse cx="16" cy="20" rx="7" ry="5.5" fill="url(#turkey_grad)"/>
+  <!-- Turkey breast highlight -->
+  <ellipse cx="15" cy="18" rx="3" ry="2.5" fill="#e0a050" opacity="0.5"/>
+  <!-- Drumstick left -->
+  <path d="M9 22 Q7 24 8 26 Q9 27 10 26 Q11 25 10 23 Z" fill="#c07828"/>
+  <ellipse cx="8.5" cy="26" rx="1.2" ry="0.7" fill="#d09040"/>
+  <!-- Drumstick right -->
+  <path d="M23 22 Q25 24 24 26 Q23 27 22 26 Q21 25 22 23 Z" fill="#c07828"/>
+  <ellipse cx="23.5" cy="26" rx="1.2" ry="0.7" fill="#d09040"/>
+  <!-- Garnish: carrot -->
+  <ellipse cx="8" cy="20" rx="1.5" ry="0.8" fill="#f06020" transform="rotate(-30,8,20)"/>
+  <!-- Garnish: green herb -->
+  <ellipse cx="24" cy="20" rx="1.5" ry="0.8" fill="#40a020" transform="rotate(30,24,20)"/>
+  <!-- Rosemary sprigs -->
+  <path d="M6 22 Q7 19 9 18" stroke="#206010" stroke-width="0.8" fill="none"/>
+  <path d="M26 22 Q25 19 23 18" stroke="#206010" stroke-width="0.8" fill="none"/>
+</svg>

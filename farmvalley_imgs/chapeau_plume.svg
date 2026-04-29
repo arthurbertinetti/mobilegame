@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="hat_grad" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#5a3020"/>
+      <stop offset="100%" stop-color="#2a1008"/>
+    </radialGradient>
+    <linearGradient id="brim_grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#4a2818"/>
+      <stop offset="100%" stop-color="#1e0c04"/>
+    </linearGradient>
+    <linearGradient id="feather_grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#008080"/>
+      <stop offset="50%" stop-color="#8020c0"/>
+      <stop offset="100%" stop-color="#00c0a0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Hat brim -->
+  <ellipse cx="15" cy="22" rx="12" ry="3" fill="url(#brim_grad)"/>
+  <!-- Hat crown -->
+  <rect x="9" y="10" width="12" height="13" rx="2" fill="url(#hat_grad)"/>
+  <!-- Hat band -->
+  <rect x="9" y="18" width="12" height="2" fill="#c08020" opacity="0.8"/>
+  <!-- Feather shaft -->
+  <path d="M21 20 Q24 14 22 4" stroke="#006060" stroke-width="1" fill="none"/>
+  <!-- Feather vanes -->
+  <path d="M22 4 Q26 8 24 12 Q22 14 21 18" fill="url(#feather_grad)" opacity="0.9"/>
+  <path d="M22 4 Q18 7 20 12 Q21 14 21 18" fill="#6040b0" opacity="0.8"/>
+  <!-- Feather tip highlight -->
+  <ellipse cx="22" cy="5" rx="1.5" ry="1" fill="#80e0d0" transform="rotate(-20,22,5)"/>
+</svg>

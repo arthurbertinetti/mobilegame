@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="nxg" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#d4a76a"/>
+      <stop offset="55%" stop-color="#a0522d"/>
+      <stop offset="100%" stop-color="#6d4c41"/>
+    </radialGradient>
+  </defs>
+  <!-- Corps de la noix (ronde) -->
+  <ellipse cx="16" cy="17" rx="12" ry="11" fill="url(#nxg)"/>
+  <!-- Suture verticale caractéristique de la noix -->
+  <path d="M16 6 Q15 10 15 17 Q15 23 16 28" fill="none" stroke="#5d4037" stroke-width="1.2" opacity="0.7"/>
+  <!-- Suture horizontale -->
+  <path d="M5 14 Q10 16 16 17 Q22 16 27 14" fill="none" stroke="#5d4037" stroke-width="0.8" opacity="0.4"/>
+  <!-- Texture de la coque (bosselée) -->
+  <ellipse cx="11" cy="14" rx="2.5" ry="2" fill="rgba(0,0,0,0.1)" transform="rotate(-30 11 14)"/>
+  <ellipse cx="21" cy="15" rx="2.5" ry="2" fill="rgba(0,0,0,0.1)" transform="rotate(30 21 15)"/>
+  <ellipse cx="14" cy="21" rx="2.5" ry="1.8" fill="rgba(0,0,0,0.1)"/>
+  <!-- Tige résiduelle au sommet -->
+  <circle cx="16" cy="7" r="1.5" fill="#5d4037"/>
+  <!-- Reflet -->
+  <ellipse cx="11" cy="13" rx="2.5" ry="2" fill="rgba(255,255,255,0.2)" transform="rotate(-20 11 13)"/>
+</svg>

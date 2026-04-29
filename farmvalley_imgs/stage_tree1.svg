@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="5" ry="0.6" fill="#00000018"/>
+  <!-- Young sapling trunk -->
+  <path d="M15,31 Q14.5,26 15,22 Q15.5,20.5 16,21 Q16.5,20.5 17,22 Q17.5,26 17,31 Z" fill="#7d4820"/>
+  <!-- Small branch left -->
+  <line x1="15.5" y1="25" x2="11" y2="21" stroke="#6d3c18" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Small branch right -->
+  <line x1="16.5" y1="24" x2="21" y2="20" stroke="#6d3c18" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Left leaf cluster -->
+  <ellipse cx="10" cy="19.5" rx="4" ry="3" fill="#40a028"/>
+  <ellipse cx="10" cy="19" rx="3.2" ry="2.4" fill="#58c038"/>
+  <!-- Right leaf cluster -->
+  <ellipse cx="22" cy="18.5" rx="4" ry="3" fill="#38a020"/>
+  <ellipse cx="22" cy="18" rx="3.2" ry="2.4" fill="#50b830"/>
+  <!-- Top cluster -->
+  <ellipse cx="16" cy="16.5" rx="5" ry="4" fill="#48b830"/>
+  <ellipse cx="16" cy="15.5" rx="4" ry="3.2" fill="#60c840"/>
+  <!-- Leaf shines -->
+  <ellipse cx="14" cy="15" rx="1.5" ry="1" fill="rgba(150,255,100,.28)"/>
+</svg>

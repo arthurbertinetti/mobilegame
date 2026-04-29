@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="tca_glaze" cx="38%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#e8b040"/>
+      <stop offset="55%" stop-color="#c08020"/>
+      <stop offset="100%" stop-color="#804808"/>
+    </radialGradient>
+    <radialGradient id="tca_crust" cx="40%" cy="30%" r="62%">
+      <stop offset="0%" stop-color="#e0b848"/>
+      <stop offset="100%" stop-color="#9a6820"/>
+    </radialGradient>
+    <radialGradient id="tca_shine" cx="30%" cy="25%" r="55%">
+      <stop offset="0%" stop-color="rgba(255,220,100,0.65)"/>
+      <stop offset="100%" stop-color="rgba(255,180,40,0)"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Tart crust (rim) -->
+  <ellipse cx="16" cy="27" rx="11" ry="2.5" fill="#7a5010"/>
+  <rect x="5" y="18" width="22" height="9" rx="2.5" fill="url(#tca_crust)"/>
+  <!-- Tart top surface (caramel glaze) -->
+  <ellipse cx="16" cy="18" rx="11" ry="3" fill="url(#tca_glaze)"/>
+  <!-- Caramel drizzle lines on top -->
+  <path d="M10,17 Q13,15.5 16,17 Q19,18.5 22,17" stroke="#a06010" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M8,18 Q12,16.5 16,18 Q20,19.5 24,18" stroke="#b07018" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+  <path d="M12,16 Q14,14.5 16,16 Q18,17.5 20,16" stroke="#904808" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- Drip from edge -->
+  <path d="M9,18.5 Q8,20 9,21.5" stroke="#c08020" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M23,18.5 Q24,21 23,22.5" stroke="#c08020" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M6,19 Q5.5,21 6,22" stroke="#b07018" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- Glossy overlay -->
+  <ellipse cx="16" cy="18" rx="11" ry="3" fill="url(#tca_shine)"/>
+  <!-- Crust texture (crimped edge) -->
+  <ellipse cx="16" cy="18" rx="11" ry="3" fill="none" stroke="#9a6018" stroke-width="1" stroke-dasharray="2,1.5"/>
+  <!-- Caramel pool highlight -->
+  <ellipse cx="12" cy="17" rx="4" ry="1.5" fill="rgba(255,230,120,0.4)" transform="rotate(-10,12,17)"/>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadowG" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bowlG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ece4d8"/>
+      <stop offset="100%" stop-color="#b8b0a4"/>
+    </radialGradient>
+    <radialGradient id="pastaG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#d4b060"/>
+      <stop offset="100%" stop-color="#a07830"/>
+    </radialGradient>
+    <radialGradient id="sauceG" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#e05030"/>
+      <stop offset="100%" stop-color="#a01808"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="12" ry="2.5" fill="url(#shadowG)"/>
+  <!-- Bowl outer -->
+  <ellipse cx="16" cy="20" rx="13" ry="9" fill="url(#bowlG)" stroke="#a8a098" stroke-width="0.6"/>
+  <!-- Pasta nest -->
+  <ellipse cx="16" cy="18" rx="10" ry="7" fill="url(#pastaG)"/>
+  <!-- Pasta strand swirls -->
+  <path d="M10 17 Q12 14 14 17 Q16 20 18 17 Q20 14 22 17" fill="none" stroke="#c89040" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <path d="M10 19 Q12 16 14 19 Q16 22 18 19 Q20 16 22 19" fill="none" stroke="#b87830" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+  <path d="M11 15 Q13 12.5 15 15 Q17 17.5 19 15 Q21 12.5 22.5 15" fill="none" stroke="#c89040" stroke-width="0.8" stroke-linecap="round" opacity="0.6"/>
+  <!-- Tomato sauce pool on top -->
+  <ellipse cx="16" cy="15.5" rx="5.5" ry="3.5" fill="url(#sauceG)" opacity="0.9"/>
+  <!-- Sauce highlights -->
+  <ellipse cx="14" cy="14.5" rx="2" ry="1.2" fill="#f06040" opacity="0.4"/>
+  <!-- Herb -->
+  <path d="M15 13 Q16 11.5 17 12" fill="none" stroke="#38803a" stroke-width="0.8" stroke-linecap="round"/>
+  <circle cx="17" cy="12" r="0.6" fill="#40a040"/>
+</svg>

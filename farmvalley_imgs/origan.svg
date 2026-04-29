@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Origan: petites feuilles ovales par paires, tiges rougeâtres, fleurs mauves -->
+  <rect x="14.5" y="27" width="3" height="4" rx="1" fill="#6d4c41"/>
+  <line x1="16" y1="27" x2="16" y2="7" stroke="#a1887f" stroke-width="1.5"/>
+  <!-- Paires de feuilles -->
+  <ellipse cx="11" cy="24" rx="4.5" ry="2.5" fill="#558b2f" transform="rotate(-15 11 24)"/>
+  <ellipse cx="21" cy="24" rx="4.5" ry="2.5" fill="#558b2f" transform="rotate(15 21 24)"/>
+  <ellipse cx="10" cy="19" rx="4.5" ry="2.5" fill="#689f38" transform="rotate(-20 10 19)"/>
+  <ellipse cx="22" cy="19" rx="4.5" ry="2.5" fill="#689f38" transform="rotate(20 22 19)"/>
+  <ellipse cx="11" cy="14" rx="4" ry="2.2" fill="#7cb342" transform="rotate(-15 11 14)"/>
+  <ellipse cx="21" cy="14" rx="4" ry="2.2" fill="#7cb342" transform="rotate(15 21 14)"/>
+  <ellipse cx="12" cy="10" rx="3.5" ry="2" fill="#8bc34a" transform="rotate(-10 12 10)"/>
+  <ellipse cx="20" cy="10" rx="3.5" ry="2" fill="#8bc34a" transform="rotate(10 20 10)"/>
+  <!-- Fleurs mauves au sommet -->
+  <circle cx="13.5" cy="7" r="1.5" fill="#ab47bc"/>
+  <circle cx="16" cy="6" r="1.5" fill="#9c27b0"/>
+  <circle cx="18.5" cy="7" r="1.5" fill="#ab47bc"/>
+</svg>

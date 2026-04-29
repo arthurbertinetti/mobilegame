@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="cup_body" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff6020"/>
+      <stop offset="50%" stop-color="#ff8040"/>
+      <stop offset="100%" stop-color="#c04010"/>
+    </linearGradient>
+    <radialGradient id="lid_g" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d8d0cc"/>
+    </radialGradient>
+    <linearGradient id="papaya_g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffb040"/>
+      <stop offset="100%" stop-color="#ff6010"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- round cup body -->
+  <path d="M8,28 Q8,31 16,31 Q24,31 24,28 L22,15 Q22,13 16,13 Q10,13 10,15 Z" fill="url(#cup_body)"/>
+  <path d="M11,16 Q11,14.5 16,14.5" fill="none" stroke="#ffb080" stroke-width="0.8" opacity="0.6"/>
+  <!-- dome lid -->
+  <ellipse cx="16" cy="15" rx="8" ry="2" fill="#e8e8e8"/>
+  <path d="M8,15 Q8,10 16,10 Q24,10 24,15" fill="url(#lid_g)"/>
+  <ellipse cx="16" cy="15" rx="8" ry="2" fill="none" stroke="#c0c0c0" stroke-width="0.5"/>
+  <!-- straw (orange) -->
+  <rect x="19" y="3" width="1.8" height="14" rx="0.9" fill="#ff7020"/>
+  <rect x="19" y="3" width="0.7" height="14" rx="0.35" fill="#ffb060" opacity="0.6"/>
+  <!-- papaya chunk -->
+  <path d="M9,13 Q9,9 12,8 Q14,9 13,13 Z" fill="url(#papaya_g)" stroke="#c05010" stroke-width="0.4"/>
+  <!-- seeds inside papaya -->
+  <circle cx="11" cy="11" r="0.5" fill="#3a2010"/>
+  <circle cx="11.5" cy="12.5" r="0.5" fill="#3a2010"/>
+  <circle cx="10" cy="12" r="0.5" fill="#3a2010"/>
+</svg>

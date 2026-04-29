@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="avg" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#8bc34a"/>
+      <stop offset="60%" stop-color="#33691e"/>
+      <stop offset="100%" stop-color="#1b5e20"/>
+    </radialGradient>
+  </defs>
+  <!-- Sol -->
+  <rect x="4" y="28" width="24" height="4" rx="2" fill="#6b4f2c"/>
+  <!-- Tronc gris-brun -->
+  <rect x="13.5" y="18" width="5" height="10" rx="2" fill="#6d4c41"/>
+  <!-- Canopée feuilles larges brillantes (typique avocatier) -->
+  <ellipse cx="16" cy="11" rx="12" ry="9" fill="#1b5e20"/>
+  <ellipse cx="16" cy="10" rx="11" ry="8" fill="#2e7d32"/>
+  <ellipse cx="10" cy="12" rx="7.5" ry="5.5" fill="#1b5e20"/>
+  <ellipse cx="22" cy="12" rx="7.5" ry="5.5" fill="#1b5e20"/>
+  <ellipse cx="16" cy="5" rx="9" ry="6" fill="#33691e"/>
+  <!-- Avocats (poire verte/sombre allongée) -->
+  <path d="M9 18 Q8 15 9 13 Q11 11 13 13 Q14 15 13 18 Q11.5 20 9 18Z" fill="url(#avg)"/>
+  <path d="M21 17 Q20 14 21 12 Q23 10 25 12 Q26 14 25 17 Q23.5 19 21 17Z" fill="url(#avg)"/>
+  <path d="M14 20 Q13 17 14 15 Q16 13 18 15 Q19 17 18 20 Q16.5 22 14 20Z" fill="url(#avg)"/>
+  <!-- Noyau (visible si coupé, ici on montre juste le fruit) -->
+  <!-- Petite tige -->
+  <line x1="11" y1="13" x2="12" y2="11.5" stroke="#4caf50" stroke-width="0.8"/>
+  <line x1="23" y1="12" x2="24" y2="10.5" stroke="#4caf50" stroke-width="0.8"/>
+  <!-- Reflet sur avocats -->
+  <ellipse cx="9.5" cy="14.5" rx="1" ry="2" fill="rgba(255,255,255,0.2)"/>
+  <!-- Lumière canopée -->
+  <ellipse cx="12" cy="7" rx="4.5" ry="3" fill="#388e3c" opacity="0.5"/>
+</svg>

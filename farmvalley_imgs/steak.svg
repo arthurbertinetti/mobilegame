@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="stg" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#a1887f"/>
+      <stop offset="55%" stop-color="#7b3f00"/>
+      <stop offset="100%" stop-color="#4e2600"/>
+    </radialGradient>
+  </defs>
+  <!-- Steak saisi (forme organique) -->
+  <path d="M5 14 Q6 8 12 7 Q18 6 24 9 Q28 12 27 18 Q26 24 20 25 Q14 26 9 23 Q5 20 5 14Z" fill="url(#stg)"/>
+  <!-- Marbrure (graisse) -->
+  <path d="M10 12 Q14 10 18 13 Q14 12 10 12Z" fill="#d4a76a" opacity="0.5"/>
+  <path d="M15 17 Q19 16 22 18 Q19 17 15 17Z" fill="#d4a76a" opacity="0.5"/>
+  <!-- Rayures de cuisson (grill) -->
+  <line x1="8" y1="10" x2="14" y2="20" stroke="#5d4037" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="14" y1="9" x2="20" y2="19" stroke="#5d4037" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <line x1="20" y1="10" x2="25" y2="18" stroke="#5d4037" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <!-- Brillance de la viande -->
+  <ellipse cx="11" cy="13" rx="3" ry="2" fill="rgba(255,255,255,0.15)" transform="rotate(-20 11 13)"/>
+</svg>

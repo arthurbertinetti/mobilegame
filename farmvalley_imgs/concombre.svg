@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Feuilles larges -->
+  <ellipse cx="9" cy="14" rx="7" ry="5" fill="#2e7d32" transform="rotate(-15 9 14)"/>
+  <ellipse cx="23" cy="18" rx="7" ry="5" fill="#388e3c" transform="rotate(15 23 18)"/>
+  <!-- Vrilles -->
+  <path d="M20 10 Q24 6 26 8" fill="none" stroke="#66bb6a" stroke-width="1" stroke-linecap="round"/>
+  <path d="M12 22 Q8 26 6 24" fill="none" stroke="#66bb6a" stroke-width="1" stroke-linecap="round"/>
+  <!-- Tige principale -->
+  <path d="M8 28 Q16 20 24 8" fill="none" stroke="#388e3c" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Concombre (cylindre incliné) -->
+  <defs>
+    <linearGradient id="ckg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#558b2f"/>
+      <stop offset="50%" stop-color="#33691e"/>
+      <stop offset="100%" stop-color="#1b5e20"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="16" cy="19" rx="5" ry="10" fill="url(#ckg)" transform="rotate(-40 16 19)"/>
+  <!-- Stries légères -->
+  <line x1="10" y1="14" x2="18" y2="26" stroke="#81c784" stroke-width="0.7" opacity="0.5"/>
+  <line x1="13" y1="12" x2="21" y2="24" stroke="#81c784" stroke-width="0.7" opacity="0.5"/>
+  <!-- Bout pointu et fleur jaune -->
+  <circle cx="23" cy="10" r="2" fill="#fdd835"/>
+  <circle cx="23" cy="10" r="1.2" fill="#f57f17"/>
+  <!-- Calice côté queue -->
+  <path d="M8.5 27 Q7 25 9 26" fill="#4caf50" stroke="none"/>
+</svg>

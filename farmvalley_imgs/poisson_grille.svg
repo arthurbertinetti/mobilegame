@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="pg_fish" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#708050"/>
+      <stop offset="50%" stop-color="#90b060"/>
+      <stop offset="100%" stop-color="#506030"/>
+    </linearGradient>
+    <radialGradient id="pg_lemon" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#f8f060"/>
+      <stop offset="70%" stop-color="#e8d820"/>
+      <stop offset="100%" stop-color="#c0a810"/>
+    </radialGradient>
+    <linearGradient id="pg_plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d8d0c4"/>
+      <stop offset="100%" stop-color="#b8b0a4"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000028"/>
+  <!-- Plate -->
+  <ellipse cx="16" cy="29" rx="14" ry="2.5" fill="#a8a098"/>
+  <ellipse cx="16" cy="28" rx="14" ry="2.5" fill="url(#pg_plate)"/>
+  <!-- Fish body -->
+  <path d="M5,22 Q4,18 7,15 Q11,11 17,11 Q22,11 25,14 Q28,17 27,22 Q24,25 17,26 Q11,26 5,22 Z" fill="url(#pg_fish)"/>
+  <!-- Belly lighter area -->
+  <ellipse cx="15" cy="20" rx="8" ry="4" fill="#b8d088" opacity="0.6"/>
+  <!-- Diagonal grill marks -->
+  <line x1="9" y1="12" x2="7" y2="25" stroke="#3a3818" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+  <line x1="14" y1="11.5" x2="12" y2="25.5" stroke="#3a3818" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+  <line x1="19" y1="12" x2="17" y2="25.5" stroke="#3a3818" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+  <!-- Dorsal fin -->
+  <path d="M14,11 Q17,7 20,11 Z" fill="#506030"/>
+  <!-- Tail fin -->
+  <path d="M25,15 Q30,13 30,22 Q28,18.5 25,22 Z" fill="#506030"/>
+  <!-- Pectoral fin -->
+  <path d="M11,17 Q9,21 13,22 Z" fill="#608040" opacity="0.8"/>
+  <!-- Head -->
+  <path d="M5,22 Q4,19 5,16 Q7,13 9,15 Z" fill="#486028"/>
+  <!-- Eye -->
+  <circle cx="7.5" cy="18" r="2" fill="#f8e060"/>
+  <circle cx="7.5" cy="18" r="1.2" fill="#202020"/>
+  <circle cx="7" cy="17.5" r="0.4" fill="white"/>
+  <!-- Scales -->
+  <path d="M13,14 Q15,16 13,18" fill="none" stroke="#506030" stroke-width="0.5" opacity="0.6"/>
+  <path d="M18,13 Q20,15 18,17" fill="none" stroke="#506030" stroke-width="0.5" opacity="0.6"/>
+  <!-- Lemon slice beside fish -->
+  <circle cx="27" cy="25" r="3.5" fill="url(#pg_lemon)"/>
+  <circle cx="27" cy="25" r="2.5" fill="#f0e030" opacity="0.8"/>
+  <line x1="27" y1="21.5" x2="27" y2="28.5" stroke="#c8a010" stroke-width="0.5"/>
+  <line x1="23.5" y1="25" x2="30.5" y2="25" stroke="#c8a010" stroke-width="0.5"/>
+  <line x1="24.5" y1="22.5" x2="29.5" y2="27.5" stroke="#c8a010" stroke-width="0.4"/>
+  <line x1="29.5" y1="22.5" x2="24.5" y2="27.5" stroke="#c8a010" stroke-width="0.4"/>
+</svg>

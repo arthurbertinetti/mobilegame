@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="gl_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gl_cone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d89040"/>
+      <stop offset="100%" stop-color="#c08030"/>
+    </linearGradient>
+    <radialGradient id="gl_vanilla" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#fffef0"/>
+      <stop offset="100%" stop-color="#f0ead8"/>
+    </radialGradient>
+    <radialGradient id="gl_straw" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ffb8c8"/>
+      <stop offset="100%" stop-color="#e88090"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="7" ry="1.8" fill="url(#gl_shadow)"/>
+  <!-- Cone -->
+  <path d="M11 18 L16 31 L21 18 Z" fill="url(#gl_cone)"/>
+  <!-- Cone waffle grid -->
+  <line x1="12.3" y1="20" x2="19.7" y2="20" stroke="#a06820" stroke-width="0.5" opacity="0.7"/>
+  <line x1="13" y1="22" x2="19" y2="22" stroke="#a06820" stroke-width="0.5" opacity="0.7"/>
+  <line x1="13.8" y1="24" x2="18.2" y2="24" stroke="#a06820" stroke-width="0.5" opacity="0.7"/>
+  <line x1="14.5" y1="26" x2="17.5" y2="26" stroke="#a06820" stroke-width="0.5" opacity="0.7"/>
+  <line x1="13.5" y1="18" x2="15.5" y2="30" stroke="#a06820" stroke-width="0.4" opacity="0.6"/>
+  <line x1="16" y1="18" x2="16" y2="31" stroke="#a06820" stroke-width="0.4" opacity="0.6"/>
+  <line x1="18.5" y1="18" x2="16.5" y2="30" stroke="#a06820" stroke-width="0.4" opacity="0.6"/>
+  <!-- Bottom scoop (strawberry) -->
+  <ellipse cx="16" cy="17" rx="6" ry="5.5" fill="url(#gl_straw)"/>
+  <ellipse cx="14" cy="14.5" rx="2.5" ry="2" fill="#ffccd8" opacity="0.5"/>
+  <!-- Top scoop (vanilla) -->
+  <ellipse cx="16" cy="10" rx="5.5" ry="5" fill="url(#gl_vanilla)"/>
+  <ellipse cx="14" cy="8" rx="2" ry="1.5" fill="white" opacity="0.55"/>
+  <!-- Vanilla specks -->
+  <line x1="15" y1="10" x2="15.5" y2="11" stroke="#c8b060" stroke-width="0.4"/>
+  <line x1="17" y1="9" x2="17.5" y2="10.5" stroke="#c8b060" stroke-width="0.4"/>
+  <line x1="16" y1="12" x2="16.5" y2="13" stroke="#c8b060" stroke-width="0.4"/>
+</svg>

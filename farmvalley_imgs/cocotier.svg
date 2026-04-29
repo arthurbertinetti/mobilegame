@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Sol -->
+  <rect x="4" y="28" width="24" height="4" rx="2" fill="#c2a46e"/>
+  <!-- Tronc incliné caractéristique du cocotier -->
+  <path d="M14 28 Q13 22 12 16 Q11 10 13 6" fill="none" stroke="#a0835c" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M14 28 Q15 22 14 16 Q13 10 15 6" fill="none" stroke="#b8945e" stroke-width="2" stroke-linecap="round"/>
+  <!-- Anneaux du tronc -->
+  <line x1="13.5" y1="24" x2="14.5" y2="24" stroke="#8b6845" stroke-width="0.8"/>
+  <line x1="13" y1="20" x2="14.5" y2="20" stroke="#8b6845" stroke-width="0.8"/>
+  <line x1="12.5" y1="16" x2="14" y2="16" stroke="#8b6845" stroke-width="0.8"/>
+  <line x1="12" y1="12" x2="13.5" y2="12" stroke="#8b6845" stroke-width="0.8"/>
+  <!-- Palmes (grandes feuilles pennées) -->
+  <path d="M14 6 Q6 3 2 5 Q5 8 14 8Z" fill="#2e7d32"/>
+  <path d="M14 6 Q22 2 27 4 Q24 7 14 8Z" fill="#388e3c"/>
+  <path d="M14 6 Q8 0 6 2 Q9 5 14 8Z" fill="#33691e"/>
+  <path d="M14 6 Q20 0 23 2 Q20 5 14 8Z" fill="#2e7d32"/>
+  <path d="M14 6 Q12 0 12 3 Q13 5 14 7Z" fill="#43a047"/>
+  <path d="M14 6 Q16 0 17 2 Q16 4 14 7Z" fill="#388e3c"/>
+  <path d="M14 6 Q4 4 1 7 Q4 9 14 8Z" fill="#1b5e20"/>
+  <!-- Nervures des palmes -->
+  <line x1="14" y1="6" x2="4" y2="5" stroke="#1b5e20" stroke-width="0.6"/>
+  <line x1="14" y1="6" x2="25" y2="4" stroke="#1b5e20" stroke-width="0.6"/>
+  <line x1="14" y1="6" x2="7" y2="2" stroke="#1b5e20" stroke-width="0.5"/>
+  <line x1="14" y1="6" x2="22" y2="2" stroke="#1b5e20" stroke-width="0.5"/>
+  <!-- Noix de coco (rondes, marron) -->
+  <defs>
+    <radialGradient id="cog" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#a1887f"/>
+      <stop offset="100%" stop-color="#4e342e"/>
+    </radialGradient>
+  </defs>
+  <circle cx="12" cy="9" r="2.8" fill="url(#cog)"/>
+  <circle cx="16" cy="9" r="2.8" fill="url(#cog)"/>
+  <circle cx="14" cy="11" r="2.5" fill="url(#cog)"/>
+  <!-- Fibres sur les noix de coco -->
+  <line x1="10.5" y1="8" x2="13.5" y2="10" stroke="#6d4c41" stroke-width="0.4"/>
+  <line x1="11" y1="10" x2="13" y2="8" stroke="#6d4c41" stroke-width="0.4"/>
+  <!-- Reflet -->
+  <circle cx="11.2" cy="8.2" r="1" fill="rgba(255,255,255,0.2)"/>
+</svg>

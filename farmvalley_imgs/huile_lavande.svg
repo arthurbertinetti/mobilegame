@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_hl" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bottle_hl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4020a0"/>
+      <stop offset="40%" stop-color="#7848c8"/>
+      <stop offset="100%" stop-color="#301880"/>
+    </linearGradient>
+    <linearGradient id="dropper_hl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#503090"/>
+      <stop offset="50%" stop-color="#9060d0"/>
+      <stop offset="100%" stop-color="#402880"/>
+    </linearGradient>
+    <linearGradient id="neck_hl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4828a8"/>
+      <stop offset="50%" stop-color="#6038c0"/>
+      <stop offset="100%" stop-color="#381888"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30.5" rx="5.5" ry="1.5" fill="url(#shadow_hl)"/>
+  <!-- Bottle body (small, dark) -->
+  <rect x="11.5" y="17" width="9" height="12" rx="3" fill="url(#bottle_hl)"/>
+  <ellipse cx="16" cy="29" rx="4.5" ry="1.3" fill="#281060" opacity="0.5"/>
+  <!-- Neck -->
+  <rect x="14" y="13" width="4" height="5" rx="1" fill="url(#neck_hl)"/>
+  <!-- Dropper top -->
+  <rect x="13" y="11" width="6" height="2.5" rx="1.2" fill="url(#dropper_hl)"/>
+  <!-- Dropper stem -->
+  <rect x="15" y="5" width="2" height="7" rx="1" fill="#8050c0"/>
+  <!-- Rubber bulb -->
+  <ellipse cx="16" cy="4.5" rx="2.5" ry="1.8" fill="#6038b0"/>
+  <!-- Bottle shine -->
+  <rect x="13" y="18" width="1.8" height="9" rx="0.9" fill="#fff" opacity="0.2"/>
+  <!-- Lavender sprig on bottle -->
+  <!-- Stem -->
+  <line x1="16" y1="21" x2="16" y2="27" stroke="#c0a0e8" stroke-width="0.6" opacity="0.8"/>
+  <!-- Flower buds -->
+  <ellipse cx="14.8" cy="21" rx="1" ry="0.6" fill="#d090f0" opacity="0.85" transform="rotate(-30,14.8,21)"/>
+  <ellipse cx="17.2" cy="21.8" rx="1" ry="0.6" fill="#d090f0" opacity="0.85" transform="rotate(30,17.2,21.8)"/>
+  <ellipse cx="14.8" cy="23" rx="0.9" ry="0.5" fill="#c078e0" opacity="0.8" transform="rotate(-30,14.8,23)"/>
+  <ellipse cx="17.2" cy="23.8" rx="0.9" ry="0.5" fill="#c078e0" opacity="0.8" transform="rotate(30,17.2,23.8)"/>
+  <ellipse cx="15.5" cy="25" rx="0.8" ry="0.5" fill="#b060d0" opacity="0.75"/>
+  <ellipse cx="16.5" cy="25.5" rx="0.8" ry="0.5" fill="#b060d0" opacity="0.75"/>
+</svg>

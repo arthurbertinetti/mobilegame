@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bm_candy" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#f8d060"/>
+      <stop offset="45%" stop-color="#d4a020"/>
+      <stop offset="100%" stop-color="#8a6000"/>
+    </radialGradient>
+    <radialGradient id="bm_drop" cx="38%" cy="28%" r="60%">
+      <stop offset="0%" stop-color="#fce880"/>
+      <stop offset="60%" stop-color="#e8b820"/>
+      <stop offset="100%" stop-color="#9a7010"/>
+    </radialGradient>
+    <linearGradient id="bm_stick" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c8a060"/>
+      <stop offset="100%" stop-color="#e8c888"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.8" fill="#00000028"/>
+  <!-- Honey dipper stick -->
+  <rect x="19" y="22" width="2.5" height="8" rx="1.2" fill="url(#bm_stick)"/>
+  <!-- Dipper ridges -->
+  <ellipse cx="20.25" cy="23.5" rx="2.2" ry="0.7" fill="#c89840"/>
+  <ellipse cx="20.25" cy="25" rx="2.2" ry="0.7" fill="#c89840"/>
+  <ellipse cx="20.25" cy="26.5" rx="2.2" ry="0.7" fill="#c89840"/>
+  <!-- Honey drop main shape -->
+  <path d="M16,8 Q22,10 23,16 Q23,22 16,24 Q9,22 9,16 Q9,10 16,8 Z" fill="url(#bm_candy)"/>
+  <!-- Top point of drop -->
+  <path d="M16,8 Q17,5 16,3 Q15,5 16,8 Z" fill="#d4a020"/>
+  <!-- Inner glossy layer -->
+  <path d="M16,10 Q20,12 20.5,16 Q20.5,21 16,22.5 Q11.5,21 11.5,16 Q11.5,12 16,10 Z" fill="url(#bm_drop)" opacity="0.7"/>
+  <!-- Gloss highlight -->
+  <ellipse cx="13.5" cy="13" rx="2.5" ry="3.5" fill="rgba(255,255,200,0.45)" transform="rotate(-15,13.5,13)"/>
+  <ellipse cx="13" cy="11.5" rx="1.2" ry="1.8" fill="rgba(255,255,255,0.35)" transform="rotate(-15,13,11.5)"/>
+  <!-- Honey texture swirl -->
+  <path d="M15,14 Q17,13 18,15 Q17,17 15,16" stroke="#c08010" stroke-width="0.6" fill="none" opacity="0.5"/>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="cg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff8f00"/>
+      <stop offset="100%" stop-color="#e65100"/>
+    </linearGradient>
+  </defs>
+  <!-- Sol -->
+  <rect x="3" y="18" width="26" height="13" rx="2" fill="#5d3c1e"/>
+  <ellipse cx="16" cy="18" rx="13" ry="2.5" fill="#7a5c38"/>
+  <!-- Corps carotte (triangle arrondi) -->
+  <path d="M13 18 Q12 22 14.5 29 Q16 30.5 17.5 29 Q20 22 19 18 Z" fill="url(#cg)"/>
+  <!-- Anneaux texture carotte -->
+  <line x1="13.2" y1="21" x2="18.8" y2="21" stroke="#ff8f00" stroke-width="0.6" opacity="0.5"/>
+  <line x1="13.8" y1="24" x2="18.2" y2="24" stroke="#ff8f00" stroke-width="0.6" opacity="0.5"/>
+  <!-- Fanes (feuilles plumeuses) vertes -->
+  <line x1="16" y1="18" x2="16" y2="6" stroke="#388e3c" stroke-width="1.5"/>
+  <path d="M16 14 Q10 10 8 6 Q12 7 16 12 Z" fill="#4caf50"/>
+  <path d="M16 14 Q22 10 24 6 Q20 7 16 12 Z" fill="#388e3c"/>
+  <path d="M16 11 Q12 7 11 4 Q14 5 16 9 Z" fill="#66bb6a"/>
+  <path d="M16 11 Q20 7 21 4 Q18 5 16 9 Z" fill="#4caf50"/>
+  <path d="M16 8 Q13 5 13 2 Q16 3.5 16 7 Z" fill="#81c784"/>
+</svg>

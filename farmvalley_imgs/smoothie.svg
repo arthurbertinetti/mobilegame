@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="cup_g" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#40d050"/>
+      <stop offset="100%" stop-color="#1a6020"/>
+    </radialGradient>
+    <linearGradient id="cup_body" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#20a030"/>
+      <stop offset="50%" stop-color="#30c040"/>
+      <stop offset="100%" stop-color="#1a7828"/>
+    </linearGradient>
+    <radialGradient id="lid_g" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d0d8d0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- round cup body -->
+  <path d="M8,28 Q8,31 16,31 Q24,31 24,28 L22,15 Q22,13 16,13 Q10,13 10,15 Z" fill="url(#cup_body)"/>
+  <!-- cup highlight -->
+  <path d="M11,16 Q11,14.5 16,14.5" fill="none" stroke="#60e070" stroke-width="0.8" opacity="0.6"/>
+  <!-- dome lid -->
+  <ellipse cx="16" cy="15" rx="8" ry="2" fill="#e8e8e8"/>
+  <path d="M8,15 Q8,10 16,10 Q24,10 24,15" fill="url(#lid_g)"/>
+  <ellipse cx="16" cy="15" rx="8" ry="2" fill="none" stroke="#c0c0c0" stroke-width="0.5"/>
+  <!-- straw (pink) -->
+  <rect x="19" y="3" width="1.8" height="14" rx="0.9" fill="#f050a0"/>
+  <rect x="19" y="3" width="0.7" height="14" rx="0.35" fill="#ff90c0" opacity="0.6"/>
+  <!-- small green leaf on top -->
+  <path d="M15,10 Q13,7 14,5 Q16,7 15,10Z" fill="#30a020"/>
+  <path d="M15,10 Q17,7 17,5 Q15.5,7 15,10Z" fill="#50c030"/>
+</svg>

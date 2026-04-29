@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadowG" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bowlG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ece4d8"/>
+      <stop offset="100%" stop-color="#b8b0a4"/>
+    </radialGradient>
+    <radialGradient id="soupG" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#e07020"/>
+      <stop offset="100%" stop-color="#a03808"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="12" ry="2.5" fill="url(#shadowG)"/>
+  <!-- Bowl outer -->
+  <ellipse cx="16" cy="20" rx="13" ry="9" fill="url(#bowlG)" stroke="#a8a098" stroke-width="0.6"/>
+  <!-- Soup -->
+  <ellipse cx="16" cy="19" rx="11" ry="7.5" fill="url(#soupG)"/>
+  <!-- Soup sheen -->
+  <ellipse cx="12" cy="16" rx="3" ry="1.5" fill="#f09040" opacity="0.3"/>
+  <!-- Cream swirl -->
+  <path d="M11 18 Q13 16 16 17.5 Q19 19 21 17" fill="none" stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0.85"/>
+  <circle cx="21" cy="17" r="0.7" fill="white" opacity="0.85"/>
+  <!-- Pumpkin seeds garnish -->
+  <ellipse cx="14" cy="21" rx="1.2" ry="0.6" fill="#90a040" transform="rotate(-20,14,21)"/>
+  <ellipse cx="17" cy="22" rx="1.2" ry="0.6" fill="#808830" transform="rotate(10,17,22)"/>
+  <ellipse cx="20" cy="20.5" rx="1.2" ry="0.6" fill="#98a838" transform="rotate(-30,20,20.5)"/>
+  <!-- Oil drop -->
+  <circle cx="16" cy="15" r="0.8" fill="#d09020" opacity="0.7"/>
+</svg>

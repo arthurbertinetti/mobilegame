@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="ch_wood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d49050"/>
+      <stop offset="50%" stop-color="#c08040"/>
+      <stop offset="100%" stop-color="#9a6028"/>
+    </linearGradient>
+    <radialGradient id="ch_meat1" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#c83030"/>
+      <stop offset="100%" stop-color="#901818"/>
+    </radialGradient>
+    <radialGradient id="ch_meat2" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#d03838"/>
+      <stop offset="100%" stop-color="#a02020"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000028"/>
+  <!-- Wooden board -->
+  <rect x="3" y="18" width="26" height="11" rx="3" fill="#8a5818"/>
+  <rect x="3" y="14" width="26" height="11" rx="3" fill="url(#ch_wood)"/>
+  <!-- Wood grain lines -->
+  <path d="M5,15 Q16,14.5 27,15" stroke="#b07030" stroke-width="0.5" opacity="0.6"/>
+  <path d="M5,17 Q16,16.5 27,17" stroke="#b07030" stroke-width="0.5" opacity="0.6"/>
+  <path d="M5,19 Q16,18.5 27,19" stroke="#b07030" stroke-width="0.5" opacity="0.6"/>
+  <path d="M5,21 Q16,20.5 27,21" stroke="#b07030" stroke-width="0.5" opacity="0.6"/>
+  <!-- Rolled meat slice 1 (left) -->
+  <circle cx="9" cy="19" r="4.5" fill="url(#ch_meat1)"/>
+  <circle cx="9" cy="19" r="3" fill="#b82020" opacity="0.7"/>
+  <circle cx="9" cy="19" r="1.5" fill="url(#ch_meat1)"/>
+  <!-- Fat/white layer in roll -->
+  <path d="M9,14.5 Q12,15 12,19 Q12,22 9,23.5 Q11.5,22.5 11.5,19 Q11.5,15.5 9,14.5 Z" fill="#f0d8c8" opacity="0.6"/>
+  <!-- Rolled meat slice 2 (center) -->
+  <circle cx="17" cy="18.5" r="4.5" fill="url(#ch_meat2)"/>
+  <circle cx="17" cy="18.5" r="3" fill="#c01818" opacity="0.7"/>
+  <circle cx="17" cy="18.5" r="1.5" fill="url(#ch_meat2)"/>
+  <path d="M17,14 Q20,15 20,18.5 Q20,22 17,23 Q19.5,22 19.5,18.5 Q19.5,15 17,14 Z" fill="#f0d8c8" opacity="0.6"/>
+  <!-- Rolled meat slice 3 (right) -->
+  <circle cx="24" cy="19" r="4" fill="url(#ch_meat1)"/>
+  <circle cx="24" cy="19" r="2.6" fill="#b82020" opacity="0.7"/>
+  <circle cx="24" cy="19" r="1.3" fill="url(#ch_meat1)"/>
+  <path d="M24,15 Q27,16 27,19 Q27,22 24,23 Q26.5,22 26.5,19 Q26.5,16 24,15 Z" fill="#f0d8c8" opacity="0.6"/>
+  <!-- Herb decoration -->
+  <path d="M12,23 Q14,21.5 16,23" stroke="#3a8820" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+  <circle cx="12.5" cy="22.5" r="0.7" fill="#4a9820"/>
+  <circle cx="15" cy="22.5" r="0.7" fill="#4a9820"/>
+</svg>

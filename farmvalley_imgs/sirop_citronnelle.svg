@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="sc_body" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#d8f040"/>
+      <stop offset="55%" stop-color="#b0d020"/>
+      <stop offset="100%" stop-color="#708010"/>
+    </radialGradient>
+    <radialGradient id="sc_label" cx="40%" cy="35%" r="58%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f4f8e0"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Bottle body -->
+  <rect x="10" y="10" width="12" height="20" rx="3" fill="url(#sc_body)"/>
+  <!-- Bottle neck -->
+  <rect x="13" y="5" width="6" height="7" rx="2" fill="#90b018"/>
+  <!-- Dark cap -->
+  <rect x="12.5" y="3" width="7" height="4" rx="2" fill="#1a1e08"/>
+  <rect x="13" y="3" width="6" height="2" rx="1" fill="#2a2c10"/>
+  <!-- White label -->
+  <rect x="11" y="14" width="10" height="11" rx="1.5" fill="url(#sc_label)" stroke="#d0d890" stroke-width="0.5"/>
+  <!-- Lemongrass / grass blades on label -->
+  <path d="M14,24 Q13.5,21 15,18.5 Q15.5,17.5 16,17" stroke="#60a020" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M16,24 Q16,21 16,18 Q16,16.5 16.5,15.5" stroke="#70b828" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M18,24 Q18.5,21 17,18.5 Q16.5,17.5 16,17" stroke="#60a020" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- Small lemon shape -->
+  <ellipse cx="16" cy="16.5" rx="2" ry="1.2" fill="#f0e020" transform="rotate(-15,16,16.5)"/>
+  <!-- Bottle shine -->
+  <rect x="11.5" y="11" width="1.5" height="10" rx="0.7" fill="rgba(255,255,255,0.3)"/>
+</svg>

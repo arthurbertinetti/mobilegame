@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ph_body" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#f0b820"/>
+      <stop offset="40%" stop-color="#e07010"/>
+      <stop offset="100%" stop-color="#a02808"/>
+    </radialGradient>
+    <radialGradient id="ph_head" cx="38%" cy="38%" r="50%">
+      <stop offset="0%" stop-color="#f8d030"/>
+      <stop offset="55%" stop-color="#e09018"/>
+      <stop offset="100%" stop-color="#c04808"/>
+    </radialGradient>
+    <linearGradient id="ph_wing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8a820"/>
+      <stop offset="40%" stop-color="#e05808"/>
+      <stop offset="100%" stop-color="#800808"/>
+    </linearGradient>
+    <linearGradient id="ph_flame" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#f0c020"/>
+      <stop offset="50%" stop-color="#f06010"/>
+      <stop offset="100%" stop-color="#e02010"/>
+    </linearGradient>
+    <radialGradient id="ph_glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f8d03040"/>
+      <stop offset="100%" stop-color="#f0600000"/>
+    </radialGradient>
+  </defs>
+  <!-- Magical glow aura -->
+  <ellipse cx="15" cy="18" rx="14" ry="13" fill="url(#ph_glow)"/>
+  <!-- Flame tail feathers (spreading upward-behind) -->
+  <path d="M21,22 Q27,18 29,12 Q26,16 25,20 Q28,14 27,10 Q24,15 23,19 Q26,13 24,9 Q22,14 21,18 Q23,13 22,10 Q20,15 20,19" fill="url(#ph_flame)" opacity="0.9"/>
+  <!-- More flame plumes -->
+  <path d="M22,23 Q30,20 31,13 Q27,18 26.5,22" fill="#e04808" opacity="0.6"/>
+  <path d="M23,22.5 Q29,22 31,16 Q27,20 27,24" fill="#f09010" opacity="0.5"/>
+  <!-- Wing (spread, right) -->
+  <path d="M15,20 Q10,15 8,9 Q9.5,8 11,9.5 Q13,14 16,19" fill="url(#ph_wing)"/>
+  <!-- Wing flame tips -->
+  <path d="M8,9 Q5.5,7 5,4 Q6.5,5.5 8,8" fill="#f06010" opacity="0.8"/>
+  <path d="M9,8.5 Q7,6.5 7,3.5 Q8.5,5 9.5,8" fill="#f0a020" opacity="0.7"/>
+  <!-- Body -->
+  <path d="M11,21 Q11,16 15,15 Q20,14.5 22,17.5 Q23.5,20.5 22,24 Q19.5,27 15.5,27 Q11,26.5 11,21 Z" fill="url(#ph_body)"/>
+  <!-- Breast (golden) -->
+  <path d="M13,21 Q14.5,18.5 17,19 Q19.5,20 19.5,23 Q18,26 15.5,26 Q13,25.5 13,21 Z" fill="#f8c830" opacity="0.5"/>
+  <!-- Neck -->
+  <path d="M12,16.5 Q11,13 12,10 Q14,11 13.5,16.5 Z" fill="url(#ph_head)"/>
+  <!-- Head -->
+  <path d="M10,13 Q10.5,9 12.5,7.5 Q14.5,7 15.5,8.5 Q15.5,10.5 14,12 Q14.5,13.5 13,15 Q11.5,15.5 10,13 Z" fill="url(#ph_head)"/>
+  <!-- Flame crest -->
+  <path d="M12,8 Q11,5.5 12,3.5 Q13,4.5 13,7" fill="url(#ph_flame)" opacity="0.9"/>
+  <path d="M13,7.5 Q12.5,5 13.5,3 Q14.5,4.5 14,7" fill="#f8c020" opacity="0.8"/>
+  <path d="M14,8 Q14,5.5 15,4 Q15.5,5.5 15,7.5" fill="url(#ph_flame)" opacity="0.85"/>
+  <!-- Beak (strong, hooked) -->
+  <path d="M10,12 Q8,11.5 7.5,13 Q8.5,14.5 10.5,14 Q11.5,13.5 11,12.5 Z" fill="#d4a020"/>
+  <!-- Eye (ruby red, glowing) -->
+  <circle cx="12.5" cy="10.5" r="1.3" fill="#e83030"/>
+  <circle cx="12.5" cy="10.5" r="0.7" fill="#800808"/>
+  <circle cx="12.1" cy="10" r="0.32" fill="#ffffff60"/>
+  <!-- Sparkle embers -->
+  <circle cx="5" cy="14" r="0.5" fill="#f8c820" opacity="0.8"/>
+  <circle cx="7" cy="7" r="0.4" fill="#f06010" opacity="0.7"/>
+  <circle cx="26" cy="9" r="0.5" fill="#f8a020" opacity="0.75"/>
+  <circle cx="29" cy="13" r="0.4" fill="#f0c820" opacity="0.7"/>
+  <circle cx="24" cy="7" r="0.4" fill="#f04010" opacity="0.6"/>
+</svg>

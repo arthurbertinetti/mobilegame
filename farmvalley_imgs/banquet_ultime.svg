@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="stand_gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0d060"/>
+      <stop offset="100%" stop-color="#a07010"/>
+    </linearGradient>
+    <radialGradient id="tier_shine" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fff8e0"/>
+      <stop offset="100%" stop-color="#d4a020"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Stand center pole -->
+  <rect x="15" y="8" width="2" height="22" rx="1" fill="url(#stand_gold)"/>
+  <!-- Top tier plate (small) -->
+  <ellipse cx="16" cy="9" rx="6" ry="2" fill="url(#tier_shine)"/>
+  <ellipse cx="16" cy="9" rx="6" ry="2" fill="none" stroke="#c09020" stroke-width="0.5"/>
+  <!-- Top tier food: tiny cake -->
+  <rect x="13" y="6" width="6" height="3.5" rx="1" fill="#f080a0"/>
+  <rect x="13.5" y="6" width="5" height="1" rx="0.5" fill="#ffffff80"/>
+  <path d="M15 6 Q15 4.5 16 4 Q17 4.5 17 6" fill="#f0d020"/>
+  <!-- Middle tier plate -->
+  <ellipse cx="16" cy="18" rx="9" ry="2.5" fill="url(#tier_shine)"/>
+  <ellipse cx="16" cy="18" rx="9" ry="2.5" fill="none" stroke="#c09020" stroke-width="0.6"/>
+  <!-- Middle tier foods -->
+  <!-- Macaron left -->
+  <ellipse cx="9" cy="16.5" rx="2" ry="1.2" fill="#f070d0"/>
+  <ellipse cx="9" cy="16.5" rx="2" ry="0.5" fill="#d050b0" opacity="0.6"/>
+  <!-- Macaron right -->
+  <ellipse cx="23" cy="16.5" rx="2" ry="1.2" fill="#70c0f0"/>
+  <ellipse cx="23" cy="16.5" rx="2" ry="0.5" fill="#50a0d0" opacity="0.6"/>
+  <!-- Petit four center -->
+  <rect x="14.5" y="15.5" width="3" height="2.5" rx="0.5" fill="#f0c040"/>
+  <rect x="14.5" y="15.5" width="3" height="0.7" rx="0.3" fill="#e09020"/>
+  <!-- Bottom tier plate -->
+  <ellipse cx="16" cy="27" rx="12" ry="3" fill="url(#tier_shine)"/>
+  <ellipse cx="16" cy="27" rx="12" ry="3" fill="none" stroke="#c09020" stroke-width="0.7"/>
+  <!-- Bottom tier foods -->
+  <ellipse cx="8" cy="25.5" rx="2.5" ry="1.5" fill="#e08050"/>
+  <ellipse cx="16" cy="25" rx="2.5" ry="1.5" fill="#80c060"/>
+  <ellipse cx="24" cy="25.5" rx="2.5" ry="1.5" fill="#f0d070"/>
+</svg>

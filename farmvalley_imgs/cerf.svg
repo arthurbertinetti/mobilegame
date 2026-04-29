@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="dr_body" cx="42%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#c87040"/>
+      <stop offset="50%" stop-color="#a05018"/>
+      <stop offset="100%" stop-color="#682808"/>
+    </radialGradient>
+    <radialGradient id="dr_head" cx="40%" cy="38%" r="50%">
+      <stop offset="0%" stop-color="#be6838"/>
+      <stop offset="100%" stop-color="#804018"/>
+    </radialGradient>
+    <radialGradient id="dr_belly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0b878"/>
+      <stop offset="100%" stop-color="#c09050"/>
+    </radialGradient>
+    <linearGradient id="dr_antler" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6a4010"/>
+      <stop offset="100%" stop-color="#3a2008"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="15.5" cy="31.3" rx="9.5" ry="0.7" fill="#00000018"/>
+  <!-- Rear legs -->
+  <path d="M19,25.5 L18.5,29 Q19,30.5 18.5,31.5" stroke="#7a4818" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M21.5,25 L21,28.5 Q21.5,30 21,31" stroke="#7a4818" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Front legs -->
+  <path d="M10.5,25.5 L10,29 Q10.5,30.5 10,31.5" stroke="#7a4818" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M13,26 L12.5,29.5 Q13,31 12.5,31.5" stroke="#7a4818" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Hooves -->
+  <ellipse cx="10" cy="31.5" rx="1.1" ry="0.6" fill="#2a1008"/>
+  <ellipse cx="12.5" cy="31.7" rx="1.1" ry="0.6" fill="#2a1008"/>
+  <ellipse cx="18.5" cy="31.7" rx="1.1" ry="0.6" fill="#2a1008"/>
+  <ellipse cx="21" cy="31.2" rx="1.1" ry="0.6" fill="#2a1008"/>
+  <!-- Body -->
+  <path d="M8,22 Q8,16 13,15 Q20,14 24,17.5 Q27,20.5 26,25.5 Q23,28.5 16,28.5 Q8,28 8,22 Z" fill="url(#dr_body)"/>
+  <!-- White rump patch -->
+  <path d="M22,22.5 Q25,22 26,24 Q25,26.5 22.5,26 Q21,25 22,22.5 Z" fill="#f0e8d0"/>
+  <!-- Lighter belly -->
+  <path d="M10.5,23 Q12.5,20.5 16,21 Q19.5,21.5 20.5,24.5 Q19,27.5 15,27.5 Q11,27 10.5,23 Z" fill="url(#dr_belly)" opacity="0.5"/>
+  <!-- Tail (small, white) -->
+  <ellipse cx="25" cy="22" rx="1.5" ry="2" fill="#f0e8d0"/>
+  <!-- Neck -->
+  <path d="M10,17 Q9.5,13 11,10.5 Q13,11.5 12.5,17 Z" fill="url(#dr_head)"/>
+  <!-- Head (elongated deer profile) -->
+  <path d="M8.5,13.5 Q9,9.5 11,7.5 Q13,6.5 14.5,7.5 Q15,9 13.5,11 Q14,13 13,15 Q11,15.5 8.5,13.5 Z" fill="url(#dr_head)"/>
+  <!-- Muzzle (tan) -->
+  <path d="M8.5,13 Q7,14 6.5,15.5 Q7,17 8.5,17 Q10,16.5 10,15 Z" fill="#c09060"/>
+  <!-- Nostril -->
+  <ellipse cx="7.3" cy="15.5" rx="0.6" ry="0.7" fill="#5a2808"/>
+  <!-- Ear (large deer ear) -->
+  <path d="M8.5,8.5 Q6.5,7 6,9 Q6.5,11 9,10.5 Z" fill="#b86030"/>
+  <!-- Inner ear -->
+  <path d="M8.2,8.8 Q7,7.8 6.8,9.3 Q7.5,10.5 8.8,10 Z" fill="#d08060" opacity="0.5"/>
+  <!-- Multi-point antlers (left side) -->
+  <!-- Main beam -->
+  <path d="M12,8 Q11,5 10,3" stroke="url(#dr_antler)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Brow tine -->
+  <path d="M11.5,5.5 Q10,4.5 8.5,5" stroke="url(#dr_antler)" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <!-- Bay tine -->
+  <path d="M10.8,4 Q9.5,3 8,3" stroke="url(#dr_antler)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Top fork -->
+  <path d="M10,3 Q9,1.5 8,1 M10,3 Q11,1.5 11,0.8" stroke="url(#dr_antler)" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  <!-- Eye -->
+  <ellipse cx="11" cy="9.5" rx="1.2" ry="1" fill="#1a0800"/>
+  <ellipse cx="10.7" cy="9.2" rx="0.42" ry="0.35" fill="#5a2808" opacity="0.7"/>
+  <circle cx="11.5" cy="9" r="0.25" fill="#ffffff50"/>
+</svg>

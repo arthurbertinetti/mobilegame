@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="pn_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pn_bottle" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b07030"/>
+      <stop offset="35%" stop-color="#e0a858"/>
+      <stop offset="65%" stop-color="#d09040"/>
+      <stop offset="100%" stop-color="#a06020"/>
+    </linearGradient>
+    <linearGradient id="pn_cork" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c888"/>
+      <stop offset="100%" stop-color="#b89050"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="6.5" ry="1.5" fill="url(#pn_shadow)"/>
+  <!-- Bottle body - rounded/organic natural shape -->
+  <path d="M10 18 Q9 19 9 23 Q9 29.5 16 30.5 Q23 29.5 23 23 Q23 19 22 18 Z" fill="url(#pn_bottle)" stroke="#906020" stroke-width="0.7"/>
+  <!-- Bottle shine -->
+  <path d="M11 19 Q10.5 23 11 28.5 L12.5 29 L12 19 Z" fill="white" opacity="0.3"/>
+  <!-- Small flower decoration on bottle -->
+  <!-- Flower center -->
+  <circle cx="16" cy="24" r="1.2" fill="#f0c030"/>
+  <!-- Petals -->
+  <ellipse cx="16" cy="21.5" rx="1" ry="1.5" fill="white" opacity="0.9"/>
+  <ellipse cx="16" cy="26.5" rx="1" ry="1.5" fill="white" opacity="0.9"/>
+  <ellipse cx="13.5" cy="24" rx="1.5" ry="1" fill="white" opacity="0.9"/>
+  <ellipse cx="18.5" cy="24" rx="1.5" ry="1" fill="white" opacity="0.9"/>
+  <ellipse cx="14.3" cy="21.8" rx="1" ry="1.5" fill="white" opacity="0.75" transform="rotate(-45,14.3,21.8)"/>
+  <ellipse cx="17.7" cy="21.8" rx="1" ry="1.5" fill="white" opacity="0.75" transform="rotate(45,17.7,21.8)"/>
+  <ellipse cx="14.3" cy="26.2" rx="1" ry="1.5" fill="white" opacity="0.75" transform="rotate(45,14.3,26.2)"/>
+  <ellipse cx="17.7" cy="26.2" rx="1" ry="1.5" fill="white" opacity="0.75" transform="rotate(-45,17.7,26.2)"/>
+  <!-- Flower center again on top -->
+  <circle cx="16" cy="24" r="1.2" fill="#f0c030"/>
+  <circle cx="16" cy="24" r="0.6" fill="#e8a020"/>
+  <!-- Neck / shoulder -->
+  <path d="M13 18 Q12 16 13.5 14 L18.5 14 Q20 16 19 18 Z" fill="url(#pn_bottle)" stroke="#906020" stroke-width="0.6"/>
+  <rect x="13.8" y="14.5" width="1.5" height="3" rx="0.6" fill="white" opacity="0.25"/>
+  <!-- Cork stopper -->
+  <rect x="13.5" y="9" width="5" height="6" rx="1.5" fill="url(#pn_cork)" stroke="#906040" stroke-width="0.6"/>
+  <!-- Cork texture lines -->
+  <line x1="14" y1="10.5" x2="18" y2="10.5" stroke="#a07030" stroke-width="0.4" opacity="0.6"/>
+  <line x1="14" y1="11.5" x2="18" y2="11.5" stroke="#a07030" stroke-width="0.4" opacity="0.5"/>
+  <line x1="14" y1="12.5" x2="18" y2="12.5" stroke="#a07030" stroke-width="0.4" opacity="0.6"/>
+  <!-- Cork cap shine -->
+  <rect x="14.2" y="9.3" width="1.5" height="2.5" rx="0.5" fill="white" opacity="0.25"/>
+</svg>

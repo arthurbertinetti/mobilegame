@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="mg" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#fff176"/>
+      <stop offset="60%" stop-color="#dce775"/>
+      <stop offset="100%" stop-color="#9e9d24"/>
+    </radialGradient>
+  </defs>
+  <!-- Feuille et vrille -->
+  <ellipse cx="8" cy="10" rx="7" ry="5" fill="#2e7d32" transform="rotate(-15 8 10)"/>
+  <path d="M22 8 Q26 4 28 6" fill="none" stroke="#4caf50" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Tige -->
+  <path d="M12 22 Q10 14 12 8" fill="none" stroke="#4caf50" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Corps du melon (ovale) -->
+  <ellipse cx="20" cy="22" rx="10" ry="9" fill="url(#mg)"/>
+  <!-- Réseau (cannelures) -->
+  <ellipse cx="20" cy="22" rx="10" ry="9" fill="none" stroke="#9e9d24" stroke-width="0.5" opacity="0.6"/>
+  <!-- Stries longitudinales -->
+  <line x1="20" y1="13" x2="20" y2="31" stroke="#9e9d24" stroke-width="0.6" opacity="0.5"/>
+  <line x1="14" y1="14" x2="12" y2="30" stroke="#9e9d24" stroke-width="0.5" opacity="0.4"/>
+  <line x1="26" y1="14" x2="28" y2="30" stroke="#9e9d24" stroke-width="0.5" opacity="0.4"/>
+  <line x1="11" y1="18" x2="10" y2="26" stroke="#9e9d24" stroke-width="0.5" opacity="0.4"/>
+  <!-- Stries transversales (filet) -->
+  <ellipse cx="20" cy="18" rx="8" ry="4" fill="none" stroke="#9e9d24" stroke-width="0.5" opacity="0.4"/>
+  <ellipse cx="20" cy="22" rx="9" ry="3" fill="none" stroke="#9e9d24" stroke-width="0.5" opacity="0.4"/>
+  <ellipse cx="20" cy="26" rx="7" ry="3" fill="none" stroke="#9e9d24" stroke-width="0.5" opacity="0.4"/>
+  <!-- Bout floral (ombilique) -->
+  <circle cx="20" cy="31" r="1.5" fill="#827717"/>
+  <!-- Tige du melon -->
+  <line x1="20" y1="13" x2="19" y2="11" stroke="#558b2f" stroke-width="1.5"/>
+  <!-- Reflet -->
+  <ellipse cx="15" cy="18" rx="3.5" ry="4.5" fill="rgba(255,255,255,0.2)" transform="rotate(-10 15 18)"/>
+</svg>

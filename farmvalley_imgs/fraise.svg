@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="fr_fruit" cx="35%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#ff7070"/>
+      <stop offset="50%" stop-color="#e81020"/>
+      <stop offset="100%" stop-color="#a00010"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="8" ry="0.7" fill="#00000022"/>
+  <!-- Strawberry body (large heart/cone shape) -->
+  <path d="M16,29.5 Q8,24 7,17 Q7,11 11,9.5 Q13.5,8.8 16,11 Q18.5,8.8 21,9.5 Q25,11 25,17 Q24,24 16,29.5 Z" fill="url(#fr_fruit)"/>
+  <!-- Surface texture shine -->
+  <ellipse cx="12" cy="15" rx="2.5" ry="3.5" fill="rgba(255,220,200,.28)" transform="rotate(-12,12,15)"/>
+  <!-- Seeds (achenes) -->
+  <ellipse cx="13" cy="13.5" rx="0.7" ry="0.55" fill="#ffd060" transform="rotate(-15,13,13.5)"/>
+  <ellipse cx="17.5" cy="12.5" rx="0.7" ry="0.55" fill="#ffd060" transform="rotate(10,17.5,12.5)"/>
+  <ellipse cx="21" cy="15" rx="0.7" ry="0.55" fill="#ffc840" transform="rotate(20,21,15)"/>
+  <ellipse cx="11" cy="18" rx="0.7" ry="0.55" fill="#ffd060" transform="rotate(-20,11,18)"/>
+  <ellipse cx="15" cy="18.5" rx="0.7" ry="0.55" fill="#ffd060" transform="rotate(5,15,18.5)"/>
+  <ellipse cx="20" cy="19" rx="0.7" ry="0.55" fill="#ffc840" transform="rotate(15,20,19)"/>
+  <ellipse cx="12.5" cy="23" rx="0.7" ry="0.55" fill="#ffd060" transform="rotate(-10,12.5,23)"/>
+  <ellipse cx="17.5" cy="23.5" rx="0.7" ry="0.55" fill="#ffd060" transform="rotate(10,17.5,23.5)"/>
+  <ellipse cx="22" cy="17" rx="0.65" ry="0.5" fill="#ffc840" transform="rotate(25,22,17)"/>
+  <ellipse cx="14.5" cy="26.5" rx="0.6" ry="0.5" fill="#ffd060"/>
+  <ellipse cx="19" cy="26" rx="0.6" ry="0.5" fill="#ffd060"/>
+  <!-- Green calyx leaves -->
+  <path d="M12,10.5 Q10,7.5 13,8.5 Q13.5,6 15,8 Q16,5 17,8 Q18.5,6 19,8.5 Q22,7.5 20,10.5" fill="#2a8818"/>
+  <!-- Small leaf tips pointing out -->
+  <path d="M11,9.5 Q9,7 11.5,9" fill="#38a020"/>
+  <path d="M21,9.5 Q23,7 20.5,9" fill="#38a020"/>
+  <path d="M16,8 Q16,5.5 16.5,7" fill="#38a020"/>
+  <!-- Stem -->
+  <line x1="16" y1="8" x2="16" y2="3.5" stroke="#2a8818" stroke-width="1.4" stroke-linecap="round"/>
+  <!-- Small leaf on stem -->
+  <ellipse cx="18.5" cy="5.5" rx="2.2" ry="1.2" fill="#38a020" transform="rotate(30,18.5,5.5)"/>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ag" cx="30%" cy="25%" r="70%">
+      <stop offset="0%" stop-color="#ce93d8"/>
+      <stop offset="40%" stop-color="#7b1fa2"/>
+      <stop offset="100%" stop-color="#4a148c"/>
+    </radialGradient>
+  </defs>
+  <!-- Feuilles de plant -->
+  <ellipse cx="8" cy="16" rx="6" ry="3.5" fill="#388e3c" transform="rotate(-20 8 16)"/>
+  <ellipse cx="24" cy="16" rx="6" ry="3.5" fill="#2e7d32" transform="rotate(20 24 16)"/>
+  <ellipse cx="16" cy="11" rx="7" ry="3.5" fill="#43a047"/>
+  <!-- Tige -->
+  <line x1="16" y1="30" x2="16" y2="9" stroke="#388e3c" stroke-width="1.5"/>
+  <!-- Corps aubergine (ovale allongé) -->
+  <ellipse cx="16" cy="22" rx="8" ry="10" fill="url(#ag)"/>
+  <!-- Calice vert -->
+  <path d="M12 12 Q11 10 13 11 Q16 9 19 11 Q21 10 20 12" fill="#4caf50"/>
+  <path d="M14 11 Q16 8 18 11" fill="#66bb6a"/>
+  <!-- Tige de l'aubergine -->
+  <line x1="16" y1="9" x2="16" y2="11" stroke="#4caf50" stroke-width="2"/>
+  <!-- Reflet -->
+  <ellipse cx="12" cy="18" rx="3" ry="5" fill="rgba(255,255,255,0.18)" transform="rotate(-10 12 18)"/>
+</svg>

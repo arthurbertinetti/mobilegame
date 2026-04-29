@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bottle_grad" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#386020"/>
+      <stop offset="100%" stop-color="#182808"/>
+    </radialGradient>
+    <radialGradient id="label_grad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#f0e8c0"/>
+      <stop offset="100%" stop-color="#d0c890"/>
+    </radialGradient>
+    <radialGradient id="turtle_grad" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#508030"/>
+      <stop offset="100%" stop-color="#286010"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Bottle body -->
+  <path d="M11 12 Q10 14 10 24 Q10 29 16 29 Q22 29 22 24 Q22 14 21 12 Z" fill="url(#bottle_grad)"/>
+  <!-- Bottle neck -->
+  <rect x="13.5" y="7" width="5" height="6" rx="1.5" fill="#204010"/>
+  <!-- Dropper top -->
+  <rect x="14.5" y="4" width="3" height="4" rx="1" fill="#303030"/>
+  <ellipse cx="16" cy="4" rx="2" ry="0.8" fill="#404040"/>
+  <!-- Dropper bulb -->
+  <ellipse cx="16" cy="4" rx="1.8" ry="1.3" fill="#606060"/>
+  <!-- Label -->
+  <rect x="11.5" y="16" width="9" height="10" rx="1" fill="url(#label_grad)" stroke="#b0a060" stroke-width="0.4"/>
+  <!-- Turtle silhouette on label -->
+  <!-- Shell -->
+  <ellipse cx="16" cy="20" rx="3" ry="2.5" fill="url(#turtle_grad)"/>
+  <!-- Shell pattern -->
+  <path d="M14 19 Q16 18 18 19" stroke="#204010" stroke-width="0.4" fill="none"/>
+  <path d="M13.5 21 Q16 22 18.5 21" stroke="#204010" stroke-width="0.4" fill="none"/>
+  <!-- Head -->
+  <circle cx="16" cy="17" r="1.2" fill="#407020"/>
+  <!-- Legs -->
+  <ellipse cx="13" cy="19.5" rx="1" ry="0.6" fill="#407020" transform="rotate(-30,13,19.5)"/>
+  <ellipse cx="19" cy="19.5" rx="1" ry="0.6" fill="#407020" transform="rotate(30,19,19.5)"/>
+  <ellipse cx="13" cy="22" rx="1" ry="0.6" fill="#407020" transform="rotate(30,13,22)"/>
+  <ellipse cx="19" cy="22" rx="1" ry="0.6" fill="#407020" transform="rotate(-30,19,22)"/>
+  <!-- Bottle highlight -->
+  <path d="M12 14 Q11.5 20 12 25" stroke="#60a040" stroke-width="0.8" fill="none" opacity="0.4"/>
+</svg>

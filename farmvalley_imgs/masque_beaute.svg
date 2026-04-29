@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_mb" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tube_mb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d0e870"/>
+      <stop offset="50%" stop-color="#c0d860"/>
+      <stop offset="100%" stop-color="#90b030"/>
+    </linearGradient>
+    <linearGradient id="cap_mb" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b8d050"/>
+      <stop offset="100%" stop-color="#80a020"/>
+    </linearGradient>
+    <linearGradient id="shine_mb" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="8" ry="1.8" fill="url(#shadow_mb)"/>
+  <!-- Tube body (horizontal-ish, slightly tilted) -->
+  <g transform="rotate(-8, 16, 20)">
+    <!-- Tube body -->
+    <rect x="6" y="16" width="18" height="10" rx="3" fill="url(#tube_mb)"/>
+    <!-- Tube end (crimped bottom) -->
+    <rect x="6" y="22" width="18" height="4" rx="1.5" fill="#80a020"/>
+    <rect x="7" y="24" width="16" height="1.5" rx="0.5" fill="#608010" opacity="0.6"/>
+    <!-- Crimp lines -->
+    <line x1="10" y1="23" x2="10" y2="26" stroke="#608010" stroke-width="0.8" opacity="0.5"/>
+    <line x1="14" y1="23" x2="14" y2="26" stroke="#608010" stroke-width="0.8" opacity="0.5"/>
+    <line x1="18" y1="23" x2="18" y2="26" stroke="#608010" stroke-width="0.8" opacity="0.5"/>
+    <!-- Cap -->
+    <rect x="19.5" y="14" width="5" height="12" rx="2.5" fill="url(#cap_mb)"/>
+    <ellipse cx="22" cy="14" rx="2.5" ry="1" fill="#d0e870"/>
+    <!-- Shine -->
+    <rect x="7.5" y="16.5" width="2" height="7" rx="1" fill="url(#shine_mb)" opacity="0.5"/>
+  </g>
+  <!-- Leaf decoration on tube -->
+  <g transform="rotate(-8, 16, 20)">
+    <ellipse cx="13" cy="18.5" rx="2.5" ry="1.2" fill="#70a010" opacity="0.7" transform="rotate(-20,13,18.5)"/>
+    <line x1="10.5" y1="19.5" x2="15.5" y2="17.5" stroke="#507010" stroke-width="0.5" opacity="0.6"/>
+  </g>
+</svg>

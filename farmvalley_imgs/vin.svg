@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="vi_bottle" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1a3010"/>
+      <stop offset="40%" stop-color="#284820"/>
+      <stop offset="100%" stop-color="#152808"/>
+    </linearGradient>
+    <radialGradient id="vi_wine" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#8a1828"/>
+      <stop offset="100%" stop-color="#500e18"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="7" ry="0.7" fill="#00000020"/>
+  <!-- Bottle body -->
+  <path d="M11,17 Q10,16 10,25 Q10,29 13,30 L19,30 Q22,29 22,25 Q22,16 21,17 Z" fill="url(#vi_bottle)"/>
+  <!-- Wine level (red, upper portion) -->
+  <path d="M11,17 Q10,16 10,21 L22,21 Q22,16 21,17 Z" fill="url(#vi_wine)"/>
+  <!-- Wine surface line -->
+  <path d="M10.5,21 Q16,20.5 21.5,21" stroke="#6a1020" stroke-width="0.7" fill="none"/>
+  <!-- Bottle shoulder -->
+  <path d="M11,17 Q10,15 12,13 L20,13 Q22,15 21,17 Z" fill="url(#vi_bottle)"/>
+  <!-- Bottle neck -->
+  <path d="M13,7 L19,7 L20,13 L12,13 Z" fill="url(#vi_bottle)"/>
+  <!-- Capsule (cork cover) -->
+  <rect x="13" y="4" width="6" height="4" rx="1" fill="#b01828"/>
+  <rect x="12.5" y="6.5" width="7" height="1.5" rx="0.5" fill="#901020"/>
+  <!-- Bottle glass shine -->
+  <path d="M12,18 Q11.5,23 12,27" stroke="rgba(255,255,255,.2)" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- Wine shine reflection -->
+  <path d="M12,18 Q14,17 16,17.5" stroke="rgba(255,80,80,.25)" stroke-width="0.8" fill="none"/>
+  <!-- Label -->
+  <rect x="11.5" y="22" width="9" height="5" rx="0.5" fill="rgba(240,230,180,.7)"/>
+  <line x1="13" y1="23.5" x2="20.5" y2="23.5" stroke="#8a4010" stroke-width="0.5"/>
+  <line x1="13" y1="25" x2="20.5" y2="25" stroke="#8a4010" stroke-width="0.4"/>
+</svg>

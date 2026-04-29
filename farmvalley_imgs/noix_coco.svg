@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ncg" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#bcaaa4"/>
+      <stop offset="55%" stop-color="#795548"/>
+      <stop offset="100%" stop-color="#4e342e"/>
+    </radialGradient>
+  </defs>
+  <!-- Corps de la noix de coco (ronde, marron) -->
+  <circle cx="16" cy="17" r="12" fill="url(#ncg)"/>
+  <!-- Trois points caractéristiques (le "visage" de la noix) -->
+  <circle cx="13" cy="14" r="1.8" fill="#3e2723"/>
+  <circle cx="19" cy="14" r="1.8" fill="#3e2723"/>
+  <circle cx="16" cy="18.5" r="2" fill="#3e2723"/>
+  <!-- Fibre de coco (texture velue) -->
+  <line x1="5.5" y1="14" x2="4.5" y2="13" stroke="#5d4037" stroke-width="0.6"/>
+  <line x1="5" y1="17" x2="3.8" y2="17" stroke="#5d4037" stroke-width="0.6"/>
+  <line x1="5.5" y1="20" x2="4.5" y2="21" stroke="#5d4037" stroke-width="0.6"/>
+  <line x1="26.5" y1="14" x2="27.5" y2="13" stroke="#5d4037" stroke-width="0.6"/>
+  <line x1="27" y1="17" x2="28.2" y2="17" stroke="#5d4037" stroke-width="0.6"/>
+  <line x1="26.5" y1="20" x2="27.5" y2="21" stroke="#5d4037" stroke-width="0.6"/>
+  <!-- Reflet -->
+  <ellipse cx="11" cy="13" rx="3" ry="2.5" fill="rgba(255,255,255,0.15)" transform="rotate(-25 11 13)"/>
+</svg>

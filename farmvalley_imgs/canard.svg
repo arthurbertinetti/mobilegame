@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ck_body" cx="40%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#c8b870"/>
+      <stop offset="50%" stop-color="#a09040"/>
+      <stop offset="100%" stop-color="#6a5e20"/>
+    </radialGradient>
+    <radialGradient id="ck_breast" cx="45%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#8b4a2a"/>
+      <stop offset="100%" stop-color="#5a2a10"/>
+    </radialGradient>
+    <linearGradient id="ck_head" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2d6b3a"/>
+      <stop offset="40%" stop-color="#1a4d28"/>
+      <stop offset="100%" stop-color="#0d2e14"/>
+    </linearGradient>
+    <linearGradient id="ck_wing" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b8a860"/>
+      <stop offset="50%" stop-color="#888040"/>
+      <stop offset="100%" stop-color="#5a5420"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30.5" rx="9" ry="1" fill="#00000018"/>
+  <!-- Body -->
+  <path d="M7,22 Q7,15 13,14 Q21,13 25,18 Q27,22 25,26 Q21,29 14,28 Q7,27 7,22 Z" fill="url(#ck_body)"/>
+  <!-- Wing detail -->
+  <path d="M10,20 Q14,16 23,18 Q22,22 17,24 Q12,24 10,20 Z" fill="url(#ck_wing)"/>
+  <!-- Wing feather lines -->
+  <path d="M11,20.5 Q16,17 22,18.5" stroke="#70641a" stroke-width="0.4" fill="none" opacity="0.6"/>
+  <path d="M11,21.5 Q16,18 22,19.5" stroke="#70641a" stroke-width="0.4" fill="none" opacity="0.6"/>
+  <path d="M11,22.5 Q16,19 21,20.5" stroke="#70641a" stroke-width="0.4" fill="none" opacity="0.5"/>
+  <!-- Tail curl -->
+  <path d="M24,19 Q29,15 28,12 Q26,16 26,18 Q28,13 26,12 Q25,16 24,18 Z" fill="#5a5420"/>
+  <!-- Breast (chestnut) -->
+  <path d="M10,19 Q12,16 14,15.5 Q16,16 15,21 Q13,23 10,22 Z" fill="url(#ck_breast)"/>
+  <!-- White neck ring -->
+  <path d="M11,16.5 Q13,14.5 15,15 Q14.5,17 12,17.5 Z" fill="#e8e8e8" opacity="0.9"/>
+  <!-- Neck -->
+  <path d="M10.5,17 Q10,13 12,10 Q14,11 13,17 Z" fill="url(#ck_head)"/>
+  <!-- Head -->
+  <ellipse cx="11" cy="9.5" rx="3.8" ry="3.2" fill="url(#ck_head)"/>
+  <!-- Iridescent sheen on head -->
+  <path d="M9,8 Q11,7 13,8.5 Q12,9.5 10,9.5 Z" fill="#5dade2" opacity="0.3"/>
+  <!-- Eye -->
+  <circle cx="9.8" cy="8.8" r="1.1" fill="#1a0a00"/>
+  <circle cx="9.6" cy="8.6" r="0.35" fill="#cc9900"/>
+  <circle cx="10.1" cy="8.3" r="0.2" fill="#ffffff55"/>
+  <!-- Beak (flat duck bill) -->
+  <path d="M8,9.5 Q5.5,9 5,9.8 Q5,10.8 5.5,11.2 Q7,11.5 8,10.5 Z" fill="#e8a020"/>
+  <path d="M7.8,10 Q5.5,10 5,10.2" stroke="#c07810" stroke-width="0.35" fill="none"/>
+  <!-- Legs -->
+  <path d="M14,27.5 L13.5,30" stroke="#e8900a" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  <path d="M13.5,30 L12,31.2 M13.5,30 L13.8,31.5 M13.5,30 L15,31" stroke="#e8900a" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M17.5,27.8 L17,30.2" stroke="#e8900a" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  <path d="M17,30.2 L15.5,31.4 M17,30.2 L17.3,31.7 M17,30.2 L18.5,31.2" stroke="#e8900a" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+</svg>

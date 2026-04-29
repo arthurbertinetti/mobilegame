@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="grg" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#ef9a9a"/>
+      <stop offset="50%" stop-color="#e53935"/>
+      <stop offset="100%" stop-color="#b71c1c"/>
+    </radialGradient>
+  </defs>
+  <!-- Tige -->
+  <line x1="16" y1="7" x2="16" y2="4" stroke="#5d4037" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Couronne caractéristique (calice) -->
+  <path d="M12 9 L13 7 L14 9 L15 7 L16 9 L17 7 L18 9 L19 7 L20 9 Q20 11 16 11 Q12 11 12 9Z" fill="#388e3c"/>
+  <!-- Corps de la grenade (légèrement hexagonal) -->
+  <path d="M9 19 Q8 12 16 11 Q24 12 23 19 Q23 28 16 28 Q9 28 9 19Z" fill="url(#grg)"/>
+  <!-- Lignes de séparation des loges -->
+  <line x1="16" y1="11" x2="16" y2="28" stroke="#c62828" stroke-width="0.6" opacity="0.4"/>
+  <line x1="9.5" y1="15" x2="22.5" y2="22" stroke="#c62828" stroke-width="0.6" opacity="0.4"/>
+  <line x1="9.5" y1="22" x2="22.5" y2="15" stroke="#c62828" stroke-width="0.6" opacity="0.4"/>
+  <!-- Grains visibles à travers la peau (légère texture) -->
+  <circle cx="13" cy="19" r="1" fill="#c62828" opacity="0.25"/>
+  <circle cx="19" cy="18" r="1" fill="#c62828" opacity="0.25"/>
+  <circle cx="16" cy="22" r="1" fill="#c62828" opacity="0.25"/>
+  <!-- Reflet -->
+  <ellipse cx="12" cy="15" rx="2.5" ry="3.5" fill="rgba(255,255,255,0.2)" transform="rotate(-20 12 15)"/>
+</svg>

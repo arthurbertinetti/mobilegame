@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="potion_glow" cx="50%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#8040ff"/>
+      <stop offset="60%" stop-color="#4020c0"/>
+      <stop offset="100%" stop-color="#200880"/>
+    </radialGradient>
+    <radialGradient id="flask_glass" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#c0a0ff60"/>
+      <stop offset="100%" stop-color="#40208040"/>
+    </radialGradient>
+    <linearGradient id="cork_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c09060"/>
+      <stop offset="100%" stop-color="#806030"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Flask body -->
+  <path d="M11 16 Q8 18 8 23 Q8 29 16 29 Q24 29 24 23 Q24 18 21 16 L21 10 L11 10 Z" fill="url(#potion_glow)"/>
+  <!-- Glass sheen overlay -->
+  <path d="M11 16 Q8 18 8 23 Q8 29 16 29 Q24 29 24 23 Q24 18 21 16 L21 10 L11 10 Z" fill="url(#flask_glass)"/>
+  <!-- Outline -->
+  <path d="M11 16 Q8 18 8 23 Q8 29 16 29 Q24 29 24 23 Q24 18 21 16 L21 10 L11 10 Z" fill="none" stroke="#3010a0" stroke-width="0.8"/>
+  <!-- Glow in liquid -->
+  <ellipse cx="16" cy="24" rx="5" ry="3" fill="#a060ff" opacity="0.4"/>
+  <!-- Shimmer highlight -->
+  <path d="M10.5 22 Q9.5 20 10 17" stroke="#d0b0ff" stroke-width="1" fill="none" opacity="0.6"/>
+  <!-- Neck -->
+  <rect x="13" y="7" width="6" height="4" rx="1" fill="#3010a0" stroke="#3010a0" stroke-width="0.5"/>
+  <!-- Cork -->
+  <rect x="13.5" y="5" width="5" height="3" rx="1.2" fill="url(#cork_grad)"/>
+  <rect x="14" y="5" width="4" height="1" rx="0.5" fill="#d0a070"/>
+  <!-- Sparkles -->
+  <text x="5" y="13" font-size="4" fill="#c080ff">✦</text>
+  <text x="23" y="11" font-size="3" fill="#a060e0">✦</text>
+  <text x="25" y="19" font-size="3.5" fill="#e0b0ff">✦</text>
+  <text x="3" y="21" font-size="3" fill="#c080ff">✦</text>
+</svg>

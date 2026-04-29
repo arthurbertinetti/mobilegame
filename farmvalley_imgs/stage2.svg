@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Sol -->
+  <rect x="4" y="26" width="24" height="5" rx="2" fill="#6b4f2c"/>
+  <ellipse cx="16" cy="26" rx="12" ry="2.2" fill="#7a5c38"/>
+  <!-- Tige principale -->
+  <line x1="16" y1="26" x2="16" y2="9" stroke="#388e3c" stroke-width="2" stroke-linecap="round"/>
+  <!-- Feuilles basses -->
+  <ellipse cx="10" cy="23" rx="6" ry="3" fill="#4caf50" transform="rotate(-20 10 23)"/>
+  <ellipse cx="22" cy="23" rx="6" ry="3" fill="#43a047" transform="rotate(20 22 23)"/>
+  <!-- Feuilles milieu -->
+  <ellipse cx="9" cy="17" rx="5.5" ry="2.8" fill="#66bb6a" transform="rotate(-25 9 17)"/>
+  <ellipse cx="23" cy="17" rx="5.5" ry="2.8" fill="#4caf50" transform="rotate(25 23 17)"/>
+  <!-- Feuilles haut -->
+  <ellipse cx="11" cy="12" rx="5" ry="2.5" fill="#81c784" transform="rotate(-15 11 12)"/>
+  <ellipse cx="21" cy="12" rx="5" ry="2.5" fill="#66bb6a" transform="rotate(15 21 12)"/>
+  <!-- Apex -->
+  <ellipse cx="16" cy="9" rx="4" ry="2.5" fill="#a5d6a7"/>
+</svg>

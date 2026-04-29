@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="glass_g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8e8e8"/>
+      <stop offset="40%" stop-color="#f8f8f8"/>
+      <stop offset="100%" stop-color="#c0c0c0"/>
+    </linearGradient>
+    <linearGradient id="liq_g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0e020"/>
+      <stop offset="100%" stop-color="#b0a000"/>
+    </linearGradient>
+    <clipPath id="glass_clip">
+      <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <rect x="9" y="16" width="14" height="14" fill="url(#liq_g)" clip-path="url(#glass_clip)"/>
+  <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z" fill="url(#glass_g)" fill-opacity="0.55" stroke="#a0a0a0" stroke-width="0.7"/>
+  <line x1="12" y1="13" x2="20" y2="13" stroke="#d0d0d0" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- lemon wedge -->
+  <path d="M19,13 L23,8 L27,13 Z" fill="#f0e020" stroke="#c0b000" stroke-width="0.5"/>
+  <line x1="23" y1="8" x2="23" y2="13" stroke="#c0b000" stroke-width="0.4" opacity="0.7"/>
+  <!-- yellow straw -->
+  <rect x="21" y="4" width="1.5" height="12" rx="0.7" fill="#e8d010"/>
+  <rect x="21" y="4" width="0.6" height="12" rx="0.3" fill="#f8f040" opacity="0.6"/>
+</svg>

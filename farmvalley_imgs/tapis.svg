@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="tapis_bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d84828"/>
+      <stop offset="100%" stop-color="#8a2808"/>
+    </radialGradient>
+    <linearGradient id="tapis_border" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f0a030"/>
+      <stop offset="50%" stop-color="#e07020"/>
+      <stop offset="100%" stop-color="#f0a030"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Rug base -->
+  <rect x="4" y="10" width="24" height="16" rx="1" fill="url(#tapis_bg)"/>
+  <!-- Border stripe -->
+  <rect x="4" y="10" width="24" height="2" fill="url(#tapis_border)"/>
+  <rect x="4" y="24" width="24" height="2" fill="url(#tapis_border)"/>
+  <rect x="4" y="10" width="2" height="16" fill="url(#tapis_border)"/>
+  <rect x="26" y="10" width="2" height="16" fill="url(#tapis_border)"/>
+  <!-- Central diamond -->
+  <polygon points="16,13 20,18 16,23 12,18" fill="#f0a030" opacity="0.9"/>
+  <polygon points="16,14.5 19,18 16,21.5 13,18" fill="#c04020"/>
+  <!-- Small corner diamonds -->
+  <polygon points="8,15 10,17 8,19 6,17" fill="#f0a030" opacity="0.8"/>
+  <polygon points="24,15 26,17 24,19 22,17" fill="#f0a030" opacity="0.8"/>
+  <!-- Fringes left -->
+  <line x1="4" y1="11" x2="2" y2="11" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="4" y1="13" x2="2" y2="13" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="4" y1="15" x2="2" y2="15" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="4" y1="17" x2="2" y2="17" stroke="#e07020" stroke-width="0.7"/>
+  <line x1="4" y1="19" x2="2" y2="19" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="4" y1="21" x2="2" y2="21" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="4" y1="23" x2="2" y2="23" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="4" y1="25" x2="2" y2="25" stroke="#e07020" stroke-width="0.7"/>
+  <!-- Fringes right -->
+  <line x1="28" y1="11" x2="30" y2="11" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="28" y1="13" x2="30" y2="13" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="28" y1="15" x2="30" y2="15" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="28" y1="17" x2="30" y2="17" stroke="#e07020" stroke-width="0.7"/>
+  <line x1="28" y1="19" x2="30" y2="19" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="28" y1="21" x2="30" y2="21" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="28" y1="23" x2="30" y2="23" stroke="#f0a030" stroke-width="0.7"/>
+  <line x1="28" y1="25" x2="30" y2="25" stroke="#e07020" stroke-width="0.7"/>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="va_body" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#e8c060"/>
+      <stop offset="55%" stop-color="#c08020"/>
+      <stop offset="100%" stop-color="#805010"/>
+    </radialGradient>
+    <radialGradient id="va_glass" cx="30%" cy="25%" r="60%">
+      <stop offset="0%" stop-color="rgba(255,240,180,0.45)"/>
+      <stop offset="100%" stop-color="rgba(180,120,30,0.25)"/>
+    </radialGradient>
+    <radialGradient id="va_cork" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#d8a860"/>
+      <stop offset="100%" stop-color="#906030"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Decorative bottle body (slightly tapered) -->
+  <path d="M9,15 Q9,9 16,9 Q23,9 23,15 L23,28 Q23,30 16,30 Q9,30 9,28 Z" fill="url(#va_body)"/>
+  <!-- Glass overlay -->
+  <path d="M9,15 Q9,9 16,9 Q23,9 23,15 L23,28 Q23,30 16,30 Q9,30 9,28 Z" fill="url(#va_glass)"/>
+  <!-- Herb sprigs visible through glass (green lines) -->
+  <path d="M13,13 Q12,16 13,20 Q13.5,22 14,25" stroke="#508030" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M13,16 Q11.5,17 12,18.5" stroke="#508030" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+  <path d="M13,19 Q11.5,20 12.5,21" stroke="#508030" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+  <path d="M19,14 Q20,17 19,21 Q18.5,23 18,26" stroke="#508030" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M19,17 Q20.5,18 20,19.5" stroke="#508030" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+  <!-- Neck -->
+  <rect x="13" y="5" width="6" height="6" rx="2" fill="#b07018"/>
+  <rect x="13.2" y="5" width="5.6" height="6" rx="2" fill="rgba(255,220,140,0.3)"/>
+  <!-- Cork -->
+  <rect x="13.5" y="2.5" width="5" height="4" rx="1.5" fill="url(#va_cork)"/>
+  <!-- Decorative ribbon on neck -->
+  <path d="M11,8 Q16,6.5 21,8" stroke="#e03060" stroke-width="1.2" fill="none"/>
+  <path d="M13,8.5 Q12,7 11,8" stroke="#e03060" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M19,8.5 Q20,7 21,8" stroke="#e03060" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <!-- Small label -->
+  <rect x="10.5" y="19" width="11" height="7" rx="1" fill="#fffff0" stroke="#c0a040" stroke-width="0.5"/>
+  <rect x="12" y="20.5" width="8" height="0.8" rx="0.4" fill="#806020"/>
+  <rect x="12" y="22.5" width="8" height="0.8" rx="0.4" fill="#a08030"/>
+  <!-- Bottle shine -->
+  <rect x="10" y="11" width="1.5" height="14" rx="0.7" fill="rgba(255,255,255,0.3)"/>
+</svg>

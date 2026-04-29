@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ta_base" cx="40%" cy="35%" r="62%">
+      <stop offset="0%" stop-color="#f0c858"/>
+      <stop offset="55%" stop-color="#d4a040"/>
+      <stop offset="100%" stop-color="#9a6820"/>
+    </radialGradient>
+    <radialGradient id="ta_crust" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#e8b840"/>
+      <stop offset="100%" stop-color="#a07020"/>
+    </radialGradient>
+    <radialGradient id="ta_apricot" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ffa030"/>
+      <stop offset="55%" stop-color="#e07010"/>
+      <stop offset="100%" stop-color="#b04808"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Tart crust rim -->
+  <ellipse cx="16" cy="27" rx="10.5" ry="2.5" fill="#9a6820"/>
+  <!-- Tart base -->
+  <ellipse cx="16" cy="26" rx="10" ry="2.2" fill="url(#ta_base)"/>
+  <!-- Tart body (raised) -->
+  <rect x="6" y="18" width="20" height="8" rx="2" fill="url(#ta_base)"/>
+  <!-- Tart top surface (cream/pastry base) -->
+  <ellipse cx="16" cy="18" rx="10" ry="2.5" fill="url(#ta_crust)"/>
+  <!-- Crimped crust edge -->
+  <ellipse cx="16" cy="18" rx="10" ry="2.5" fill="none" stroke="#b07828" stroke-width="1.5" stroke-dasharray="2,1.5"/>
+  <!-- Three apricot halves arranged on top -->
+  <!-- Left apricot -->
+  <ellipse cx="10" cy="16.5" rx="4" ry="2.5" fill="url(#ta_apricot)"/>
+  <path d="M10,14.5 Q10,16.5 10,18.5" stroke="#c06010" stroke-width="0.8" fill="none"/>
+  <ellipse cx="9" cy="15.5" rx="1.2" ry="0.6" fill="rgba(255,180,80,0.4)" transform="rotate(-20,9,15.5)"/>
+  <!-- Center apricot (slightly back) -->
+  <ellipse cx="16" cy="15.5" rx="4" ry="2.5" fill="url(#ta_apricot)"/>
+  <path d="M16,13.5 Q16,15.5 16,17.5" stroke="#c06010" stroke-width="0.8" fill="none"/>
+  <ellipse cx="15" cy="14.5" rx="1.2" ry="0.6" fill="rgba(255,180,80,0.4)" transform="rotate(-20,15,14.5)"/>
+  <!-- Right apricot -->
+  <ellipse cx="22" cy="16.5" rx="4" ry="2.5" fill="url(#ta_apricot)"/>
+  <path d="M22,14.5 Q22,16.5 22,18.5" stroke="#c06010" stroke-width="0.8" fill="none"/>
+  <ellipse cx="21" cy="15.5" rx="1.2" ry="0.6" fill="rgba(255,180,80,0.4)" transform="rotate(-20,21,15.5)"/>
+  <!-- Glaze shine -->
+  <ellipse cx="16" cy="17" rx="8" ry="1.5" fill="rgba(255,220,100,0.2)"/>
+</svg>

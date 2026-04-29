@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="fm_bag" cx="38%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#f8f0c0"/>
+      <stop offset="60%" stop-color="#e8d870"/>
+      <stop offset="100%" stop-color="#c8a820"/>
+    </radialGradient>
+    <radialGradient id="fm_top" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#f0e080"/>
+      <stop offset="100%" stop-color="#c8a020"/>
+    </radialGradient>
+  </defs>
+  <!-- Bag body -->
+  <path d="M7,14 Q6,12 7,10 L12,8 L20,8 L25,10 Q26,12 25,14 L26,26 Q26,28 24,29 L8,29 Q6,28 6,26 Z" fill="url(#fm_bag)"/>
+  <!-- Bag top twisted -->
+  <path d="M12,8 Q16,5 20,8 L20,10 Q16,7.5 12,10 Z" fill="url(#fm_top)"/>
+  <!-- Tie string -->
+  <path d="M13,9 Q16,7 19,9" stroke="#a08010" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Flour texture lines -->
+  <path d="M10,16 Q16,15 22,16" stroke="rgba(255,255,255,.5)" stroke-width="0.8" fill="none"/>
+  <path d="M9,20 Q16,19 23,20" stroke="rgba(255,255,255,.4)" stroke-width="0.8" fill="none"/>
+  <path d="M9,24 Q16,23 23,24" stroke="rgba(255,255,255,.35)" stroke-width="0.7" fill="none"/>
+  <!-- Flour powder spill at base -->
+  <ellipse cx="16" cy="29.5" rx="7.5" ry="1.2" fill="#e0c840" opacity="0.5"/>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="8" ry="0.7" fill="#00000018"/>
+  <!-- Small corn icon on bag -->
+  <ellipse cx="16" cy="19.5" rx="2" ry="3.5" fill="#d89818" opacity="0.85"/>
+  <path d="M14.2,18 Q16,16.5 17.8,18 Q16,17.2 14.2,18 Z" fill="#e8b020"/>
+  <path d="M14,19.5 L18,19.5" stroke="#c88010" stroke-width="0.5" fill="none"/>
+  <path d="M14,20.5 L18,20.5" stroke="#c88010" stroke-width="0.5" fill="none"/>
+  <path d="M14,21.5 L18,21.5" stroke="#c88010" stroke-width="0.5" fill="none"/>
+</svg>

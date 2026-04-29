@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadowG" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="plateG" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d8d8d8"/>
+    </radialGradient>
+    <radialGradient id="lemonG" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#fff176"/>
+      <stop offset="100%" stop-color="#f9a825"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="29" rx="12" ry="3" fill="url(#shadowG)"/>
+  <!-- Plate -->
+  <circle cx="16" cy="16" r="13" fill="url(#plateG)" stroke="#c8c8c8" stroke-width="0.5"/>
+  <!-- Seafood slices arranged in circle -->
+  <ellipse cx="16" cy="8"  rx="4" ry="2.2" fill="#f09090" opacity="0.9" transform="rotate(0,16,16)"/>
+  <ellipse cx="22" cy="11" rx="4" ry="2.2" fill="#e88080" opacity="0.9" transform="rotate(51.4,16,16)"/>
+  <ellipse cx="23" cy="18" rx="4" ry="2.2" fill="#f0a0a0" opacity="0.9" transform="rotate(102.8,16,16)"/>
+  <ellipse cx="19" cy="24" rx="4" ry="2.2" fill="#e89090" opacity="0.9" transform="rotate(154.2,16,16)"/>
+  <ellipse cx="13" cy="24" rx="4" ry="2.2" fill="#f09898" opacity="0.9" transform="rotate(205.7,16,16)"/>
+  <ellipse cx="9"  cy="18" rx="4" ry="2.2" fill="#e88888" opacity="0.9" transform="rotate(257.1,16,16)"/>
+  <ellipse cx="10" cy="11" rx="4" ry="2.2" fill="#f0a0a0" opacity="0.9" transform="rotate(308.5,16,16)"/>
+  <!-- Lemon slice center -->
+  <circle cx="16" cy="16" r="4" fill="url(#lemonG)" stroke="#f0c040" stroke-width="0.5"/>
+  <line x1="12" y1="16" x2="20" y2="16" stroke="#f0c040" stroke-width="0.5" opacity="0.7"/>
+  <line x1="16" y1="12" x2="16" y2="20" stroke="#f0c040" stroke-width="0.5" opacity="0.7"/>
+  <line x1="13.2" y1="13.2" x2="18.8" y2="18.8" stroke="#f0c040" stroke-width="0.5" opacity="0.7"/>
+  <line x1="18.8" y1="13.2" x2="13.2" y2="18.8" stroke="#f0c040" stroke-width="0.5" opacity="0.7"/>
+</svg>

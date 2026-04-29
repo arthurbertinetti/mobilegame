@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="dp_body" cx="38%" cy="40%" r="58%">
+      <stop offset="0%" stop-color="#8ab0cc"/>
+      <stop offset="50%" stop-color="#5880a8"/>
+      <stop offset="100%" stop-color="#284870"/>
+    </radialGradient>
+    <linearGradient id="dp_belly" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#eeeae6"/>
+      <stop offset="100%" stop-color="#c8c4c0"/>
+    </linearGradient>
+    <linearGradient id="dp_fin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4070a0"/>
+      <stop offset="100%" stop-color="#1a2f58"/>
+    </linearGradient>
+  </defs>
+  <!-- Water ripple hint -->
+  <path d="M3,27 Q10,25.5 16,27 Q21,28 26,26.5" stroke="#90bce040" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Tail flukes -->
+  <path d="M27,13.5 Q31.5,11 32,14 Q30.5,16 27.5,15 Z" fill="url(#dp_fin)"/>
+  <path d="M27,15 Q32,18 31.5,21.5 Q29.5,21 27,17 Z" fill="url(#dp_fin)"/>
+  <!-- Body (clear horizontal bottlenose shape) -->
+  <path d="M2.5,16.5 Q3.5,11.5 8,10.5 Q15,9 22,10.5 Q27,12 27.5,15 Q27.5,18.5 24.5,20.5 Q18.5,23 11,22 Q5,21 2.5,18 Z" fill="url(#dp_body)"/>
+  <!-- White belly patch (large, characteristic) -->
+  <path d="M4,17 Q6.5,13.5 11.5,12.5 Q18,11.5 24,13.5 Q27,15 27,16 Q26.5,18.5 23.5,20 Q17,21.5 10,21 Q6,20.5 4,18.5 Z" fill="url(#dp_belly)" opacity="0.85"/>
+  <!-- Dorsal fin (tall, prominent) -->
+  <path d="M17.5,9.5 Q20.5,4.5 22,5 Q22.5,7 21,9.5 Z" fill="url(#dp_fin)"/>
+  <!-- Pectoral fin -->
+  <path d="M10.5,18.5 Q9,23 11.5,23.5 Q13,21.5 12,18.5 Z" fill="url(#dp_fin)"/>
+  <!-- Rostrum (bottlenose beak) -->
+  <path d="M2.5,17 Q0.8,16 0.5,17.5 Q1.5,19 3,18.5 Z" fill="#5080a8"/>
+  <!-- Dark eye stripe (characteristic bottlenose feature) -->
+  <path d="M6,14 Q8,13 10,14" stroke="#1a3050" stroke-width="1.6" fill="none" opacity="0.55" stroke-linecap="round"/>
+  <!-- Eye -->
+  <circle cx="7.5" cy="14" r="1.4" fill="#0a0808"/>
+  <circle cx="7.1" cy="13.6" r="0.45" fill="#ffffff45"/>
+  <!-- Characteristic smile line -->
+  <path d="M1.5,18.5 Q4,20.5 7.5,20" stroke="#4870a0" stroke-width="0.65" fill="none" stroke-linecap="round"/>
+  <!-- Body sheen -->
+  <path d="M8,12 Q17,10.5 23,12.5" stroke="#b0cce0" stroke-width="0.9" fill="none" opacity="0.4"/>
+</svg>

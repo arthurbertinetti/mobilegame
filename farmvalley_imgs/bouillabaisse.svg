@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bb_bowl" cx="38%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#dcd4c8"/>
+      <stop offset="100%" stop-color="#b8b0a4"/>
+    </radialGradient>
+    <radialGradient id="bb_stew" cx="45%" cy="40%" r="58%">
+      <stop offset="0%" stop-color="#e85020"/>
+      <stop offset="60%" stop-color="#d04010"/>
+      <stop offset="100%" stop-color="#a02808"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="12" ry="0.8" fill="#00000028"/>
+  <!-- Bowl outer -->
+  <path d="M5,25 Q4,20 6,16 Q9,12 16,12 Q23,12 26,16 Q28,20 27,25 Q23,29 16,29 Q9,29 5,25 Z" fill="#a0988c"/>
+  <!-- Bowl inner -->
+  <path d="M6,24 Q5,19 7,16 Q10,13 16,13 Q22,13 25,16 Q27,19 26,24 Q22,28 16,28 Q10,28 6,24 Z" fill="url(#bb_bowl)"/>
+  <!-- Rich orange-red stew -->
+  <ellipse cx="16" cy="19.5" rx="9" ry="4.5" fill="url(#bb_stew)"/>
+  <!-- Stew depth layer -->
+  <ellipse cx="16" cy="19.5" rx="6.5" ry="3" fill="#c03008" opacity="0.5"/>
+  <!-- Shrimp shape (curved) -->
+  <path d="M10,18 Q9,16 11,15 Q13,14 13,16 Q13,18 11,19 Z" fill="#e06828" stroke="#c04010" stroke-width="0.5"/>
+  <circle cx="10.5" cy="15.5" r="0.8" fill="#e8a060"/>
+  <!-- Mussel shape (dark oval) -->
+  <ellipse cx="20" cy="17.5" rx="2.5" ry="1.5" fill="#2a1808" transform="rotate(-20,20,17.5)"/>
+  <path d="M18,17 Q20,15.5 22,17" stroke="#4a2818" stroke-width="0.6" fill="none"/>
+  <!-- Second mussel -->
+  <ellipse cx="14" cy="21" rx="2.2" ry="1.3" fill="#2a1808" transform="rotate(15,14,21)"/>
+  <path d="M12.5,20.5 Q14,19 15.5,20.5" stroke="#4a2818" stroke-width="0.6" fill="none"/>
+  <!-- Another shrimp -->
+  <path d="M21,20 Q22,18 24,19 Q24,21 22,21 Z" fill="#e06828" stroke="#c04010" stroke-width="0.5"/>
+  <!-- Saffron oil dots -->
+  <circle cx="17" cy="19" r="0.7" fill="#f0c020" opacity="0.8"/>
+  <circle cx="19" cy="21" r="0.6" fill="#f0c020" opacity="0.7"/>
+  <circle cx="13" cy="19.5" r="0.6" fill="#f0c020" opacity="0.7"/>
+  <!-- Bowl rim highlight -->
+  <path d="M7,15 Q16,12.5 25,15" stroke="rgba(255,255,240,0.5)" stroke-width="0.8" fill="none"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="br_inside" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f5f0dc"/>
+      <stop offset="70%" stop-color="#e8e0c4"/>
+      <stop offset="100%" stop-color="#d0c8a8"/>
+    </radialGradient>
+    <radialGradient id="br_rind" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#d8d5cc"/>
+      <stop offset="100%" stop-color="#a8a498"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="11" ry="0.7" fill="#00000018"/>
+  <!-- Brie round wheel - rind (outside) -->
+  <ellipse cx="16" cy="23" rx="13" ry="5.5" fill="url(#br_rind)"/>
+  <ellipse cx="16" cy="19" rx="13" ry="5.5" fill="url(#br_rind)"/>
+  <!-- Brie side (thickness - white) -->
+  <path d="M3,19 Q3,23 16,25.5 Q29,23 29,19 L29,21 Q29,25 16,27 Q3,25 3,21 Z" fill="#c8c5bc"/>
+  <!-- Brie inside (pale yellow, cross section view) -->
+  <ellipse cx="16" cy="18" rx="11" ry="4.5" fill="url(#br_inside)"/>
+  <!-- White mold rind top ring -->
+  <ellipse cx="16" cy="18" rx="13" ry="5.5" fill="none" stroke="#b8b5aa" stroke-width="1.5"/>
+  <!-- Inner texture lines -->
+  <ellipse cx="16" cy="18" rx="8" ry="3" fill="none" stroke="rgba(210,205,185,.6)" stroke-width="0.6"/>
+  <!-- Label/slice line -->
+  <path d="M7,18 L25,18" stroke="rgba(200,195,170,.5)" stroke-width="0.5" fill="none"/>
+  <!-- Shine -->
+  <ellipse cx="10" cy="16" rx="2.5" ry="1.2" fill="rgba(255,255,255,.4)" transform="rotate(-15,10,16)"/>
+</svg>

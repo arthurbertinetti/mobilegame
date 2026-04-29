@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="vdg" cx="38%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#d4a76a"/>
+      <stop offset="100%" stop-color="#8d4f00"/>
+    </radialGradient>
+  </defs>
+  <!-- Cuisse de dinde (forme caractéristique) -->
+  <path d="M8 12 Q10 6 18 8 Q24 10 24 18 Q24 25 18 26 Q12 26 9 21 Q7 17 8 12Z" fill="url(#vdg)"/>
+  <!-- Os qui dépasse -->
+  <rect x="20" y="22" width="3" height="8" rx="1.5" fill="#eeeeee"/>
+  <ellipse cx="21.5" cy="22" rx="3" ry="2" fill="#e0e0e0"/>
+  <!-- Peau croustillante (dorée) -->
+  <path d="M8 12 Q10 6 18 8 Q16 10 12 12 Q9 14 8 12Z" fill="#a0522d" opacity="0.5"/>
+  <!-- Rayures rôtissage -->
+  <path d="M10 10 Q14 14 12 20" fill="none" stroke="#5d4037" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+  <!-- Reflet -->
+  <ellipse cx="12" cy="14" rx="2" ry="3.5" fill="rgba(255,255,255,0.2)" transform="rotate(-25 12 14)"/>
+</svg>

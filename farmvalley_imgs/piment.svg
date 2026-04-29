@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Tige et feuillage -->
+  <line x1="16" y1="30" x2="16" y2="6" stroke="#388e3c" stroke-width="1.5"/>
+  <ellipse cx="9" cy="18" rx="5" ry="3" fill="#2e7d32" transform="rotate(-20 9 18)"/>
+  <ellipse cx="23" cy="18" rx="5" ry="3" fill="#388e3c" transform="rotate(20 23 18)"/>
+  <ellipse cx="9" cy="12" rx="4.5" ry="2.5" fill="#4caf50" transform="rotate(-15 9 12)"/>
+  <ellipse cx="23" cy="12" rx="4.5" ry="2.5" fill="#388e3c" transform="rotate(15 23 12)"/>
+  <!-- Piments (forme allongée pointue) -->
+  <!-- Piment rouge gauche -->
+  <defs>
+    <linearGradient id="pig" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff5722"/>
+      <stop offset="100%" stop-color="#b71c1c"/>
+    </linearGradient>
+  </defs>
+  <path d="M12 10 Q10 14 10 20 Q10.5 24 12 25 Q13 24 13 20 Q13.5 14 12 10 Z" fill="url(#pig)"/>
+  <path d="M20 10 Q22 14 22 20 Q21.5 24 20 25 Q19 24 19 20 Q18.5 14 20 10 Z" fill="url(#pig)"/>
+  <!-- Piment vert (plus petit, jeune) -->
+  <path d="M16 6 Q14.5 10 14.5 15 Q15 18 16 19 Q17 18 17.5 15 Q17.5 10 16 6 Z" fill="#43a047"/>
+  <!-- Tiges des piments -->
+  <line x1="12" y1="10" x2="14" y2="8" stroke="#4caf50" stroke-width="1.2"/>
+  <line x1="20" y1="10" x2="18" y2="8" stroke="#4caf50" stroke-width="1.2"/>
+  <line x1="16" y1="6" x2="16" y2="5" stroke="#4caf50" stroke-width="1.2"/>
+  <!-- Reflets -->
+  <line x1="11" y1="13" x2="11" y2="20" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>
+  <line x1="19" y1="13" x2="19" y2="20" stroke="rgba(255,255,255,0.3)" stroke-width="0.7"/>
+</svg>

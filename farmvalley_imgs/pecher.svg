@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pe_fr" cx="33%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#ffd080"/>
+      <stop offset="40%" stop-color="#f08040"/>
+      <stop offset="100%" stop-color="#c03818"/>
+    </radialGradient>
+    <radialGradient id="pe_can" cx="35%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#60b838"/>
+      <stop offset="60%" stop-color="#2a7818"/>
+      <stop offset="100%" stop-color="#144808"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="8" ry="0.7" fill="#00000022"/>
+  <!-- Trunk -->
+  <path d="M13.5,31 Q13,25 13.5,21.5 Q14.5,20 16,20.4 Q17.5,20 18.5,21.5 Q19,25 18.5,31 Z" fill="#6b3a1f"/>
+  <path d="M14.5,31 Q14,25 14.5,22 Q15.2,21 16,21.2 Q16.8,21 17.5,22 Q18,25 17.5,31 Z" fill="#905430"/>
+  <!-- Canopy -->
+  <ellipse cx="16" cy="14" rx="12.5" ry="10.5" fill="#1e6c12"/>
+  <ellipse cx="16" cy="13" rx="11.5" ry="9.5" fill="#288018"/>
+  <ellipse cx="9.5" cy="15.5" rx="7.5" ry="6.5" fill="#1e6c12"/>
+  <ellipse cx="22.5" cy="15.5" rx="7.5" ry="6.5" fill="#1e6c12"/>
+  <ellipse cx="16" cy="7.5" rx="9" ry="6" fill="url(#pe_can)"/>
+  <!-- Pink blossoms (MOST distinctive feature of peach trees — appear before leaves) -->
+  <!-- Left blossom -->
+  <circle cx="7" cy="11" r="3" fill="#f8c0d0"/>
+  <circle cx="5.8" cy="10" r="1.5" fill="#fad8e0"/>
+  <circle cx="8.2" cy="10" r="1.5" fill="#fad8e0"/>
+  <circle cx="7" cy="8.8" r="1.5" fill="#fad8e0"/>
+  <circle cx="7" cy="11" r="1.2" fill="#e8487c"/>
+  <!-- Right blossom -->
+  <circle cx="25" cy="10" r="3" fill="#f8c0d0"/>
+  <circle cx="23.8" cy="9" r="1.5" fill="#fad8e0"/>
+  <circle cx="26.2" cy="9" r="1.5" fill="#fad8e0"/>
+  <circle cx="25" cy="7.8" r="1.5" fill="#fad8e0"/>
+  <circle cx="25" cy="10" r="1.2" fill="#e8487c"/>
+  <!-- Top small blossom hint -->
+  <circle cx="16" cy="6" r="2.2" fill="#f8c8d8" opacity="0.8"/>
+  <circle cx="16" cy="6" r="0.9" fill="#e85080" opacity="0.9"/>
+  <!-- Peaches (rounder, warm peachy color) -->
+  <circle cx="7.5" cy="18" r="3.3" fill="url(#pe_fr)"/>
+  <circle cx="24.5" cy="17.5" r="3.3" fill="url(#pe_fr)"/>
+  <circle cx="16" cy="21.5" r="3.3" fill="url(#pe_fr)"/>
+  <!-- Peach groove -->
+  <line x1="7.5" y1="14.7" x2="7.5" y2="21.3" stroke="#c03818" stroke-width="0.6" opacity="0.45"/>
+  <line x1="24.5" y1="14.2" x2="24.5" y2="20.8" stroke="#c03818" stroke-width="0.6" opacity="0.45"/>
+  <line x1="16" y1="18.2" x2="16" y2="24.8" stroke="#c03818" stroke-width="0.6" opacity="0.45"/>
+  <!-- Peach shines -->
+  <ellipse cx="6.4" cy="16.5" rx="1.1" ry="1.4" fill="rgba(255,240,210,.45)"/>
+  <ellipse cx="23.4" cy="16" rx="1.1" ry="1.4" fill="rgba(255,240,210,.45)"/>
+</svg>

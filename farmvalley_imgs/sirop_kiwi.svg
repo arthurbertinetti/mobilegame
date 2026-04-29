@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="sk_body" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#60d060"/>
+      <stop offset="55%" stop-color="#30b040"/>
+      <stop offset="100%" stop-color="#1a7020"/>
+    </radialGradient>
+    <radialGradient id="sk_label" cx="40%" cy="35%" r="58%">
+      <stop offset="0%" stop-color="#f8f8f8"/>
+      <stop offset="100%" stop-color="#d8e8d8"/>
+    </radialGradient>
+    <radialGradient id="sk_kiwi" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f0e060"/>
+      <stop offset="60%" stop-color="#60a828"/>
+      <stop offset="100%" stop-color="#3a7018"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Bottle body -->
+  <rect x="10" y="10" width="12" height="20" rx="3" fill="url(#sk_body)"/>
+  <!-- Bottle neck -->
+  <rect x="13" y="5" width="6" height="7" rx="2" fill="#28a038"/>
+  <!-- Dark cap -->
+  <rect x="12.5" y="3" width="7" height="4" rx="2" fill="#1a3020"/>
+  <rect x="13" y="3" width="6" height="2" rx="1" fill="#2a4030"/>
+  <!-- White label -->
+  <rect x="11" y="14" width="10" height="11" rx="1.5" fill="url(#sk_label)" stroke="#c0d0c0" stroke-width="0.5"/>
+  <!-- Kiwi silhouette on label -->
+  <circle cx="16" cy="19.5" r="4" fill="url(#sk_kiwi)"/>
+  <!-- Kiwi seeds -->
+  <ellipse cx="16" cy="16.5" rx="0.5" ry="0.8" fill="#1a2808" transform="rotate(0,16,16.5)"/>
+  <ellipse cx="18.5" cy="17.5" rx="0.5" ry="0.8" fill="#1a2808" transform="rotate(60,18.5,17.5)"/>
+  <ellipse cx="19.2" cy="20" rx="0.5" ry="0.8" fill="#1a2808" transform="rotate(100,19.2,20)"/>
+  <ellipse cx="17.5" cy="22.2" rx="0.5" ry="0.8" fill="#1a2808" transform="rotate(150,17.5,22.2)"/>
+  <ellipse cx="14.5" cy="22.2" rx="0.5" ry="0.8" fill="#1a2808" transform="rotate(-150,14.5,22.2)"/>
+  <ellipse cx="12.8" cy="20" rx="0.5" ry="0.8" fill="#1a2808" transform="rotate(-100,12.8,20)"/>
+  <ellipse cx="13.5" cy="17.5" rx="0.5" ry="0.8" fill="#1a2808" transform="rotate(-60,13.5,17.5)"/>
+  <!-- Kiwi center -->
+  <circle cx="16" cy="19.5" r="1" fill="#f0e050"/>
+  <!-- Bottle shine -->
+  <rect x="11.5" y="11" width="1.5" height="10" rx="0.7" fill="rgba(255,255,255,0.3)"/>
+</svg>

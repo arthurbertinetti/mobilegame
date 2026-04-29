@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="goblet_g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c0a030"/>
+      <stop offset="40%" stop-color="#e8cc50"/>
+      <stop offset="100%" stop-color="#907020"/>
+    </linearGradient>
+    <linearGradient id="liquid_g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0d040"/>
+      <stop offset="100%" stop-color="#b08010"/>
+    </linearGradient>
+    <radialGradient id="liquid_r" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#d4a020"/>
+      <stop offset="100%" stop-color="#906010"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- goblet/chalice base -->
+  <ellipse cx="16" cy="31" rx="7" ry="1.2" fill="url(#goblet_g)"/>
+  <!-- stem -->
+  <rect x="14.5" y="25" width="3" height="6" fill="url(#goblet_g)"/>
+  <ellipse cx="16" cy="25" rx="3" ry="1" fill="url(#goblet_g)"/>
+  <!-- cup bowl -->
+  <path d="M9,25 Q9,27 16,27 Q23,27 23,25 L21,12 Q21,11 16,11 Q11,11 11,12 Z" fill="url(#goblet_g)"/>
+  <!-- liquid inside -->
+  <path d="M10,25 Q10,26.5 16,26.5 Q22,26.5 22,25 L21,18 Q21,17 16,17 Q11,17 11,18 Z" fill="url(#liquid_r)"/>
+  <!-- honeycomb hex pattern on side -->
+  <polygon points="13,20 14.5,19.2 16,20 16,21.6 14.5,22.4 13,21.6" fill="none" stroke="#c09020" stroke-width="0.5"/>
+  <polygon points="16,20 17.5,19.2 19,20 19,21.6 17.5,22.4 16,21.6" fill="none" stroke="#c09020" stroke-width="0.5"/>
+  <polygon points="13,22.4 14.5,21.6 16,22.4 16,24 14.5,24.8 13,24" fill="none" stroke="#c09020" stroke-width="0.5"/>
+  <!-- highlight on goblet -->
+  <line x1="11" y1="14" x2="11" y2="24" stroke="#f8e880" stroke-width="0.6" opacity="0.5" stroke-linecap="round"/>
+</svg>

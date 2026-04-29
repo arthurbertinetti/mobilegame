@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="cape_grad" cx="50%" cy="20%" r="70%">
+      <stop offset="0%" stop-color="#800090"/>
+      <stop offset="100%" stop-color="#400050"/>
+    </radialGradient>
+    <linearGradient id="gold_trim" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f0d060"/>
+      <stop offset="50%" stop-color="#ffeea0"/>
+      <stop offset="100%" stop-color="#c09020"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Cape spread open -->
+  <path d="M16 5 Q6 6 4 28 L16 26 L28 28 Q26 6 16 5 Z" fill="url(#cape_grad)"/>
+  <!-- Inner lining left -->
+  <path d="M16 5 Q10 7 8 28 L16 26 Z" fill="#600070" opacity="0.6"/>
+  <!-- Gold collar/trim -->
+  <path d="M10 5 Q16 3 22 5" stroke="url(#gold_trim)" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Gold clasp -->
+  <circle cx="16" cy="6" r="2" fill="#f0d060" stroke="#a08020" stroke-width="0.5"/>
+  <circle cx="16" cy="6" r="1" fill="#c09010"/>
+  <!-- Gold hem bottom -->
+  <path d="M4 28 L16 26 L28 28" stroke="url(#gold_trim)" stroke-width="1.5" fill="none"/>
+  <!-- Stars on fabric -->
+  <text x="8" y="14" font-size="3.5" fill="#f0d06090">★</text>
+  <text x="19" y="12" font-size="3" fill="#f0d06080">★</text>
+  <text x="12" y="20" font-size="3" fill="#f0d06070">★</text>
+  <text x="21" y="21" font-size="2.5" fill="#f0d06070">★</text>
+  <text x="6" y="22" font-size="2.5" fill="#f0d06080">★</text>
+</svg>

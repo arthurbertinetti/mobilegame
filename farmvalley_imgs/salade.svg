@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Sol -->
+  <rect x="4" y="27" width="24" height="4" rx="2" fill="#6b4f2c"/>
+  <!-- Pomme de laitue: feuilles extérieures foncées -->
+  <ellipse cx="16" cy="22" rx="13" ry="9" fill="#2e7d32"/>
+  <!-- Feuilles intermédiaires -->
+  <ellipse cx="16" cy="21" rx="11" ry="8" fill="#43a047"/>
+  <!-- Feuilles ondulées (simulation par ellipses décalées) -->
+  <ellipse cx="8" cy="21" rx="5" ry="7" fill="#4caf50" transform="rotate(10 8 21)"/>
+  <ellipse cx="24" cy="21" rx="5" ry="7" fill="#4caf50" transform="rotate(-10 24 21)"/>
+  <ellipse cx="13" cy="17" rx="6" ry="7" fill="#66bb6a" transform="rotate(-15 13 17)"/>
+  <ellipse cx="19" cy="17" rx="6" ry="7" fill="#66bb6a" transform="rotate(15 19 17)"/>
+  <!-- Cœur clair de la laitue -->
+  <ellipse cx="16" cy="19" rx="6" ry="5" fill="#a5d6a7"/>
+  <ellipse cx="16" cy="18" rx="4" ry="3.5" fill="#c8e6c9"/>
+  <!-- Nervures -->
+  <line x1="16" y1="14" x2="16" y2="22" stroke="#81c784" stroke-width="0.6"/>
+  <line x1="10" y1="18" x2="16" y2="22" stroke="#81c784" stroke-width="0.5"/>
+  <line x1="22" y1="18" x2="16" y2="22" stroke="#81c784" stroke-width="0.5"/>
+</svg>

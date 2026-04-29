@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Bois de cerf (ramure) en bois clair -->
+  <!-- Tronc principal gauche -->
+  <path d="M12 30 Q11 22 10 16 Q9 10 12 6" fill="none" stroke="#8d6e63" stroke-width="3" stroke-linecap="round"/>
+  <!-- Tronc principal droit -->
+  <path d="M20 30 Q21 22 22 16 Q23 10 20 6" fill="none" stroke="#8d6e63" stroke-width="3" stroke-linecap="round"/>
+  <!-- Andouillers gauche -->
+  <path d="M10 16 Q6 12 5 8" fill="none" stroke="#795548" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M5 8 Q3 5 5 3" fill="none" stroke="#795548" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M5 8 Q7 5 8 3" fill="none" stroke="#795548" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M10 12 Q8 9 9 6" fill="none" stroke="#795548" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Andouillers droite -->
+  <path d="M22 16 Q26 12 27 8" fill="none" stroke="#795548" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M27 8 Q29 5 27 3" fill="none" stroke="#795548" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M27 8 Q25 5 24 3" fill="none" stroke="#795548" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M22 12 Q24 9 23 6" fill="none" stroke="#795548" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Jonction (rosette) -->
+  <circle cx="12" cy="30" r="2.5" fill="#6d4c41"/>
+  <circle cx="20" cy="30" r="2.5" fill="#6d4c41"/>
+</svg>

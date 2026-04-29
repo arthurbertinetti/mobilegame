@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="plg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b0bec5"/>
+      <stop offset="100%" stop-color="#607d8b"/>
+    </linearGradient>
+  </defs>
+  <!-- Tige centrale de la plume -->
+  <line x1="8" y1="28" x2="24" y2="4" stroke="#78909c" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Barbes de la plume (côté gauche) -->
+  <path d="M24 4 Q18 8 14 14 Q10 18 8 28 Q12 22 16 16 Q20 10 24 4Z" fill="url(#plg)"/>
+  <!-- Barbes de la plume (côté droit) -->
+  <path d="M24 4 Q22 10 20 16 Q18 20 16 28 Q14 22 12 16 Q14 10 24 4Z" fill="#90a4ae"/>
+  <!-- Reflets nacrés -->
+  <path d="M22 6 Q19 11 17 17" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-linecap="round"/>
+</svg>

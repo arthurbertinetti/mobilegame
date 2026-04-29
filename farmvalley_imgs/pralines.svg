@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pr_coat" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#e8a830"/>
+      <stop offset="55%" stop-color="#c07818"/>
+      <stop offset="100%" stop-color="#8a4e08"/>
+    </radialGradient>
+    <radialGradient id="pr_coat2" cx="38%" cy="32%" r="58%">
+      <stop offset="0%" stop-color="#d09820"/>
+      <stop offset="100%" stop-color="#906008"/>
+    </radialGradient>
+    <radialGradient id="pr_nut" cx="40%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#c09050"/>
+      <stop offset="100%" stop-color="#806030"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="11" ry="0.7" fill="#00000020"/>
+  <!-- Three pralines -->
+  <!-- Back left praline -->
+  <ellipse cx="10" cy="21" rx="6" ry="4.5" fill="url(#pr_coat2)"/>
+  <ellipse cx="9" cy="19.5" rx="2.5" ry="1.8" fill="url(#pr_nut)" opacity="0.7"/>
+  <!-- Back right praline -->
+  <ellipse cx="22" cy="20" rx="6" ry="4.5" fill="url(#pr_coat)"/>
+  <ellipse cx="21" cy="18.5" rx="2.5" ry="1.8" fill="url(#pr_nut)" opacity="0.7"/>
+  <!-- Front center praline -->
+  <ellipse cx="16" cy="25" rx="6.5" ry="4.5" fill="url(#pr_coat)"/>
+  <ellipse cx="15" cy="23.5" rx="2.8" ry="2" fill="url(#pr_nut)" opacity="0.75"/>
+  <!-- Caramel drizzle details -->
+  <path d="M7,21 Q9,20 11,21.5" stroke="#f0c040" stroke-width="0.7" fill="none" opacity="0.7"/>
+  <path d="M19,20 Q21,19 23,20.5" stroke="#f0c040" stroke-width="0.7" fill="none" opacity="0.7"/>
+  <path d="M13,25 Q15,24 17,25.5" stroke="#f0c040" stroke-width="0.7" fill="none" opacity="0.7"/>
+  <!-- Shine spots -->
+  <ellipse cx="8" cy="19.5" rx="2.2" ry="1.2" fill="rgba(255,220,150,.4)" transform="rotate(-20,8,19.5)"/>
+  <ellipse cx="20" cy="18.5" rx="2.2" ry="1.2" fill="rgba(255,220,150,.35)" transform="rotate(-15,20,18.5)"/>
+  <ellipse cx="14" cy="23.5" rx="2.5" ry="1.2" fill="rgba(255,220,150,.4)" transform="rotate(-10,14,23.5)"/>
+</svg>

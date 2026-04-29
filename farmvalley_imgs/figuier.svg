@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="fi_fig" cx="38%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#9070b0"/>
+      <stop offset="55%" stop-color="#502870"/>
+      <stop offset="100%" stop-color="#280838"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="8.5" ry="0.7" fill="#00000022"/>
+  <!-- Trunk (gnarled, fig trees have a distinctive wide low trunk) -->
+  <path d="M12,31 Q11,26 12,22 Q13,20 14.5,20.5 Q16,20 17.5,20.5 Q19,20 20,22 Q21,26 20,31 Z" fill="#5d3518"/>
+  <path d="M13,31 Q12,26 13,22.5 Q14,21 16,21.2 Q18,21 19,22.5 Q20,26 19,31 Z" fill="#7d4820"/>
+  <!-- Wide spreading branches -->
+  <line x1="16" y1="21" x2="5" y2="14" stroke="#5d3518" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="16" y1="21" x2="27" y2="14" stroke="#5d3518" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="16" y1="21" x2="16" y2="9" stroke="#5d3518" stroke-width="2" stroke-linecap="round"/>
+  <!-- Large palmate fig leaves (distinctive shape) -->
+  <!-- Left cluster -->
+  <path d="M5,14 Q0,11 2,8 Q4,7 5,10 Q5,7 7,6 Q9,5 9,9 Q9,6 11,5.5 Q13,5 12,9 Q12,7 13,7.5 Q14,9 12,12 Q10,15 5,14 Z" fill="#2a7018"/>
+  <path d="M5,14 Q1,12 3,9 Q4.5,8 5.5,10.5 Q6,8 8,7 Q9.5,6.5 9,9.5 Q10,7.5 11.5,7 Q13,7 12,10 Q11,12 8,13.5 Q6,14.5 5,14 Z" fill="#388020"/>
+  <!-- Right cluster -->
+  <path d="M27,14 Q32,11 30,8 Q28,7 27,10 Q27,7 25,6 Q23,5 23,9 Q23,6 21,5.5 Q19,5 20,9 Q20,7 19,7.5 Q18,9 20,12 Q22,15 27,14 Z" fill="#2a7018"/>
+  <path d="M27,14 Q31,12 29,9 Q27.5,8 26.5,10.5 Q26,8 24,7 Q22.5,6.5 23,9.5 Q22,7.5 20.5,7 Q19,7 20,10 Q21,12 24,13.5 Q26,14.5 27,14 Z" fill="#388020"/>
+  <!-- Center-top cluster -->
+  <path d="M16,9 Q13,5 15,3 Q17,2 17,5 Q18,3 20,4 Q21,6 19,8 Q17,10 16,9 Z" fill="#2a7018"/>
+  <path d="M16,9 Q14,6 15.5,4 Q17,3 17,5.5 Q18,4 19.5,5 Q20,6.5 18.5,8 Q17.5,9.5 16,9 Z" fill="#50a028"/>
+  <!-- Figs (hanging pear-shaped, purple) -->
+  <path d="M6,18.5 Q5,16.5 5.5,15 Q7,13.5 8,15 Q8.5,16.5 7.5,18.5 Q6.5,19.5 6,18.5 Z" fill="url(#fi_fig)"/>
+  <circle cx="6.8" cy="19" r="0.7" fill="#1a0820"/>
+  <path d="M25.5,17.5 Q24.5,15.5 25,14 Q26.5,12.5 27.5,14 Q28,15.5 27,17.5 Q26,18.5 25.5,17.5 Z" fill="url(#fi_fig)"/>
+  <circle cx="26.3" cy="18" r="0.7" fill="#1a0820"/>
+  <path d="M15,22.5 Q14,20.5 14.5,19 Q16,17.5 17,19 Q17.5,20.5 16.5,22.5 Q15.5,23.5 15,22.5 Z" fill="url(#fi_fig)"/>
+  <circle cx="15.8" cy="23" r="0.7" fill="#1a0820"/>
+  <!-- Fig shines -->
+  <ellipse cx="5.5" cy="16.2" rx="0.7" ry="1" fill="rgba(255,200,255,.3)"/>
+  <ellipse cx="25" cy="15.2" rx="0.7" ry="1" fill="rgba(255,200,255,.3)"/>
+</svg>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ch_bar" cx="38%" cy="30%" r="62%">
+      <stop offset="0%" stop-color="#6a3018"/>
+      <stop offset="55%" stop-color="#4a1e0a"/>
+      <stop offset="100%" stop-color="#280e04"/>
+    </radialGradient>
+    <linearGradient id="ch_seg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7a3820"/>
+      <stop offset="100%" stop-color="#3a1008"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="12" ry="0.8" fill="#00000020"/>
+  <!-- Chocolate bar (slightly tilted) -->
+  <path d="M4,13 L28,11 L29,24 L5,26 Z" fill="url(#ch_bar)" rx="2"/>
+  <!-- Bar segments (2 rows × 3 cols) -->
+  <!-- Horizontal divider -->
+  <path d="M4.5,19 L28.5,17.5" stroke="#280e04" stroke-width="1.2" fill="none"/>
+  <!-- Vertical dividers -->
+  <path d="M12,12.3 L12.5,25.5" stroke="#280e04" stroke-width="1" fill="none"/>
+  <path d="M20,11.5 L20.5,24.8" stroke="#280e04" stroke-width="1" fill="none"/>
+  <!-- Segment shine highlights -->
+  <path d="M6,13.5 Q9,13 11.5,13.3" stroke="rgba(140,70,40,.6)" stroke-width="0.8" fill="none"/>
+  <path d="M13,12.8 Q16,12.3 19.5,12.5" stroke="rgba(140,70,40,.6)" stroke-width="0.8" fill="none"/>
+  <path d="M21,12 Q24,11.5 27.5,11.8" stroke="rgba(140,70,40,.6)" stroke-width="0.8" fill="none"/>
+  <path d="M6,19.8 Q9,19.3 11.5,19.5" stroke="rgba(140,70,40,.5)" stroke-width="0.8" fill="none"/>
+  <path d="M13,19.2 Q16,18.8 19.5,19" stroke="rgba(140,70,40,.5)" stroke-width="0.8" fill="none"/>
+  <!-- One broken square corner -->
+  <path d="M4,13 L12,12.3 L12.5,19.3 L5,19.8 Z" fill="#5a2810" opacity="0.15"/>
+  <!-- Shine overall -->
+  <path d="M6,13 Q16,11.5 27,12" stroke="rgba(180,100,60,.3)" stroke-width="1.2" fill="none"/>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="tt_shell" cx="40%" cy="28%" r="62%">
+      <stop offset="0%" stop-color="#8aac48"/>
+      <stop offset="40%" stop-color="#607828"/>
+      <stop offset="75%" stop-color="#385810"/>
+      <stop offset="100%" stop-color="#1c3004"/>
+    </radialGradient>
+    <radialGradient id="tt_scute" cx="38%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#98b845"/>
+      <stop offset="55%" stop-color="#6a8020"/>
+      <stop offset="100%" stop-color="#3c5008"/>
+    </radialGradient>
+    <radialGradient id="tt_skin" cx="40%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#7a9838"/>
+      <stop offset="55%" stop-color="#4c6818"/>
+      <stop offset="100%" stop-color="#283808"/>
+    </radialGradient>
+    <radialGradient id="tt_plas" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c8c078"/>
+      <stop offset="100%" stop-color="#9a9848"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="11" ry="0.85" fill="#00000020"/>
+  <!-- Shell (domed, clear side profile) -->
+  <path d="M6,24 Q5.5,16 10.5,12 Q17,9 23.5,11.5 Q28,14 28,20.5 Q28,27 21,29 Q13,30 6,24 Z" fill="url(#tt_shell)"/>
+  <!-- Shell dome highlight (light from upper-left) -->
+  <ellipse cx="14.5" cy="18" rx="7.5" ry="5" fill="#b8ca58" opacity="0.22"/>
+  <!-- Scute pattern — central vertebral column -->
+  <path d="M12.5,13 Q16,12 19.5,13 Q20.5,15.5 19,17 Q16.5,18 13.5,17 Q12.5,15.5 12.5,13 Z" fill="url(#tt_scute)" stroke="#3a5008" stroke-width="0.5"/>
+  <path d="M12.5,17.5 Q16,16.5 19.5,17.5 Q20,20 18.5,21.5 Q16,22.5 13.5,21.5 Q12.5,20 12.5,17.5 Z" fill="url(#tt_scute)" stroke="#3a5008" stroke-width="0.5"/>
+  <path d="M13.5,22 Q16,21 18.5,22 Q18.5,24 17,25 Q15,25.5 13.5,24.5 Z" fill="url(#tt_scute)" stroke="#3a5008" stroke-width="0.5"/>
+  <!-- Left costal scutes -->
+  <path d="M7.5,16.5 Q10,15 12.5,15 Q12,18 10,18.5 Q7.5,18 7.5,16.5 Z" fill="url(#tt_scute)" stroke="#3a5008" stroke-width="0.4"/>
+  <path d="M7,20.5 Q9.5,19 12.5,19.5 Q12,23 9.5,23.5 Q7.5,23 7,20.5 Z" fill="url(#tt_scute)" stroke="#3a5008" stroke-width="0.4"/>
+  <!-- Right costal scutes -->
+  <path d="M19.5,13.5 Q22,13 24.5,15 Q25,17 23,17.5 Q20.5,17 19.5,15 Z" fill="url(#tt_scute)" stroke="#3a5008" stroke-width="0.4"/>
+  <path d="M22,18 Q24.5,18 26,19.5 Q25.5,21.5 23,22 Q21.5,21.5 21.5,19.5 Z" fill="url(#tt_scute)" stroke="#3a5008" stroke-width="0.4"/>
+  <!-- Plastron (belly, visible below) -->
+  <path d="M7.5,25 Q9,27.5 14,29 Q18.5,30 23,28.5 Q26,27 27,25" fill="url(#tt_plas)" opacity="0.55"/>
+  <!-- Neck (extending from shell) -->
+  <path d="M6,18.5 Q5,16 6.5,14.5" stroke="#4c6818" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Head -->
+  <path d="M5,19.5 Q4.5,17 6.2,15.5 Q8.5,14.5 10,16 Q10,18.5 8.5,20.5 Q7,21.5 5,19.5 Z" fill="url(#tt_skin)"/>
+  <!-- Scaly head texture -->
+  <path d="M6.5,16.2 Q7.5,15.8 8.8,16.2" stroke="#2a4808" stroke-width="0.3" fill="none" opacity="0.6"/>
+  <!-- Eye -->
+  <ellipse cx="6.5" cy="16.8" rx="0.9" ry="0.85" fill="#1a0800"/>
+  <circle cx="6.2" cy="16.5" r="0.28" fill="#ffffff45"/>
+  <!-- Nostril -->
+  <circle cx="5.2" cy="18.5" r="0.32" fill="#2a4808"/>
+  <!-- Front leg (left, paddle-like) -->
+  <path d="M9,26.5 Q6.5,27 5.5,28.8 Q6.5,30 8.5,29.5 Q10,29 9.5,27.5 Z" fill="url(#tt_skin)"/>
+  <!-- Front leg (right) -->
+  <path d="M15,28.5 Q13,29 12,30.5 Q13.5,31.5 15.5,31 Q16.5,30 15.5,28.5 Z" fill="url(#tt_skin)"/>
+  <!-- Rear leg (right) -->
+  <path d="M22,28.5 Q20.5,29 20,30.8 Q21.5,31.5 23.5,30.5 Q24,29 22.5,28.5 Z" fill="url(#tt_skin)"/>
+  <!-- Tail (small) -->
+  <path d="M26.5,24.5 Q29.5,25 30,26.5 Q28.5,27 26.5,26 Z" fill="url(#tt_skin)"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="7" ry="0.7" fill="#00000020"/>
+  <!-- Medium trunk -->
+  <path d="M13.5,31 Q13,26 13.5,22.5 Q14.5,21 16,21.3 Q17.5,21 18.5,22.5 Q19,26 18.5,31 Z" fill="#6b3a1f"/>
+  <path d="M14.5,31 Q14,26 14.5,23 Q15.2,22 16,22.2 Q16.8,22 17.5,23 Q18,26 17.5,31 Z" fill="#8d5428"/>
+  <!-- Branches -->
+  <line x1="16" y1="22.5" x2="7" y2="15.5" stroke="#5d3215" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="16" y1="22.5" x2="25" y2="15.5" stroke="#5d3215" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="16" y1="22" x2="16" y2="12" stroke="#5d3215" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- Canopy clusters -->
+  <ellipse cx="7" cy="13.5" rx="6" ry="5" fill="#207018"/>
+  <ellipse cx="25" cy="13.5" rx="6" ry="5" fill="#207018"/>
+  <ellipse cx="16" cy="9.5" rx="7.5" ry="5.5" fill="#2a8820"/>
+  <ellipse cx="11" cy="11" rx="4.5" ry="3.5" fill="#308028"/>
+  <ellipse cx="21" cy="11" rx="4.5" ry="3.5" fill="#288020"/>
+  <!-- Canopy highlight -->
+  <ellipse cx="13" cy="9.5" rx="3" ry="2" fill="#58c038" opacity="0.6"/>
+</svg>

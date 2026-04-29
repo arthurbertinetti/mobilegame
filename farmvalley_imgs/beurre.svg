@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bu_main" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8e840"/>
+      <stop offset="60%" stop-color="#e8c820"/>
+      <stop offset="100%" stop-color="#c8a010"/>
+    </linearGradient>
+    <linearGradient id="bu_wrap" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0dcc8"/>
+      <stop offset="100%" stop-color="#c4bfaa"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="11" ry="0.8" fill="#00000018"/>
+  <!-- Foil wrapper bottom-back -->
+  <path d="M4,22 L28,22 L28,28 Q16,30 4,28 Z" fill="url(#bu_wrap)"/>
+  <!-- Butter block main face -->
+  <path d="M4,12 L28,12 L28,22 L4,22 Z" fill="url(#bu_main)"/>
+  <!-- Butter top face -->
+  <path d="M4,12 L10,7 L30,7 L28,12 Z" fill="#f8ee60"/>
+  <!-- Butter right side -->
+  <path d="M28,12 L30,7 L30,22 L28,22 Z" fill="#c8a010"/>
+  <!-- Foil fold lines -->
+  <line x1="4" y1="22" x2="28" y2="22" stroke="#b0a890" stroke-width="0.7"/>
+  <path d="M4,25 Q16,26 28,25" stroke="#b8b498" stroke-width="0.5" fill="none"/>
+  <!-- Shine on butter -->
+  <path d="M8,13 Q18,12 25,14" stroke="rgba(255,255,200,.6)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <circle cx="9" cy="14" r="1.2" fill="rgba(255,255,220,.45)"/>
+</svg>

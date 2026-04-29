@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="mng" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#ffcc02"/>
+      <stop offset="45%" stop-color="#ff8f00"/>
+      <stop offset="100%" stop-color="#e65100"/>
+    </radialGradient>
+  </defs>
+  <!-- Tige -->
+  <line x1="17" y1="6" x2="18" y2="3" stroke="#5d4037" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Petite feuille -->
+  <path d="M18 4 Q23 2 22 6 Q20 5.5 18 4Z" fill="#2e7d32"/>
+  <!-- Corps de la mangue (oblongue, caractéristique) -->
+  <path d="M8 17 Q8 9 14 6 Q18 4.5 21 7 Q26 10 25 18 Q24 26 17 27 Q10 27 8 17Z" fill="url(#mng)"/>
+  <!-- Petit renflement caractéristique côté haut -->
+  <ellipse cx="21" cy="12" rx="3" ry="4" fill="#ff8f00" opacity="0.5"/>
+  <!-- Tache rouge caractéristique sur la peau -->
+  <path d="M22 9 Q25 12 24 18 Q24 14 22 9Z" fill="rgba(180,0,0,0.25)"/>
+  <!-- Reflet -->
+  <ellipse cx="12" cy="14" rx="2.5" ry="4" fill="rgba(255,255,255,0.22)" transform="rotate(-20 12 14)"/>
+</svg>

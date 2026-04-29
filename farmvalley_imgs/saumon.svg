@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="sm_body" cx="40%" cy="40%" r="58%">
+      <stop offset="0%" stop-color="#b8c8cc"/>
+      <stop offset="45%" stop-color="#8aa0a8"/>
+      <stop offset="100%" stop-color="#4e6878"/>
+    </radialGradient>
+    <linearGradient id="sm_lat" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#c86040"/>
+      <stop offset="35%" stop-color="#e08858"/>
+      <stop offset="70%" stop-color="#d07050"/>
+      <stop offset="100%" stop-color="#aa5030"/>
+    </linearGradient>
+    <radialGradient id="sm_belly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f0ece8"/>
+      <stop offset="100%" stop-color="#ccc0b4"/>
+    </radialGradient>
+    <linearGradient id="sm_fin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7898a8"/>
+      <stop offset="100%" stop-color="#3c5868"/>
+    </linearGradient>
+  </defs>
+  <!-- Tail (forked, homocerc — salmon tail) -->
+  <path d="M26.5,13.5 Q31.5,11 32,14 Q30,16 27.5,15 Z" fill="url(#sm_fin)"/>
+  <path d="M26.5,16 Q32,18.5 31.5,21.5 Q29,21 27,17.5 Z" fill="url(#sm_fin)"/>
+  <!-- Body (fusiform, streamlined) -->
+  <path d="M3,16.5 Q4,11 9,9.5 Q16.5,8 23,10 Q27.5,11.5 28,15 Q28,18.5 24.5,21 Q17.5,23.5 9.5,22 Q4.5,20.5 3,17.5 Z" fill="url(#sm_body)"/>
+  <!-- Lateral pink flush (salmon characteristic spawning coloration) -->
+  <path d="M4.5,15 Q9,11.5 19.5,11.5 Q25.5,12.5 27,15.5 Q25.5,18 21,20 Q11.5,21.5 5.5,18 Z" fill="url(#sm_lat)" opacity="0.58"/>
+  <!-- Silver belly -->
+  <path d="M4,17.5 Q8.5,20.5 16.5,21.5 Q22.5,22 27,19 Q26,21.5 21.5,23 Q14.5,24 7.5,22 Q5,21 4,17.5 Z" fill="url(#sm_belly)" opacity="0.78"/>
+  <!-- Dorsal fin (tall) -->
+  <path d="M15,9.5 Q17.5,5 20,5.5 Q20.5,8 19,9.5 Z" fill="url(#sm_fin)"/>
+  <!-- Adipose fin (small, salmon-only characteristic) -->
+  <path d="M22.5,10 Q25.5,8 26,9.5 Q25.5,11 23,11 Z" fill="url(#sm_fin)" opacity="0.8"/>
+  <!-- Pectoral fin -->
+  <path d="M10,16 Q8.5,20.5 11.5,21.5 Q13,19.5 11.5,16 Z" fill="url(#sm_fin)"/>
+  <!-- Pelvic fin -->
+  <path d="M16,19.5 Q15,22.5 17.5,23 Q18,21 17,19.5 Z" fill="url(#sm_fin)" opacity="0.8"/>
+  <!-- Head (slightly bulbous) -->
+  <path d="M3,16.5 Q3.5,11 6,9.5 Q9,9 10,11.5 Q10.5,15.5 9.5,20 Q7,21.5 4.5,20 Z" fill="#7898a8"/>
+  <!-- Black spots on back (Atlantic salmon) -->
+  <circle cx="14.5" cy="11" r="0.78" fill="#283040" opacity="0.75"/>
+  <circle cx="18.5" cy="10.5" r="0.72" fill="#283040" opacity="0.7"/>
+  <circle cx="22" cy="12" r="0.68" fill="#283040" opacity="0.65"/>
+  <circle cx="16.5" cy="13" r="0.62" fill="#283040" opacity="0.6"/>
+  <circle cx="20" cy="13.5" r="0.62" fill="#283040" opacity="0.6"/>
+  <circle cx="23.5" cy="14" r="0.58" fill="#283040" opacity="0.55"/>
+  <!-- Eye (golden, large) -->
+  <circle cx="6" cy="13.5" r="1.6" fill="#d4b830"/>
+  <circle cx="6" cy="13.5" r="0.92" fill="#0a0806"/>
+  <circle cx="5.5" cy="13" r="0.42" fill="#ffffff50"/>
+  <!-- Mouth -->
+  <path d="M3.2,17 Q3.5,18.5 5,19" stroke="#507080" stroke-width="0.6" fill="none"/>
+</svg>

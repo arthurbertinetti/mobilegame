@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="cr_jar" cx="38%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#faf8f4"/>
+      <stop offset="70%" stop-color="#ede8e0"/>
+      <stop offset="100%" stop-color="#d4cfc5"/>
+    </radialGradient>
+    <radialGradient id="cr_lid" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#7ab0e0"/>
+      <stop offset="60%" stop-color="#4888c8"/>
+      <stop offset="100%" stop-color="#2060a0"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="9" ry="0.7" fill="#00000018"/>
+  <!-- Jar body -->
+  <path d="M8,15 Q7,14 7,26 Q7,28 9,29 L23,29 Q25,28 25,26 Q25,14 24,15 Z" fill="url(#cr_jar)"/>
+  <!-- Jar glass highlight left -->
+  <path d="M9,16 Q8.5,22 9,27" stroke="rgba(255,255,255,.7)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Jar label -->
+  <rect x="10" y="19" width="12" height="7" rx="1.5" fill="rgba(255,255,255,.6)"/>
+  <text x="16" y="24.5" text-anchor="middle" font-size="4" font-family="Arial" fill="#4888c8" font-weight="bold">crème</text>
+  <!-- Lid -->
+  <path d="M7,15 Q7,12 16,12 Q25,12 25,15 L24,16 Q16,17.5 8,16 Z" fill="url(#cr_lid)"/>
+  <ellipse cx="16" cy="12.5" rx="9" ry="2" fill="#5898d0"/>
+  <!-- Lid highlight -->
+  <path d="M9,13 Q16,12 23,13" stroke="rgba(255,255,255,.5)" stroke-width="0.8" fill="none"/>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Tige principale -->
+  <rect x="14.5" y="4" width="3" height="26" rx="1.5" fill="#558b2f"/>
+  <!-- Feuilles du maïs (larges et arquées) -->
+  <path d="M16 22 Q4 16 3 10 Q8 14 16 20" fill="#4caf50"/>
+  <path d="M16 22 Q28 16 29 10 Q24 14 16 20" fill="#388e3c"/>
+  <path d="M16 15 Q5 10 4 5 Q9 8 16 13" fill="#66bb6a"/>
+  <path d="M16 15 Q27 10 28 5 Q23 8 16 13" fill="#4caf50"/>
+  <!-- Épi de maïs (enveloppe verte) -->
+  <ellipse cx="22" cy="16" rx="4.5" ry="7" fill="#388e3c" transform="rotate(15 22 16)"/>
+  <!-- Grains jaunes visibles -->
+  <ellipse cx="22" cy="16" rx="3" ry="5.5" fill="#fdd835" transform="rotate(15 22 16)"/>
+  <!-- Rangées de grains -->
+  <line x1="20" y1="11" x2="24" y2="11" stroke="#f9a825" stroke-width="0.8" transform="rotate(15 22 16)"/>
+  <line x1="19.5" y1="13" x2="24.5" y2="13" stroke="#f9a825" stroke-width="0.8" transform="rotate(15 22 16)"/>
+  <line x1="19" y1="15" x2="25" y2="15" stroke="#f9a825" stroke-width="0.8" transform="rotate(15 22 16)"/>
+  <line x1="19" y1="17" x2="25" y2="17" stroke="#f9a825" stroke-width="0.8" transform="rotate(15 22 16)"/>
+  <line x1="19.5" y1="19" x2="24.5" y2="19" stroke="#f9a825" stroke-width="0.8" transform="rotate(15 22 16)"/>
+  <!-- Soies (cheveux de maïs) -->
+  <path d="M22 9 Q24 5 23 3" fill="none" stroke="#fbc02d" stroke-width="0.8" stroke-linecap="round"/>
+  <path d="M22 9 Q25 6 25 4" fill="none" stroke="#f9a825" stroke-width="0.8" stroke-linecap="round"/>
+  <path d="M22 9 Q26 7 27 5" fill="none" stroke="#fdd835" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Sommet (épi floral) -->
+  <path d="M16 4 Q15 2 16 1 Q17 2 16 4" fill="#9e9d24"/>
+</svg>

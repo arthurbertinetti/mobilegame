@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="co_bowl" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#d8ccc0"/>
+      <stop offset="70%" stop-color="#b8aaa0"/>
+      <stop offset="100%" stop-color="#988880"/>
+    </radialGradient>
+    <radialGradient id="co_compote" cx="40%" cy="35%" r="58%">
+      <stop offset="0%" stop-color="#f0a060"/>
+      <stop offset="55%" stop-color="#d07030"/>
+      <stop offset="100%" stop-color="#a04010"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="11" ry="0.7" fill="#00000018"/>
+  <!-- Bowl body -->
+  <path d="M4,20 Q4,29 16,30 Q28,29 28,20 L27,18 Q16,17 5,18 Z" fill="url(#co_bowl)"/>
+  <!-- Bowl rim -->
+  <ellipse cx="16" cy="18" rx="12" ry="3.5" fill="#c4b8b0"/>
+  <ellipse cx="16" cy="17.5" rx="11" ry="3" fill="#d0c4bc"/>
+  <!-- Compote content -->
+  <ellipse cx="16" cy="17" rx="10" ry="2.5" fill="url(#co_compote)"/>
+  <!-- Fruit chunks in compote -->
+  <ellipse cx="11" cy="16.5" rx="2" ry="1.2" fill="#c05020" opacity="0.75"/>
+  <ellipse cx="17" cy="16" rx="1.8" ry="1.1" fill="#d06030" opacity="0.7"/>
+  <ellipse cx="22" cy="16.5" rx="1.5" ry="1" fill="#b84020" opacity="0.65"/>
+  <!-- Surface texture/juice -->
+  <path d="M7,17 Q12,16 16,17 Q20,18 25,17" stroke="rgba(220,100,50,.4)" stroke-width="0.7" fill="none"/>
+  <!-- Small steam -->
+  <path d="M12,15 Q11.5,13 12.5,11.5" stroke="rgba(255,255,255,.4)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M20,15 Q20.5,13 19.5,11" stroke="rgba(255,255,255,.35)" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+  <!-- Shine inside bowl -->
+  <ellipse cx="10" cy="17" rx="2" ry="0.7" fill="rgba(255,180,100,.35)"/>
+</svg>

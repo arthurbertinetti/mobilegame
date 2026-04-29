@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="ta_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ta_jar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c8e8f8"/>
+      <stop offset="30%" stop-color="#f0f8ff"/>
+      <stop offset="70%" stop-color="#e0f0fa"/>
+      <stop offset="100%" stop-color="#a8d0e8"/>
+    </linearGradient>
+    <linearGradient id="ta_paste" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3a2010"/>
+      <stop offset="100%" stop-color="#2a1a0a"/>
+    </linearGradient>
+    <linearGradient id="ta_lid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#303030"/>
+      <stop offset="100%" stop-color="#101010"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="9" ry="2" fill="url(#ta_shadow)"/>
+  <!-- Small jar body -->
+  <rect x="9" y="14" width="14" height="14" rx="3" ry="3" fill="url(#ta_jar)" stroke="#90b8d0" stroke-width="0.8"/>
+  <!-- Paste fill -->
+  <rect x="10" y="18" width="12" height="9" rx="2" ry="2" fill="url(#ta_paste)" opacity="0.95"/>
+  <!-- Jar shine -->
+  <rect x="10.5" y="15" width="2" height="7" rx="1" fill="white" opacity="0.4"/>
+  <!-- Neck ring -->
+  <rect x="10" y="13" width="12" height="2" rx="1" fill="#b0cfe0" stroke="#90b0c8" stroke-width="0.5"/>
+  <!-- Lid -->
+  <rect x="10" y="9" width="12" height="5" rx="2" fill="url(#ta_lid)" stroke="#080808" stroke-width="0.6"/>
+  <!-- Lid shine -->
+  <rect x="12" y="10" width="3" height="2" rx="1" fill="white" opacity="0.2"/>
+  <!-- Black olive on top of lid -->
+  <ellipse cx="16" cy="8.5" rx="3.5" ry="2.2" fill="#1a1a1a"/>
+  <ellipse cx="16" cy="8" rx="2.5" ry="1.4" fill="#2d2d2d"/>
+  <!-- Olive hole -->
+  <ellipse cx="16" cy="8.5" rx="1" ry="1" fill="#0a0a0a"/>
+  <!-- Olive highlight -->
+  <ellipse cx="14.5" cy="7.5" rx="0.8" ry="0.5" fill="white" opacity="0.2" transform="rotate(-15,14.5,7.5)"/>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ga_body" cx="38%" cy="30%" r="62%">
+      <stop offset="0%" stop-color="#f8f8f0"/>
+      <stop offset="55%" stop-color="#f0ece0"/>
+      <stop offset="100%" stop-color="#d8d0c0"/>
+    </radialGradient>
+    <radialGradient id="ga_top" cx="40%" cy="35%" r="58%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#ece8dc"/>
+    </radialGradient>
+    <radialGradient id="ga_flame" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#fff080"/>
+      <stop offset="60%" stop-color="#f0a020"/>
+      <stop offset="100%" stop-color="#e06010"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Bottom cake layer -->
+  <rect x="7" y="22" width="18" height="8" rx="1.5" fill="url(#ga_body)"/>
+  <ellipse cx="16" cy="22" rx="9" ry="1.5" fill="#ece8dc"/>
+  <!-- Layer divider (pink icing) -->
+  <rect x="7" y="21" width="18" height="2" rx="0.5" fill="#f090b0"/>
+  <!-- Top cake layer -->
+  <rect x="7" y="14" width="18" height="8" rx="1.5" fill="url(#ga_body)"/>
+  <ellipse cx="16" cy="14" rx="9" ry="1.5" fill="#ffffff"/>
+  <!-- Top icing (white) -->
+  <ellipse cx="16" cy="14" rx="9" ry="1.8" fill="url(#ga_top)"/>
+  <!-- Pink icing drip -->
+  <path d="M11,14 Q10.5,17 11,18" stroke="#f070a0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M16,14.2 Q15.5,16.5 16,18" stroke="#f070a0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M21,14 Q21.5,16 21,17.5" stroke="#f070a0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Candle -->
+  <rect x="15" y="8" width="2" height="6" rx="0.5" fill="#f0c0e0"/>
+  <rect x="15.3" y="8" width="0.8" height="6" rx="0.3" fill="rgba(255,255,255,0.4)"/>
+  <!-- Candle wick -->
+  <line x1="16" y1="8" x2="16" y2="7" stroke="#3a2808" stroke-width="0.6"/>
+  <!-- Flame -->
+  <ellipse cx="16" cy="5.5" rx="1.5" ry="2" fill="url(#ga_flame)"/>
+  <ellipse cx="16" cy="6" rx="0.7" ry="1.2" fill="#fff080"/>
+  <!-- Cake side texture -->
+  <path d="M8,20 Q16,19 24,20" stroke="rgba(200,190,170,0.5)" stroke-width="0.5" fill="none"/>
+  <path d="M8,26 Q16,25 24,26" stroke="rgba(200,190,170,0.5)" stroke-width="0.5" fill="none"/>
+</svg>

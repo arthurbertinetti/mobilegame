@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="glass_g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8e8e8"/>
+      <stop offset="40%" stop-color="#f8f8f8"/>
+      <stop offset="100%" stop-color="#c0c0c0"/>
+    </linearGradient>
+    <linearGradient id="liq_g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c8e040"/>
+      <stop offset="100%" stop-color="#8aaa00"/>
+    </linearGradient>
+    <clipPath id="glass_clip">
+      <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <rect x="9" y="16" width="14" height="14" fill="url(#liq_g)" clip-path="url(#glass_clip)"/>
+  <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z" fill="url(#glass_g)" fill-opacity="0.55" stroke="#a0a0a0" stroke-width="0.7"/>
+  <line x1="12" y1="13" x2="20" y2="13" stroke="#d0d0d0" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- pear silhouette garnish -->
+  <ellipse cx="16" cy="9.5" rx="3" ry="3.5" fill="#c8d820"/>
+  <ellipse cx="16" cy="7" rx="1.8" ry="2" fill="#a8c020"/>
+  <line x1="16" y1="5" x2="16" y2="3.5" stroke="#7a6030" stroke-width="0.8" stroke-linecap="round"/>
+  <path d="M16,4 Q17.5,3 18,4" fill="none" stroke="#5a9010" stroke-width="0.7"/>
+</svg>

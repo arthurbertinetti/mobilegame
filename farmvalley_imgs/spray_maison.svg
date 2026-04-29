@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_sm" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bottle_sm" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b0d0c0"/>
+      <stop offset="40%" stop-color="#e0f0e8"/>
+      <stop offset="100%" stop-color="#88b8a0"/>
+    </linearGradient>
+    <linearGradient id="pump_sm" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d0d0d0"/>
+      <stop offset="50%" stop-color="#f0f0f0"/>
+      <stop offset="100%" stop-color="#b0b0b0"/>
+    </linearGradient>
+    <linearGradient id="neck_sm" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a0c8b8"/>
+      <stop offset="50%" stop-color="#c8e8d8"/>
+      <stop offset="100%" stop-color="#80b0a0"/>
+    </linearGradient>
+    <radialGradient id="spray_sm" cx="20%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#c0e8d8" stop-opacity="0.8"/>
+      <stop offset="60%" stop-color="#a0d0c0" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#80c0b0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="14" cy="30.5" rx="7.5" ry="1.8" fill="url(#shadow_sm)"/>
+  <!-- Bottle body -->
+  <path d="M6 18 Q5.5 24 6 27.5 Q6 30 14 30 Q22 30 22 27.5 Q22.5 24 22 18 Q20 14.5 14 14.5 Q8 14.5 6 18 Z" fill="url(#bottle_sm)"/>
+  <!-- Neck -->
+  <rect x="11.5" y="10" width="5" height="5.5" rx="1.5" fill="url(#neck_sm)"/>
+  <!-- Pump collar -->
+  <rect x="10.5" y="8" width="7" height="2.5" rx="1.2" fill="url(#pump_sm)"/>
+  <!-- Pump arm (horizontal) -->
+  <rect x="15" y="6" width="8" height="2.5" rx="1.2" fill="url(#pump_sm)"/>
+  <!-- Nozzle -->
+  <rect x="22" y="5.5" width="3" height="2" rx="1" fill="#c0c0c0"/>
+  <!-- Pump stem (vertical) -->
+  <rect x="13.5" y="4" width="2" height="5" rx="1" fill="url(#pump_sm)"/>
+  <!-- Spray cloud at nozzle -->
+  <ellipse cx="26" cy="6.5" rx="3.5" ry="2.5" fill="url(#spray_sm)"/>
+  <!-- Individual spray dots -->
+  <circle cx="26" cy="5" r="0.8" fill="#b0d8c8" opacity="0.6"/>
+  <circle cx="28" cy="6" r="0.6" fill="#b0d8c8" opacity="0.5"/>
+  <circle cx="27" cy="8" r="0.7" fill="#b0d8c8" opacity="0.45"/>
+  <circle cx="29" cy="7.5" r="0.5" fill="#b0d8c8" opacity="0.4"/>
+  <circle cx="25" cy="8.5" r="0.6" fill="#b0d8c8" opacity="0.4"/>
+  <!-- Bottle shine -->
+  <path d="M7.5 19 Q7 24 7.5 27.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.35"/>
+  <!-- Label area -->
+  <rect x="7.5" y="19.5" width="13" height="7" rx="2" fill="#fff" opacity="0.12"/>
+  <!-- Fresh wave lines on label -->
+  <path d="M9 22 Q12 21 15 22 Q18 23 20 22" stroke="#88c8a8" stroke-width="0.6" fill="none" opacity="0.6"/>
+  <path d="M9 24 Q12 23 15 24 Q18 25 20 24" stroke="#88c8a8" stroke-width="0.6" fill="none" opacity="0.5"/>
+</svg>

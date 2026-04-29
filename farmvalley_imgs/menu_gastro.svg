@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="plate_grad" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="85%" stop-color="#f0f0f0"/>
+      <stop offset="100%" stop-color="#d8d8d8"/>
+    </radialGradient>
+    <radialGradient id="plate_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="#00000000"/>
+      <stop offset="100%" stop-color="#00000020"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Plate -->
+  <ellipse cx="16" cy="20" rx="13" ry="9" fill="url(#plate_grad)"/>
+  <ellipse cx="16" cy="20" rx="13" ry="9" fill="url(#plate_shadow)"/>
+  <!-- Plate rim -->
+  <ellipse cx="16" cy="20" rx="13" ry="9" fill="none" stroke="#c8c8c8" stroke-width="1.2"/>
+  <ellipse cx="16" cy="20" rx="10" ry="7" fill="none" stroke="#e8e8e8" stroke-width="0.5"/>
+  <!-- Food stack center -->
+  <ellipse cx="16" cy="21" rx="3" ry="1.8" fill="#c09060"/>
+  <ellipse cx="16" cy="19.5" rx="2.5" ry="1.5" fill="#d4a070"/>
+  <ellipse cx="16" cy="18" rx="2" ry="1.2" fill="#e0b080"/>
+  <!-- Microgreens on top -->
+  <path d="M15 18 Q15 16 14 15" stroke="#40a020" stroke-width="0.6" fill="none"/>
+  <path d="M16 17.5 Q16 15.5 16 14.5" stroke="#60b030" stroke-width="0.6" fill="none"/>
+  <path d="M17 18 Q17.5 16 18.5 15" stroke="#40a020" stroke-width="0.6" fill="none"/>
+  <!-- Sauce dots -->
+  <circle cx="10" cy="22" r="0.8" fill="#c04020"/>
+  <circle cx="21" cy="21" r="0.8" fill="#c04020"/>
+  <circle cx="12" cy="24" r="0.6" fill="#a03010"/>
+  <circle cx="19" cy="24" r="0.6" fill="#a03010"/>
+  <!-- Sauce lines -->
+  <path d="M8 20 Q9 22 10 22" stroke="#c04020" stroke-width="0.5" fill="none"/>
+  <path d="M23 19 Q22 21 21 21" stroke="#c04020" stroke-width="0.5" fill="none"/>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="vpg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ef9a9a"/>
+      <stop offset="100%" stop-color="#c62828"/>
+    </linearGradient>
+  </defs>
+  <!-- Tranche de jambon -->
+  <path d="M6 10 Q8 6 16 6 Q24 6 26 10 Q28 14 26 22 Q24 26 16 26 Q8 26 6 22 Q4 14 6 10Z" fill="url(#vpg)"/>
+  <!-- Gras blanc caractéristique -->
+  <path d="M6 10 Q8 6 16 6 Q18 8 16 10 Q12 12 6 10Z" fill="#fff9c4"/>
+  <path d="M22 8 Q26 10 26 14 Q24 12 22 8Z" fill="#fff9c4"/>
+  <!-- Fibres musculaires -->
+  <line x1="8" y1="15" x2="24" y2="15" stroke="#e57373" stroke-width="0.6" opacity="0.5"/>
+  <line x1="7" y1="18" x2="25" y2="18" stroke="#e57373" stroke-width="0.6" opacity="0.5"/>
+  <!-- Os -->
+  <ellipse cx="16" cy="16" rx="3" ry="4" fill="#eeeeee"/>
+  <ellipse cx="16" cy="12" rx="2.5" ry="2" fill="#eeeeee"/>
+  <ellipse cx="16" cy="20" rx="2.5" ry="2" fill="#eeeeee"/>
+  <!-- Reflet -->
+  <ellipse cx="11" cy="13" rx="2" ry="3" fill="rgba(255,255,255,0.2)" transform="rotate(-20 11 13)"/>
+</svg>

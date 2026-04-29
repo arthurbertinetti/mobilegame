@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="pa_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pa_log" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f898b8"/>
+      <stop offset="100%" stop-color="#f080a0"/>
+    </linearGradient>
+    <linearGradient id="pa_end" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#faaac0"/>
+      <stop offset="100%" stop-color="#e87098"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="28" rx="11" ry="2.5" fill="url(#pa_shadow)"/>
+  <!-- Marzipan log body -->
+  <rect x="5" y="14" width="22" height="12" rx="6" fill="url(#pa_log)" stroke="#d06080" stroke-width="0.6"/>
+  <!-- Log end caps (rounded ends visible) -->
+  <ellipse cx="5" cy="20" rx="1" ry="6" fill="url(#pa_end)" opacity="0.7"/>
+  <ellipse cx="27" cy="20" rx="1" ry="6" fill="url(#pa_end)" opacity="0.7"/>
+  <!-- White dusting / powdered sugar -->
+  <rect x="5" y="14" width="22" height="12" rx="6" fill="white" opacity="0.12"/>
+  <!-- Sugar dust patches -->
+  <ellipse cx="10" cy="17" rx="2" ry="1" fill="white" opacity="0.3" transform="rotate(-10,10,17)"/>
+  <ellipse cx="18" cy="24" rx="2.5" ry="1" fill="white" opacity="0.25" transform="rotate(5,18,24)"/>
+  <ellipse cx="23" cy="17.5" rx="1.5" ry="0.8" fill="white" opacity="0.28" transform="rotate(-15,23,17.5)"/>
+  <!-- Log highlight -->
+  <ellipse cx="16" cy="16" rx="9" ry="2" fill="white" opacity="0.25"/>
+  <!-- Small almond visible -->
+  <ellipse cx="16" cy="20" rx="3" ry="1.8" fill="#e8d080" stroke="#c0a020" stroke-width="0.5"/>
+  <!-- Almond texture line -->
+  <line x1="13.2" y1="20" x2="18.8" y2="20" stroke="#b09020" stroke-width="0.5"/>
+  <ellipse cx="16" cy="20" rx="2.2" ry="1" fill="#f0e0a0" opacity="0.6"/>
+  <!-- Log crinkle marks / texture -->
+  <line x1="8" y1="15" x2="8" y2="25" stroke="#d06080" stroke-width="0.3" opacity="0.4"/>
+  <line x1="12" y1="14.5" x2="12" y2="25.5" stroke="#d06080" stroke-width="0.3" opacity="0.4"/>
+  <line x1="20" y1="14.5" x2="20" y2="25.5" stroke="#d06080" stroke-width="0.3" opacity="0.4"/>
+  <line x1="24" y1="15" x2="24" y2="25" stroke="#d06080" stroke-width="0.3" opacity="0.4"/>
+</svg>

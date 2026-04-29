@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="handle_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c0a060"/>
+      <stop offset="100%" stop-color="#806030"/>
+    </linearGradient>
+    <radialGradient id="sparkle_glow" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#ffff8080"/>
+      <stop offset="100%" stop-color="#ffff0000"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Handle -->
+  <rect x="14" y="18" width="3" height="12" rx="1.5" fill="url(#handle_grad)"/>
+  <!-- Handle ring -->
+  <rect x="13.5" y="16" width="4" height="2" rx="1" fill="#a07030"/>
+  <!-- Pink feathers -->
+  <ellipse cx="12" cy="12" rx="3" ry="1.2" fill="#f060a0" transform="rotate(-40,12,12)"/>
+  <ellipse cx="10" cy="9" rx="3" ry="1.1" fill="#e050b0" transform="rotate(-60,10,9)"/>
+  <ellipse cx="14" cy="8" rx="3" ry="1.1" fill="#ff80c0" transform="rotate(-20,14,8)"/>
+  <!-- Yellow feathers -->
+  <ellipse cx="18" cy="9" rx="3" ry="1.1" fill="#f0d020" transform="rotate(20,18,9)"/>
+  <ellipse cx="20" cy="12" rx="3" ry="1.2" fill="#e0c010" transform="rotate(40,20,12)"/>
+  <!-- Teal feathers -->
+  <ellipse cx="16" cy="7" rx="3" ry="1" fill="#20c0a0" transform="rotate(5,16,7)"/>
+  <ellipse cx="11" cy="14" rx="2.5" ry="1" fill="#20b090" transform="rotate(-50,11,14)"/>
+  <ellipse cx="21" cy="14" rx="2.5" ry="1" fill="#30d0b0" transform="rotate(50,21,14)"/>
+  <!-- Sparkle glow -->
+  <ellipse cx="15" cy="11" rx="7" ry="6" fill="url(#sparkle_glow)"/>
+  <!-- Sparkle stars -->
+  <line x1="6" y1="7" x2="8" y2="9" stroke="#ffff80" stroke-width="0.8"/>
+  <line x1="6" y1="9" x2="8" y2="7" stroke="#ffff80" stroke-width="0.8"/>
+  <circle cx="7" cy="8" r="0.5" fill="#ffffff"/>
+  <line x1="23" y1="5" x2="25" y2="7" stroke="#ffff80" stroke-width="0.8"/>
+  <line x1="23" y1="7" x2="25" y2="5" stroke="#ffff80" stroke-width="0.8"/>
+  <circle cx="24" cy="6" r="0.5" fill="#ffffff"/>
+  <line x1="26" y1="12" x2="28" y2="14" stroke="#ffddff" stroke-width="0.8"/>
+  <line x1="26" y1="14" x2="28" y2="12" stroke="#ffddff" stroke-width="0.8"/>
+  <line x1="4" y1="14" x2="6" y2="16" stroke="#ffffaa" stroke-width="0.8"/>
+  <line x1="4" y1="16" x2="6" y2="14" stroke="#ffffaa" stroke-width="0.8"/>
+</svg>

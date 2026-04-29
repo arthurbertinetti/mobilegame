@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Poteaux de vigne -->
+  <rect x="4" y="6" width="2" height="24" rx="1" fill="#795548"/>
+  <rect x="26" y="6" width="2" height="24" rx="1" fill="#795548"/>
+  <!-- Fils de palissage -->
+  <line x1="4" y1="10" x2="28" y2="10" stroke="#bdbdbd" stroke-width="0.8"/>
+  <line x1="4" y1="16" x2="28" y2="16" stroke="#bdbdbd" stroke-width="0.8"/>
+  <line x1="4" y1="22" x2="28" y2="22" stroke="#bdbdbd" stroke-width="0.8"/>
+  <!-- Ceps (tiges principales) -->
+  <line x1="10" y1="30" x2="10" y2="8" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="22" y1="30" x2="22" y2="8" stroke="#5d4037" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Sarments horizontaux -->
+  <line x1="4" y1="10" x2="28" y2="10" stroke="#8d6e63" stroke-width="1.5"/>
+  <line x1="4" y1="16" x2="28" y2="16" stroke="#8d6e63" stroke-width="1.5"/>
+  <!-- Feuilles de vigne (palmées, découpées) -->
+  <path d="M10 10 Q7 7 5 8 Q6 10 10 11Z" fill="#4caf50"/>
+  <path d="M10 10 Q10 6 12 5 Q12 8 10 11Z" fill="#43a047"/>
+  <path d="M10 10 Q14 7 15 8 Q13 10 10 11Z" fill="#4caf50"/>
+  <path d="M22 10 Q19 7 17 8 Q19 10 22 11Z" fill="#388e3c"/>
+  <path d="M22 10 Q22 6 24 5 Q24 8 22 11Z" fill="#43a047"/>
+  <path d="M22 10 Q26 7 27 8 Q25 10 22 11Z" fill="#4caf50"/>
+  <path d="M10 16 Q7 13 5 14 Q6 16 10 17Z" fill="#43a047"/>
+  <path d="M10 16 Q14 13 15 14 Q13 16 10 17Z" fill="#388e3c"/>
+  <path d="M22 16 Q19 13 17 14 Q19 16 22 17Z" fill="#4caf50"/>
+  <path d="M22 16 Q26 13 27 14 Q25 16 22 17Z" fill="#43a047"/>
+  <!-- Grappes de raisin -->
+  <defs>
+    <radialGradient id="vg" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#ce93d8"/>
+      <stop offset="100%" stop-color="#4a148c"/>
+    </radialGradient>
+  </defs>
+  <!-- Grappe gauche -->
+  <ellipse cx="9" cy="20" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="11" cy="20" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="8" cy="22" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="10" cy="22" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="12" cy="22" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="9" cy="24" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="11" cy="24" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="10" cy="26" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <!-- Grappe droite -->
+  <ellipse cx="21" cy="20" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="23" cy="20" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="20" cy="22" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="22" cy="22" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="24" cy="22" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="21" cy="24" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="23" cy="24" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <ellipse cx="22" cy="26" rx="1.4" ry="1.4" fill="url(#vg)"/>
+  <!-- Petites tiges de grappes -->
+  <line x1="10" y1="17" x2="10" y2="19" stroke="#558b2f" stroke-width="0.8"/>
+  <line x1="22" y1="17" x2="22" y2="19" stroke="#558b2f" stroke-width="0.8"/>
+</svg>

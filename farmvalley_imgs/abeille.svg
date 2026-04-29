@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bee_thorax" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#c8a020"/>
+      <stop offset="55%" stop-color="#9a7808"/>
+      <stop offset="100%" stop-color="#6a5004"/>
+    </radialGradient>
+    <radialGradient id="bee_abd" cx="42%" cy="35%" r="52%">
+      <stop offset="0%" stop-color="#e8b828"/>
+      <stop offset="50%" stop-color="#c89010"/>
+      <stop offset="100%" stop-color="#8a5c00"/>
+    </radialGradient>
+    <linearGradient id="bee_stripe" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a2808"/>
+      <stop offset="100%" stop-color="#2a1804"/>
+    </linearGradient>
+    <linearGradient id="bee_wing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c8e8f880"/>
+      <stop offset="100%" stop-color="#a0c8e860"/>
+    </linearGradient>
+  </defs>
+  <!-- Upper wings (pair) -->
+  <path d="M14,12 Q10,8 7,9 Q5,11 8,14 Q11,15.5 15,13.5 Z" fill="url(#bee_wing)" stroke="#90b0c840" stroke-width="0.5"/>
+  <!-- Wing venation -->
+  <path d="M14,12.5 Q11,10 8,10.5 M14,13 Q10,11.5 7.5,12.5" stroke="#a0c8e880" stroke-width="0.3" fill="none"/>
+  <path d="M18,11.5 Q22,7.5 25,8.5 Q27,11 24,13.5 Q21,15 17,13 Z" fill="url(#bee_wing)" stroke="#90b0c840" stroke-width="0.5"/>
+  <path d="M18,12 Q21,9.5 24,10 M18,12.5 Q22,10.5 24.5,12" stroke="#a0c8e880" stroke-width="0.3" fill="none"/>
+  <!-- Lower wings -->
+  <path d="M14.5,14 Q11,12 9,14 Q9,16.5 12.5,16 Z" fill="url(#bee_wing)" opacity="0.7"/>
+  <path d="M17.5,13.5 Q21,12 23,14 Q23,16.5 19.5,16 Z" fill="url(#bee_wing)" opacity="0.7"/>
+  <!-- Thorax (fuzzy) -->
+  <ellipse cx="16" cy="14.5" rx="4" ry="3.5" fill="url(#bee_thorax)"/>
+  <!-- Fuzzy thorax texture -->
+  <ellipse cx="14.5" cy="13.5" rx="2.5" ry="2" fill="#d4a828" opacity="0.4"/>
+  <ellipse cx="17.5" cy="13.5" rx="2" ry="1.8" fill="#c89820" opacity="0.3"/>
+  <!-- Abdomen -->
+  <ellipse cx="16" cy="21" rx="4.5" ry="6.5" fill="url(#bee_abd)" transform="rotate(-5 16 21)"/>
+  <!-- Dark brown stripes -->
+  <path d="M11.8,18 Q16,17.2 20.2,18 Q20,19.2 16,19.8 Q12,19.2 11.8,18 Z" fill="url(#bee_stripe)"/>
+  <path d="M11.6,21.5 Q16,20.7 20.4,21.5 Q20,22.8 16,23.3 Q12,22.8 11.6,21.5 Z" fill="url(#bee_stripe)"/>
+  <path d="M12.2,25 Q16,24.2 19.8,25 Q19.5,26.2 16,26.7 Q12.5,26.2 12.2,25 Z" fill="url(#bee_stripe)"/>
+  <!-- Stinger -->
+  <path d="M15,27.5 Q16,28.5 17,27.5 Q16.5,30 16,31 Q15.5,30 15,27.5 Z" fill="#3a2808"/>
+  <!-- Head -->
+  <ellipse cx="16" cy="11" rx="3" ry="2.5" fill="#4a3008"/>
+  <!-- Antennae -->
+  <path d="M14.5,9 Q13,6 11.5,4.5" stroke="#3a2808" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="11.2" cy="4.2" r="0.9" fill="#c89010"/>
+  <path d="M17.5,9 Q19,6 20.5,4.5" stroke="#3a2808" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="20.8" cy="4.2" r="0.9" fill="#c89010"/>
+  <!-- Eyes (compound) -->
+  <ellipse cx="14.2" cy="10.5" rx="1" ry="0.9" fill="#1a1008" opacity="0.9"/>
+  <ellipse cx="17.8" cy="10.5" rx="1" ry="0.9" fill="#1a1008" opacity="0.9"/>
+  <ellipse cx="14" cy="10.2" rx="0.35" ry="0.3" fill="#4a8040" opacity="0.6"/>
+  <ellipse cx="17.6" cy="10.2" rx="0.35" ry="0.3" fill="#4a8040" opacity="0.6"/>
+</svg>

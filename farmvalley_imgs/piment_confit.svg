@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="pc_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pc_jar" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c8e8f8"/>
+      <stop offset="30%" stop-color="#f0f8ff"/>
+      <stop offset="70%" stop-color="#e0f0fa"/>
+      <stop offset="100%" stop-color="#a8d0e8"/>
+    </linearGradient>
+    <linearGradient id="pc_oil" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0d880" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#d8b840" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="pc_lid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e04040"/>
+      <stop offset="100%" stop-color="#a00010"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="9" ry="2" fill="url(#pc_shadow)"/>
+  <!-- Small jar body -->
+  <rect x="9" y="14" width="14" height="14" rx="3" ry="3" fill="url(#pc_jar)" stroke="#90b8d0" stroke-width="0.8"/>
+  <!-- Oil fill (visible) -->
+  <rect x="10" y="18" width="12" height="9" rx="2" ry="2" fill="url(#pc_oil)"/>
+  <!-- Peppers in oil -->
+  <!-- Pepper 1 -->
+  <path d="M11 20 Q12 17.5 13.5 18.5 Q14.5 19.5 13 22 Q11.5 23.5 11 20 Z" fill="#d02020"/>
+  <path d="M11.2 20 Q12 18 13 19 Q13.8 20 12.5 22" stroke="#b01818" stroke-width="0.4" fill="none"/>
+  <!-- Pepper 2 -->
+  <path d="M17 19 Q19 17 20 19 Q21 21.5 19.5 24 Q17.5 24.5 17 19 Z" fill="#e02828" transform="rotate(-15,19,21)"/>
+  <!-- Oil sheen -->
+  <rect x="10.5" y="19" width="1.5" height="6" rx="0.7" fill="white" opacity="0.25"/>
+  <!-- Jar shine -->
+  <rect x="10.5" y="15" width="2" height="7" rx="1" fill="white" opacity="0.4"/>
+  <!-- Neck ring -->
+  <rect x="10" y="13" width="12" height="2" rx="1" fill="#b0cfe0" stroke="#90b0c8" stroke-width="0.5"/>
+  <!-- Lid -->
+  <rect x="10" y="9" width="12" height="5" rx="2" fill="url(#pc_lid)" stroke="#800008" stroke-width="0.6"/>
+  <!-- Lid shine -->
+  <rect x="12" y="10" width="3" height="2" rx="1" fill="white" opacity="0.3"/>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="royal_platter" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#f8e080"/>
+      <stop offset="80%" stop-color="#d4a020"/>
+      <stop offset="100%" stop-color="#a07010"/>
+    </radialGradient>
+    <radialGradient id="crown_gold" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#ffe060"/>
+      <stop offset="100%" stop-color="#c08010"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Golden platter -->
+  <ellipse cx="16" cy="24" rx="13" ry="5" fill="#806010"/>
+  <ellipse cx="16" cy="23" rx="13" ry="5" fill="url(#royal_platter)"/>
+  <ellipse cx="16" cy="23" rx="13" ry="5" fill="none" stroke="#c08010" stroke-width="1"/>
+  <!-- Crown emblem center -->
+  <path d="M13 22 L13 20 L14.5 21 L16 19 L17.5 21 L19 20 L19 22 Z" fill="url(#crown_gold)" stroke="#a07010" stroke-width="0.4"/>
+  <rect x="13" y="22" width="6" height="1.5" rx="0.3" fill="#c09020"/>
+  <!-- Small dish left -->
+  <ellipse cx="7" cy="21" rx="3" ry="1.8" fill="#f0e8d0"/>
+  <ellipse cx="7" cy="21" rx="3" ry="1.8" fill="none" stroke="#d0c090" stroke-width="0.5"/>
+  <ellipse cx="7" cy="20.5" rx="1.5" ry="1" fill="#e08040"/>
+  <!-- Small dish right -->
+  <ellipse cx="25" cy="21" rx="3" ry="1.8" fill="#f0e8d0"/>
+  <ellipse cx="25" cy="21" rx="3" ry="1.8" fill="none" stroke="#d0c090" stroke-width="0.5"/>
+  <ellipse cx="25" cy="20.5" rx="1.5" ry="1" fill="#60a040"/>
+  <!-- Decorative garnish top left -->
+  <path d="M5 19 Q6 17 8 18" stroke="#40a020" stroke-width="0.8" fill="none"/>
+  <!-- Decorative garnish top right -->
+  <path d="M27 19 Q26 17 24 18" stroke="#40a020" stroke-width="0.8" fill="none"/>
+  <!-- Gold dots on rim -->
+  <circle cx="10" cy="24.5" r="0.5" fill="#ffe060"/>
+  <circle cx="16" cy="25.5" r="0.5" fill="#ffe060"/>
+  <circle cx="22" cy="24.5" r="0.5" fill="#ffe060"/>
+</svg>

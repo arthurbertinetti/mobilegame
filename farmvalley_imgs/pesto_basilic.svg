@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pb_jar" cx="38%" cy="28%" r="62%">
+      <stop offset="0%" stop-color="#e0d8cc"/>
+      <stop offset="70%" stop-color="#b8b0a4"/>
+      <stop offset="100%" stop-color="#908880"/>
+    </radialGradient>
+    <radialGradient id="pb_pesto" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#60d040"/>
+      <stop offset="60%" stop-color="#308020"/>
+      <stop offset="100%" stop-color="#185008"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Jar body -->
+  <path d="M8,24 Q8,30 16,30 Q24,30 24,24 L24,15 Q23,13 16,13 Q9,13 8,15 Z" fill="url(#pb_jar)"/>
+  <!-- Pesto content (brighter green than pesto_ail) -->
+  <ellipse cx="16" cy="15" rx="8" ry="2.5" fill="url(#pb_pesto)"/>
+  <path d="M9,24 Q9,28 16,28 Q23,28 23,24 L23,16 Q16,18 9,16 Z" fill="url(#pb_pesto)" opacity="0.9"/>
+  <!-- Basil leaves on top -->
+  <ellipse cx="14" cy="19" rx="2.5" ry="1.8" fill="#40b030" opacity="0.9" transform="rotate(-20,14,19)"/>
+  <line x1="14" y1="17.5" x2="14" y2="20.5" stroke="#20701a" stroke-width="0.5"/>
+  <ellipse cx="18" cy="20" rx="2.2" ry="1.6" fill="#50c040" opacity="0.85" transform="rotate(15,18,20)"/>
+  <line x1="18" y1="18.5" x2="18" y2="21.5" stroke="#20701a" stroke-width="0.5"/>
+  <!-- Pine nut -->
+  <ellipse cx="16" cy="23" rx="1.2" ry="0.8" fill="#d4b060" opacity="0.8"/>
+  <!-- Jar rim -->
+  <ellipse cx="16" cy="13" rx="8" ry="2.2" fill="#c8c0b4"/>
+  <ellipse cx="16" cy="12.5" rx="7" ry="1.8" fill="#d8d0c4"/>
+  <!-- Lid (darker green than pesto_ail lid) -->
+  <ellipse cx="16" cy="11.5" rx="7" ry="1.8" fill="#204810"/>
+  <ellipse cx="16" cy="11" rx="6" ry="1.4" fill="#306020"/>
+</svg>

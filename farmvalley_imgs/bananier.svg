@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Sol -->
+  <rect x="3" y="28" width="26" height="4" rx="2" fill="#6b4f2c"/>
+  <!-- Pseudo-tronc (stipes) -->
+  <path d="M12 28 Q11 22 13 16 Q15 12 16 10 Q17 12 19 16 Q21 22 20 28Z" fill="#8bc34a"/>
+  <path d="M13 28 Q12 22 14 16 Q15.5 12.5 16 11 Q16.5 12.5 18 16 Q20 22 19 28Z" fill="#a5d6a7"/>
+  <!-- Grandes feuilles en palettes -->
+  <path d="M16 12 Q8 6 3 8 Q5 12 16 14Z" fill="#2e7d32"/>
+  <path d="M16 12 Q24 6 29 8 Q27 12 16 14Z" fill="#388e3c"/>
+  <path d="M16 10 Q10 3 6 4 Q9 9 16 12Z" fill="#33691e"/>
+  <path d="M16 10 Q22 3 26 4 Q23 9 16 12Z" fill="#2e7d32"/>
+  <path d="M16 14 Q7 10 4 13 Q7 17 16 16Z" fill="#43a047"/>
+  <!-- Nervure centrale des feuilles -->
+  <line x1="9.5" y1="8" x2="16" y2="13" stroke="#1b5e20" stroke-width="0.7"/>
+  <line x1="22.5" y1="8" x2="16" y2="13" stroke="#1b5e20" stroke-width="0.7"/>
+  <!-- Régime de bananes -->
+  <path d="M18 17 Q22 15 24 17 Q23 21 20 22 Q17 22 16 20 Q16 18 18 17Z" fill="#f9a825"/>
+  <!-- Bananes individuelles (courbées) -->
+  <path d="M18 17.5 Q21 15.5 23 17 Q22.5 18.5 20 19Z" fill="#fdd835"/>
+  <path d="M18 19.5 Q21 18 23 19 Q22.5 20.5 20 21Z" fill="#fdd835"/>
+  <path d="M18 21.5 Q20 20 22 21 Q21.5 22.5 19.5 23Z" fill="#fdd835"/>
+  <!-- Fleur terminale (spathe) -->
+  <ellipse cx="21" cy="24" rx="2.5" ry="3.5" fill="#ad1457" transform="rotate(10 21 24)"/>
+  <ellipse cx="21" cy="24" rx="1.5" ry="2.5" fill="#e91e63" transform="rotate(10 21 24)"/>
+</svg>

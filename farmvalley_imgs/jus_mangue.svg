@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="glass_g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8e8e8"/>
+      <stop offset="40%" stop-color="#f8f8f8"/>
+      <stop offset="100%" stop-color="#c0c0c0"/>
+    </linearGradient>
+    <linearGradient id="liq_g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f08020"/>
+      <stop offset="100%" stop-color="#a04000"/>
+    </linearGradient>
+    <linearGradient id="mango_g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd040"/>
+      <stop offset="100%" stop-color="#f06010"/>
+    </linearGradient>
+    <clipPath id="glass_clip">
+      <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <rect x="9" y="16" width="14" height="14" fill="url(#liq_g)" clip-path="url(#glass_clip)"/>
+  <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z" fill="url(#glass_g)" fill-opacity="0.55" stroke="#a0a0a0" stroke-width="0.7"/>
+  <line x1="12" y1="13" x2="20" y2="13" stroke="#d0d0d0" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- mango chunk on top -->
+  <path d="M19,13 Q20,9 23,8 Q26,8 26,11 Q26,13 23,13 Z" fill="url(#mango_g)" stroke="#d06000" stroke-width="0.5"/>
+  <!-- cross-hatch pattern on mango -->
+  <line x1="20" y1="12" x2="22" y2="9.5" stroke="#d06000" stroke-width="0.4" opacity="0.6"/>
+  <line x1="21.5" y1="13" x2="24" y2="9" stroke="#d06000" stroke-width="0.4" opacity="0.6"/>
+  <line x1="22.5" y1="12.5" x2="25.5" y2="11" stroke="#d06000" stroke-width="0.4" opacity="0.6"/>
+</svg>

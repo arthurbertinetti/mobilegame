@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="fx_body" cx="40%" cy="33%" r="58%">
+      <stop offset="0%" stop-color="#ec8e28"/>
+      <stop offset="50%" stop-color="#c86010"/>
+      <stop offset="100%" stop-color="#882808"/>
+    </radialGradient>
+    <radialGradient id="fx_head" cx="40%" cy="38%" r="52%">
+      <stop offset="0%" stop-color="#e47c20"/>
+      <stop offset="55%" stop-color="#c05808"/>
+      <stop offset="100%" stop-color="#7a2008"/>
+    </radialGradient>
+    <radialGradient id="fx_belly" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#f8f4ec"/>
+      <stop offset="65%" stop-color="#e8ddc8"/>
+      <stop offset="100%" stop-color="#d0c0a4"/>
+    </radialGradient>
+    <linearGradient id="fx_tail" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec8828"/>
+      <stop offset="60%" stop-color="#c05808"/>
+      <stop offset="100%" stop-color="#882000"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="15.5" cy="31.3" rx="9.5" ry="0.65" fill="#00000018"/>
+  <!-- Dark lower legs (fox characteristic marking) -->
+  <path d="M11.5,25 L11,30.5" stroke="#1a0804" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M14.5,25.5 L14,31" stroke="#1a0804" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M19.5,25 L19,30.5" stroke="#1a0804" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M22,24.5 L21.5,30" stroke="#1a0804" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Bushy tail (large, dramatic, multi-layer) -->
+  <path d="M24,20.5 Q29,17 31,13.5 Q29.5,16.5 29,20 Q32,15.5 32,11.5 Q29,15.5 28,19.5 Q31,14 30.5,11 Q28,15 27.5,19.5 Q29.5,15 29,12 Q26.5,16 26,21" fill="url(#fx_tail)"/>
+  <!-- White tail tip -->
+  <path d="M30,11.5 Q33,10 33,12.5 Q31,13.5 29.5,12 Z" fill="#f8f4ec"/>
+  <!-- Body -->
+  <path d="M9,22 Q9,16 14.5,15 Q22,14 25,18 Q27,21.5 25.5,26.5 Q22.5,29.5 15.5,29.5 Q9,29 9,22 Z" fill="url(#fx_body)"/>
+  <!-- White chest/belly -->
+  <path d="M12,23 Q14,20 17.5,20.5 Q20.5,21.5 20.5,25.5 Q19,28.5 15,28.5 Q11.5,27.5 12,23 Z" fill="url(#fx_belly)" opacity="0.78"/>
+  <!-- Neck -->
+  <path d="M11,17.5 Q9.8,14 11.5,11 Q13.5,12 13,17.5 Z" fill="url(#fx_head)"/>
+  <!-- Head (triangular fox profile) -->
+  <path d="M8.5,14.5 Q9.5,10 12.5,8.5 Q15,7.5 16,9.5 Q16.5,12 14.5,14 Q15,16 13.5,17.5 Q11,17.5 8.5,14.5 Z" fill="url(#fx_head)"/>
+  <!-- White cheek/muzzle patch -->
+  <path d="M9.5,14 Q10.5,12 12,12.5 Q13,14 12,16.5 Q10.5,16.5 9.5,14 Z" fill="#f0e0c8" opacity="0.72"/>
+  <!-- Elongated pointed muzzle -->
+  <path d="M8.5,14.5 Q6.5,15 6,16.5 Q7,18 9.5,17.5 Q10.5,16.5 10.5,15.5 Z" fill="url(#fx_head)"/>
+  <!-- Ear left (tall, sharply pointed) -->
+  <path d="M11.5,9 Q11,6 12.5,5 Q14,5.5 13.5,8.5 Z" fill="url(#fx_head)"/>
+  <path d="M11.8,8.8 Q11.6,6.5 12.6,5.8 Q13.5,6.2 13,8.2 Z" fill="#1a0808"/>
+  <!-- Ear right -->
+  <path d="M14.5,9.5 Q15,6.5 16.5,6 Q17.5,7 16.5,9 Z" fill="url(#fx_head)"/>
+  <path d="M14.8,9.2 Q15.2,7 16.2,6.8 Q16.8,7.6 16.2,8.8 Z" fill="#1a0808"/>
+  <!-- Nose (small, dark) -->
+  <ellipse cx="7.2" cy="16.5" rx="0.85" ry="0.72" fill="#0a0604"/>
+  <!-- Eye (bright amber-green) -->
+  <ellipse cx="12.2" cy="11.2" rx="1.28" ry="1.12" fill="#9acc38"/>
+  <ellipse cx="12.2" cy="11.2" rx="0.52" ry="0.72" fill="#0a0604"/>
+  <circle cx="11.8" cy="10.7" r="0.32" fill="#ffffff55"/>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bri_main" cx="38%" cy="28%" r="62%">
+      <stop offset="0%" stop-color="#f0c860"/>
+      <stop offset="55%" stop-color="#d09828"/>
+      <stop offset="100%" stop-color="#a06e10"/>
+    </radialGradient>
+    <radialGradient id="bri_top" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#f8d870"/>
+      <stop offset="100%" stop-color="#c88020"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="11" ry="0.7" fill="#00000020"/>
+  <!-- Brioche base (wide round bottom) -->
+  <path d="M5,24 Q5,19 16,18 Q27,19 27,24 Q27,29 16,30 Q5,29 5,24 Z" fill="url(#bri_main)"/>
+  <!-- Brioche buns (braided top - 3 balls) -->
+  <ellipse cx="10" cy="20" rx="5.5" ry="4.5" fill="url(#bri_top)"/>
+  <ellipse cx="16" cy="18.5" rx="5.5" ry="4.5" fill="url(#bri_top)"/>
+  <ellipse cx="22" cy="20" rx="5.5" ry="4.5" fill="url(#bri_top)"/>
+  <!-- Small top knob -->
+  <ellipse cx="16" cy="14.5" rx="3.5" ry="3" fill="#f0c040"/>
+  <ellipse cx="16" cy="13" rx="2" ry="1.8" fill="#f8d860"/>
+  <!-- Seam lines between buns -->
+  <path d="M10,20 Q13,19 16,20" stroke="#a06e10" stroke-width="0.7" fill="none"/>
+  <path d="M16,20 Q19,19 22,20" stroke="#a06e10" stroke-width="0.7" fill="none"/>
+  <!-- Shine on each bun -->
+  <ellipse cx="8.5" cy="18.5" rx="2.5" ry="1.5" fill="rgba(255,240,180,.4)" transform="rotate(-15,8.5,18.5)"/>
+  <ellipse cx="16" cy="17" rx="2.5" ry="1.5" fill="rgba(255,240,180,.4)"/>
+  <ellipse cx="23.5" cy="18.5" rx="2.5" ry="1.5" fill="rgba(255,240,180,.4)" transform="rotate(15,23.5,18.5)"/>
+</svg>

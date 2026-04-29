@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadowG" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="plateG" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d8d8d8"/>
+    </radialGradient>
+    <radialGradient id="iceG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#d8eef8"/>
+      <stop offset="100%" stop-color="#a0c8e0"/>
+    </radialGradient>
+    <radialGradient id="shrimpG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#f8b090"/>
+      <stop offset="100%" stop-color="#e07050"/>
+    </radialGradient>
+    <radialGradient id="lemonG" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#fff176"/>
+      <stop offset="100%" stop-color="#f9a825"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="14" ry="2.5" fill="url(#shadowG)"/>
+  <!-- Oval plate -->
+  <ellipse cx="16" cy="17" rx="14" ry="12" fill="url(#plateG)" stroke="#c8c8c8" stroke-width="0.5"/>
+  <!-- Ice bed -->
+  <ellipse cx="16" cy="18" rx="11" ry="8" fill="url(#iceG)"/>
+  <!-- Ice chunks -->
+  <polygon points="8,17 10,14 13,16 11,19" fill="#c0ddef" opacity="0.8"/>
+  <polygon points="18,15 21,13 23,16 20,18" fill="#c8e4f0" opacity="0.8"/>
+  <polygon points="13,20 15,18 18,20 16,23" fill="#b8d8ea" opacity="0.8"/>
+  <!-- Oyster shell -->
+  <ellipse cx="10" cy="19" rx="4" ry="2.5" fill="#b0b8c0" stroke="#9098a0" stroke-width="0.4"/>
+  <path d="M7 19 Q10 16 13 19" fill="none" stroke="#808890" stroke-width="0.4"/>
+  <ellipse cx="10" cy="19.5" rx="2.5" ry="1.5" fill="#c8d0d8" opacity="0.6"/>
+  <!-- Shrimp -->
+  <path d="M20 14 Q24 12 25 16 Q24 19 21 19" fill="url(#shrimpG)" stroke="#c06040" stroke-width="0.4"/>
+  <line x1="24" y1="12" x2="26" y2="10" stroke="#e08060" stroke-width="0.5"/>
+  <line x1="25" y1="13" x2="27" y2="12" stroke="#e08060" stroke-width="0.5"/>
+  <!-- Lemon wedge -->
+  <path d="M14 22 L18 22 L16 25 Z" fill="url(#lemonG)" stroke="#f0c040" stroke-width="0.4"/>
+  <line x1="16" y1="22" x2="16" y2="25" stroke="#f0c040" stroke-width="0.4" opacity="0.7"/>
+</svg>

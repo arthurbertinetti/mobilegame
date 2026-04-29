@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="papyg" cx="38%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffe082"/>
+      <stop offset="55%" stop-color="#ff8f00"/>
+      <stop offset="100%" stop-color="#e65100"/>
+    </radialGradient>
+  </defs>
+  <!-- Tige courte -->
+  <line x1="16" y1="6" x2="16" y2="4" stroke="#5d4037" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Corps de la papaye (ovale allongé) -->
+  <path d="M10 14 Q9 8 16 6 Q23 8 22 14 Q24 20 22 25 Q20 29 16 29 Q12 29 10 25 Q8 20 10 14Z" fill="url(#papyg)"/>
+  <!-- Sillon léger -->
+  <path d="M16 7 Q15.5 14 15.5 20 Q15.8 25 16 28" fill="none" stroke="#e65100" stroke-width="0.7" opacity="0.4"/>
+  <!-- Vue coupée : graines noires (caractéristique de la papaye ouverte) -->
+  <ellipse cx="16" cy="18" rx="4" ry="6" fill="#ff8f00" opacity="0.4"/>
+  <circle cx="15" cy="16" r="1" fill="#3e2723"/>
+  <circle cx="17" cy="18" r="1" fill="#3e2723"/>
+  <circle cx="15" cy="20" r="1" fill="#3e2723"/>
+  <circle cx="17" cy="15" r="0.8" fill="#3e2723"/>
+  <!-- Reflet -->
+  <ellipse cx="12" cy="13" rx="2" ry="3.5" fill="rgba(255,255,255,0.22)" transform="rotate(-20 12 13)"/>
+</svg>

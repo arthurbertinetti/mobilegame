@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bottle_g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6a4010"/>
+      <stop offset="40%" stop-color="#a06020"/>
+      <stop offset="100%" stop-color="#4a2808"/>
+    </linearGradient>
+    <linearGradient id="liquid_g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#d4901c"/>
+      <stop offset="100%" stop-color="#7a4a08"/>
+    </linearGradient>
+    <radialGradient id="apple_g" cx="35%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ff5040"/>
+      <stop offset="100%" stop-color="#b01010"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="8" ry="0.7" fill="#00000020"/>
+  <!-- bottle body -->
+  <path d="M10,30 Q10,32 16,32 Q22,32 22,30 L22,17 Q22,14 20,13 L20,10 L12,10 L12,13 Q10,14 10,17 Z" fill="url(#bottle_g)"/>
+  <!-- liquid inside (amber) -->
+  <path d="M10.5,30 Q10.5,31.5 16,31.5 Q21.5,31.5 21.5,30 L21.5,20 Q18,18.5 16,19 Q14,18.5 10.5,20 Z" fill="url(#liquid_g)" opacity="0.8"/>
+  <!-- foam at top neck -->
+  <ellipse cx="16" cy="10" rx="4" ry="1.5" fill="#f8f8f0" opacity="0.9"/>
+  <circle cx="14" cy="9.5" r="1" fill="#ffffff" opacity="0.7"/>
+  <circle cx="17" cy="9" r="1.2" fill="#ffffff" opacity="0.7"/>
+  <circle cx="19" cy="10" r="0.8" fill="#ffffff" opacity="0.6"/>
+  <!-- neck -->
+  <rect x="13.5" y="6" width="5" height="4" rx="1" fill="url(#bottle_g)"/>
+  <!-- cap -->
+  <rect x="13" y="4" width="6" height="2.5" rx="0.5" fill="#3a3a3a"/>
+  <!-- bottle highlight -->
+  <line x1="11.5" y1="17" x2="11.5" y2="28" stroke="#d08030" stroke-width="0.8" opacity="0.4" stroke-linecap="round"/>
+  <!-- small apple on label -->
+  <circle cx="16" cy="23" r="2" fill="url(#apple_g)"/>
+  <line x1="16" y1="21" x2="16" y2="20" stroke="#6a3010" stroke-width="0.6"/>
+  <path d="M16,20 Q17.5,19 18,20" fill="none" stroke="#5a9010" stroke-width="0.6"/>
+  <!-- bubbles -->
+  <circle cx="13" cy="25" r="0.5" fill="#d4a040" opacity="0.5"/>
+  <circle cx="18" cy="27" r="0.4" fill="#d4a040" opacity="0.5"/>
+  <circle cx="14" cy="28" r="0.4" fill="#d4a040" opacity="0.4"/>
+</svg>

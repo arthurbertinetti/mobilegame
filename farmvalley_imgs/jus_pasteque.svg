@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="glass_g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8e8e8"/>
+      <stop offset="40%" stop-color="#f8f8f8"/>
+      <stop offset="100%" stop-color="#c0c0c0"/>
+    </linearGradient>
+    <linearGradient id="liq_g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e82020"/>
+      <stop offset="100%" stop-color="#901010"/>
+    </linearGradient>
+    <clipPath id="glass_clip">
+      <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <rect x="9" y="16" width="14" height="14" fill="url(#liq_g)" clip-path="url(#glass_clip)"/>
+  <path d="M10,28 Q10,30 16,30 Q22,30 22,28 L20,13 L12,13 Z" fill="url(#glass_g)" fill-opacity="0.55" stroke="#a0a0a0" stroke-width="0.7"/>
+  <line x1="12" y1="13" x2="20" y2="13" stroke="#d0d0d0" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- watermelon triangle slice on rim -->
+  <path d="M19,13 L23,7 L27,13 Z" fill="#e82020"/>
+  <path d="M19.8,13 L23,8.2 L26.2,13 Z" fill="#30a020"/>
+  <path d="M20.5,13 L23,9.2 L25.5,13 Z" fill="#e82020"/>
+  <!-- seeds -->
+  <ellipse cx="22" cy="11.5" rx="0.5" ry="0.7" fill="#1a1a1a" transform="rotate(-15,22,11.5)"/>
+  <ellipse cx="24" cy="11.5" rx="0.5" ry="0.7" fill="#1a1a1a" transform="rotate(15,24,11.5)"/>
+  <ellipse cx="23" cy="13" rx="0.5" ry="0.7" fill="#1a1a1a"/>
+</svg>

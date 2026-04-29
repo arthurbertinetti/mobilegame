@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="hmg" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ffee58"/>
+      <stop offset="100%" stop-color="#f57f17"/>
+    </radialGradient>
+  </defs>
+  <!-- Pot de miel -->
+  <path d="M9 13 L10 27 Q10 29 16 29 Q22 29 22 27 L23 13Z" fill="url(#hmg)"/>
+  <!-- Ouverture du pot -->
+  <ellipse cx="16" cy="13" rx="7" ry="3" fill="#ffee58"/>
+  <!-- Couvercle doré -->
+  <path d="M9 11 Q10 8 16 8 Q22 8 23 11 Q22 13 16 13 Q10 13 9 11Z" fill="#ff8f00"/>
+  <!-- Filet de miel qui coule -->
+  <path d="M19 8 Q20 5 19 3 Q18 5 19 8Z" fill="#f57f17"/>
+  <!-- Motif nid d'abeille sur le pot -->
+  <path d="M12 18 L14 16 L18 16 L20 18 L18 20 L14 20Z" fill="none" stroke="#ff8f00" stroke-width="0.8" opacity="0.5"/>
+  <!-- Brillance -->
+  <ellipse cx="12.5" cy="16" rx="2" ry="3.5" fill="rgba(255,255,255,0.25)" transform="rotate(-20 12.5 16)"/>
+</svg>

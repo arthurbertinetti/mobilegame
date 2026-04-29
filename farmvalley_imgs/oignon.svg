@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="og_body" cx="32%" cy="32%" r="68%">
+      <stop offset="0%" stop-color="#f5e090"/>
+      <stop offset="40%" stop-color="#d49030"/>
+      <stop offset="75%" stop-color="#a85e10"/>
+      <stop offset="100%" stop-color="#7a3e08"/>
+    </radialGradient>
+    <radialGradient id="og_inner" cx="38%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#f0d870"/>
+      <stop offset="100%" stop-color="#c07820"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.6" rx="9.5" ry="0.65" fill="#00000022"/>
+  <!-- Root fibers -->
+  <line x1="13" y1="31" x2="11" y2="32" stroke="#7a4010" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="14.5" y1="31.3" x2="13.5" y2="32" stroke="#7a4010" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="16" y1="31.4" x2="16" y2="32" stroke="#7a4010" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="17.5" y1="31.3" x2="18.5" y2="32" stroke="#7a4010" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="19" y1="31" x2="21" y2="32" stroke="#7a4010" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Onion body — classic teardrop: wide base, narrows toward top -->
+  <path d="M6.5,22 Q6.5,31 16,31.5 Q25.5,31 25.5,22 Q25.5,14.5 21,12 Q18,10.5 16,10.5 Q14,10.5 11,12 Q6.5,14.5 6.5,22 Z" fill="url(#og_body)"/>
+  <!-- Concentric layer arcs (onion skin effect) -->
+  <path d="M8.5,22 Q8.5,29.5 16,30 Q23.5,29.5 23.5,22 Q23.5,15.5 20,13.5 Q18,12.5 16,12.5" fill="none" stroke="#b06010" stroke-width="0.7" opacity="0.5"/>
+  <path d="M10.5,22 Q10.5,27.5 16,28 Q21.5,27.5 21.5,22 Q21.5,16.5 19,15 Q17.5,14.5 16,14.5" fill="none" stroke="#b06010" stroke-width="0.6" opacity="0.4"/>
+  <path d="M12.5,22 Q12.5,26 16,26.3 Q19.5,26 19.5,22 Q19.5,18.5 17.5,17.5" fill="none" stroke="#c07820" stroke-width="0.5" opacity="0.35"/>
+  <!-- Neck/top of bulb -->
+  <path d="M11.5,12 Q13,10.2 16,9.8 Q19,10.2 20.5,12" fill="#a05e10" stroke="none"/>
+  <path d="M12.5,11.5 Q14,10 16,9.8 Q18,10 19.5,11.5" fill="#c07820" stroke="none"/>
+  <!-- Shine highlight -->
+  <ellipse cx="11" cy="19" rx="2.2" ry="3.8" fill="rgba(255,245,190,.28)" transform="rotate(-20,11,19)"/>
+  <!-- Green shoots -->
+  <path d="M14,10.5 Q13,8 12,4.5" stroke="#3a9020" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M16,9.8 Q16,7 16,3" stroke="#4aaa28" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M18,10.5 Q19,8 20,4.5" stroke="#3a9020" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+</svg>

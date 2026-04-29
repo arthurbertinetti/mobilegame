@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ca_wrap" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#f8d060"/>
+      <stop offset="50%" stop-color="#e09020"/>
+      <stop offset="100%" stop-color="#a05808"/>
+    </radialGradient>
+    <radialGradient id="ca_pool" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#f0b030"/>
+      <stop offset="60%" stop-color="#c07010"/>
+      <stop offset="100%" stop-color="#803808"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Caramel pool drip -->
+  <path d="M6,26 Q7,22 16,21 Q25,22 26,26 Q25,30 16,31 Q7,30 6,26 Z" fill="url(#ca_pool)"/>
+  <!-- Drip from candy -->
+  <path d="M16,20 Q17,23 16,26" stroke="#c07010" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Caramel candy (wrapped) -->
+  <rect x="9" y="10" width="14" height="11" rx="4" fill="url(#ca_wrap)"/>
+  <!-- Wrapper twists left -->
+  <path d="M9,13 Q6,12 5,14 Q6,16 9,15" fill="#f0c040" stroke="#d09020" stroke-width="0.4"/>
+  <!-- Wrapper twists right -->
+  <path d="M23,13 Q26,12 27,14 Q26,16 23,15" fill="#f0c040" stroke="#d09020" stroke-width="0.4"/>
+  <!-- Shine on candy -->
+  <path d="M11,12 Q16,11 21,12.5" stroke="rgba(255,240,180,.6)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <circle cx="12.5" cy="12.5" r="1.5" fill="rgba(255,240,200,.45)"/>
+</svg>

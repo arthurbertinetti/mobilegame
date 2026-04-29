@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_pe" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="yarn_pe" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#f070a8"/>
+      <stop offset="50%" stop-color="#d04080"/>
+      <stop offset="100%" stop-color="#a02060"/>
+    </radialGradient>
+    <linearGradient id="needle_pe" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8e8e0"/>
+      <stop offset="50%" stop-color="#c8c8c0"/>
+      <stop offset="100%" stop-color="#a8a8a0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="29.5" rx="9" ry="2.5" fill="url(#shadow_pe)"/>
+  <!-- Yarn ball base -->
+  <circle cx="16" cy="20" r="9" fill="url(#yarn_pe)"/>
+  <!-- Wound yarn texture (curved lines across ball) -->
+  <path d="M8 17 Q12 14 16 15 Q20 16 23 14" stroke="#e05090" stroke-width="1.2" fill="none" opacity="0.6"/>
+  <path d="M7.5 20 Q10 17 14 18 Q18 19 23.5 17" stroke="#e05090" stroke-width="1.2" fill="none" opacity="0.55"/>
+  <path d="M8 23 Q12 20 16 21 Q20 22 24 20" stroke="#c03060" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M9 25.5 Q13 23.5 16 24 Q19 24.5 23 23" stroke="#c03060" stroke-width="1" fill="none" opacity="0.45"/>
+  <!-- Cross wraps (other direction) -->
+  <path d="M12 11.5 Q10 15 11 20 Q12 24 10 27" stroke="#b82858" stroke-width="1.2" fill="none" opacity="0.5"/>
+  <path d="M16 11 Q15 15 16 20 Q17 24 16 29" stroke="#b82858" stroke-width="1.2" fill="none" opacity="0.45"/>
+  <path d="M20 11.5 Q22 15 21 20 Q20 24 22 27" stroke="#b82858" stroke-width="1.2" fill="none" opacity="0.45"/>
+  <!-- Highlight on ball -->
+  <circle cx="12" cy="15" r="3.5" fill="#fff" opacity="0.15"/>
+  <!-- Knitting needle through the ball -->
+  <rect x="4" y="10" width="24" height="1.6" rx="0.8" fill="url(#needle_pe)" transform="rotate(-35,16,20)"/>
+  <!-- Needle tip point -->
+  <polygon points="4,11 6,10 6,12" fill="#c8c8c0" transform="rotate(-35,16,20)"/>
+  <!-- Needle end (rounded) -->
+  <circle cx="28" cy="11" r="1.2" fill="#d8d8d0" transform="rotate(-35,16,20)"/>
+</svg>

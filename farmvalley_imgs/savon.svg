@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_sa" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="soap_sa" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8f0e0"/>
+      <stop offset="50%" stop-color="#f0e4cc"/>
+      <stop offset="100%" stop-color="#e0c8a0"/>
+    </linearGradient>
+    <radialGradient id="soap_top" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fffff8"/>
+      <stop offset="60%" stop-color="#f8eedc"/>
+      <stop offset="100%" stop-color="#e8d8b8"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="9" ry="2" fill="url(#shadow_sa)"/>
+  <!-- Soap bar bottom edge -->
+  <rect x="6" y="22" width="20" height="6" rx="4" fill="#c8a870" opacity="0.5"/>
+  <!-- Soap bar body -->
+  <rect x="6" y="16" width="20" height="10" rx="4" fill="url(#soap_sa)"/>
+  <!-- Soap bar top face -->
+  <rect x="7" y="14" width="18" height="8" rx="3.5" fill="url(#soap_top)"/>
+  <!-- Brand indent on top (decorative oval) -->
+  <ellipse cx="16" cy="18" rx="6" ry="2.5" fill="none" stroke="#d8c890" stroke-width="0.8" opacity="0.7"/>
+  <!-- Shine -->
+  <ellipse cx="12" cy="15.5" rx="3" ry="1.2" fill="#fff" opacity="0.45"/>
+  <!-- Small bubbles around soap -->
+  <circle cx="7" cy="15" r="1.2" fill="#fff" opacity="0.6" stroke="#e8d8b8" stroke-width="0.5"/>
+  <circle cx="5.5" cy="18" r="0.9" fill="#fff" opacity="0.5" stroke="#e8d8b8" stroke-width="0.4"/>
+  <circle cx="25" cy="14" r="1.3" fill="#fff" opacity="0.55" stroke="#e8d8b8" stroke-width="0.5"/>
+  <circle cx="26.5" cy="18" r="0.8" fill="#fff" opacity="0.5" stroke="#e8d8b8" stroke-width="0.4"/>
+  <circle cx="9" cy="26.5" r="1" fill="#fff" opacity="0.45" stroke="#e8d8b8" stroke-width="0.4"/>
+  <circle cx="22" cy="27" r="1.2" fill="#fff" opacity="0.4" stroke="#e8d8b8" stroke-width="0.4"/>
+  <circle cx="16" cy="28.5" r="0.8" fill="#fff" opacity="0.4" stroke="#e8d8b8" stroke-width="0.3"/>
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="glass_g" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8d0d8"/>
+      <stop offset="40%" stop-color="#f8f0f4"/>
+      <stop offset="100%" stop-color="#c0a0b0"/>
+    </linearGradient>
+    <linearGradient id="liq_g" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f080a0"/>
+      <stop offset="100%" stop-color="#c04060"/>
+    </linearGradient>
+    <radialGradient id="cream_g" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e8e0d8"/>
+    </radialGradient>
+    <radialGradient id="berry_g" cx="35%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#ff5060"/>
+      <stop offset="100%" stop-color="#b01020"/>
+    </radialGradient>
+    <clipPath id="glass_clip">
+      <path d="M11,29 Q11,31 16,31 Q21,31 21,29 L19.5,12 L12.5,12 Z"/>
+    </clipPath>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- tall milkshake glass (narrower, taller) -->
+  <rect x="12" y="17" width="8" height="12" fill="url(#liq_g)" clip-path="url(#glass_clip)"/>
+  <path d="M11,29 Q11,31 16,31 Q21,31 21,29 L19.5,12 L12.5,12 Z" fill="url(#glass_g)" fill-opacity="0.5" stroke="#b090a0" stroke-width="0.7"/>
+  <line x1="12.5" y1="12" x2="19.5" y2="12" stroke="#d0c0c8" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- whipped cream swirl -->
+  <path d="M12,12 Q13,8 16,7 Q19,8 20,12" fill="url(#cream_g)" stroke="#e0d8d0" stroke-width="0.3"/>
+  <path d="M13,10 Q14,7.5 16,7 Q18,7.5 19,10" fill="url(#cream_g)"/>
+  <path d="M14,9 Q15,7 16,7 Q17,7 18,9" fill="#ffffff"/>
+  <!-- red strawberry garnish -->
+  <path d="M15.5,5 Q16,3 17,4 Q18.5,5 18,7 Q17,8 16,8 Q15,7 14.5,6 Z" fill="url(#berry_g)"/>
+  <path d="M16,5 Q16.5,4 17,4.5" fill="none" stroke="#80d020" stroke-width="0.7"/>
+  <line x1="14.5" y1="6.5" x2="17.5" y2="6" stroke="#ff8090" stroke-width="0.3" opacity="0.5"/>
+  <!-- straw -->
+  <rect x="19.5" y="2" width="1.5" height="14" rx="0.75" fill="#ff80a0"/>
+</svg>

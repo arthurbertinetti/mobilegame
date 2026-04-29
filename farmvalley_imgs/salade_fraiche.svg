@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadowG" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bowlG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#fdf8f0"/>
+      <stop offset="100%" stop-color="#d8d0c4"/>
+    </radialGradient>
+    <radialGradient id="saladG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#50d040"/>
+      <stop offset="100%" stop-color="#209820"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="12" ry="2.5" fill="url(#shadowG)"/>
+  <!-- Bowl outer -->
+  <ellipse cx="16" cy="20" rx="13" ry="9" fill="url(#bowlG)" stroke="#c8c0b4" stroke-width="0.6"/>
+  <!-- Fresh green base -->
+  <ellipse cx="16" cy="19.5" rx="11" ry="7" fill="url(#saladG)"/>
+  <!-- Fresh leaf shapes – lighter, more vibrant than salade_composee -->
+  <path d="M8 19 Q9 14 12 15 Q11 19 8 21 Z" fill="#60e050" opacity="0.9"/>
+  <path d="M11 13 Q14 10 17 13 Q15.5 17 11 17 Z" fill="#58d848" opacity="0.9"/>
+  <path d="M18 14 Q21 12 23 16 Q21 19 18 18 Z" fill="#60e050" opacity="0.9"/>
+  <path d="M9 22 Q12 20 14 23 Q12 26 9 25 Z" fill="#50d040" opacity="0.85"/>
+  <path d="M17 22 Q20 20 22 23 Q20 26 17 25 Z" fill="#58d848" opacity="0.85"/>
+  <!-- Center leaves -->
+  <path d="M13 17 Q16 14 19 17 Q17 21 13 21 Z" fill="#68e858" opacity="0.8"/>
+  <!-- Herb sprigs -->
+  <line x1="15" y1="13" x2="14" y2="10" stroke="#38903a" stroke-width="0.8" stroke-linecap="round"/>
+  <ellipse cx="13.5" cy="10.5" rx="1.2" ry="0.6" fill="#40a040" transform="rotate(-30,13.5,10.5)"/>
+  <ellipse cx="14.2" cy="9.5" rx="1" ry="0.5" fill="#38a038" transform="rotate(-50,14.2,9.5)"/>
+  <line x1="19" y1="14" x2="20" y2="11" stroke="#38903a" stroke-width="0.8" stroke-linecap="round"/>
+  <ellipse cx="20.5" cy="11.5" rx="1.2" ry="0.6" fill="#40a040" transform="rotate(30,20.5,11.5)"/>
+</svg>

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="rd_body" cx="38%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#d49050"/>
+      <stop offset="55%" stop-color="#c4803a"/>
+      <stop offset="100%" stop-color="#8a4c18"/>
+    </radialGradient>
+    <radialGradient id="rd_drum" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#c07830"/>
+      <stop offset="100%" stop-color="#7a3c10"/>
+    </radialGradient>
+    <linearGradient id="rd_plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e8e0d0"/>
+      <stop offset="100%" stop-color="#c8c0b0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000028"/>
+  <!-- Oval plate -->
+  <ellipse cx="16" cy="28.5" rx="14" ry="2.8" fill="#b8b0a0"/>
+  <ellipse cx="16" cy="27.5" rx="14" ry="2.8" fill="url(#rd_plate)"/>
+  <!-- Turkey body (large rounded mass) -->
+  <path d="M7,26 Q5,20 6,15 Q8,9 13,8 Q16,7 19,8 Q24,10 25,16 Q26,22 24,26 Q20,27 16,27 Q12,27 7,26 Z" fill="url(#rd_body)"/>
+  <!-- Breast bump -->
+  <ellipse cx="15" cy="16" rx="8" ry="7" fill="url(#rd_body)"/>
+  <!-- Dark crust areas -->
+  <path d="M8,12 Q12,8 16,8 Q20,8 23,12 Q20,10 16,10 Q12,10 8,12 Z" fill="#7a3808" opacity="0.7"/>
+  <path d="M7,22 Q8,19 9,18" stroke="#7a3808" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <!-- Drumstick right -->
+  <path d="M22,22 Q26,20 27,24 Q26,27 23,27 Q21,26 22,22 Z" fill="url(#rd_drum)"/>
+  <ellipse cx="27" cy="24" rx="1.5" ry="2.5" fill="#e8c898"/>
+  <!-- Drumstick bone end -->
+  <ellipse cx="27.5" cy="24" rx="1.2" ry="1.8" fill="#f0dcc0" opacity="0.9"/>
+  <!-- Drumstick left -->
+  <path d="M10,22 Q6,20 5,24 Q6,27 9,27 Q11,26 10,22 Z" fill="url(#rd_drum)"/>
+  <ellipse cx="4.5" cy="24" rx="1.2" ry="1.8" fill="#f0dcc0" opacity="0.9"/>
+  <!-- Roast highlights -->
+  <ellipse cx="13" cy="14" rx="4" ry="2.5" fill="rgba(220,160,80,0.4)" transform="rotate(-10,13,14)"/>
+  <ellipse cx="12" cy="12" rx="2" ry="1.2" fill="rgba(255,200,120,0.35)"/>
+</svg>

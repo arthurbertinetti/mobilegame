@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="st_jar" cx="38%" cy="30%" r="62%">
+      <stop offset="0%" stop-color="#e03828"/>
+      <stop offset="55%" stop-color="#c02010"/>
+      <stop offset="100%" stop-color="#801008"/>
+    </radialGradient>
+    <radialGradient id="st_glass" cx="30%" cy="25%" r="65%">
+      <stop offset="0%" stop-color="rgba(255,255,255,.25)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,.0)"/>
+    </radialGradient>
+    <radialGradient id="st_lid" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#c04020"/>
+      <stop offset="100%" stop-color="#801008"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="8.5" ry="0.7" fill="#00000020"/>
+  <!-- Jar body -->
+  <path d="M8,15 Q7,14 7,25 Q7,28 9,29 L23,29 Q25,28 25,25 Q25,14 24,15 Z" fill="url(#st_jar)"/>
+  <!-- Glass shine -->
+  <path d="M9,16 Q8.5,22 9,27" stroke="rgba(255,255,255,.5)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M23,17 Q23.5,22 23,26" stroke="rgba(255,100,60,.3)" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <!-- Label (white band) -->
+  <rect x="9" y="19" width="14" height="7" rx="1" fill="rgba(255,255,255,.2)"/>
+  <!-- Tomato icon on label -->
+  <circle cx="14" cy="22" r="2.5" fill="#f04040"/>
+  <path d="M14,19.5 L14,20.5" stroke="#40a020" stroke-width="1" stroke-linecap="round"/>
+  <path d="M13,20 Q14,19.5 15,20" stroke="#40a020" stroke-width="0.8" fill="none"/>
+  <!-- Lid -->
+  <path d="M8,15 Q8,12 16,12 Q24,12 24,15 L23,16 Q16,17 9,16 Z" fill="url(#st_lid)"/>
+  <ellipse cx="16" cy="12.5" rx="8" ry="2" fill="#c04020"/>
+  <path d="M9,13 Q16,12 23,13" stroke="rgba(255,120,80,.5)" stroke-width="0.7" fill="none"/>
+</svg>

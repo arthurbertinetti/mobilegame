@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="fb2_bowl" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#e8e0d4"/>
+      <stop offset="70%" stop-color="#c8c0b0"/>
+      <stop offset="100%" stop-color="#a89e90"/>
+    </radialGradient>
+    <radialGradient id="fb2_content" cx="45%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#fefcf8"/>
+      <stop offset="60%" stop-color="#f0ece4"/>
+      <stop offset="100%" stop-color="#e0d8cc"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="10" ry="0.7" fill="#00000018"/>
+  <!-- Bowl shape -->
+  <path d="M5,20 Q5,29 16,30 Q27,29 27,20 L26,18 Q16,17 6,18 Z" fill="url(#fb2_bowl)"/>
+  <!-- Bowl rim -->
+  <ellipse cx="16" cy="18" rx="11" ry="3" fill="#c8c0b0"/>
+  <ellipse cx="16" cy="17.5" rx="10" ry="2.5" fill="#d8d0c4"/>
+  <!-- Fromage blanc content -->
+  <ellipse cx="16" cy="17" rx="9" ry="2" fill="url(#fb2_content)"/>
+  <!-- Surface texture - smooth with small dips -->
+  <path d="M8,17 Q12,16.2 16,17 Q20,17.8 24,17" stroke="rgba(220,215,205,.7)" stroke-width="0.6" fill="none"/>
+  <!-- Small berries on top (optional garnish) -->
+  <circle cx="14" cy="16.5" r="1.2" fill="#d04040" opacity="0.7"/>
+  <circle cx="18" cy="16.5" r="1.2" fill="#d04040" opacity="0.7"/>
+  <!-- Shine -->
+  <ellipse cx="11" cy="16" rx="2.5" ry="0.8" fill="rgba(255,255,255,.5)"/>
+</svg>

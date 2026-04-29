@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Tige principale -->
+  <rect x="14" y="18" width="4" height="12" rx="2" fill="#558b2f"/>
+  <!-- Tiges latérales -->
+  <line x1="16" y1="22" x2="9" y2="18" stroke="#558b2f" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="16" y1="22" x2="23" y2="18" stroke="#558b2f" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="16" y1="19" x2="11" y2="14" stroke="#558b2f" stroke-width="2" stroke-linecap="round"/>
+  <line x1="16" y1="19" x2="21" y2="14" stroke="#558b2f" stroke-width="2" stroke-linecap="round"/>
+  <!-- Bouquets fleuraux (fleurettes denses) -->
+  <!-- Grande tête centrale -->
+  <circle cx="16" cy="12" r="7" fill="#1b5e20"/>
+  <circle cx="16" cy="11" r="6.5" fill="#2e7d32"/>
+  <!-- Fleurettes individuelles (texture bosselée) -->
+  <circle cx="12" cy="13" r="3.5" fill="#33691e"/>
+  <circle cx="20" cy="13" r="3.5" fill="#2e7d32"/>
+  <circle cx="16" cy="8" r="4" fill="#33691e"/>
+  <circle cx="11" cy="9" r="3" fill="#388e3c"/>
+  <circle cx="21" cy="9" r="3" fill="#33691e"/>
+  <circle cx="14" cy="14" r="2.5" fill="#43a047"/>
+  <circle cx="18" cy="14" r="2.5" fill="#388e3c"/>
+  <circle cx="16" cy="6" r="2.5" fill="#43a047"/>
+  <!-- Petites fleurettes (détail) -->
+  <circle cx="13" cy="7" r="2" fill="#558b2f"/>
+  <circle cx="19" cy="7" r="2" fill="#558b2f"/>
+  <circle cx="10" cy="12" r="2" fill="#4caf50"/>
+  <circle cx="22" cy="12" r="2" fill="#388e3c"/>
+  <!-- Feuilles autour de la tête -->
+  <ellipse cx="8" cy="17" rx="5" ry="2.5" fill="#388e3c" transform="rotate(-25 8 17)"/>
+  <ellipse cx="24" cy="17" rx="5" ry="2.5" fill="#2e7d32" transform="rotate(25 24 17)"/>
+</svg>

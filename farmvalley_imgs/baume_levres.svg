@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_bl" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tube_bl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e05888"/>
+      <stop offset="40%" stop-color="#f8a0c0"/>
+      <stop offset="100%" stop-color="#c04070"/>
+    </linearGradient>
+    <linearGradient id="cap_bl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d04878"/>
+      <stop offset="50%" stop-color="#f080a0"/>
+      <stop offset="100%" stop-color="#b03060"/>
+    </linearGradient>
+    <linearGradient id="product_bl" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f090b0"/>
+      <stop offset="50%" stop-color="#ffc0d0"/>
+      <stop offset="100%" stop-color="#e07090"/>
+    </linearGradient>
+    <linearGradient id="shine_bl" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="29.5" rx="7" ry="2" fill="url(#shadow_bl)"/>
+  <!-- Main tube body -->
+  <rect x="11" y="14" width="10" height="14" rx="3" ry="3" fill="url(#tube_bl)"/>
+  <!-- Twist mechanism ring -->
+  <rect x="11" y="20" width="10" height="2.5" rx="0.5" fill="#c04878" opacity="0.6"/>
+  <!-- Cap/collar -->
+  <rect x="10.5" y="12" width="11" height="3.5" rx="2" fill="url(#cap_bl)"/>
+  <!-- Twisted-up product -->
+  <ellipse cx="16" cy="11.5" rx="4" ry="1.2" fill="url(#product_bl)"/>
+  <path d="M12 11.5 Q14 8 16 7 Q18 8 20 11.5" fill="url(#product_bl)"/>
+  <!-- Product tip -->
+  <ellipse cx="16" cy="7" rx="2.2" ry="1" fill="#ffc0d0"/>
+  <!-- Shine on tube -->
+  <rect x="12.5" y="14.5" width="2" height="10" rx="1" fill="url(#shine_bl)" opacity="0.6"/>
+  <!-- Label line decoration -->
+  <rect x="11" y="17" width="10" height="0.5" fill="#fff" opacity="0.3"/>
+  <!-- Bottom rounded -->
+  <ellipse cx="16" cy="28" rx="5" ry="1.2" fill="#b03060" opacity="0.4"/>
+</svg>

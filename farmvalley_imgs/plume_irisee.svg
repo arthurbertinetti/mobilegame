@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="pig" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e91e63"/>
+      <stop offset="25%" stop-color="#9c27b0"/>
+      <stop offset="50%" stop-color="#3f51b5"/>
+      <stop offset="75%" stop-color="#00bcd4"/>
+      <stop offset="100%" stop-color="#8bc34a"/>
+    </linearGradient>
+  </defs>
+  <line x1="8" y1="28" x2="24" y2="4" stroke="#9c27b0" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M24 4 Q18 8 14 14 Q10 18 8 28 Q12 22 16 16 Q20 10 24 4Z" fill="url(#pig)" opacity="0.9"/>
+  <path d="M24 4 Q22 10 20 16 Q18 20 16 28 Q14 22 12 16 Q14 10 24 4Z" fill="url(#pig)" opacity="0.7"/>
+  <!-- Irisations multiples -->
+  <path d="M22 6 Q19 11 17 17" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M20 8 Q17 13 15 19" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="24" cy="4" r="2" fill="#ce93d8"/>
+</svg>

@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pn_body" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#1a9a8a"/>
+      <stop offset="50%" stop-color="#0d7060"/>
+      <stop offset="100%" stop-color="#054030"/>
+    </radialGradient>
+    <radialGradient id="pn_head" cx="40%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#2a80c8"/>
+      <stop offset="100%" stop-color="#0a4080"/>
+    </radialGradient>
+    <radialGradient id="pn_ocellus" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c8e850"/>
+      <stop offset="40%" stop-color="#30b880"/>
+      <stop offset="70%" stop-color="#1a6090"/>
+      <stop offset="100%" stop-color="#082040"/>
+    </radialGradient>
+    <linearGradient id="pn_tail" x1="0%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#2a8040"/>
+      <stop offset="50%" stop-color="#1a6080"/>
+      <stop offset="100%" stop-color="#30b060"/>
+    </linearGradient>
+  </defs>
+  <!-- Tail fan background arc -->
+  <path d="M14,22 Q4,16 3,6 Q8,4 16,5 Q24,4 29,7 Q28,16 18,22 Z" fill="url(#pn_tail)" opacity="0.35"/>
+  <!-- Individual tail feathers (radiating from body) -->
+  <!-- Left outer -->
+  <path d="M13,22 Q6,17 4,9 Q6,8 7,9 Q8,15 14,20 Z" fill="#2a8050" opacity="0.8"/>
+  <circle cx="5.5" cy="7.5" r="2.8" fill="url(#pn_ocellus)"/>
+  <!-- Left mid -->
+  <path d="M13.5,21.5 Q8,14 8,7 Q10,6.5 11,7.5 Q11,13 14.5,19.5 Z" fill="#308060" opacity="0.85"/>
+  <circle cx="9.5" cy="5.8" r="2.5" fill="url(#pn_ocellus)"/>
+  <!-- Center left -->
+  <path d="M14,21 Q11,13 13,5.5 Q15,5 16,6.5 Q15,12 15.5,19 Z" fill="#259070" opacity="0.9"/>
+  <circle cx="14" cy="4" r="2.3" fill="url(#pn_ocellus)"/>
+  <!-- Center -->
+  <path d="M15,21 Q15,12 16,4.5 Q17,4 18,5.5 Q17.5,12 17,20 Z" fill="#2598a0" opacity="0.9"/>
+  <circle cx="17" cy="3.5" r="2.3" fill="url(#pn_ocellus)"/>
+  <!-- Center right -->
+  <path d="M16.5,21 Q19,13 21,5 Q22.5,5 23,6.5 Q21,12 18.5,20 Z" fill="#259070" opacity="0.9"/>
+  <circle cx="22.5" cy="4" r="2.3" fill="url(#pn_ocellus)"/>
+  <!-- Right mid -->
+  <path d="M17,21.5 Q22,14 24.5,7 Q26,6.5 26.5,8 Q24,14 19,20.5 Z" fill="#308060" opacity="0.85"/>
+  <circle cx="26.5" cy="6" r="2.5" fill="url(#pn_ocellus)"/>
+  <!-- Right outer -->
+  <path d="M18,22 Q26,17 28.5,9 Q30,8.5 30,10 Q27,16 19.5,21.5 Z" fill="#2a8050" opacity="0.8"/>
+  <circle cx="29.5" cy="8" r="2.8" fill="url(#pn_ocellus)"/>
+  <!-- Body -->
+  <path d="M10,23.5 Q10,19 14,18 Q19,17.5 21,20 Q22,22.5 21,26 Q19,28.5 15,28.5 Q10,28 10,23.5 Z" fill="url(#pn_body)"/>
+  <!-- Wing sheen -->
+  <path d="M12,22.5 Q14.5,19.5 20,20.5" stroke="#30c8a0" stroke-width="0.6" fill="none" opacity="0.6"/>
+  <!-- Neck -->
+  <path d="M12,20 Q11.5,17 12.5,14.5 Q14.5,15 14,20 Z" fill="url(#pn_head)"/>
+  <!-- Head -->
+  <ellipse cx="12.5" cy="13.5" rx="3.5" ry="3" fill="url(#pn_head)"/>
+  <!-- Crest feathers -->
+  <path d="M11.5,11 L10.5,8.5" stroke="#3ab040" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="10.3" cy="8" r="0.9" fill="#3ab040"/>
+  <path d="M12.5,10.5 L12,7.5" stroke="#3ab040" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="11.9" cy="7" r="0.9" fill="#3ab040"/>
+  <path d="M13.5,10.5 L13.5,7.5" stroke="#3ab040" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="13.5" cy="7" r="0.9" fill="#3ab040"/>
+  <path d="M14.5,11 L15,8.5" stroke="#3ab040" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="15.2" cy="8" r="0.9" fill="#3ab040"/>
+  <!-- Beak -->
+  <path d="M10,13.5 L8,13 L7.8,14 L10,14 Z" fill="#d8b020"/>
+  <!-- Eye -->
+  <circle cx="12" cy="12.8" r="1.1" fill="#1a0800"/>
+  <circle cx="11.7" cy="12.5" r="0.4" fill="#c8a020"/>
+  <circle cx="12.3" cy="12.2" r="0.22" fill="#ffffff55"/>
+  <!-- Legs -->
+  <path d="M14.5,28 L14,31" stroke="#90a050" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M14,31 L12.5,32 M14,31 L14.5,32 M14,31 L15.5,31.8" stroke="#90a050" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+  <path d="M17,28 L16.5,31" stroke="#90a050" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M16.5,31 L15,32 M16.5,31 L17,32 M16.5,31 L18,31.8" stroke="#90a050" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+</svg>

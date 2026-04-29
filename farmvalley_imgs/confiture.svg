@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="cj_jam" cx="40%" cy="35%" r="58%">
+      <stop offset="0%" stop-color="#e03040"/>
+      <stop offset="55%" stop-color="#c01828"/>
+      <stop offset="100%" stop-color="#800e18"/>
+    </radialGradient>
+    <radialGradient id="cj_jar" cx="30%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="rgba(255,255,255,.3)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,.0)"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="9" ry="0.7" fill="#00000018"/>
+  <!-- Jar body (round) -->
+  <path d="M7,18 Q7,14 16,13 Q25,14 25,18 L25,25 Q25,29 16,30 Q7,29 7,25 Z" fill="url(#cj_jam)"/>
+  <!-- Glass shine on jar -->
+  <path d="M8.5,18 Q8,22 8.5,26" stroke="rgba(255,255,255,.4)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Jar neck/band -->
+  <path d="M8,18 Q8,15 16,14 Q24,15 24,18" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.2)" stroke-width="0.7"/>
+  <!-- Cloth top (checkered red/white) -->
+  <ellipse cx="16" cy="13.5" rx="10" ry="4.5" fill="#f0c8a0"/>
+  <!-- Checkered pattern on cloth -->
+  <ellipse cx="16" cy="13" rx="9" ry="3.5" fill="none" stroke="#d0a060" stroke-width="0.5" stroke-dasharray="2,1.5"/>
+  <path d="M8,12 Q12,11 16,12 Q20,11 24,12" stroke="#c89040" stroke-width="0.7" fill="none"/>
+  <path d="M8,14 Q12,13 16,14 Q20,13 24,14" stroke="#c89040" stroke-width="0.7" fill="none"/>
+  <!-- String around cloth -->
+  <path d="M8,15 Q16,16.5 24,15" stroke="#a07030" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- Lid metal ring -->
+  <ellipse cx="16" cy="15.5" rx="8.5" ry="2" fill="#b0a888" opacity="0.5"/>
+  <!-- Jar label -->
+  <rect x="10" y="21" width="12" height="6" rx="1" fill="rgba(255,255,255,.3)"/>
+  <path d="M11.5" y1="23" x2="20.5" y2="23" stroke="rgba(255,200,200,.5)" stroke-width="0.5"/>
+</svg>

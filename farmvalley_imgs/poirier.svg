@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pr_pear" cx="35%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#e8f080"/>
+      <stop offset="50%" stop-color="#a8c820"/>
+      <stop offset="100%" stop-color="#607010"/>
+    </radialGradient>
+    <radialGradient id="pr_can" cx="35%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#50a030"/>
+      <stop offset="60%" stop-color="#246814"/>
+      <stop offset="100%" stop-color="#104008"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="7.5" ry="0.7" fill="#00000022"/>
+  <!-- Trunk (slightly slender) -->
+  <path d="M14,31 Q13.5,26 14,22.5 Q15,21 16,21.3 Q17,21 18,22.5 Q18.5,26 18,31 Z" fill="#6b3a1f"/>
+  <path d="M14.8,31 Q14.3,26 14.8,23 Q15.4,22 16,22.2 Q16.6,22 17.2,23 Q17.7,26 17.2,31 Z" fill="#905430"/>
+  <!-- Canopy — taller/narrower than apple tree (oval shape) -->
+  <ellipse cx="16" cy="12" rx="10" ry="11.5" fill="#1a6412"/>
+  <ellipse cx="16" cy="11" rx="9" ry="10.5" fill="#248018"/>
+  <ellipse cx="11" cy="15" rx="6.5" ry="7" fill="#1a6412"/>
+  <ellipse cx="21" cy="15" rx="6.5" ry="7" fill="#1a6412"/>
+  <ellipse cx="16" cy="5.5" rx="8" ry="5.5" fill="url(#pr_can)"/>
+  <!-- Canopy shine -->
+  <ellipse cx="12.5" cy="8" rx="3" ry="2.2" fill="rgba(140,220,100,.22)"/>
+  <!-- Pears (classic pear shape: wider bottom, narrow top) -->
+  <!-- Left pear -->
+  <path d="M6,20.5 Q4.5,18 5.5,15.5 Q7,14 8.5,15 Q10,16.5 9.5,19.5 Q8.5,22 6,20.5 Z" fill="url(#pr_pear)"/>
+  <line x1="8" y1="15" x2="7.8" y2="14" stroke="#557010" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Right pear -->
+  <path d="M26,19.5 Q27.5,17 26.5,14.5 Q25,13 23.5,14 Q22,15.5 22.5,18.5 Q23.5,21 26,19.5 Z" fill="url(#pr_pear)"/>
+  <line x1="24.2" y1="14" x2="24" y2="13" stroke="#557010" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Center bottom pear -->
+  <path d="M18,24.5 Q16.5,21.5 17.5,19 Q19,17.5 20.5,18.5 Q22,20.5 21,23.5 Q19.5,25.5 18,24.5 Z" fill="url(#pr_pear)"/>
+  <line x1="19.8" y1="18.5" x2="19.5" y2="17.5" stroke="#557010" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Pear shines -->
+  <ellipse cx="7" cy="17" rx="1" ry="1.5" fill="rgba(255,255,200,.4)"/>
+  <ellipse cx="25" cy="16" rx="1" ry="1.5" fill="rgba(255,255,200,.4)"/>
+</svg>

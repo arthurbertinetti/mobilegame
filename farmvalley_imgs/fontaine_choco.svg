@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="fc_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fc_tower" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3a1808"/>
+      <stop offset="50%" stop-color="#5a2810"/>
+      <stop offset="100%" stop-color="#3a1808"/>
+    </linearGradient>
+    <linearGradient id="fc_choc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5a2808"/>
+      <stop offset="100%" stop-color="#3a1800"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="9" ry="1.8" fill="url(#fc_shadow)"/>
+  <!-- Base tray -->
+  <ellipse cx="16" cy="28.5" rx="9" ry="2.5" fill="url(#fc_tower)" stroke="#2a1006" stroke-width="0.7"/>
+  <!-- Chocolate pool in base -->
+  <ellipse cx="16" cy="28.5" rx="7.5" ry="1.8" fill="url(#fc_choc)" opacity="0.9"/>
+  <!-- Pool shine -->
+  <ellipse cx="13" cy="27.8" rx="2" ry="0.6" fill="white" opacity="0.2" transform="rotate(-10,13,27.8)"/>
+  <!-- Tower pillar -->
+  <rect x="13.5" y="14" width="5" height="14" rx="1.5" fill="url(#fc_tower)" stroke="#2a1006" stroke-width="0.5"/>
+  <!-- Tier 1 - bottom platform -->
+  <ellipse cx="16" cy="24" rx="7" ry="2" fill="url(#fc_tower)" stroke="#2a1006" stroke-width="0.6"/>
+  <ellipse cx="16" cy="24" rx="5.8" ry="1.5" fill="url(#fc_choc)"/>
+  <!-- Chocolate drip from tier 1 -->
+  <path d="M10 24 Q9.5 26 10.5 28" stroke="#3a1808" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M22 24 Q22.5 26 21.5 28" stroke="#3a1808" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <path d="M13 25.5 Q12.5 27 13.5 28.5" stroke="#3a1808" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M19 25.5 Q19.5 27 18.5 28.5" stroke="#3a1808" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Tier 2 - middle platform -->
+  <ellipse cx="16" cy="18" rx="5" ry="1.6" fill="url(#fc_tower)" stroke="#2a1006" stroke-width="0.6"/>
+  <ellipse cx="16" cy="18" rx="4" ry="1.1" fill="url(#fc_choc)"/>
+  <!-- Chocolate drip from tier 2 -->
+  <path d="M12 19 Q11.5 21.5 12 24" stroke="#3a1808" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M20 19 Q20.5 21.5 20 24" stroke="#3a1808" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Top cap -->
+  <ellipse cx="16" cy="14" rx="3.5" ry="1.2" fill="url(#fc_tower)" stroke="#2a1006" stroke-width="0.5"/>
+  <ellipse cx="16" cy="14" rx="2.5" ry="0.8" fill="url(#fc_choc)"/>
+  <!-- Chocolate spire -->
+  <path d="M14.5 14 Q16 9 17.5 14" fill="url(#fc_choc)" stroke="#2a1006" stroke-width="0.4"/>
+  <!-- Chocolate flow from top -->
+  <path d="M15 14.5 Q14 16.5 14.5 18" stroke="#3a1808" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M17 14.5 Q18 16.5 17.5 18" stroke="#3a1808" stroke-width="1" fill="none" stroke-linecap="round"/>
+</svg>

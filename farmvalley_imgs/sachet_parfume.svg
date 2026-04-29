@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_sp" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fabric_sp" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#f8e0f0"/>
+      <stop offset="60%" stop-color="#f0d0e8"/>
+      <stop offset="100%" stop-color="#d8a8c8"/>
+    </radialGradient>
+    <linearGradient id="ribbon_sp" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e060a0"/>
+      <stop offset="50%" stop-color="#f890c0"/>
+      <stop offset="100%" stop-color="#c04080"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30.5" rx="7.5" ry="1.8" fill="url(#shadow_sp)"/>
+  <!-- Sachet body (decorative square/diamond shape) -->
+  <rect x="7.5" y="15" width="17" height="14.5" rx="3" fill="url(#fabric_sp)"/>
+  <!-- Fabric texture (embroidered pattern suggestion) -->
+  <!-- Border stitching -->
+  <rect x="9" y="16.5" width="14" height="11.5" rx="2" fill="none" stroke="#e0a0c8" stroke-width="0.6" stroke-dasharray="1.5,1"/>
+  <!-- Floral center pattern -->
+  <!-- Central flower -->
+  <circle cx="16" cy="22" r="1.2" fill="#e060a0" opacity="0.8"/>
+  <circle cx="16" cy="22" r="0.6" fill="#ffc0e0" opacity="0.9"/>
+  <!-- Petals -->
+  <ellipse cx="16" cy="19.8" rx="0.8" ry="1.2" fill="#e878b0" opacity="0.7"/>
+  <ellipse cx="16" cy="24.2" rx="0.8" ry="1.2" fill="#e878b0" opacity="0.7"/>
+  <ellipse cx="13.8" cy="22" rx="1.2" ry="0.8" fill="#e878b0" opacity="0.7"/>
+  <ellipse cx="18.2" cy="22" rx="1.2" ry="0.8" fill="#e878b0" opacity="0.7"/>
+  <!-- Diagonal petals -->
+  <ellipse cx="14.5" cy="20.5" rx="0.7" ry="1" fill="#d860a0" opacity="0.6" transform="rotate(-45,14.5,20.5)"/>
+  <ellipse cx="17.5" cy="20.5" rx="0.7" ry="1" fill="#d860a0" opacity="0.6" transform="rotate(45,17.5,20.5)"/>
+  <ellipse cx="14.5" cy="23.5" rx="0.7" ry="1" fill="#d860a0" opacity="0.6" transform="rotate(45,14.5,23.5)"/>
+  <ellipse cx="17.5" cy="23.5" rx="0.7" ry="1" fill="#d860a0" opacity="0.6" transform="rotate(-45,17.5,23.5)"/>
+  <!-- Corner dots (embroidery) -->
+  <circle cx="10.5" cy="18" r="0.6" fill="#e878b0" opacity="0.7"/>
+  <circle cx="21.5" cy="18" r="0.6" fill="#e878b0" opacity="0.7"/>
+  <circle cx="10.5" cy="26.5" r="0.6" fill="#e878b0" opacity="0.7"/>
+  <circle cx="21.5" cy="26.5" r="0.6" fill="#e878b0" opacity="0.7"/>
+  <!-- Ribbon at top -->
+  <rect x="13" y="12.5" width="6" height="3" rx="0.5" fill="url(#ribbon_sp)"/>
+  <!-- Ribbon bow -->
+  <path d="M13 14 Q10 12 12 11 Q14 10.5 16 12 Q18 10.5 20 11 Q22 12 19 14 Q18 13 16 13 Q14 13 13 14 Z" fill="url(#ribbon_sp)"/>
+  <!-- Ribbon center knot -->
+  <circle cx="16" cy="12.8" r="1.2" fill="#e060a0"/>
+  <!-- Fabric shine -->
+  <rect x="9" y="16" width="2" height="9" rx="1" fill="#fff" opacity="0.3"/>
+</svg>

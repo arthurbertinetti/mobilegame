@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ct_meat" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#d06040"/>
+      <stop offset="55%" stop-color="#c05028"/>
+      <stop offset="100%" stop-color="#8a2810"/>
+    </radialGradient>
+    <radialGradient id="ct_meat2" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#c85838"/>
+      <stop offset="55%" stop-color="#b04020"/>
+      <stop offset="100%" stop-color="#802010"/>
+    </radialGradient>
+    <linearGradient id="ct_plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e8e0d4"/>
+      <stop offset="100%" stop-color="#c8c0b4"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000028"/>
+  <!-- Plate -->
+  <ellipse cx="16" cy="29" rx="14" ry="2.5" fill="#b8b0a4"/>
+  <ellipse cx="16" cy="28" rx="14" ry="2.5" fill="url(#ct_plate)"/>
+  <!-- Right chop meat -->
+  <path d="M16,26 Q14,22 15,16 Q16,12 19,11 Q22,11 24,14 Q26,18 24,23 Q22,26 16,26 Z" fill="url(#ct_meat2)"/>
+  <!-- Right chop bone -->
+  <rect x="18.5" y="9" width="3" height="7" rx="1.5" fill="#f0ece4"/>
+  <ellipse cx="20" cy="9" rx="2.5" ry="2" fill="#f8f4ec"/>
+  <!-- Right grill marks -->
+  <line x1="17" y1="14" x2="22" y2="20" stroke="#7a1808" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="19" y1="13" x2="24" y2="19" stroke="#7a1808" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  <!-- Left chop meat -->
+  <path d="M16,26 Q18,22 17,16 Q16,12 13,11 Q10,11 8,14 Q6,18 8,23 Q10,26 16,26 Z" fill="url(#ct_meat)"/>
+  <!-- Left chop bone -->
+  <rect x="10.5" y="9" width="3" height="7" rx="1.5" fill="#f0ece4"/>
+  <ellipse cx="12" cy="9" rx="2.5" ry="2" fill="#f8f4ec"/>
+  <!-- Left grill marks -->
+  <line x1="10" y1="14" x2="15" y2="20" stroke="#7a1808" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  <line x1="8" y1="17" x2="13" y2="23" stroke="#7a1808" stroke-width="1.2" stroke-linecap="round" opacity="0.65"/>
+  <!-- Fat edge on left chop -->
+  <path d="M8,15 Q7,18 8,22" stroke="#e8c898" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- Fat edge on right chop -->
+  <path d="M24,15 Q25,18 24,22" stroke="#e8c898" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- Meat highlights -->
+  <ellipse cx="11.5" cy="17" rx="2.5" ry="3" fill="rgba(220,120,80,0.3)" transform="rotate(10,11.5,17)"/>
+  <ellipse cx="20.5" cy="17" rx="2.5" ry="3" fill="rgba(200,100,60,0.3)" transform="rotate(-10,20.5,17)"/>
+</svg>

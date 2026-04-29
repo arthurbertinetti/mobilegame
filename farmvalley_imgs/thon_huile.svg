@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="th_can" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d8d8d8"/>
+      <stop offset="50%" stop-color="#c0c0c0"/>
+      <stop offset="100%" stop-color="#a0a0a0"/>
+    </linearGradient>
+    <radialGradient id="th_oil" cx="45%" cy="40%" r="58%">
+      <stop offset="0%" stop-color="#e8d070"/>
+      <stop offset="60%" stop-color="#d4b840"/>
+      <stop offset="100%" stop-color="#b09020"/>
+    </radialGradient>
+    <radialGradient id="th_tuna" cx="40%" cy="35%" r="62%">
+      <stop offset="0%" stop-color="#e0a858"/>
+      <stop offset="55%" stop-color="#d09040"/>
+      <stop offset="100%" stop-color="#a06820"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000028"/>
+  <!-- Can body -->
+  <ellipse cx="16" cy="26" rx="13" ry="3" fill="#909090"/>
+  <rect x="3" y="16" width="26" height="10" fill="url(#th_can)"/>
+  <!-- Can bottom rim -->
+  <ellipse cx="16" cy="26" rx="13" ry="2.5" fill="#b0b0b0"/>
+  <!-- Can side vertical lines (metal texture) -->
+  <line x1="7" y1="16" x2="7" y2="26" stroke="#b8b8b8" stroke-width="0.5" opacity="0.6"/>
+  <line x1="11" y1="16" x2="11" y2="26" stroke="#b8b8b8" stroke-width="0.5" opacity="0.6"/>
+  <line x1="15" y1="16" x2="15" y2="26" stroke="#b8b8b8" stroke-width="0.5" opacity="0.6"/>
+  <line x1="19" y1="16" x2="19" y2="26" stroke="#b8b8b8" stroke-width="0.5" opacity="0.6"/>
+  <line x1="23" y1="16" x2="23" y2="26" stroke="#b8b8b8" stroke-width="0.5" opacity="0.6"/>
+  <!-- Can top open oval -->
+  <ellipse cx="16" cy="16" rx="13" ry="3" fill="#a0a0a0"/>
+  <!-- Golden oil surface -->
+  <ellipse cx="15" cy="15.5" rx="10" ry="2.2" fill="url(#th_oil)"/>
+  <!-- Oil sheen -->
+  <ellipse cx="13" cy="15" rx="6" ry="1.2" fill="rgba(255,240,140,0.4)"/>
+  <!-- Tuna flakes -->
+  <path d="M8,15 Q10,13.5 13,14.5 Q10,14 8,15 Z" fill="url(#th_tuna)"/>
+  <path d="M11,16.5 Q14,14.5 17,15.5 Q14,15 11,16.5 Z" fill="url(#th_tuna)"/>
+  <path d="M16,14.5 Q19,13 22,14 Q19,13.5 16,14.5 Z" fill="url(#th_tuna)"/>
+  <path d="M19,16.5 Q21,15 24,15.5 Q21,15.5 19,16.5 Z" fill="url(#th_tuna)"/>
+  <!-- Lid peeled back (curled metal) -->
+  <path d="M3,14 Q5,10 10,11 Q16,12 22,11 Q27,10 29,13 Q26,12 22,13 Q16,14 10,13 Q6,12 3,14 Z" fill="url(#th_can)" opacity="0.9"/>
+  <path d="M3,14 Q5,11 10,12 Q16,13 22,12 Q27,11 29,14" stroke="#c0c0c0" stroke-width="0.7" fill="none" opacity="0.7"/>
+  <!-- Pull tab -->
+  <path d="M25,10 Q27,9 28,11 Q27,10.5 25,11 Z" fill="#d0d0d0"/>
+  <circle cx="26" cy="9.5" r="1" fill="none" stroke="#b0b0b0" stroke-width="0.8"/>
+  <!-- Oil gloss highlight -->
+  <path d="M8,15 Q13,13.5 18,14.5" stroke="rgba(255,255,200,0.5)" stroke-width="0.8" fill="none"/>
+</svg>

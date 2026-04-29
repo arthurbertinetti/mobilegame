@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pr_body" cx="38%" cy="32%" r="62%">
+      <stop offset="0%" stop-color="#e09050"/>
+      <stop offset="55%" stop-color="#c47830"/>
+      <stop offset="100%" stop-color="#7a4010"/>
+    </radialGradient>
+    <radialGradient id="pr_leg" cx="40%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#c07030"/>
+      <stop offset="100%" stop-color="#703808"/>
+    </radialGradient>
+    <linearGradient id="pr_plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e8e0d0"/>
+      <stop offset="100%" stop-color="#c8c0b0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="12" ry="0.8" fill="#00000028"/>
+  <!-- Plate -->
+  <ellipse cx="16" cy="28.5" rx="12.5" ry="2.5" fill="#b0a898"/>
+  <ellipse cx="16" cy="27.5" rx="12.5" ry="2.5" fill="url(#pr_plate)"/>
+  <!-- Chicken body (compact) -->
+  <path d="M8,26 Q6,21 7,16 Q9,10 14,9 Q16,8.5 18,9 Q23,11 24,16 Q25,21 23,25 Q19,27 16,27 Q12,27 8,26 Z" fill="url(#pr_body)"/>
+  <!-- Breast rounded top -->
+  <ellipse cx="16" cy="17" rx="7" ry="6.5" fill="url(#pr_body)"/>
+  <!-- Roasted skin texture - dark patches -->
+  <path d="M9,13 Q13,9 17,9 Q21,9 23,13 Q20,11 16,11 Q12,11 9,13 Z" fill="#6a3008" opacity="0.65"/>
+  <path d="M8,19 Q9,16 10,15" stroke="#7a3808" stroke-width="1.2" fill="none" opacity="0.55"/>
+  <path d="M23,18 Q24,15 23,13" stroke="#7a3808" stroke-width="1.2" fill="none" opacity="0.55"/>
+  <!-- Left drumstick -->
+  <path d="M9,23 Q5,22 5,26 Q6,28 9,28 Q11,27 9,23 Z" fill="url(#pr_leg)"/>
+  <ellipse cx="4.5" cy="25.5" rx="1.2" ry="1.8" fill="#eedcc0" opacity="0.9"/>
+  <!-- Right drumstick -->
+  <path d="M23,23 Q27,22 27,26 Q26,28 23,28 Q21,27 23,23 Z" fill="url(#pr_leg)"/>
+  <ellipse cx="27.5" cy="25.5" rx="1.2" ry="1.8" fill="#eedcc0" opacity="0.9"/>
+  <!-- Skin highlight (glossy) -->
+  <ellipse cx="14" cy="14.5" rx="4" ry="2.5" fill="rgba(230,160,80,0.4)" transform="rotate(-10,14,14.5)"/>
+  <ellipse cx="13" cy="12.5" rx="2" ry="1.2" fill="rgba(255,210,130,0.4)"/>
+</svg>

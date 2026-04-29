@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="prg" cx="38%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#f9f080"/>
+      <stop offset="55%" stop-color="#c8e06a"/>
+      <stop offset="100%" stop-color="#8bc34a"/>
+    </radialGradient>
+  </defs>
+  <!-- Tige -->
+  <line x1="16" y1="9" x2="15" y2="4" stroke="#5d4037" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Feuille -->
+  <path d="M15 5 Q10 3 11 7 Q13 6 15 5Z" fill="#43a047"/>
+  <line x1="15" y1="5" x2="12" y2="6.5" stroke="#2e7d32" stroke-width="0.5"/>
+  <!-- Corps de la poire (plus étroit en haut, large en bas) -->
+  <path d="M12 12 Q10 10 11 8 Q13 6 16 8 Q19 6 21 8 Q22 10 20 12 Q25 16 24 22 Q23 28 16 28 Q9 28 8 22 Q7 16 12 12Z" fill="url(#prg)"/>
+  <!-- Creux du haut -->
+  <path d="M14 8.5 Q16 7 18 8.5" fill="none" stroke="#8bc34a" stroke-width="0.7"/>
+  <!-- Reflet -->
+  <ellipse cx="12" cy="18" rx="2.5" ry="4" fill="rgba(255,255,255,0.22)" transform="rotate(-15 12 18)"/>
+</svg>

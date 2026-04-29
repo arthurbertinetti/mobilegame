@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="tr_ball" cx="35%" cy="32%" r="58%">
+      <stop offset="0%" stop-color="#5a2a14"/>
+      <stop offset="55%" stop-color="#38180a"/>
+      <stop offset="100%" stop-color="#1e0c04"/>
+    </radialGradient>
+    <radialGradient id="tr_ball2" cx="38%" cy="35%" r="56%">
+      <stop offset="0%" stop-color="#4e2210"/>
+      <stop offset="100%" stop-color="#200e04"/>
+    </radialGradient>
+    <radialGradient id="tr_ball3" cx="40%" cy="32%" r="58%">
+      <stop offset="0%" stop-color="#603018"/>
+      <stop offset="100%" stop-color="#2a1006"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.2" rx="11" ry="0.7" fill="#00000025"/>
+  <!-- Cocoa powder dust -->
+  <ellipse cx="10" cy="30" rx="5" ry="1.2" fill="#3a1808" opacity="0.35"/>
+  <ellipse cx="22" cy="29.5" rx="4" ry="0.9" fill="#3a1808" opacity="0.3"/>
+  <!-- Back truffle -->
+  <circle cx="22" cy="18" r="6.5" fill="url(#tr_ball2)"/>
+  <!-- Cocoa powder texture on back truffle -->
+  <circle cx="22" cy="18" r="6.5" fill="none" stroke="#2a1008" stroke-width="1.5" stroke-dasharray="1.5,1.2"/>
+  <!-- Left truffle -->
+  <circle cx="10" cy="22" r="6.5" fill="url(#tr_ball)"/>
+  <circle cx="10" cy="22" r="6.5" fill="none" stroke="#1e0c04" stroke-width="1.5" stroke-dasharray="1.5,1.2"/>
+  <!-- Right front truffle -->
+  <circle cx="22" cy="25" r="6" fill="url(#tr_ball3)"/>
+  <circle cx="22" cy="25" r="6" fill="none" stroke="#220e04" stroke-width="1.5" stroke-dasharray="1.2,1"/>
+  <!-- Shine spots -->
+  <circle cx="7.5" cy="19.5" r="1.8" fill="rgba(180,100,60,.3)"/>
+  <circle cx="19.5" cy="15.5" r="1.5" fill="rgba(160,80,40,.25)"/>
+  <circle cx="19.5" cy="22.5" r="1.5" fill="rgba(180,100,60,.25)"/>
+</svg>

@@ -196,6 +196,7 @@ function update() {
         if (p.type === T_VANISH && p.vanishTimer > 0) {
             p.vanishTimer--;
             p.alpha = p.vanishTimer / 45;
+            if (p.vanishTimer <= 0) p.visible = false;
         }
     }
 
@@ -246,7 +247,7 @@ function update() {
             if (p.broken) continue;
             const prevBot = P.worldY + PH - P.vy;
             const curBot  = P.worldY + PH;
-            if (prevBot <= p.worldY + P.vy + 2 && curBot >= p.worldY &&
+            if (prevBot <= p.worldY + 2 && curBot >= p.worldY &&
                 P.x + PW * 0.42 > p.x && P.x - PW * 0.42 < p.x + p.w) {
                 bounce(p);
                 break;
@@ -264,14 +265,14 @@ function update() {
         if (es > 0 && es < e.h && P.x + PW*0.4 > e.x && P.x - PW*0.4 < e.x + e.w) {
             if (P.vy > 0 && P.worldY + PH < e.worldY + e.h * 0.5) {
                 // Saute sur l'ennemi
-                e.alive = false;
+                e.alive = false; e.dieFrame = fr;
                 P.vy = JUMP_NORM * 0.8;
                 for (let i = 0; i < 8; i++) spawnPart(e.x + e.w/2, e.worldY, '#ff6b00', 4);
             } else if (P.pup === PU_ROCKET) {
-                e.alive = false; // fusée détruit l'ennemi sans dommage
+                e.alive = false; e.dieFrame = fr; // fusée détruit l'ennemi sans dommage
                 for (let i = 0; i < 8; i++) spawnPart(e.x + e.w/2, e.worldY, '#ff6b00', 4);
             } else if (P.shield) {
-                e.alive = false; P.shield = false; P.pup = null;
+                e.alive = false; e.dieFrame = fr; P.shield = false; P.pup = null;
             } else {
                 killPlayer();
                 return;
@@ -1029,7 +1030,6 @@ function shadeColor(col, amt) {
 //  BOUCLE
 // ══════════════════════════════════════════════════
 function loop() {
-    fr++;
     update();
     draw();
     requestAnimationFrame(loop);

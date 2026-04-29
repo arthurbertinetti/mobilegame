@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="mgg" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ffcc02"/>
+      <stop offset="60%" stop-color="#ff8f00"/>
+      <stop offset="100%" stop-color="#e65100"/>
+    </radialGradient>
+  </defs>
+  <!-- Sol -->
+  <rect x="4" y="28" width="24" height="4" rx="2" fill="#6b4f2c"/>
+  <!-- Tronc gros -->
+  <rect x="13" y="18" width="6" height="10" rx="2.5" fill="#6d4c41"/>
+  <!-- Canopée massive (manguier est grand) -->
+  <ellipse cx="16" cy="11" rx="13" ry="10" fill="#1b5e20"/>
+  <ellipse cx="16" cy="10" rx="12" ry="9" fill="#2e7d32"/>
+  <ellipse cx="8" cy="13" rx="8.5" ry="6.5" fill="#1b5e20"/>
+  <ellipse cx="24" cy="13" rx="8.5" ry="6.5" fill="#1b5e20"/>
+  <ellipse cx="16" cy="5" rx="10" ry="6.5" fill="#33691e"/>
+  <!-- Mangues (forme oblongue caractéristique) -->
+  <path d="M8 19 Q7 16 8 13.5 Q10 12 12 14 Q13 16.5 11.5 19.5 Q10 21 8 19Z" fill="url(#mgg)"/>
+  <path d="M22 18 Q21 15 22 12.5 Q24 11 26 13 Q27 15.5 25.5 18.5 Q24 20 22 18Z" fill="url(#mgg)"/>
+  <path d="M14 21 Q13 18 14 15.5 Q16 14 18 16 Q19 18.5 17.5 21.5 Q16 23 14 21Z" fill="url(#mgg)"/>
+  <!-- Petit renflement caractéristique de la mangue -->
+  <ellipse cx="9" cy="17" rx="1.5" ry="2.5" fill="rgba(255,255,255,0.22)"/>
+  <ellipse cx="23" cy="16" rx="1.5" ry="2.5" fill="rgba(255,255,255,0.22)"/>
+  <!-- Tiges -->
+  <line x1="10" y1="13.5" x2="11" y2="12" stroke="#558b2f" stroke-width="0.8"/>
+  <line x1="24" y1="12.5" x2="25" y2="11" stroke="#558b2f" stroke-width="0.8"/>
+  <!-- Lumière -->
+  <ellipse cx="12" cy="7" rx="5.5" ry="3.5" fill="#43a047" opacity="0.4"/>
+</svg>

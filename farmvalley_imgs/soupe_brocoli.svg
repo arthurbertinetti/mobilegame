@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadowG" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bowlG" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ece4d8"/>
+      <stop offset="100%" stop-color="#b8b0a4"/>
+    </radialGradient>
+    <radialGradient id="soupG" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#40c050"/>
+      <stop offset="100%" stop-color="#208030"/>
+    </radialGradient>
+    <radialGradient id="broccoliG" cx="35%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#50d060"/>
+      <stop offset="100%" stop-color="#208030"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="12" ry="2.5" fill="url(#shadowG)"/>
+  <!-- Bowl outer -->
+  <ellipse cx="16" cy="20" rx="13" ry="9" fill="url(#bowlG)" stroke="#a8a098" stroke-width="0.6"/>
+  <!-- Soup -->
+  <ellipse cx="16" cy="19" rx="11" ry="7.5" fill="url(#soupG)"/>
+  <!-- Soup sheen -->
+  <ellipse cx="12" cy="16" rx="3" ry="1.5" fill="#60d870" opacity="0.3"/>
+  <!-- Broccoli floret on top -->
+  <circle cx="16" cy="15" r="2.5" fill="url(#broccoliG)"/>
+  <circle cx="14" cy="13.5" r="1.8" fill="#38b848"/>
+  <circle cx="18" cy="13.5" r="1.8" fill="#30a840"/>
+  <circle cx="16" cy="12" r="1.8" fill="#40c050"/>
+  <!-- Broccoli stem -->
+  <rect x="15.3" y="15.5" width="1.4" height="2" rx="0.5" fill="#609040"/>
+  <!-- Cream swirl -->
+  <path d="M11 19 Q13 17 16 18 Q19 19 21 17" fill="none" stroke="#ffffff" stroke-width="0.9" stroke-linecap="round" opacity="0.8"/>
+  <circle cx="11" cy="19" r="0.6" fill="white" opacity="0.8"/>
+</svg>

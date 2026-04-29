@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="tk_body" cx="40%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#c89040"/>
+      <stop offset="50%" stop-color="#a06820"/>
+      <stop offset="100%" stop-color="#6a3808"/>
+    </radialGradient>
+    <radialGradient id="tk_tail_c" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c89040"/>
+      <stop offset="50%" stop-color="#8a5820"/>
+      <stop offset="100%" stop-color="#4a2808"/>
+    </radialGradient>
+    <linearGradient id="tk_feather1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4a850"/>
+      <stop offset="100%" stop-color="#7a4c18"/>
+    </linearGradient>
+    <linearGradient id="tk_feather2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b88c38"/>
+      <stop offset="100%" stop-color="#6a3c10"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="14" cy="31.2" rx="9" ry="0.8" fill="#00000018"/>
+  <!-- Tail fan feathers (back layer) -->
+  <path d="M20,18 Q26,8 28,5 Q26,9 25,13 Q27,8 28,5 Q25,10 24,14 Q25,9 25,6 Q23,11 22,15 Q23,10 22,7 Q21,12 20.5,16 Z" fill="#7a4c18" opacity="0.7"/>
+  <!-- Tail fan (main) -->
+  <path d="M19,19 Q24,10 25,7 Q23,11 22.5,15 Q24,10 24,8 Q22,12 21,16 Q22.5,11 22,9 Q20.5,13 20,17 Q21,12 20,10 Q19,14 18.5,18 Z" fill="url(#tk_feather1)"/>
+  <!-- Fan arc connecting feathers -->
+  <path d="M19,19 Q22,14 25,8" stroke="#c89040" stroke-width="1.5" fill="none" opacity="0.4"/>
+  <!-- Body -->
+  <path d="M6.5,21.5 Q6.5,15.5 11,14.5 Q18,13.5 21,17 Q23,20 22,25 Q19,28.5 13,28.5 Q6.5,27.5 6.5,21.5 Z" fill="url(#tk_body)"/>
+  <!-- Wing detail -->
+  <path d="M9,20 Q13,16 20,18 Q19,22 14.5,24 Q10,24 9,20 Z" fill="url(#tk_feather2)" opacity="0.7"/>
+  <!-- Iridescent bronze sheen -->
+  <path d="M10,18 Q14,15 19,17" stroke="#e8c060" stroke-width="0.5" fill="none" opacity="0.5"/>
+  <path d="M9.5,19.5 Q14,16.5 19.5,18.5" stroke="#e8c060" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <!-- Neck -->
+  <path d="M9,16 Q8.5,12 10,9 Q12,10 11,16 Z" fill="#cc3322"/>
+  <!-- Head -->
+  <ellipse cx="9.5" cy="8.5" rx="3.5" ry="3" fill="#cc3322"/>
+  <!-- Snood (droopy appendage) -->
+  <path d="M8,8.5 Q6.5,10 7,12 Q8.5,12.5 9,10.5 Z" fill="#dd2211"/>
+  <!-- Wattle -->
+  <path d="M8.5,11 Q7.5,13 8.5,14 Q10,13.5 9.5,11 Z" fill="#dd2211"/>
+  <!-- Eye -->
+  <circle cx="11" cy="7.5" r="1" fill="#1a0800"/>
+  <circle cx="10.8" cy="7.3" r="0.35" fill="#c8a010"/>
+  <circle cx="11.3" cy="7" r="0.18" fill="#ffffff55"/>
+  <!-- Beak -->
+  <path d="M8,8.5 L6,8 L5.8,9 L8,9 Z" fill="#e8c030"/>
+  <!-- Legs -->
+  <path d="M12,28 L11,31" stroke="#d49020" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M11,31 L9.5,32 M11,31 L11.5,32 M11,31 L12.5,32" stroke="#d49020" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <path d="M15.5,28.5 L14.5,31.5" stroke="#d49020" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M14.5,31.5 L13,32 M14.5,31.5 L15,32 M14.5,31.5 L16,32" stroke="#d49020" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+</svg>

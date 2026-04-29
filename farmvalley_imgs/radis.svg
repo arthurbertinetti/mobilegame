@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Radis: bulbe rouge rond avec feuilles vertes, racine blanche -->
+  <defs>
+    <radialGradient id="rg" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ef9a9a"/>
+      <stop offset="70%" stop-color="#e53935"/>
+      <stop offset="100%" stop-color="#b71c1c"/>
+    </radialGradient>
+  </defs>
+  <!-- Racine pivotante -->
+  <line x1="16" y1="27" x2="15" y2="31" stroke="#ffcdd2" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Bulbe rouge -->
+  <ellipse cx="16" cy="23" rx="10" ry="8.5" fill="url(#rg)"/>
+  <!-- Partie blanche basse du bulbe -->
+  <ellipse cx="16" cy="29" rx="6" ry="2.5" fill="#ffebee"/>
+  <!-- Tige verte -->
+  <line x1="16" y1="14" x2="16" y2="6" stroke="#388e3c" stroke-width="1.5"/>
+  <!-- Feuilles vertes -->
+  <path d="M16 13 Q8 9 6 5 Q11 4 16 11 Z" fill="#4caf50"/>
+  <path d="M16 13 Q24 9 26 5 Q21 4 16 11 Z" fill="#388e3c"/>
+  <path d="M16 9 Q11 5 10 2 Q14 2.5 16 8 Z" fill="#66bb6a"/>
+  <path d="M16 9 Q21 5 22 2 Q18 2.5 16 8 Z" fill="#4caf50"/>
+  <!-- Légère brillance sur le bulbe -->
+  <ellipse cx="11" cy="19" rx="3.5" ry="2.5" fill="rgba(255,255,255,0.25)" transform="rotate(-20 11 19)"/>
+</svg>

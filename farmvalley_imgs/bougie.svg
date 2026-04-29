@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_bo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="candle_bo" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8e8d8"/>
+      <stop offset="40%" stop-color="#f8f8f0"/>
+      <stop offset="100%" stop-color="#d0d0c0"/>
+    </linearGradient>
+    <radialGradient id="flame_bo" cx="50%" cy="80%" r="60%">
+      <stop offset="0%" stop-color="#fff8a0"/>
+      <stop offset="40%" stop-color="#ffc040"/>
+      <stop offset="100%" stop-color="#ff6010" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow_bo" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#ffe060" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#ff8020" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30.5" rx="6.5" ry="1.6" fill="url(#shadow_bo)"/>
+  <!-- Candle body -->
+  <rect x="10.5" y="14" width="11" height="15" rx="2" fill="url(#candle_bo)"/>
+  <!-- Candle bottom ellipse -->
+  <ellipse cx="16" cy="29" rx="5.5" ry="1.5" fill="#c0c0b0" opacity="0.5"/>
+  <!-- Wax drips on sides -->
+  <path d="M10.5 19 Q10 21 10.5 23 Q11 21.5 10.5 19 Z" fill="#f0f0e0" opacity="0.8"/>
+  <path d="M21.5 17 Q22 20 21.5 22 Q21 19.5 21.5 17 Z" fill="#f0f0e0" opacity="0.7"/>
+  <path d="M13 14.5 Q12.5 16.5 13 18 Q13.5 16.5 13 14.5 Z" fill="#f0f0e0" opacity="0.6"/>
+  <path d="M19 15 Q19.5 17.5 19 19.5 Q18.5 17.5 19 15 Z" fill="#f0f0e0" opacity="0.6"/>
+  <!-- Melted wax pool at top -->
+  <ellipse cx="16" cy="14.5" rx="5" ry="1.2" fill="#fffff0" opacity="0.7"/>
+  <!-- Wick -->
+  <line x1="16" y1="14" x2="16" y2="9.5" stroke="#504030" stroke-width="0.8"/>
+  <!-- Flame glow -->
+  <ellipse cx="16" cy="8" rx="4.5" ry="5" fill="url(#glow_bo)"/>
+  <!-- Flame -->
+  <path d="M16 4 C14.5 6 13.5 8 14.5 10 C15 11 17 11 17.5 10 C18.5 8 17.5 6 16 4 Z" fill="url(#flame_bo)"/>
+  <!-- Flame inner bright -->
+  <path d="M16 6 C15.2 7.5 15 8.5 15.5 9.5 C15.8 10.2 16.2 10.2 16.5 9.5 C17 8.5 16.8 7.5 16 6 Z" fill="#fff8c0" opacity="0.8"/>
+  <!-- Candle shine -->
+  <rect x="12" y="15" width="1.8" height="12" rx="0.9" fill="#fff" opacity="0.35"/>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="pl_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pl_bottle" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6020a0"/>
+      <stop offset="35%" stop-color="#a060d8"/>
+      <stop offset="65%" stop-color="#9040c0"/>
+      <stop offset="100%" stop-color="#5018880"/>
+    </linearGradient>
+    <linearGradient id="pl_stopper" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c8a0e8"/>
+      <stop offset="100%" stop-color="#7030a0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="6" ry="1.5" fill="url(#pl_shadow)"/>
+  <!-- Bottle body - slightly rounded/curved for distinction -->
+  <path d="M11 17 Q10 17.5 10 22 Q10 29 16 30 Q22 29 22 22 Q22 17.5 21 17 Z" fill="#9040c0" stroke="#6020a0" stroke-width="0.7"/>
+  <!-- Bottle gradient overlay -->
+  <path d="M11 17 Q10 17.5 10 22 Q10 29 16 30 Q22 29 22 22 Q22 17.5 21 17 Z" fill="url(#pl_bottle)" opacity="0.85"/>
+  <!-- Bottle shine -->
+  <path d="M12 18 Q11.5 22 12 28 L13.5 28.5 L13 18 Z" fill="white" opacity="0.35"/>
+  <!-- Lavender sprig on bottle -->
+  <!-- Stem -->
+  <line x1="16" y1="28" x2="16" y2="20" stroke="#c0e0b0" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Leaves -->
+  <path d="M16 25 Q14 24.5 14 23.5 Q14.5 23 16 23.5" fill="#80c060" opacity="0.8"/>
+  <path d="M16 25 Q18 24.5 18 23.5 Q17.5 23 16 23.5" fill="#80c060" opacity="0.8"/>
+  <!-- Lavender flower buds -->
+  <ellipse cx="16" cy="21.5" rx="0.8" ry="1.2" fill="#d080f0"/>
+  <ellipse cx="14.5" cy="22" rx="0.7" ry="1" fill="#c060e0"/>
+  <ellipse cx="17.5" cy="22" rx="0.7" ry="1" fill="#c060e0"/>
+  <ellipse cx="16" cy="20.2" rx="0.6" ry="0.9" fill="#e090ff"/>
+  <!-- Neck -->
+  <rect x="13.5" y="13" width="5" height="5" rx="1" fill="#7030a0" stroke="#5018080" stroke-width="0.6"/>
+  <rect x="14.2" y="13.5" width="1.5" height="3.5" rx="0.6" fill="white" opacity="0.3"/>
+  <!-- Stopper -->
+  <rect x="12.5" y="9" width="7" height="5" rx="2" fill="url(#pl_stopper)" stroke="#5018080" stroke-width="0.5"/>
+  <rect x="13.5" y="9.8" width="2.5" height="2" rx="1" fill="white" opacity="0.35"/>
+  <ellipse cx="16" cy="9" rx="2.2" ry="1" fill="#9050c0" stroke="#5018080" stroke-width="0.5"/>
+</svg>

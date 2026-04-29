@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Sol -->
+  <rect x="4" y="28" width="24" height="4" rx="2" fill="#6b4f2c"/>
+  <!-- Tronc -->
+  <path d="M14 28 Q13 23 14 19 Q15 17 16 17.5 Q17 17 18 19 Q19 23 18 28Z" fill="#5d4037"/>
+  <path d="M14.5 28 Q14 23 14.5 19.5 Q15.5 18 16 18.5 Q16.5 18 17.5 19.5 Q18 23 17.5 28Z" fill="#795548"/>
+  <!-- Canopée dense et arrondie du litchi -->
+  <ellipse cx="16" cy="12" rx="13" ry="10" fill="#1b5e20"/>
+  <ellipse cx="16" cy="11" rx="12" ry="9" fill="#2e7d32"/>
+  <ellipse cx="7" cy="14" rx="8.5" ry="7" fill="#1b5e20"/>
+  <ellipse cx="25" cy="14" rx="8.5" ry="7" fill="#1b5e20"/>
+  <ellipse cx="16" cy="5" rx="10" ry="6.5" fill="#33691e"/>
+  <ellipse cx="11" cy="7" rx="6.5" ry="4.5" fill="#388e3c"/>
+  <ellipse cx="21" cy="7" rx="6.5" ry="4.5" fill="#388e3c"/>
+  <!-- Litchis (ronds, rouge-rose avec surface bosselée) -->
+  <defs>
+    <radialGradient id="ltg" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#ff8a80"/>
+      <stop offset="60%" stop-color="#e53935"/>
+      <stop offset="100%" stop-color="#b71c1c"/>
+    </radialGradient>
+  </defs>
+  <circle cx="9" cy="18" r="3" fill="url(#ltg)"/>
+  <circle cx="23" cy="17" r="3" fill="url(#ltg)"/>
+  <circle cx="15" cy="20" r="2.8" fill="url(#ltg)"/>
+  <circle cx="21" cy="20" r="2.5" fill="url(#ltg)"/>
+  <!-- Texture bosselée des litchis -->
+  <circle cx="8.2" cy="17.2" r="0.7" fill="#c62828" opacity="0.6"/>
+  <circle cx="10" cy="17.5" r="0.6" fill="#c62828" opacity="0.6"/>
+  <circle cx="9" cy="19.2" r="0.6" fill="#c62828" opacity="0.6"/>
+  <circle cx="22.2" cy="16.2" r="0.7" fill="#c62828" opacity="0.6"/>
+  <circle cx="24" cy="16.8" r="0.6" fill="#c62828" opacity="0.6"/>
+  <!-- Petite couronne verte au sommet -->
+  <path d="M9 15 Q8.5 14.2 8 14 Q8.8 13.8 9 14.5Z" fill="#2e7d32"/>
+  <path d="M9 15 Q9.5 14 10 14 Q9.8 14.8 9 15Z" fill="#388e3c"/>
+  <path d="M23 14 Q22.5 13.2 22 13 Q22.8 12.8 23 13.5Z" fill="#2e7d32"/>
+  <path d="M23 14 Q23.5 13 24 13 Q23.8 13.8 23 14Z" fill="#388e3c"/>
+  <!-- Reflets -->
+  <circle cx="7.8" cy="16.8" r="1.2" fill="rgba(255,255,255,0.22)"/>
+  <circle cx="21.8" cy="15.8" r="1.2" fill="rgba(255,255,255,0.22)"/>
+  <!-- Lumière canopée -->
+  <ellipse cx="12" cy="7" rx="5" ry="3" fill="#43a047" opacity="0.35"/>
+</svg>

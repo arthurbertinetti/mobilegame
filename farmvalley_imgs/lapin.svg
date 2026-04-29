@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="rb_body" cx="40%" cy="35%" r="58%">
+      <stop offset="0%" stop-color="#c8b898"/>
+      <stop offset="50%" stop-color="#9a8870"/>
+      <stop offset="100%" stop-color="#6a5840"/>
+    </radialGradient>
+    <radialGradient id="rb_head" cx="40%" cy="38%" r="52%">
+      <stop offset="0%" stop-color="#c2b290"/>
+      <stop offset="60%" stop-color="#907860"/>
+      <stop offset="100%" stop-color="#6a5040"/>
+    </radialGradient>
+    <radialGradient id="rb_ear" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#b4a080"/>
+      <stop offset="100%" stop-color="#887060"/>
+    </radialGradient>
+    <radialGradient id="rb_tail" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#f2eee8"/>
+      <stop offset="100%" stop-color="#d0c8bc"/>
+    </radialGradient>
+    <radialGradient id="rb_belly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e8dec8"/>
+      <stop offset="100%" stop-color="#c8b8a0"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="15" cy="31.3" rx="8.5" ry="0.65" fill="#00000018"/>
+  <!-- Fluffy tail (round and white) -->
+  <ellipse cx="24" cy="23.5" rx="3.3" ry="3" fill="url(#rb_tail)"/>
+  <!-- Body (compact, rounded rabbit) -->
+  <path d="M8,23 Q7.5,17 12.5,15.5 Q18,14.5 22,16.5 Q25,19 25,24 Q25,29.5 18.5,31 Q11,31.5 8,27 Z" fill="url(#rb_body)"/>
+  <!-- Belly lighter fur -->
+  <path d="M11,24.5 Q12.5,21.5 16,21 Q19,21.5 19.5,25.5 Q18,29.5 14,30 Q11,29.5 11,24.5 Z" fill="url(#rb_belly)" opacity="0.6"/>
+  <!-- Hind leg (large, powerful — rabbit characteristic) -->
+  <path d="M19.5,26 Q22.5,25.5 24,27.5 Q23,29.5 20.5,30 Q18.5,29.5 19.5,26 Z" fill="#9a8870"/>
+  <!-- Front paw -->
+  <path d="M10,27.5 Q9,30 10.5,31 Q12.5,31.5 13,29 Q12.5,27.5 10.5,27 Z" fill="#a09070"/>
+  <!-- Neck connecting to head -->
+  <path d="M12,17 Q10.5,14.5 11.5,11.5 Q13.5,12 14,16.5 Z" fill="url(#rb_head)"/>
+  <!-- Head (slightly flattened on top) -->
+  <ellipse cx="11.5" cy="11" rx="4.2" ry="3.8" fill="url(#rb_head)"/>
+  <!-- Ear left (tall, upright, prominent) -->
+  <path d="M10.5,8 Q10,1.8 11.5,0.8 Q13.2,0.6 13.5,2.5 Q13.5,5 12.5,8.5 Z" fill="url(#rb_ear)"/>
+  <path d="M10.8,7.8 Q10.5,2.8 11.7,1.8 Q12.8,1.6 13,3 Q12.8,5.5 11.8,8 Z" fill="#d08080" opacity="0.75"/>
+  <!-- Ear right (slightly angled) -->
+  <path d="M13,8 Q13.5,1.8 15,1 Q16.5,1 16.5,3 Q16.2,5.5 14.5,8.5 Z" fill="url(#rb_ear)"/>
+  <path d="M13.4,7.8 Q13.8,2.8 14.8,1.8 Q15.8,1.8 15.8,3.5 Q15.4,6 14.2,8.2 Z" fill="#d08080" opacity="0.75"/>
+  <!-- Muzzle area (slightly lighter) -->
+  <ellipse cx="9.8" cy="12.8" rx="2.2" ry="1.6" fill="#b8a888" opacity="0.5"/>
+  <!-- Nose (pink, small) -->
+  <ellipse cx="9.2" cy="12.5" rx="0.75" ry="0.58" fill="#cc7080"/>
+  <!-- Eye (large, round, dark — rabbit eye) -->
+  <ellipse cx="11.2" cy="10.5" rx="1.25" ry="1.15" fill="#160c04"/>
+  <ellipse cx="10.9" cy="10.2" rx="0.42" ry="0.36" fill="#7a4830" opacity="0.75"/>
+  <circle cx="11.6" cy="10" r="0.3" fill="#ffffff55"/>
+  <!-- Whiskers -->
+  <path d="M9,12 L5.5,10.8 M9,12.5 L5.5,12.5 M9,13 L5.5,13.8" stroke="#b8a890" stroke-width="0.35" fill="none" opacity="0.75"/>
+</svg>

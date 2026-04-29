@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="silver_platter" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#e0e8f0"/>
+      <stop offset="100%" stop-color="#a0b0c0"/>
+    </radialGradient>
+    <linearGradient id="lobster_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e03020"/>
+      <stop offset="100%" stop-color="#c02010"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Silver/white platter -->
+  <ellipse cx="16" cy="24" rx="13" ry="5" fill="#8090a0"/>
+  <ellipse cx="16" cy="23" rx="13" ry="5" fill="url(#silver_platter)"/>
+  <ellipse cx="16" cy="23" rx="13" ry="5" fill="none" stroke="#9090a0" stroke-width="1"/>
+  <!-- Lobster body -->
+  <ellipse cx="16" cy="19" rx="5" ry="3" fill="url(#lobster_grad)"/>
+  <!-- Lobster tail segments -->
+  <path d="M21 19 Q24 20 25 22 Q24 23 22 22 Q21 21 21 19" fill="#d02010"/>
+  <!-- Lobster head/claws area -->
+  <path d="M11 18 Q8 16 7 18 Q8 20 11 19" fill="#e03020"/>
+  <path d="M11 20 Q8 21 8 23 Q10 23 11 21" fill="#c02010"/>
+  <!-- Lobster antennae -->
+  <line x1="13" y1="17" x2="9" y2="14" stroke="#c02010" stroke-width="0.7"/>
+  <line x1="15" y1="17" x2="12" y2="13" stroke="#c02010" stroke-width="0.7"/>
+  <!-- Oyster shells -->
+  <path d="M22 20 Q25 19 26 21 Q24 22 22 22 Z" fill="#d0c8b0" stroke="#a09080" stroke-width="0.4"/>
+  <path d="M22 20 Q23.5 19.5 24 20.5" stroke="#b0a890" stroke-width="0.4" fill="none"/>
+  <!-- Second oyster -->
+  <path d="M7 22 Q5 21 4 23 Q6 24 8 23 Z" fill="#d0c8b0" stroke="#a09080" stroke-width="0.4"/>
+  <!-- Crown garnish -->
+  <path d="M14 17 L14 15 L15.5 16 L16 14 L16.5 16 L18 15 L18 17 Z" fill="#f0d060" stroke="#c09020" stroke-width="0.3"/>
+  <!-- Lemon wedge -->
+  <path d="M23 22 Q24.5 23.5 23.5 24.5 Q22 24 22 22 Z" fill="#f0d030"/>
+</svg>

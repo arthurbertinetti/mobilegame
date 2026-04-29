@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="sp_bowl" cx="38%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#e0d8cc"/>
+      <stop offset="100%" stop-color="#c0b8ac"/>
+    </radialGradient>
+    <radialGradient id="sp_soup" cx="45%" cy="40%" r="58%">
+      <stop offset="0%" stop-color="#e07030"/>
+      <stop offset="60%" stop-color="#d06020"/>
+      <stop offset="100%" stop-color="#a04010"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="12" ry="0.8" fill="#00000028"/>
+  <!-- Bowl outer bottom -->
+  <path d="M5,25 Q4,20 6,16 Q9,12 16,12 Q23,12 26,16 Q28,20 27,25 Q23,29 16,29 Q9,29 5,25 Z" fill="#a8a098"/>
+  <!-- Bowl inner -->
+  <path d="M6,24 Q5,19 7,16 Q10,13 16,13 Q22,13 25,16 Q27,19 26,24 Q22,28 16,28 Q10,28 6,24 Z" fill="url(#sp_bowl)"/>
+  <!-- Soup surface -->
+  <ellipse cx="16" cy="19" rx="9" ry="4.5" fill="url(#sp_soup)"/>
+  <!-- Soup texture ripples -->
+  <ellipse cx="16" cy="19" rx="6.5" ry="3" fill="#d05818" opacity="0.5"/>
+  <!-- Small fish silhouette floating -->
+  <path d="M10,18 Q12,16.5 15,17 Q12,17.5 10,18 Z" fill="#7a2808" opacity="0.8"/>
+  <path d="M10,18 Q12,19.5 15,19 Q12,18.5 10,18 Z" fill="#7a2808" opacity="0.8"/>
+  <path d="M15,18 Q16,17 17,18 Q16,19 15,18 Z" fill="#7a2808" opacity="0.9"/>
+  <!-- Crouton floating (golden square) -->
+  <rect x="19" y="17" width="4" height="3" rx="0.8" fill="#d4a030"/>
+  <rect x="19.5" y="17.5" width="3" height="2" rx="0.5" fill="#e8b840" opacity="0.8"/>
+  <!-- Saffron color swirl on soup -->
+  <path d="M11,21 Q14,20 17,21 Q20,20 23,21" stroke="#e09020" stroke-width="0.8" fill="none" opacity="0.6"/>
+  <!-- Bowl rim highlight -->
+  <path d="M7,15 Q16,12.5 25,15" stroke="rgba(255,255,240,0.5)" stroke-width="0.8" fill="none"/>
+</svg>

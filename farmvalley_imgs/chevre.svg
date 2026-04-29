@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="gt_body" cx="42%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#d4b888"/>
+      <stop offset="50%" stop-color="#b89860"/>
+      <stop offset="100%" stop-color="#7a6030"/>
+    </radialGradient>
+    <radialGradient id="gt_head" cx="40%" cy="38%" r="50%">
+      <stop offset="0%" stop-color="#c8aa70"/>
+      <stop offset="100%" stop-color="#8a6828"/>
+    </radialGradient>
+    <linearGradient id="gt_horn" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7a5a28"/>
+      <stop offset="100%" stop-color="#4a3010"/>
+    </linearGradient>
+    <radialGradient id="gt_belly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0c898"/>
+      <stop offset="100%" stop-color="#c0a870"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="8.5" ry="0.8" fill="#00000018"/>
+  <!-- Legs -->
+  <path d="M11,25 L10.5,31" stroke="#7a6030" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <path d="M13.5,26 L13,31.5" stroke="#7a6030" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <path d="M19,25.5 L18.5,31" stroke="#7a6030" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <path d="M21.5,25 L21,30.5" stroke="#7a6030" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  <!-- Hooves -->
+  <ellipse cx="10.5" cy="31.3" rx="1" ry="0.55" fill="#4a3010"/>
+  <ellipse cx="13" cy="31.7" rx="1" ry="0.55" fill="#4a3010"/>
+  <ellipse cx="18.5" cy="31.3" rx="1" ry="0.55" fill="#4a3010"/>
+  <ellipse cx="21" cy="30.8" rx="1" ry="0.55" fill="#4a3010"/>
+  <!-- Body -->
+  <path d="M8,23 Q8,17 13,16 Q20,15 23,18 Q26,21 25,26 Q22,29 16,28.5 Q8,28 8,23 Z" fill="url(#gt_body)"/>
+  <!-- Belly lighter -->
+  <path d="M11,24 Q13,22 17,22.5 Q20,23.5 20,26 Q18,28 14,28 Q11,27 11,24 Z" fill="url(#gt_belly)" opacity="0.6"/>
+  <!-- Udder -->
+  <path d="M14,27.5 Q16,29 18,27.5" stroke="#d4a0a0" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Tail -->
+  <path d="M25,20 Q28,18 27,16 Q26,18 25,19 Z" fill="#8a6828"/>
+  <!-- Neck -->
+  <path d="M10,17 Q9.5,13 11.5,10.5 Q13.5,11.5 12.5,17 Z" fill="url(#gt_head)"/>
+  <!-- Head -->
+  <ellipse cx="11" cy="9.8" rx="4" ry="3.3" fill="url(#gt_head)"/>
+  <!-- Muzzle -->
+  <ellipse cx="9" cy="11.5" rx="2.2" ry="1.5" fill="#c09858" opacity="0.7"/>
+  <!-- Beard -->
+  <path d="M9,13 Q8,15.5 9,16.5 Q10.5,16 10.5,14 Z" fill="#c0a060" opacity="0.8"/>
+  <!-- Ear -->
+  <path d="M9.5,8 Q7.5,6.5 7,8 Q7.5,9.8 9.5,9.5 Z" fill="#c0a060"/>
+  <!-- Horn left (curved) -->
+  <path d="M11.5,7 Q11,4 12.5,2.5 Q13.5,3.5 13,5.5 Q12.5,7 11.5,7 Z" fill="url(#gt_horn)"/>
+  <!-- Horn right -->
+  <path d="M13.5,6.5 Q13.5,4 14.8,2.8 Q15.8,3.5 15,5.5 Q14.5,6.5 13.5,6.5 Z" fill="url(#gt_horn)"/>
+  <!-- Eye -->
+  <ellipse cx="11.5" cy="9" rx="1.2" ry="0.9" fill="#1a0800"/>
+  <ellipse cx="11.2" cy="8.8" rx="0.5" ry="0.35" fill="#c8a030" opacity="0.9"/>
+  <circle cx="12" cy="8.6" r="0.22" fill="#ffffff55"/>
+  <!-- Nostril -->
+  <circle cx="8.5" cy="11.8" r="0.45" fill="#8a6828"/>
+</svg>

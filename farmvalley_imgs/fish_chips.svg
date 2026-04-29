@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="fc_paper" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d8cc98"/>
+      <stop offset="50%" stop-color="#c8b890"/>
+      <stop offset="100%" stop-color="#b0a070"/>
+    </linearGradient>
+    <radialGradient id="fc_fish" cx="38%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#e8b850"/>
+      <stop offset="55%" stop-color="#d4a040"/>
+      <stop offset="100%" stop-color="#a87020"/>
+    </radialGradient>
+    <linearGradient id="fc_chip" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8c060"/>
+      <stop offset="100%" stop-color="#c8a030"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.8" fill="#00000028"/>
+  <!-- Newspaper cone shape -->
+  <path d="M8,30 Q6,24 9,16 Q12,10 16,9 Q20,10 23,16 Q26,24 24,30 Z" fill="url(#fc_paper)"/>
+  <!-- Newspaper text hints (horizontal lines) -->
+  <line x1="10" y1="25" x2="16" y2="25" stroke="#8a7848" stroke-width="0.5" opacity="0.5"/>
+  <line x1="9" y1="27" x2="15" y2="27" stroke="#8a7848" stroke-width="0.5" opacity="0.5"/>
+  <line x1="17" y1="25" x2="22" y2="25" stroke="#8a7848" stroke-width="0.5" opacity="0.4"/>
+  <line x1="18" y1="27" x2="23" y2="27" stroke="#8a7848" stroke-width="0.5" opacity="0.4"/>
+  <line x1="10" y1="22" x2="14" y2="22" stroke="#8a7848" stroke-width="0.5" opacity="0.4"/>
+  <!-- Fish fillet piece sticking out top-left -->
+  <path d="M7,16 Q6,12 9,10 Q12,8 15,10 Q18,12 17,16 Q14,14 11,14 Q8,14 7,16 Z" fill="url(#fc_fish)"/>
+  <!-- Batter texture on fish -->
+  <path d="M8,13 Q11,10.5 14,11 Q11.5,11 8,13 Z" fill="#c08820" opacity="0.6"/>
+  <!-- Chips sticking out top-right -->
+  <rect x="17" y="8" width="5" height="9" rx="1.5" fill="url(#fc_chip)" transform="rotate(10,19.5,12.5)"/>
+  <rect x="20" y="7" width="5" height="9" rx="1.5" fill="#d4aa38" transform="rotate(20,22.5,11.5)"/>
+  <rect x="22" y="9" width="4" height="8" rx="1.5" fill="url(#fc_chip)" transform="rotate(30,24,13)"/>
+  <!-- Salt dots on chips -->
+  <circle cx="18.5" cy="10" r="0.4" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="20" cy="11" r="0.4" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="21.5" cy="9" r="0.4" fill="rgba(255,255,255,0.6)"/>
+  <!-- Cone fold lines -->
+  <path d="M16,9 L16,30" stroke="#b0a070" stroke-width="0.6" opacity="0.4"/>
+</svg>

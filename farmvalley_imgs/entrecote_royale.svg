@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="er_steak" cx="40%" cy="35%" r="62%">
+      <stop offset="0%" stop-color="#6a2808"/>
+      <stop offset="60%" stop-color="#4a1808"/>
+      <stop offset="100%" stop-color="#3a1a0a"/>
+    </radialGradient>
+    <radialGradient id="er_center" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c04030"/>
+      <stop offset="60%" stop-color="#9a2820"/>
+      <stop offset="100%" stop-color="#6a1810"/>
+    </radialGradient>
+    <linearGradient id="er_plate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a2a2a"/>
+      <stop offset="100%" stop-color="#181818"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000040"/>
+  <!-- Dark plate -->
+  <ellipse cx="16" cy="29" rx="14" ry="2.5" fill="#111111"/>
+  <ellipse cx="16" cy="28" rx="14" ry="2.5" fill="url(#er_plate)"/>
+  <!-- Steak thick body -->
+  <path d="M5,25 Q4,19 6,14 Q9,9 14,8 Q18,8 22,10 Q26,13 27,18 Q28,23 26,26 Q21,27.5 16,27.5 Q10,27.5 5,25 Z" fill="url(#er_steak)"/>
+  <!-- Red-pink interior visible at edge (cross-section effect) -->
+  <path d="M6,22 Q5.5,19 6.5,16 Q7.5,12 11,10" stroke="#c03828" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <path d="M26,22 Q26.5,19 25.5,16 Q24,12 21,10" stroke="#a02818" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <!-- Crust texture top -->
+  <path d="M7,13 Q12,9 16,9 Q20,9 24,12 Q20,10.5 16,10.5 Q12,10.5 7,13 Z" fill="#2a0a00" opacity="0.6"/>
+  <!-- Marbling fat streaks -->
+  <path d="M9,17 Q13,15 17,17 Q13,16 9,17 Z" fill="#c89858" opacity="0.4"/>
+  <path d="M14,20 Q18,19 21,21 Q18,20 14,20 Z" fill="#c89858" opacity="0.35"/>
+  <!-- Garnish: herb sprig -->
+  <path d="M22,23 Q24,21 25,23" stroke="#3a8020" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <circle cx="22.5" cy="22.5" r="0.8" fill="#4a9828"/>
+  <circle cx="24.5" cy="22.5" r="0.8" fill="#4a9828"/>
+  <!-- Pepper corn garnish -->
+  <circle cx="10" cy="24" r="0.7" fill="#2a1808"/>
+  <circle cx="12" cy="24.5" r="0.7" fill="#2a1808"/>
+  <circle cx="11" cy="23" r="0.6" fill="#2a1808"/>
+  <!-- Gloss on crust -->
+  <ellipse cx="13" cy="13" rx="4" ry="2" fill="rgba(120,60,20,0.3)" transform="rotate(-10,13,13)"/>
+</svg>

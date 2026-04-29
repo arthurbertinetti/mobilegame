@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_co" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="front_co" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#f070a8"/>
+      <stop offset="50%" stop-color="#d04080"/>
+      <stop offset="100%" stop-color="#b02868"/>
+    </radialGradient>
+    <linearGradient id="side_co" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a02060"/>
+      <stop offset="100%" stop-color="#801848"/>
+    </linearGradient>
+    <linearGradient id="side_co2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#901840"/>
+      <stop offset="100%" stop-color="#701030"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30.5" rx="10" ry="2" fill="url(#shadow_co)"/>
+  <!-- Bottom side (depth) -->
+  <path d="M5 24 L27 24 L27 28 L5 28 Z" fill="url(#side_co2)" opacity="0.7"/>
+  <!-- Right side (depth) -->
+  <path d="M27 10 L27 28 L30 25 L30 7 Z" fill="url(#side_co)" opacity="0.6"/>
+  <!-- Main front face -->
+  <rect x="5" y="8" width="22" height="20" rx="2.5" fill="url(#front_co)"/>
+  <!-- Cushion puff effect (slight bulge simulation with lighter center) -->
+  <ellipse cx="16" cy="18" rx="9" ry="7.5" fill="#e06090" opacity="0.3"/>
+  <!-- Seam lines (decorative border) -->
+  <rect x="7.5" y="10.5" width="17" height="15" rx="1.5" fill="none" stroke="#c03070" stroke-width="1" opacity="0.6"/>
+  <!-- Corner tufts/gathering points -->
+  <circle cx="9" cy="11.5" r="1" fill="#a02060" opacity="0.7"/>
+  <circle cx="23" cy="11.5" r="1" fill="#a02060" opacity="0.7"/>
+  <circle cx="9" cy="24.5" r="1" fill="#a02060" opacity="0.7"/>
+  <circle cx="23" cy="24.5" r="1" fill="#a02060" opacity="0.7"/>
+  <!-- Center button -->
+  <circle cx="16" cy="18" r="3" fill="#c02860"/>
+  <circle cx="16" cy="18" r="2" fill="#e05080" opacity="0.8"/>
+  <circle cx="16" cy="18" r="0.8" fill="#c03070"/>
+  <!-- Button holes (2 holes) -->
+  <circle cx="15.3" cy="17.3" r="0.4" fill="#901848"/>
+  <circle cx="16.7" cy="18.7" r="0.4" fill="#901848"/>
+  <!-- Thread through button -->
+  <line x1="15.3" y1="17.3" x2="16.7" y2="18.7" stroke="#801040" stroke-width="0.4" opacity="0.7"/>
+  <!-- Cushion surface shine -->
+  <ellipse cx="11" cy="12.5" rx="3.5" ry="2" fill="#fff" opacity="0.2"/>
+</svg>

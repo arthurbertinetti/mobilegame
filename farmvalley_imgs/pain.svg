@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="pa_crust" cx="38%" cy="28%" r="62%">
+      <stop offset="0%" stop-color="#d4924a"/>
+      <stop offset="55%" stop-color="#b87030"/>
+      <stop offset="100%" stop-color="#8a4e18"/>
+    </radialGradient>
+    <radialGradient id="pa_score" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0a060"/>
+      <stop offset="100%" stop-color="#c07830"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="13" ry="0.8" fill="#00000020"/>
+  <!-- Baguette body (long diagonal loaf) -->
+  <path d="M3,22 Q3,17 7,15 Q16,12 25,15 Q29,17 29,21 Q29,25 25,26 Q16,28 7,25 Q3,25 3,22 Z" fill="url(#pa_crust)"/>
+  <!-- Score cuts on top -->
+  <path d="M8,16.5 Q10,15.5 12,16" stroke="#8a4e18" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M13,15.5 Q15,14.5 17,15" stroke="#8a4e18" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <path d="M18,15 Q20,14 22,14.5" stroke="#8a4e18" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <!-- Crust highlight (lighter band along top) -->
+  <path d="M7,15 Q16,12 25,15" stroke="#d49858" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Left end (pointed) -->
+  <path d="M3,22 Q3,19 5,17 Q4,20 4,22 Z" fill="#7a4010"/>
+  <!-- Right end (pointed) -->
+  <path d="M29,21 Q29,18 27,16 Q28,19 28,22 Z" fill="#7a4010"/>
+  <!-- Texture highlight -->
+  <path d="M9,22 Q16,20.5 23,21.5" stroke="rgba(210,155,90,.45)" stroke-width="0.8" fill="none"/>
+</svg>

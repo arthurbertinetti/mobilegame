@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bead_grad" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#f07050"/>
+      <stop offset="100%" stop-color="#c03010"/>
+    </radialGradient>
+    <linearGradient id="clasp2_gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0d060"/>
+      <stop offset="100%" stop-color="#a07010"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Necklace arc path (guide, invisible) -->
+  <!-- Coral beads arranged in arc -->
+  <circle cx="16" cy="7" r="2.2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="11.5" cy="8.5" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="7.5" cy="12" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="6" cy="17" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="7.5" cy="22" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="20.5" cy="8.5" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="24.5" cy="12" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="26" cy="17" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <circle cx="24.5" cy="22" r="2" fill="url(#bead_grad)" stroke="#a03010" stroke-width="0.4"/>
+  <!-- Bottom center bead (larger) -->
+  <circle cx="16" cy="26" r="2.5" fill="#e04020" stroke="#a03010" stroke-width="0.5"/>
+  <!-- Bead highlights -->
+  <circle cx="15.2" cy="6.3" r="0.6" fill="#ffffff50"/>
+  <circle cx="15.2" cy="25.3" r="0.7" fill="#ffffff50"/>
+  <!-- Thread lines -->
+  <path d="M7.5 22 Q11 25 16 26 Q21 25 24.5 22" stroke="#c08040" stroke-width="0.6" fill="none"/>
+  <path d="M6 17 Q6.5 20 7.5 22" stroke="#c08040" stroke-width="0.6" fill="none"/>
+  <path d="M26 17 Q25.5 20 24.5 22" stroke="#c08040" stroke-width="0.6" fill="none"/>
+  <!-- Gold clasp -->
+  <rect x="14.5" y="5.5" width="3" height="2" rx="0.8" fill="url(#clasp2_gold)" stroke="#a07010" stroke-width="0.3"/>
+</svg>

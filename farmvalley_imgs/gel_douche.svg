@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_gd" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bottle_gd" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#108040"/>
+      <stop offset="40%" stop-color="#30d080"/>
+      <stop offset="100%" stop-color="#0a6030"/>
+    </linearGradient>
+    <linearGradient id="cap_gd" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e0e0e0"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#c0c0c0"/>
+    </linearGradient>
+    <linearGradient id="neck_gd" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#109050"/>
+      <stop offset="50%" stop-color="#20b060"/>
+      <stop offset="100%" stop-color="#0a7040"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30" rx="7.5" ry="1.8" fill="url(#shadow_gd)"/>
+  <!-- Bottle body (rounder than shampoing) -->
+  <path d="M8 18 Q7.5 24 8 27 Q8.5 30 16 30 Q23.5 30 24 27 Q24.5 24 24 18 Q22 14 16 14 Q10 14 8 18 Z" fill="url(#bottle_gd)"/>
+  <!-- Neck -->
+  <rect x="13.5" y="9" width="5" height="6" rx="1.5" fill="url(#neck_gd)"/>
+  <!-- Flip cap -->
+  <rect x="12.5" y="6" width="7" height="3.5" rx="1.5" fill="url(#cap_gd)"/>
+  <ellipse cx="16" cy="6" rx="3.5" ry="1" fill="#f8f8f8"/>
+  <!-- Flip cap hinge -->
+  <circle cx="19" cy="7.5" r="1" fill="#c0c0c0"/>
+  <!-- Label area -->
+  <rect x="10" y="19" width="12" height="7" rx="2" fill="#fff" opacity="0.12"/>
+  <!-- Water drop decoration -->
+  <path d="M15 21 Q16 19.5 17 21 Q17.5 22.5 16 23 Q14.5 22.5 15 21 Z" fill="#fff" opacity="0.3"/>
+  <path d="M12 23.5 Q12.8 22.5 13.5 23.5 Q13.8 24.5 12.8 24.8 Q11.8 24.5 12 23.5 Z" fill="#fff" opacity="0.22"/>
+  <path d="M18.5 23 Q19.3 22 20 23 Q20.3 24 19.3 24.3 Q18.3 24 18.5 23 Z" fill="#fff" opacity="0.22"/>
+  <!-- Bottle shine -->
+  <path d="M9.5 19 Q9 24 9.5 27" stroke="#fff" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.35"/>
+  <!-- Cap shine -->
+  <ellipse cx="14.5" cy="5.6" rx="2" ry="0.7" fill="#fff" opacity="0.55"/>
+</svg>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Menthe: feuilles ovales en verticilles, vert vif éclatant -->
+  <rect x="14.5" y="27" width="3" height="4" rx="1" fill="#4e342e"/>
+  <line x1="16" y1="27" x2="16" y2="6" stroke="#00897b" stroke-width="1.5"/>
+  <!-- Verticille bas -->
+  <ellipse cx="10" cy="23" rx="6" ry="3.2" fill="#00c853" transform="rotate(-25 10 23)"/>
+  <ellipse cx="22" cy="23" rx="6" ry="3.2" fill="#00e676" transform="rotate(25 22 23)"/>
+  <!-- Verticille milieu -->
+  <ellipse cx="9" cy="17" rx="6" ry="3.2" fill="#00c853" transform="rotate(-30 9 17)"/>
+  <ellipse cx="23" cy="17" rx="6" ry="3.2" fill="#00e676" transform="rotate(30 23 17)"/>
+  <!-- Verticille haut -->
+  <ellipse cx="10" cy="11" rx="5" ry="2.8" fill="#69f0ae" transform="rotate(-20 10 11)"/>
+  <ellipse cx="22" cy="11" rx="5" ry="2.8" fill="#00c853" transform="rotate(20 22 11)"/>
+  <!-- Veines caractéristiques -->
+  <line x1="7" y1="23" x2="13" y2="23" stroke="#00796b" stroke-width="0.7"/>
+  <line x1="19" y1="23" x2="25" y2="23" stroke="#00796b" stroke-width="0.7"/>
+  <!-- Épi floral violet pâle au sommet -->
+  <ellipse cx="16" cy="7" rx="2" ry="3" fill="#b2dfdb"/>
+  <ellipse cx="16" cy="6" rx="1.5" ry="2" fill="#e0f2f1"/>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="lp_liquid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f860a0"/>
+      <stop offset="100%" stop-color="#d02050"/>
+    </linearGradient>
+    <linearGradient id="lp_glass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e0f0ff" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#b0d0f0" stop-opacity="0.5"/>
+    </linearGradient>
+    <radialGradient id="lp_shine" cx="28%" cy="25%" r="45%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.65)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="9" ry="0.7" fill="#00000020"/>
+  <!-- Glass body -->
+  <path d="M10,7 L10,28 Q10,30 16,30 Q22,30 22,28 L22,7 Z" fill="url(#lp_glass)" stroke="#a0c0e0" stroke-width="0.5"/>
+  <!-- Liquid fill -->
+  <path d="M10.2,9 L10.2,28 Q10.2,29.8 16,29.8 Q21.8,29.8 21.8,28 L21.8,9 Z" fill="url(#lp_liquid)"/>
+  <!-- Bubbles -->
+  <circle cx="13" cy="22" r="0.8" fill="rgba(255,255,255,0.4)"/>
+  <circle cx="17" cy="18" r="0.6" fill="rgba(255,255,255,0.35)"/>
+  <circle cx="15" cy="25" r="0.5" fill="rgba(255,255,255,0.3)"/>
+  <circle cx="19" cy="23" r="0.7" fill="rgba(255,255,255,0.35)"/>
+  <!-- Glass overlay shine -->
+  <path d="M10,7 L10,28 Q10,30 16,30 Q22,30 22,28 L22,7 Z" fill="url(#lp_shine)"/>
+  <!-- Glass rim -->
+  <rect x="9.5" y="6" width="13" height="1.5" rx="0.7" fill="#c0d8e8"/>
+  <!-- Glass highlight -->
+  <rect x="11" y="10" width="1.2" height="14" rx="0.6" fill="rgba(255,255,255,0.45)"/>
+  <!-- Striped straw: alternating green/white -->
+  <rect x="18.5" y="3" width="1.8" height="18" rx="0.9" fill="#40b040"/>
+  <rect x="18.6" y="3" width="0.6" height="2.5" rx="0.3" fill="white"/>
+  <rect x="18.6" y="7.5" width="0.6" height="2.5" rx="0.3" fill="white"/>
+  <rect x="18.6" y="12" width="0.6" height="2.5" rx="0.3" fill="white"/>
+  <rect x="18.6" y="16.5" width="0.6" height="2.5" rx="0.3" fill="white"/>
+  <!-- Watermelon slice on rim -->
+  <path d="M8,7 Q11,4 14,7 Z" fill="#40a020"/>
+  <path d="M8.5,7 Q11,5 13.5,7 Z" fill="#f04060"/>
+  <!-- Watermelon seeds -->
+  <ellipse cx="10" cy="6.5" rx="0.4" ry="0.6" fill="#1a1a1a" transform="rotate(-10,10,6.5)"/>
+  <ellipse cx="12" cy="6.2" rx="0.4" ry="0.6" fill="#1a1a1a" transform="rotate(10,12,6.2)"/>
+</svg>

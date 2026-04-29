@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="bw_main" cx="38%" cy="30%" r="62%">
+      <stop offset="0%" stop-color="#4a2010"/>
+      <stop offset="55%" stop-color="#2e1008"/>
+      <stop offset="100%" stop-color="#180804"/>
+    </radialGradient>
+    <linearGradient id="bw_top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5a2818"/>
+      <stop offset="100%" stop-color="#301008"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31" rx="12" ry="0.8" fill="#00000025"/>
+  <!-- Brownie main square block -->
+  <rect x="5" y="16" width="22" height="13" rx="2" fill="url(#bw_main)"/>
+  <!-- Front face (bottom) -->
+  <path d="M5,22 L27,22 L27,29 Q16,30 5,29 Z" fill="#1e0c06"/>
+  <!-- Top surface (cracked, matte) -->
+  <rect x="5" y="11" width="22" height="7" rx="2" fill="url(#bw_top)"/>
+  <!-- Cracks on top surface -->
+  <path d="M10,13 Q14,12 16,13.5 Q18,15 22,14" stroke="#120804" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <path d="M8,15 Q12,14.5 15,16" stroke="#120804" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+  <path d="M18,13.5 Q21,13 24,14.5" stroke="#120804" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+  <!-- Top surface highlight (glossy crust) -->
+  <path d="M8,12 Q16,11 24,12" stroke="rgba(120,60,30,.5)" stroke-width="1.2" fill="none"/>
+  <ellipse cx="10" cy="12.5" rx="2.5" ry="1" fill="rgba(100,50,25,.35)"/>
+  <!-- Powdered sugar on top (white dots) -->
+  <circle cx="14" cy="12.5" r="0.6" fill="rgba(255,255,255,.5)"/>
+  <circle cx="18" cy="13" r="0.5" fill="rgba(255,255,255,.45)"/>
+  <circle cx="21" cy="12" r="0.5" fill="rgba(255,255,255,.4)"/>
+</svg>

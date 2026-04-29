@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="buffet_tray" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0d060"/>
+      <stop offset="60%" stop-color="#d4a020"/>
+      <stop offset="100%" stop-color="#a07010"/>
+    </linearGradient>
+    <linearGradient id="tray_side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#c09020"/>
+      <stop offset="100%" stop-color="#705010"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Tray legs -->
+  <rect x="7" y="26" width="2" height="4" rx="0.5" fill="url(#tray_side)"/>
+  <rect x="23" y="26" width="2" height="4" rx="0.5" fill="url(#tray_side)"/>
+  <!-- Tray body -->
+  <rect x="3" y="18" width="26" height="8" rx="1" fill="url(#tray_side)"/>
+  <rect x="3" y="16" width="26" height="8" rx="1" fill="url(#buffet_tray)"/>
+  <!-- Tray rim ornament -->
+  <rect x="3" y="16" width="26" height="8" rx="1" fill="none" stroke="#c08010" stroke-width="0.5"/>
+  <rect x="4" y="17" width="24" height="6" rx="0.5" fill="none" stroke="#f0e080" stroke-width="0.3"/>
+  <!-- Palace ornament (arch shape at back) -->
+  <path d="M10 16 Q16 10 22 16" fill="#c09020" stroke="#a07010" stroke-width="0.5"/>
+  <path d="M10 16 Q16 12 22 16" fill="none" stroke="#f0d060" stroke-width="0.5"/>
+  <!-- Small spires -->
+  <polygon points="10,16 11,12 12,16" fill="#d4a020"/>
+  <polygon points="16,16 17,10 18,16" fill="#f0d060"/>
+  <polygon points="22,16 21,12 20,16" fill="#d4a020"/>
+  <!-- Dish 1: pink -->
+  <ellipse cx="7" cy="18.5" rx="2.5" ry="1.5" fill="#f8f0e0" stroke="#e0d0b0" stroke-width="0.3"/>
+  <ellipse cx="7" cy="18" rx="1.5" ry="1" fill="#f080a0"/>
+  <!-- Dish 2: gold -->
+  <ellipse cx="13" cy="18.5" rx="2.5" ry="1.5" fill="#f8f0e0" stroke="#e0d0b0" stroke-width="0.3"/>
+  <ellipse cx="13" cy="18" rx="1.5" ry="1" fill="#f0c030"/>
+  <!-- Dish 3: green -->
+  <ellipse cx="19" cy="18.5" rx="2.5" ry="1.5" fill="#f8f0e0" stroke="#e0d0b0" stroke-width="0.3"/>
+  <ellipse cx="19" cy="18" rx="1.5" ry="1" fill="#70c050"/>
+  <!-- Dish 4: purple -->
+  <ellipse cx="25" cy="18.5" rx="2.5" ry="1.5" fill="#f8f0e0" stroke="#e0d0b0" stroke-width="0.3"/>
+  <ellipse cx="25" cy="18" rx="1.5" ry="1" fill="#9060e0"/>
+</svg>

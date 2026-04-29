@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="no_wal" cx="35%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#d8b868"/>
+      <stop offset="50%" stop-color="#a07030"/>
+      <stop offset="100%" stop-color="#603810"/>
+    </radialGradient>
+    <radialGradient id="no_can" cx="35%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#408028"/>
+      <stop offset="60%" stop-color="#185010"/>
+      <stop offset="100%" stop-color="#0a3008"/>
+    </radialGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.8" fill="#00000025"/>
+  <!-- Wide trunk (walnut trees have large trunks) -->
+  <path d="M12,31 Q11,25 11.5,21 Q13,19 16,19.5 Q19,19 20.5,21 Q21,25 20,31 Z" fill="#5d3215"/>
+  <path d="M13,31 Q12,25 12.5,21.5 Q14,20 16,20.2 Q18,20 19.5,21.5 Q20,25 19,31 Z" fill="#7d4820"/>
+  <!-- Canopy — very wide and majestic (walnuts are large trees) -->
+  <ellipse cx="16" cy="13" rx="15" ry="11.5" fill="#104010"/>
+  <ellipse cx="16" cy="12" rx="14" ry="10.5" fill="#185810"/>
+  <ellipse cx="6" cy="15" rx="9.5" ry="8" fill="#104010"/>
+  <ellipse cx="26" cy="15" rx="9.5" ry="8" fill="#104010"/>
+  <ellipse cx="16" cy="5" rx="12" ry="8" fill="url(#no_can)"/>
+  <ellipse cx="10" cy="7" rx="7" ry="5" fill="#2a7018"/>
+  <ellipse cx="22" cy="7" rx="7" ry="5" fill="#207018"/>
+  <!-- Canopy highlight -->
+  <ellipse cx="11.5" cy="8.5" rx="4" ry="2.5" fill="rgba(100,200,80,.2)"/>
+  <!-- Walnuts (round, bumpy, with seam — very recognizable) -->
+  <circle cx="5.5" cy="18" r="3.5" fill="url(#no_wal)"/>
+  <circle cx="26.5" cy="17" r="3.5" fill="url(#no_wal)"/>
+  <circle cx="16" cy="22" r="3.5" fill="url(#no_wal)"/>
+  <circle cx="11" cy="12" r="3" fill="url(#no_wal)"/>
+  <circle cx="22" cy="11.5" r="3" fill="url(#no_wal)"/>
+  <!-- Walnut seam (characteristic) -->
+  <line x1="5.5" y1="14.5" x2="5.5" y2="21.5" stroke="#483010" stroke-width="0.7" opacity="0.6"/>
+  <line x1="26.5" y1="13.5" x2="26.5" y2="20.5" stroke="#483010" stroke-width="0.7" opacity="0.6"/>
+  <line x1="16" y1="18.5" x2="16" y2="25.5" stroke="#483010" stroke-width="0.7" opacity="0.6"/>
+  <!-- Walnut shines -->
+  <circle cx="4.5" cy="16.8" r="1.2" fill="rgba(255,240,200,.35)"/>
+  <circle cx="25.5" cy="15.8" r="1.2" fill="rgba(255,240,200,.35)"/>
+  <circle cx="15" cy="20.8" r="1.2" fill="rgba(255,240,200,.35)"/>
+</svg>

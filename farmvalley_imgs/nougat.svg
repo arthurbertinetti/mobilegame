@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="ng_top" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#faf8f4"/>
+      <stop offset="100%" stop-color="#e8e0d8"/>
+    </linearGradient>
+    <linearGradient id="ng_side" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e8e0d8"/>
+      <stop offset="100%" stop-color="#c8beb4"/>
+    </linearGradient>
+    <linearGradient id="ng_front" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0ece8"/>
+      <stop offset="100%" stop-color="#d8d0c8"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000028"/>
+  <!-- Bar bottom face -->
+  <rect x="4" y="22" width="24" height="7" rx="2" fill="url(#ng_side)"/>
+  <!-- Bar front face -->
+  <path d="M4,19 L28,19 L28,26 Q16,27 4,26 Z" fill="url(#ng_front)"/>
+  <!-- Bar top face -->
+  <rect x="4" y="12" width="24" height="9" rx="2" fill="url(#ng_top)"/>
+  <!-- Texture lines on top -->
+  <line x1="6" y1="13" x2="26" y2="13" stroke="#d8d0c8" stroke-width="0.4" opacity="0.6"/>
+  <line x1="6" y1="15" x2="26" y2="15" stroke="#d8d0c8" stroke-width="0.4" opacity="0.6"/>
+  <line x1="6" y1="17" x2="26" y2="17" stroke="#d8d0c8" stroke-width="0.4" opacity="0.6"/>
+  <line x1="6" y1="19" x2="26" y2="19" stroke="#d8d0c8" stroke-width="0.4" opacity="0.6"/>
+  <!-- Pistachio pieces (green) -->
+  <ellipse cx="9" cy="15.5" rx="2.2" ry="1.5" fill="#6aaa40" transform="rotate(-15,9,15.5)"/>
+  <ellipse cx="19" cy="14" rx="2" ry="1.4" fill="#7ab848" transform="rotate(10,19,14)"/>
+  <ellipse cx="24" cy="17" rx="1.8" ry="1.2" fill="#5a9830" transform="rotate(-5,24,17)"/>
+  <!-- Almond pieces (brown) -->
+  <ellipse cx="14" cy="16.5" rx="2.5" ry="1.2" fill="#8a5820" transform="rotate(20,14,16.5)"/>
+  <ellipse cx="22" cy="14.5" rx="2" ry="1" fill="#7a4c18" transform="rotate(-10,22,14.5)"/>
+  <ellipse cx="8" cy="18" rx="1.5" ry="0.9" fill="#8a5820" transform="rotate(5,8,18)"/>
+  <!-- Honey swirl hint -->
+  <path d="M16,13 Q18,14 17,16 Q16,17 15,16" stroke="#e8c878" stroke-width="0.6" fill="none" opacity="0.7"/>
+  <!-- Top highlight -->
+  <path d="M6,13 Q16,12 26,13" stroke="rgba(255,255,255,0.6)" stroke-width="0.8" fill="none"/>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="shadow_ch" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="jar_ch" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="70%" stop-color="#f0f0f0"/>
+      <stop offset="100%" stop-color="#d8d8d8"/>
+    </radialGradient>
+    <radialGradient id="lid_ch" cx="40%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#f0f0f0"/>
+      <stop offset="70%" stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#c8c8c8"/>
+    </radialGradient>
+    <linearGradient id="stripe_ch" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a0c8f0" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#a0c8f0" stop-opacity="0.7"/>
+      <stop offset="70%" stop-color="#a0c8f0" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#a0c8f0" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="29.5" rx="8.5" ry="2" fill="url(#shadow_ch)"/>
+  <!-- Jar body -->
+  <ellipse cx="16" cy="27" rx="8.5" ry="2.5" fill="#d0d0d0"/>
+  <rect x="7.5" y="19" width="17" height="8" fill="url(#jar_ch)"/>
+  <ellipse cx="16" cy="19" rx="8.5" ry="2.2" fill="#ececec"/>
+  <!-- Blue stripe on jar -->
+  <rect x="7.5" y="21.5" width="17" height="2.5" fill="url(#stripe_ch)"/>
+  <!-- Lid -->
+  <ellipse cx="16" cy="17.5" rx="8.5" ry="2.5" fill="#d8d8d8"/>
+  <rect x="7.5" y="12" width="17" height="5.5" rx="1" fill="url(#lid_ch)"/>
+  <ellipse cx="16" cy="12" rx="8.5" ry="2.2" fill="#f0f0f0"/>
+  <!-- Lid shine -->
+  <ellipse cx="13" cy="11" rx="3.5" ry="1" fill="#fff" opacity="0.6"/>
+  <!-- Jar shine -->
+  <rect x="9" y="19.5" width="3" height="6" rx="1.5" fill="#fff" opacity="0.35"/>
+  <!-- Lid rim -->
+  <rect x="7.5" y="17" width="17" height="1" rx="0.3" fill="#c0c0c0" opacity="0.5"/>
+</svg>

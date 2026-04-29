@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Persil: feuilles finement découpées en éventail, vert vif -->
+  <rect x="14.5" y="25" width="3" height="6" rx="1" fill="#4e342e"/>
+  <!-- Tige gauche -->
+  <line x1="16" y1="25" x2="7" y2="14" stroke="#388e3c" stroke-width="1.3"/>
+  <!-- Tige droite -->
+  <line x1="16" y1="25" x2="25" y2="14" stroke="#388e3c" stroke-width="1.3"/>
+  <!-- Tige centrale -->
+  <line x1="16" y1="25" x2="16" y2="11" stroke="#388e3c" stroke-width="1.3"/>
+  <!-- Folioles gauche -->
+  <ellipse cx="6" cy="12" rx="3" ry="2" fill="#4caf50" transform="rotate(-30 6 12)"/>
+  <ellipse cx="8" cy="10" rx="2.5" ry="1.5" fill="#66bb6a" transform="rotate(-10 8 10)"/>
+  <ellipse cx="5" cy="15" rx="2" ry="1.3" fill="#81c784" transform="rotate(-50 5 15)"/>
+  <!-- Folioles droite -->
+  <ellipse cx="26" cy="12" rx="3" ry="2" fill="#4caf50" transform="rotate(30 26 12)"/>
+  <ellipse cx="24" cy="10" rx="2.5" ry="1.5" fill="#66bb6a" transform="rotate(10 24 10)"/>
+  <ellipse cx="27" cy="15" rx="2" ry="1.3" fill="#81c784" transform="rotate(50 27 15)"/>
+  <!-- Folioles centre -->
+  <ellipse cx="16" cy="9" rx="3.5" ry="2.2" fill="#4caf50"/>
+  <ellipse cx="13" cy="8" rx="2.5" ry="1.5" fill="#66bb6a" transform="rotate(-20 13 8)"/>
+  <ellipse cx="19" cy="8" rx="2.5" ry="1.5" fill="#81c784" transform="rotate(20 19 8)"/>
+  <!-- Pointe centrale -->
+  <ellipse cx="16" cy="6" rx="2" ry="1.3" fill="#a5d6a7"/>
+</svg>

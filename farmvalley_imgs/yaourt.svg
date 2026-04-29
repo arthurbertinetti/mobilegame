@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="ya_shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ya_body" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8eef4"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d0dae4"/>
+    </linearGradient>
+    <linearGradient id="ya_foil" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b0b8c0"/>
+      <stop offset="30%" stop-color="#e8eef4"/>
+      <stop offset="60%" stop-color="#d0d8e0"/>
+      <stop offset="100%" stop-color="#a0a8b0"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="30.5" rx="9" ry="2" fill="url(#ya_shadow)"/>
+  <!-- Yogurt container - slightly tapered -->
+  <path d="M9 15 L10 29 Q16 30.5 22 29 L23 15 Z" fill="url(#ya_body)" stroke="#b0c0cc" stroke-width="0.7"/>
+  <!-- Container shine -->
+  <path d="M10.5 15 L11 27 L12.5 27.5 L12 15 Z" fill="white" opacity="0.4"/>
+  <!-- Strawberry graphic on front -->
+  <rect x="11" y="19" width="10" height="8" rx="1.5" fill="white" opacity="0.7"/>
+  <!-- Strawberry shape -->
+  <path d="M16 21 Q14 20.5 13.5 22.5 Q13 24.5 16 26 Q19 24.5 18.5 22.5 Q18 20.5 16 21 Z" fill="#e03050"/>
+  <!-- Strawberry seeds -->
+  <circle cx="15" cy="23" r="0.4" fill="#c02040" opacity="0.7"/>
+  <circle cx="17" cy="22.5" r="0.4" fill="#c02040" opacity="0.7"/>
+  <circle cx="16.5" cy="24" r="0.4" fill="#c02040" opacity="0.7"/>
+  <circle cx="14.5" cy="24.5" r="0.35" fill="#c02040" opacity="0.7"/>
+  <!-- Strawberry leaves -->
+  <path d="M14.5 21.2 Q15.2 20 16 21" stroke="#40a020" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+  <path d="M17.5 21.2 Q16.8 20 16 21" stroke="#40a020" stroke-width="0.7" fill="none" stroke-linecap="round"/>
+  <!-- Foil lid -->
+  <ellipse cx="16" cy="15" rx="7" ry="1.8" fill="url(#ya_foil)" stroke="#909898" stroke-width="0.6"/>
+  <!-- Foil peel tab -->
+  <path d="M22 14.5 Q24 14 24.5 15 Q24 16 22 16.2" fill="url(#ya_foil)" stroke="#909898" stroke-width="0.5"/>
+  <!-- Foil reflection lines -->
+  <line x1="11" y1="15" x2="14" y2="15" stroke="white" stroke-width="0.5" opacity="0.6"/>
+  <line x1="17" y1="14.5" x2="20" y2="14.5" stroke="white" stroke-width="0.5" opacity="0.5"/>
+</svg>

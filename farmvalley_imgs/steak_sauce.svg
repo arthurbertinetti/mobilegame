@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ss_meat" cx="40%" cy="32%" r="62%">
+      <stop offset="0%" stop-color="#6a2808"/>
+      <stop offset="55%" stop-color="#501808"/>
+      <stop offset="100%" stop-color="#3a1a08"/>
+    </radialGradient>
+    <radialGradient id="ss_sauce" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#4a2010"/>
+      <stop offset="100%" stop-color="#2a0e04"/>
+    </radialGradient>
+    <linearGradient id="ss_plate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#e0d8cc"/>
+      <stop offset="100%" stop-color="#c0b8ac"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="13" ry="0.8" fill="#00000028"/>
+  <!-- Plate -->
+  <ellipse cx="16" cy="29" rx="14" ry="2.5" fill="#b0a898"/>
+  <ellipse cx="16" cy="28" rx="14" ry="2.5" fill="url(#ss_plate)"/>
+  <!-- Dark sauce pool around steak -->
+  <path d="M5,26 Q4,20 7,16 Q10,12 16,12 Q22,12 25,16 Q28,20 27,26 Q22,28 16,28 Q10,28 5,26 Z" fill="url(#ss_sauce)"/>
+  <!-- Sauce drips/spreading -->
+  <path d="M5,23 Q4,25 5.5,27" stroke="#3a1a08" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <path d="M27,23 Q28,25 26.5,27" stroke="#3a1a08" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.8"/>
+  <!-- Steak piece on top of sauce -->
+  <path d="M8,24 Q7,18 10,14 Q12,11 16,11 Q20,11 22,14 Q25,18 24,24 Q20,25.5 16,25.5 Q12,25.5 8,24 Z" fill="url(#ss_meat)"/>
+  <!-- Sauce shine on steak surface -->
+  <ellipse cx="16" cy="17" rx="6.5" ry="4.5" fill="#3a1208" opacity="0.4"/>
+  <!-- Herbs on steak -->
+  <path d="M13,16 Q14,14.5 15,16" stroke="#4a9020" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="13.5" cy="15.5" r="0.6" fill="#5aaa28"/>
+  <circle cx="14.8" cy="15.2" r="0.6" fill="#5aaa28"/>
+  <path d="M18,18 Q19,16.5 20,18" stroke="#4a9020" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+  <circle cx="18.5" cy="17.5" r="0.6" fill="#5aaa28"/>
+  <circle cx="19.8" cy="17.2" r="0.6" fill="#5aaa28"/>
+  <!-- Meat highlight -->
+  <ellipse cx="12" cy="17" rx="3.5" ry="2.5" fill="rgba(120,50,20,0.3)" transform="rotate(-10,12,17)"/>
+  <!-- Sauce gloss -->
+  <path d="M8,22 Q12,20 16,21 Q20,20 24,22" stroke="rgba(100,40,10,0.5)" stroke-width="1" fill="none"/>
+</svg>

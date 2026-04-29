@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ha_bottle" cx="35%" cy="28%" r="65%">
+      <stop offset="0%" stop-color="#f0d080"/>
+      <stop offset="60%" stop-color="#c89030"/>
+      <stop offset="100%" stop-color="#8a5c10"/>
+    </radialGradient>
+    <radialGradient id="ha_liquid" cx="40%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#e8c84080"/>
+      <stop offset="100%" stop-color="#a07010a0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="16" cy="31.5" rx="8" ry="0.7" fill="#00000020"/>
+  <!-- Bottle body -->
+  <path d="M11,26 Q11,30 16,30 Q21,30 21,26 L21,14 Q21,12 19,11 L19,8 L13,8 L13,11 Q11,12 11,14 Z" fill="url(#ha_bottle)"/>
+  <!-- Golden oil liquid -->
+  <path d="M12,26 Q12,29 16,29 Q20,29 20,26 L20,17 L12,17 Z" fill="url(#ha_liquid)"/>
+  <!-- Herb sprigs inside -->
+  <line x1="14" y1="25" x2="15" y2="19" stroke="#306020" stroke-width="0.7"/>
+  <ellipse cx="14.5" cy="22" rx="1.2" ry="0.6" fill="#408030" opacity="0.8"/>
+  <ellipse cx="15" cy="20" rx="1" ry="0.5" fill="#408030" opacity="0.8"/>
+  <line x1="17" y1="25" x2="17.5" y2="20" stroke="#306020" stroke-width="0.7"/>
+  <ellipse cx="17.8" cy="22.5" rx="1" ry="0.5" fill="#508040" opacity="0.75"/>
+  <!-- Cork -->
+  <rect x="13" y="6" width="6" height="2.5" rx="1" fill="#c09060"/>
+  <rect x="13.5" y="5" width="5" height="1.5" rx="0.7" fill="#d0a870"/>
+  <!-- Shine -->
+  <path d="M13,15 Q13.5,14 15,14.5" stroke="rgba(255,240,180,.5)" stroke-width="0.8" fill="none"/>
+</svg>

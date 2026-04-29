@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="ra_cheese" cx="38%" cy="30%" r="62%">
+      <stop offset="0%" stop-color="#f8c840"/>
+      <stop offset="55%" stop-color="#e09018"/>
+      <stop offset="100%" stop-color="#b06808"/>
+    </radialGradient>
+    <radialGradient id="ra_rind" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c88818"/>
+      <stop offset="100%" stop-color="#906008"/>
+    </radialGradient>
+    <linearGradient id="ra_melt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0c030"/>
+      <stop offset="100%" stop-color="#c07818" stop-opacity="0.4"/>
+    </linearGradient>
+  </defs>
+  <!-- Shadow -->
+  <ellipse cx="16" cy="31.5" rx="10" ry="0.7" fill="#00000020"/>
+  <!-- Melted cheese drips -->
+  <path d="M10,24 Q10,29 9,31" stroke="url(#ra_melt)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M16,25 Q16.5,29 16,31" stroke="url(#ra_melt)" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M22,24 Q22,28 23,31" stroke="url(#ra_melt)" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Cheese half-wheel body -->
+  <path d="M4,14 L28,14 L28,24 Q16,27 4,24 Z" fill="url(#ra_cheese)"/>
+  <!-- Rounded top of half-wheel -->
+  <path d="M4,14 Q4,8 16,7 Q28,8 28,14 Z" fill="url(#ra_cheese)"/>
+  <!-- Rind on top arc -->
+  <path d="M4,14 Q4,8 16,7 Q28,8 28,14" stroke="#b06808" stroke-width="2" fill="none"/>
+  <!-- Rind bottom -->
+  <rect x="4" y="23" width="24" height="2.5" rx="0.5" fill="url(#ra_rind)"/>
+  <!-- Holes in cheese -->
+  <ellipse cx="10" cy="16" rx="2" ry="1.3" fill="#c07808" opacity="0.65"/>
+  <ellipse cx="22" cy="17" rx="1.8" ry="1.2" fill="#c07808" opacity="0.6"/>
+  <ellipse cx="16" cy="13" rx="1.5" ry="1" fill="#c07808" opacity="0.6"/>
+  <!-- Shine -->
+  <path d="M7,15 Q16,13 25,15" stroke="rgba(255,240,180,.45)" stroke-width="1.2" fill="none"/>
+</svg>

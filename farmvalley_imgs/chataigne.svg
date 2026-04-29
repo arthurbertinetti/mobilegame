@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <radialGradient id="chsg" cx="38%" cy="32%" r="65%">
+      <stop offset="0%" stop-color="#a1887f"/>
+      <stop offset="55%" stop-color="#6d4c41"/>
+      <stop offset="100%" stop-color="#3e2723"/>
+    </radialGradient>
+  </defs>
+  <!-- Bogue verte (écrin épineux) en haut -->
+  <path d="M10 14 Q10 8 16 7 Q22 8 22 14" fill="#558b2f"/>
+  <!-- Épines de la bogue -->
+  <line x1="10" y1="11" x2="8" y2="9" stroke="#33691e" stroke-width="0.8"/>
+  <line x1="12" y1="8.5" x2="11" y2="6.5" stroke="#33691e" stroke-width="0.8"/>
+  <line x1="16" y1="7" x2="16" y2="5" stroke="#33691e" stroke-width="0.8"/>
+  <line x1="20" y1="8.5" x2="21" y2="6.5" stroke="#33691e" stroke-width="0.8"/>
+  <line x1="22" y1="11" x2="24" y2="9" stroke="#33691e" stroke-width="0.8"/>
+  <!-- Corps de la châtaigne (ronde, marron brillant) -->
+  <path d="M9 19 Q8 13 16 13 Q24 13 23 19 Q23 27 16 27 Q9 27 9 19Z" fill="url(#chsg)"/>
+  <!-- Pointe caractéristique au sommet -->
+  <path d="M14 14 Q16 12 18 14 Q17 13 16 13 Q15 13 14 14Z" fill="#3e2723"/>
+  <!-- Petite zone plate (cicatrice de rattachement à la bogue) -->
+  <ellipse cx="16" cy="26.5" rx="4" ry="1.5" fill="#3e2723" opacity="0.5"/>
+  <!-- Reflet brillant (châtaigne est luisante) -->
+  <ellipse cx="12" cy="17" rx="3" ry="3.5" fill="rgba(255,255,255,0.25)" transform="rotate(-25 12 17)"/>
+</svg>

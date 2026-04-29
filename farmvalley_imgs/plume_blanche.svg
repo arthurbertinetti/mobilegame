@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <line x1="8" y1="28" x2="24" y2="4" stroke="#e0e0e0" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M24 4 Q18 8 14 14 Q10 18 8 28 Q12 22 16 16 Q20 10 24 4Z" fill="white"/>
+  <path d="M24 4 Q22 10 20 16 Q18 20 16 28 Q14 22 12 16 Q14 10 24 4Z" fill="#f5f5f5"/>
+  <path d="M22 6 Q19 11 17 17" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1" stroke-linecap="round"/>
+  <!-- Brillance nacrée -->
+  <path d="M20 8 Q18 12 16 18" fill="none" stroke="rgba(180,220,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
