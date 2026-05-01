@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#1a0d2e">
+<title>Glamour Studio 3D</title>
+<link rel="stylesheet" href="css/makeup.css">
+</head>
+<body>
+
+<div id="mk-root">
+
+  <!-- 3D scene -->
+  <canvas id="mk-canvas"></canvas>
+
+  <!-- Top HUD -->
+  <div id="mk-hud-top">
+    <div class="mk-hud-left">
+      <a href="index.html" class="mk-btn mk-btn-icon" id="mk-home-btn" title="Accueil">🏠</a>
+      <button class="mk-btn mk-btn-icon" id="mk-back-btn" title="Retour">←</button>
+    </div>
+    <div class="mk-theme-pill" id="mk-current-theme">
+      <span class="mk-theme-ico">✨</span>
+      <span class="mk-theme-name">Choisis un thème</span>
+    </div>
+    <button class="mk-btn mk-btn-icon" id="mk-camera-btn" title="Recentrer">🎥</button>
+  </div>
+
+  <!-- Side dock (tools) -->
+  <aside id="mk-dock">
+    <button class="mk-tab mk-active" data-tab="body" title="Morphologie">🧍</button>
+    <button class="mk-tab" data-tab="wardrobe" title="Vêtements">👗</button>
+    <button class="mk-tab" data-tab="makeup" title="Maquillage">💄</button>
+    <button class="mk-tab" data-tab="hair" title="Coiffure">💇</button>
+  </aside>
+
+  <!-- Bottom panel (active tool content) -->
+  <section id="mk-panel">
+    <div class="mk-panel-handle"></div>
+
+    <!-- BODY MORPH -->
+    <div class="mk-panel-page" data-page="body">
+      <h3>Morphologie</h3>
+      <div class="mk-slider-row"><label>Poitrine</label><input type="range" min="-50" max="50" value="0" data-morph="bust"><span class="mk-val">0</span></div>
+      <div class="mk-slider-row"><label>Ventre</label><input type="range" min="-50" max="50" value="0" data-morph="belly"><span class="mk-val">0</span></div>
+      <div class="mk-slider-row"><label>Fesses</label><input type="range" min="-50" max="50" value="0" data-morph="hips"><span class="mk-val">0</span></div>
+      <div class="mk-slider-row"><label>Bras</label><input type="range" min="-50" max="50" value="0" data-morph="arms"><span class="mk-val">0</span></div>
+      <div class="mk-slider-row"><label>Visage</label><input type="range" min="-50" max="50" value="0" data-morph="face"><span class="mk-val">0</span></div>
+      <div class="mk-slider-row"><label>Taille</label><input type="range" min="-30" max="30" value="0" data-morph="height"><span class="mk-val">0</span></div>
+      <h4>Teint</h4>
+      <div class="mk-swatches" data-swatchgroup="skin">
+        <button class="mk-swatch" data-color="#f6d6c1" style="background:#f6d6c1"></button>
+        <button class="mk-swatch" data-color="#e7b793" style="background:#e7b793"></button>
+        <button class="mk-swatch" data-color="#c8946b" style="background:#c8946b"></button>
+        <button class="mk-swatch" data-color="#9e6a47" style="background:#9e6a47"></button>
+        <button class="mk-swatch" data-color="#7a4d33" style="background:#7a4d33"></button>
+        <button class="mk-swatch" data-color="#4f3122" style="background:#4f3122"></button>
+      </div>
+    </div>
+
+    <!-- WARDROBE -->
+    <div class="mk-panel-page mk-hidden" data-page="wardrobe">
+      <h3>Dressing</h3>
+      <div class="mk-subtabs" id="mk-wardrobe-subtabs">
+        <button class="mk-subtab mk-active" data-cat="top">Haut</button>
+        <button class="mk-subtab" data-cat="bottom">Bas</button>
+        <button class="mk-subtab" data-cat="dress">Robe</button>
+        <button class="mk-subtab" data-cat="shoes">Chaussures</button>
+        <button class="mk-subtab" data-cat="under">Sous-vêt.</button>
+        <button class="mk-subtab" data-cat="head">Tête</button>
+      </div>
+      <div class="mk-grid" id="mk-wardrobe-grid"></div>
+      <h4>Couleur</h4>
+      <div class="mk-swatches" data-swatchgroup="cloth">
+        <button class="mk-swatch" data-color="#ffffff" style="background:#ffffff"></button>
+        <button class="mk-swatch" data-color="#111111" style="background:#111111"></button>
+        <button class="mk-swatch" data-color="#e94560" style="background:#e94560"></button>
+        <button class="mk-swatch" data-color="#ff6fa8" style="background:#ff6fa8"></button>
+        <button class="mk-swatch" data-color="#ffd93d" style="background:#ffd93d"></button>
+        <button class="mk-swatch" data-color="#74b9ff" style="background:#74b9ff"></button>
+        <button class="mk-swatch" data-color="#6bff8e" style="background:#6bff8e"></button>
+        <button class="mk-swatch" data-color="#9b59b6" style="background:#9b59b6"></button>
+        <button class="mk-swatch" data-color="#c0a060" style="background:#c0a060"></button>
+        <button class="mk-swatch" data-color="#2c3e50" style="background:#2c3e50"></button>
+      </div>
+    </div>
+
+    <!-- MAKEUP -->
+    <div class="mk-panel-page mk-hidden" data-page="makeup">
+      <h3>Maquillage</h3>
+      <div class="mk-subtabs" id="mk-makeup-subtabs">
+        <button class="mk-subtab mk-active" data-mk="lips">Lèvres</button>
+        <button class="mk-subtab" data-mk="eyeshadow">Fard</button>
+        <button class="mk-subtab" data-mk="eyeliner">Liner</button>
+        <button class="mk-subtab" data-mk="lashes">Cils</button>
+        <button class="mk-subtab" data-mk="brows">Sourcils</button>
+        <button class="mk-subtab" data-mk="blush">Blush</button>
+      </div>
+      <div class="mk-slider-row"><label>Intensité</label><input type="range" min="0" max="100" value="60" id="mk-intensity"><span class="mk-val" id="mk-intensity-val">60</span></div>
+      <div class="mk-swatches" id="mk-makeup-swatches"></div>
+      <button class="mk-btn mk-btn-mini" id="mk-clear-makeup">Effacer ce calque</button>
+    </div>
+
+    <!-- HAIR -->
+    <div class="mk-panel-page mk-hidden" data-page="hair">
+      <h3>Coiffure</h3>
+      <div class="mk-grid" id="mk-hair-grid"></div>
+      <h4>Couleur cheveux</h4>
+      <div class="mk-swatches" data-swatchgroup="hair">
+        <button class="mk-swatch" data-color="#1c0f08" style="background:#1c0f08"></button>
+        <button class="mk-swatch" data-color="#3a1f10" style="background:#3a1f10"></button>
+        <button class="mk-swatch" data-color="#74452a" style="background:#74452a"></button>
+        <button class="mk-swatch" data-color="#c89556" style="background:#c89556"></button>
+        <button class="mk-swatch" data-color="#f1d27b" style="background:#f1d27b"></button>
+        <button class="mk-swatch" data-color="#b6b3b3" style="background:#b6b3b3"></button>
+        <button class="mk-swatch" data-color="#ff5fb0" style="background:#ff5fb0"></button>
+        <button class="mk-swatch" data-color="#7c5cff" style="background:#7c5cff"></button>
+        <button class="mk-swatch" data-color="#3da4ff" style="background:#3da4ff"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom action bar -->
+  <div id="mk-action-bar">
+    <button class="mk-btn mk-btn-primary" id="mk-score-btn">⭐ Noter le look</button>
+  </div>
+
+  <!-- Theme select screen -->
+  <div id="mk-theme-screen" class="mk-screen">
+    <div class="mk-screen-bar">
+      <button class="mk-btn mk-btn-icon" id="mk-theme-back" title="Retour">←</button>
+      <a href="index.html" class="mk-btn mk-btn-icon" id="mk-theme-home" title="Accueil">🏠</a>
+    </div>
+    <div class="mk-screen-inner">
+      <h1 class="mk-title">Glamour <span>Studio</span></h1>
+      <p class="mk-tagline">Choisis le thème, crée ton look 3D.</p>
+      <div class="mk-theme-grid" id="mk-theme-grid"></div>
+    </div>
+  </div>
+
+  <!-- Score screen -->
+  <div id="mk-score-screen" class="mk-screen mk-hidden">
+    <div class="mk-screen-inner">
+      <h2 id="mk-score-title">Fashion Score</h2>
+      <div class="mk-score-big" id="mk-score-value">0</div>
+      <div class="mk-score-rank" id="mk-score-rank">—</div>
+      <p id="mk-score-comment">—</p>
+      <div class="mk-score-actions">
+        <button class="mk-btn mk-btn-primary" id="mk-score-replay">↻ Continuer</button>
+        <button class="mk-btn" id="mk-score-newtheme">🎯 Autre thème</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="mk-loading" class="mk-screen">
+    <div class="mk-loading-inner">
+      <div class="mk-loading-spin"></div>
+      <div>Chargement du studio…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Three.js (offline) -->
+<script src="lib/three.min.js"></script>
+
+<!-- Postprocessing (UnrealBloomPass for premium glow) — ordered by dependency -->
+<script src="lib/three-postprocessing-Pass.js"></script>
+<script src="lib/three-shaders-CopyShader.js"></script>
+<script src="lib/three-postprocessing-MaskPass.js"></script>
+<script src="lib/three-postprocessing-ShaderPass.js"></script>
+<script src="lib/three-postprocessing-EffectComposer.js"></script>
+<script src="lib/three-postprocessing-RenderPass.js"></script>
+<script src="lib/three-shaders-LuminosityHighPassShader.js"></script>
+<script src="lib/three-postprocessing-UnrealBloomPass.js"></script>
+
+<!-- GLB loader (real 3D characters from assets/models/) -->
+<script src="lib/three-utils-BufferGeometryUtils.js"></script>
+<script src="lib/three-loaders-GLTFLoader.js"></script>
+
+<!-- Order: themes (pure data) → renderer → camera → makeup texture → player → wardrobe → ui → game -->
+<script src="js/makeup/themes.js"></script>
+<script src="js/makeup/renderer.js"></script>
+<script src="js/makeup/camera.js"></script>
+<script src="js/makeup/makeup.js"></script>
+<script src="js/makeup/player.js"></script>
+<script src="js/makeup/wardrobe.js"></script>
+<script src="js/makeup/ui.js"></script>
+<script src="js/makeup/game.js"></script>
+
+</body>
+</html>

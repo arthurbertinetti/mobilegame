@@ -14,9 +14,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100dvh;
-            overflow: hidden;
+            min-height: 100dvh;
+            overflow-y: auto;
+            padding: 30px 0 50px;
             -webkit-user-select: none;
             user-select: none;
         }
@@ -226,6 +226,10 @@
             background: linear-gradient(135deg, #b45309, #92400e);
             box-shadow: 0 4px 12px rgba(180,83,9,.3);
         }
+        .icon-mergefortress {
+            background: linear-gradient(135deg, #7b2dff, #cf6dff);
+            box-shadow: 0 4px 14px rgba(170,80,255,.4);
+        }
         .icon-nutsandbolts {
             background: linear-gradient(135deg, #f39c12, #7f8c8d);
             box-shadow: 0 4px 12px rgba(243,156,18,.3);
@@ -233,6 +237,10 @@
         .icon-farmvalley {
             background: linear-gradient(135deg, #4CAF50, #8BC34A);
             box-shadow: 0 4px 12px rgba(76,175,80,.3);
+        }
+        .icon-makeup {
+            background: linear-gradient(135deg, #ff4f95, #7c2dff);
+            box-shadow: 0 4px 14px rgba(255,79,149,.4);
         }
         .icon-sonic {
             background: linear-gradient(135deg, #2196F3, #1565C0);
@@ -325,15 +333,11 @@
         }
 
         .game-list {
-            max-height: calc(100dvh - 190px);
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255,255,255,.1) transparent;
+            overflow-y: visible;
         }
 
         .footer {
-            position: absolute;
-            bottom: 20px;
+            margin-top: 20px;
             font-size: 0.75rem;
             color: #ffffff;
         }
@@ -376,6 +380,8 @@
         .cat-card.cat-cartes  { border-color: rgba(255,107,129,.2); }
         .cat-card.cat-strategie { border-color: rgba(46,204,113,.2); }
         .cat-card.cat-simulation { border-color: rgba(243,156,18,.2); }
+        .cat-card.cat-mode { border-color: rgba(255,79,149,.3); }
+        .cat-card.cat-mode .cat-icon { filter: drop-shadow(0 0 6px rgba(255,79,149,.5)); }
 
         /* ===== BACK BUTTON ===== */
         .back-header {
@@ -474,6 +480,10 @@
         <div class="cat-card cat-simulation" data-cat="simulation">
             <span class="cat-icon">🌾</span>
             <span>Simulation</span>
+        </div>
+        <div class="cat-card cat-mode" data-cat="mode">
+            <span class="cat-icon">💄</span>
+            <span>Mode & Beauté</span>
         </div>
     </div>
 
@@ -878,6 +888,24 @@
             </div>
         </a>
 
+        <a href="mergefortress.html" class="game-card">
+            <div class="game-icon icon-mergefortress">⚔️</div>
+            <div class="game-info">
+                <h2>Merge Fortress TD</h2>
+                <p>Fusionne héros en 3D pour défendre ta forteresse !</p>
+                <p class="game-record" id="rec-mergefortress"></p>
+            </div>
+        </a>
+
+        <a href="makeup.html" class="game-card">
+            <div class="game-icon icon-makeup">💄</div>
+            <div class="game-info">
+                <h2>Glamour Studio 3D</h2>
+                <p>Habille, maquille, coiffe ton perso 3D pour chaque thème !</p>
+                <p class="game-record" id="rec-makeup"></p>
+            </div>
+        </a>
+
         <a href="nutsandbolts.html" class="game-card">
             <div class="game-icon icon-nutsandbolts">🔩</div>
             <div class="game-info">
@@ -1067,7 +1095,7 @@
     <div class="footer">© 2026 Arthur B - Tous droits réservés</div>
 <script src="leaderboard.js"></script>
 <script>
-var GAME_IDS = ['flappybird','megajumpy','tamagotchi','belote','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','othello','towerdefense','nutsandbolts','farmvalley','croissant','pacman','bomberman','zingvalley2','worms','worms2','noodlejump','monstertrainers','trouvemot','memory','quiz','hanoi','bataille','oun','poker','clicker','aquarium','terrarium','mazerun','ong','claquebug','alaga','f1top','bikerush','2048','boxban','pixels'];
+var GAME_IDS = ['flappybird','megajumpy','tamagotchi','belote','snake','breakout','asteroids','cardodge','solitaire','blackjack','spaceinvaders','mastermind','tetris','minesweeper','retrohighway','motodge','maze','candycrush','bubbleshooter','poolclub','neonwar','crossyroad','connect4','battleship','checkers','chess','fruitninja','sudoku','zuma','mahjong','onelinedraw','watercolorsort','tictactoe','othello','towerdefense','mergefortress','nutsandbolts','farmvalley','croissant','pacman','bomberman','zingvalley2','worms','worms2','noodlejump','monstertrainers','trouvemot','memory','quiz','hanoi','bataille','oun','poker','clicker','aquarium','terrarium','mazerun','ong','claquebug','alaga','f1top','bikerush','2048','boxban','pixels','makeup'];
 
 var GAME_CATS = {
     snake: 'arcade', breakout: 'arcade', asteroids: 'arcade',
@@ -1080,14 +1108,15 @@ var GAME_CATS = {
     candycrush: 'puzzle', bubbleshooter: 'puzzle', sudoku: 'reflexion', zuma: 'puzzle',
     mahjong: 'puzzle', onelinedraw: 'puzzle', watercolorsort: 'puzzle', nutsandbolts: 'puzzle',
     connect4: 'strategie', battleship: 'strategie', checkers: 'strategie',
-    chess: 'strategie', tictactoe: 'strategie', othello: 'strategie', towerdefense: 'strategie',
+    chess: 'strategie', tictactoe: 'strategie', othello: 'strategie', towerdefense: 'strategie', mergefortress: 'strategie',
     worms: 'plateforme', worms2: 'plateforme', noodlejump: 'plateforme',
     tamagotchi: 'simulation', farmvalley: 'simulation',
     zingvalley2: 'simulation', monstertrainers: 'simulation',
     trouvemot: 'reflexion', memory: 'reflexion', quiz: 'reflexion', hanoi: 'reflexion',
     bataille: 'cartes', oun: 'cartes', poker: 'cartes',
     clicker: 'simulation', aquarium: 'simulation', terrarium: 'simulation',
-    '2048': 'puzzle', boxban: 'puzzle', pixels: 'puzzle'
+    '2048': 'puzzle', boxban: 'puzzle', pixels: 'puzzle',
+    makeup: 'mode'
 };
 
 var CAT_LABELS = {
@@ -1099,7 +1128,8 @@ var CAT_LABELS = {
     reflexion: '🧠 Réflexion',
     cartes: '🃏 Cartes',
     strategie: '♟️ Stratégie',
-    simulation: '🌾 Simulation'
+    simulation: '🌾 Simulation',
+    mode: '💄 Mode & Beauté'
 };
 
 var FAV_KEY = 'arcade_favorites';

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#1a0d2e">
+<title>Merge Fortress TD</title>
+<link rel="stylesheet" href="css/mergefortress.css">
+</head>
+<body>
+
+<div id="mf-root">
+
+  <!-- 3D scene -->
+  <canvas id="mf-canvas"></canvas>
+
+  <!-- HUD -->
+  <div id="mf-hud">
+    <div id="mf-hud-top">
+      <button class="mf-btn mf-btn-icon" id="mf-back-btn" title="Menu">☰</button>
+      <div class="mf-stat" id="mf-stat-fortress" title="Forteresse"><span class="mf-stat-ico">🏰</span><b id="mf-fortress-hp">20</b></div>
+      <div class="mf-stat" id="mf-stat-gold" title="Or"><span class="mf-stat-ico">💰</span><b id="mf-gold">100</b></div>
+      <div class="mf-stat" id="mf-stat-wave" title="Vague"><span class="mf-stat-ico">⚔</span><b id="mf-wave">1</b><small>/<span id="mf-wave-max">10</span></small></div>
+      <button class="mf-btn mf-btn-icon" id="mf-catalog-btn" title="Catalogue">📖</button>
+      <button class="mf-btn mf-btn-icon" id="mf-auto-btn" title="Auto-merge">🤖</button>
+      <button class="mf-btn mf-btn-icon" id="mf-sound-btn" title="Son">🔊</button>
+      <button class="mf-btn mf-btn-icon" id="mf-speed-btn" title="Vitesse">⏩</button>
+    </div>
+
+    <div id="mf-hud-bottom">
+      <button class="mf-btn mf-btn-summon" id="mf-summon-btn">
+        <span class="mf-summon-ico">✨</span>
+        <span class="mf-summon-label">Invoquer</span>
+        <span class="mf-summon-cost"><b id="mf-summon-cost">25</b>💰</span>
+      </button>
+      <button class="mf-btn mf-btn-summon mf-btn-tower mf-hidden" id="mf-summon-tower-btn" style="display:none">
+        <span class="mf-summon-ico">🏹</span>
+        <span class="mf-summon-label">Tour</span>
+        <span class="mf-summon-cost"><b id="mf-tower-cost">40</b>💰</span>
+      </button>
+      <button class="mf-btn mf-btn-wave" id="mf-start-wave-btn">
+        <span class="mf-summon-ico">▶</span>
+        <span class="mf-summon-label">Vague</span>
+      </button>
+    </div>
+
+    <!-- Banner overlay -->
+    <div id="mf-banner" class="mf-hidden"></div>
+
+    <!-- Floating dmg layer -->
+    <div id="mf-dmg-layer"></div>
+
+    <!-- Synergy badge -->
+    <div id="mf-synergy-badge" class="mf-hidden"></div>
+
+    <!-- Consumables panel (in-game) -->
+    <div id="mf-consumable-panel" class="mf-hidden"></div>
+
+    <!-- Sell tooltip when long-pressing -->
+    <div id="mf-unit-info" class="mf-hidden">
+      <div id="mf-unit-info-content"></div>
+      <button class="mf-btn mf-btn-sell" id="mf-sell-btn">Vendre</button>
+    </div>
+  </div>
+
+  <!-- Main menu -->
+  <div id="mf-menu" class="mf-screen">
+    <!-- Top corners -->
+    <button class="mf-top-corner mf-top-left" id="mf-help-btn" title="Comment Jouer">📘</button>
+    <button class="mf-top-corner mf-top-center" id="mf-back-hub-btn" title="Retour RetroGameHub">↩</button>
+    <button class="mf-top-corner mf-top-right" id="mf-options-btn" title="Options">⚙</button>
+    <!-- Currency banner -->
+    <div class="mf-menu-currency">
+      <span class="mf-menu-frag-pill">💎 <b id="mf-menu-frags">0</b></span>
+    </div>
+    <div class="mf-menu-inner">
+      <h1 class="mf-title">Merge Fortress <span>TD</span></h1>
+      <p class="mf-tagline">Fusionne. Défends. Conquiers.</p>
+      <div id="mf-event-banner" class="mf-hidden"></div>
+      <div class="mf-hero-showcase" id="mf-hero-showcase"></div>
+    </div>
+  </div>
+
+  <!-- Bottom navigation bar (global, fixed) -->
+  <nav id="mf-bottom-nav" class="mf-hidden">
+    <button class="mf-nav-btn" data-nav="quetes">
+      <span class="mf-nav-ico">📋</span>
+      <span class="mf-nav-label">Quêtes</span>
+    </button>
+    <button class="mf-nav-btn" data-nav="heroes">
+      <span class="mf-nav-ico">🛡</span>
+      <span class="mf-nav-label">Héros</span>
+    </button>
+    <button class="mf-nav-btn mf-nav-primary" data-nav="play">
+      <span class="mf-nav-ico">⚔</span>
+      <span class="mf-nav-label">JOUER</span>
+    </button>
+    <button class="mf-nav-btn" data-nav="shop">
+      <span class="mf-nav-ico">🪄</span>
+      <span class="mf-nav-label">Shop</span>
+    </button>
+    <button class="mf-nav-btn" data-nav="stats">
+      <span class="mf-nav-ico">📊</span>
+      <span class="mf-nav-label">Stats</span>
+    </button>
+  </nav>
+
+  <!-- Submenu: JOUER (modes) -->
+  <div id="mf-sub-play" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>🎮 Jouer</h2>
+      <div class="mf-submenu-grid">
+        <button class="mf-btn mf-btn-primary mf-submenu-btn" id="mf-play-btn">⚔ Campagne<small>Mondes &amp; niveaux</small></button>
+        <button class="mf-btn mf-btn-primary mf-submenu-btn" id="mf-endless-btn">∞ Infini<small>Survis le plus longtemps</small></button>
+        <button class="mf-btn mf-btn-primary mf-submenu-btn" id="mf-bossrush-btn">👑 Boss Rush<small>Vagues 100% boss</small></button>
+        <button class="mf-btn mf-btn-primary mf-btn-chaos mf-submenu-btn" id="mf-chaos-btn">🌪️ Chaos<small>Arène ouverte + ultime</small></button>
+        <button class="mf-btn mf-btn-primary mf-submenu-btn" id="mf-roguelike-btn">🎲 Roguelike<small>Build deck pendant le run</small></button>
+        <button class="mf-btn mf-btn-primary mf-submenu-btn" id="mf-crucible-btn">🏟 Crucible<small>Challenge hebdo imposé</small></button>
+        <button class="mf-btn mf-btn-primary mf-submenu-btn" id="mf-raid-btn">💀 Boss Raid<small>50× HP + alliés IA, 4 phases</small></button>
+        <button class="mf-btn mf-submenu-btn" id="mf-sandbox-btn">🧪 Sandbox<small>Test libre, fortress 9999 PV</small></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lobby: HÉROS (bibliothèque + deck inline + icones liens) -->
+  <div id="mf-sub-progression" class="mf-screen mf-hidden mf-lobby">
+    <button class="mf-top-corner mf-top-right mf-home-screen" title="Accueil">🏠</button>
+    <div class="mf-lobby-inner">
+      <h2>🛡 Héros &amp; Deck</h2>
+      <div class="mf-meta-bar">
+        <span>💎 <b id="mf-prog-frags">0</b></span>
+        <span>🛡 <b id="mf-deck-h-summary">0/4</b></span>
+        <span>🏹 <b id="mf-deck-t-summary">0/3</b></span>
+      </div>
+      <div class="mf-cat-tabs">
+        <button class="mf-cat-tab mf-active" data-htab="owned">✓ Possédés</button>
+        <button class="mf-cat-tab" data-htab="deck">🃏 Mon Deck</button>
+        <button class="mf-cat-tab" data-htab="locked">🔒 À débloquer</button>
+      </div>
+      <div id="mf-heroes-content"></div>
+      <!-- Quick links to talents/relics/chaos rewards -->
+      <div class="mf-quick-links">
+        <button class="mf-quick-icon" id="mf-talents-btn" title="Talents">🌳<small>Talents</small></button>
+        <button class="mf-quick-icon" id="mf-relics-btn" title="Reliques">📜<small>Reliques</small></button>
+        <button class="mf-quick-icon" id="mf-chaos-rewards-btn" title="Récompenses Chaos">🌪️<small>Chaos</small></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lobby: QUÊTES (tout-en-un scroll) -->
+  <div id="mf-sub-defis" class="mf-screen mf-hidden mf-lobby">
+    <button class="mf-top-corner mf-top-right mf-home-screen" title="Accueil">🏠</button>
+    <div class="mf-lobby-inner">
+      <h2>📋 Quêtes</h2>
+      <div id="mf-defis-event-banner" class="mf-hidden"></div>
+      <div id="mf-quetes-content"></div>
+    </div>
+  </div>
+
+  <!-- Lobby: STATS (tout-en-un scroll) -->
+  <div id="mf-sub-stats" class="mf-screen mf-hidden mf-lobby">
+    <button class="mf-top-corner mf-top-right mf-home-screen" title="Accueil">🏠</button>
+    <div class="mf-lobby-inner">
+      <h2>📊 Statistiques</h2>
+      <div id="mf-stats-content"></div>
+    </div>
+  </div>
+
+  <!-- Options screen (réinit + export/import) -->
+  <div id="mf-options" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>⚙ Options</h2>
+      <div class="mf-submenu-grid" style="max-width:420px">
+        <div class="mf-stats-section">
+          <div class="mf-stats-section-title">🎨 Thème</div>
+          <div class="mf-variant-row">
+            <button class="mf-variant-pill" data-theme="dark">🌑 Sombre</button>
+            <button class="mf-variant-pill" data-theme="light">☀ Clair</button>
+            <button class="mf-variant-pill" data-theme="neon">💚 Néon</button>
+          </div>
+        </div>
+        <div class="mf-stats-section">
+          <div class="mf-stats-section-title">🌌 Fond du menu</div>
+          <div class="mf-variant-row">
+            <button class="mf-variant-pill" data-menubg="none">⚪ Aucun</button>
+            <button class="mf-variant-pill" data-menubg="galaxy">🌌 Galaxie</button>
+            <button class="mf-variant-pill" data-menubg="ocean">🌊 Sous-marin</button>
+            <button class="mf-variant-pill" data-menubg="lava">🌋 Lave</button>
+          </div>
+        </div>
+        <div class="mf-stats-section">
+          <div class="mf-stats-section-title">♿ Accessibilité</div>
+          <div class="mf-variant-row">
+            <button class="mf-variant-pill" data-access="reduceMotion">🌀 Animations réduites</button>
+            <button class="mf-variant-pill" data-access="highContrast">🔆 Contraste élevé</button>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;justify-content:center;margin-top:6px">
+            <button class="mf-btn" data-access-text="-1" style="font-size:.85rem;padding:4px 10px">A-</button>
+            <span style="font-size:.85rem;color:#ffd96a">Taille texte</span>
+            <button class="mf-btn" data-access-text="1" style="font-size:.85rem;padding:4px 10px">A+</button>
+          </div>
+        </div>
+        <div class="mf-stats-section">
+          <div class="mf-stats-section-title">🔊 Mixage audio</div>
+          <div class="mf-mix-row"><span>SFX</span><input type="range" min="0" max="100" data-mix="sfx" id="mf-mix-sfx"></div>
+          <div class="mf-mix-row"><span>Musique</span><input type="range" min="0" max="100" data-mix="music" id="mf-mix-music"></div>
+          <div class="mf-mix-row"><span>Voix</span><input type="range" min="0" max="100" data-mix="voice" id="mf-mix-voice"></div>
+        </div>
+        <div class="mf-stats-section">
+          <div class="mf-stats-section-title">📡 Vibration</div>
+          <div class="mf-variant-row">
+            <button class="mf-variant-pill" data-haptic-toggle>Activé / désactivé</button>
+          </div>
+        </div>
+        <div class="mf-stats-section">
+          <div class="mf-stats-section-title">🎖 Titre affiché</div>
+          <select id="mf-title-select" style="width:100%;padding:6px 10px;border-radius:6px;border:1.5px solid rgba(170,140,235,.3);background:rgba(15,5,30,.7);color:#fff;font-family:inherit"></select>
+        </div>
+        <div class="mf-stats-section">
+          <div class="mf-stats-section-title">💾 Sauvegardes (3 slots)</div>
+          <div class="mf-variant-row">
+            <button class="mf-variant-pill" data-slot="0">Slot 1</button>
+            <button class="mf-variant-pill" data-slot="1">Slot 2</button>
+            <button class="mf-variant-pill" data-slot="2">Slot 3</button>
+          </div>
+          <button class="mf-btn" id="mf-export-btn">💾 Exporter ma sauvegarde</button>
+          <button class="mf-btn" id="mf-import-btn">📥 Importer une sauvegarde</button>
+          <textarea id="mf-save-area" placeholder="Colle ici un code MFSAVE:... pour importer" class="mf-hidden"></textarea>
+          <button class="mf-btn mf-hidden" id="mf-import-confirm">✓ Confirmer l'import</button>
+        </div>
+        <button class="mf-btn" id="mf-reset-btn" style="background:linear-gradient(180deg,#c0392b,#922b21);color:#fff">🗑 Réinitialiser toute la progression</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Library — unlock heroes/towers -->
+  <div id="mf-library" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>📚 Bibliothèque</h2>
+      <div class="mf-meta-bar">
+        <span>💎 <b id="mf-lib-frags">0</b></span>
+        <span>📦 <b id="mf-lib-owned">0</b> possédés</span>
+      </div>
+      <div class="mf-cat-tabs">
+        <button class="mf-cat-tab mf-active" data-libtab="hero">🛡 Héros</button>
+        <button class="mf-cat-tab" data-libtab="tower">🏹 Tours</button>
+      </div>
+      <div id="mf-lib-list"></div>
+    </div>
+  </div>
+
+  <!-- Deck — pick units for the next run -->
+  <div id="mf-deck" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>🃏 Mon Deck</h2>
+      <p class="mf-chaos-intro">Choisis les unités qui apparaîtront aléatoirement dans ta pool pendant le run.</p>
+      <div class="mf-meta-bar">
+        <span>🛡 <b id="mf-deck-h-count">0/4</b> héros</span>
+        <span>🏹 <b id="mf-deck-t-count">0/3</b> tours</span>
+      </div>
+      <div id="mf-deck-list"></div>
+    </div>
+  </div>
+
+  <!-- Codex / Lore screen -->
+  <div id="mf-codex" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>📖 Codex</h2>
+      <p class="mf-chaos-intro">Découvre le lore en jouant. Chaque entrée se débloque par tes actions.</p>
+      <div id="mf-codex-content"></div>
+    </div>
+  </div>
+
+  <!-- Help / rules screen -->
+  <div id="mf-help" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>📘 Comment jouer</h2>
+      <div id="mf-help-content"></div>
+    </div>
+  </div>
+
+  <!-- World selector -->
+  <div id="mf-worlds" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>Choisis ton monde</h2>
+      <div id="mf-world-grid"></div>
+    </div>
+  </div>
+
+  <!-- Level selector -->
+  <div id="mf-levels" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="worlds">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2 id="mf-level-world-name">—</h2>
+      <div id="mf-level-grid"></div>
+    </div>
+  </div>
+
+  <!-- Pause / In-game menu -->
+  <div id="mf-pause" class="mf-screen mf-hidden">
+    <div class="mf-pause-inner">
+      <h2>Pause</h2>
+      <button class="mf-btn mf-btn-primary" id="mf-resume-btn">▶ Reprendre</button>
+      <button class="mf-btn" id="mf-restart-btn">↻ Recommencer</button>
+      <button class="mf-btn" id="mf-quit-btn">🏠 Accueil</button>
+    </div>
+  </div>
+
+  <!-- Win/Lose overlay -->
+  <div id="mf-end" class="mf-screen mf-hidden">
+    <button class="mf-top-corner mf-top-right mf-end-quick-quit" title="Accueil">🏠</button>
+    <div class="mf-end-scroll">
+      <div class="mf-pause-inner mf-end-inner">
+        <h2 id="mf-end-title">Victoire !</h2>
+        <p id="mf-end-message"></p>
+        <div id="mf-end-rewards"></div>
+      </div>
+    </div>
+    <div class="mf-end-actions mf-end-actions-fixed">
+      <button class="mf-btn mf-btn-primary" id="mf-end-next-btn">▶ Suivant</button>
+      <button class="mf-btn" id="mf-end-retry-btn">↻ Recommencer</button>
+      <button class="mf-btn" id="mf-end-quit-btn">🏠 Accueil</button>
+    </div>
+  </div>
+
+  <!-- Catalogue card preview modal (3D rotative) -->
+  <div id="mf-card-modal" class="mf-screen mf-hidden">
+    <div class="mf-card-modal-inner">
+      <button class="mf-btn mf-btn-icon" id="mf-card-modal-close">×</button>
+      <div id="mf-card-modal-name"></div>
+      <canvas id="mf-card-preview"></canvas>
+      <div id="mf-card-modal-rank-tabs"></div>
+      <div id="mf-card-modal-stats"></div>
+      <div id="mf-card-modal-desc"></div>
+    </div>
+  </div>
+
+  <!-- Catalogue / collection -->
+  <div id="mf-catalog" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="back">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>📖 Catalogue</h2>
+      <div class="mf-cat-tabs">
+        <button class="mf-cat-tab mf-active" data-cattab="hero">🛡️ Héros</button>
+        <button class="mf-cat-tab" data-cattab="tower">🏹 Tours</button>
+        <button class="mf-cat-tab" data-cattab="enemy">👹 Ennemis</button>
+      </div>
+      <div id="mf-cat-content"></div>
+    </div>
+  </div>
+
+  <!-- Upgrade choice modal (between waves) -->
+  <div id="mf-upgrade-modal" class="mf-screen mf-hidden">
+    <div class="mf-upg-inner">
+      <h2>⚡ Choisis un boon</h2>
+      <p class="mf-upg-sub">Vague <b id="mf-upg-wave">5</b> — tu progresses !</p>
+      <div id="mf-upg-cards"></div>
+    </div>
+  </div>
+
+  <!-- Talent tree screen -->
+  <div id="mf-talents" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="subProgression">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>🌳 Arbre de talents</h2>
+      <div class="mf-meta-bar">
+        <span>💎 <b id="mf-talent-fragments">0</b> fragments</span>
+        <span>🏆 <b id="mf-talent-runs">0</b> runs</span>
+      </div>
+      <div id="mf-talent-tree"></div>
+    </div>
+  </div>
+
+  <!-- Relics screen -->
+  <div id="mf-relics" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="subProgression">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>📜 Reliques</h2>
+      <div class="mf-meta-bar">
+        <span>💎 <b id="mf-relic-fragments">0</b> fragments</span>
+        <span>📜 <b id="mf-relic-equipped">0</b>/3 équipées</span>
+      </div>
+      <div id="mf-relic-list"></div>
+    </div>
+  </div>
+
+  <!-- Shop (consumables) -->
+  <div id="mf-shop" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>🪄 Shop</h2>
+      <div class="mf-meta-bar">
+        <span>💎 <b id="mf-shop-frags">0</b></span>
+        <span>📦 <b id="mf-shop-owned">0</b> objets</span>
+      </div>
+      <p class="mf-chaos-intro">Consommables utilisables en cours de partie. Achète avec des fragments.</p>
+      <div class="mf-cat-tabs">
+        <button class="mf-cat-tab mf-active" data-shoptab="buy">🪄 Acheter</button>
+        <button class="mf-cat-tab" data-shoptab="craft">⚗ Crafting</button>
+      </div>
+      <div id="mf-shop-list"></div>
+      <div id="mf-craft-list" class="mf-hidden"></div>
+    </div>
+  </div>
+
+
+  <!-- Chaos: persistent rewards shop -->
+  <div id="mf-chaos-rewards" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="subProgression">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>🌪️ Récompenses Chaos</h2>
+      <div class="mf-meta-bar">
+        <span>💎 <b id="mf-chaos-rewards-frags">0</b> fragments</span>
+        <span>⏱ Record: <b id="mf-chaos-rewards-best">00:00</b></span>
+      </div>
+      <p class="mf-chaos-intro">Bonus persistants pour le mode Chaos. Achètes-en avec tes fragments — ils s'appliquent à chaque run.</p>
+      <div id="mf-chaos-rewards-list"></div>
+    </div>
+  </div>
+
+  <!-- Chaos: ultimate selection screen -->
+  <div id="mf-chaos-select" class="mf-screen mf-hidden">
+    <div class="mf-screen-inner">
+      <button class="mf-btn mf-btn-icon mf-back-screen" data-back="menu">←</button>
+      <button class="mf-btn mf-btn-icon mf-btn-home mf-home-screen" title="Accueil">🏠</button>
+      <h2>🌪️ Mode Chaos — Choisis ton Ultime</h2>
+      <p class="mf-chaos-intro">Survis le plus longtemps possible dans une arène ouverte. Les ennemis surgissent de tous côtés. Ton ultime se charge à chaque kill.</p>
+      <div id="mf-chaos-ult-grid"></div>
+    </div>
+  </div>
+
+  <!-- Roguelike card choice modal -->
+  <div id="mf-roguelike-choice" class="mf-hidden">
+    <div class="mf-mod-card">
+      <h3>🎲 Choisis 1 carte</h3>
+      <p style="text-align:center;font-size:.85rem;color:rgba(220,200,255,.85)">Choisis 1 ajout à ton deck pour les 3 prochaines vagues.</p>
+      <div class="mf-mod-row" id="mf-roguelike-options"></div>
+    </div>
+  </div>
+
+  <!-- Replay viewer modal -->
+  <div id="mf-replay-modal" class="mf-screen mf-hidden">
+    <div class="mf-card-modal-inner">
+      <button class="mf-btn mf-btn-icon" id="mf-replay-close" style="position:absolute;top:8px;right:8px">×</button>
+      <h2 style="margin:0 0 6px">🎬 Replay du dernier run</h2>
+      <canvas id="mf-replay-canvas" width="320" height="280"></canvas>
+      <div id="mf-replay-info" style="font-size:.8rem;color:rgba(220,200,255,.85);text-align:center"></div>
+      <button class="mf-btn mf-btn-primary" id="mf-replay-play" style="width:100%;margin-top:6px">▶ Rejouer (12s)</button>
+    </div>
+  </div>
+
+  <!-- Chosen modifier overlay (before each run) -->
+  <div id="mf-modifier-choice" class="mf-hidden">
+    <div class="mf-mod-card">
+      <h3>🎲 Choisis un buff</h3>
+      <p style="text-align:center;font-size:.85rem;color:rgba(220,200,255,.85)">Sélectionne 1 buff parmi les 3 propositions pour cette run.</p>
+      <div class="mf-mod-row" id="mf-mod-options"></div>
+    </div>
+  </div>
+
+  <!-- P14: Pacte modal (optional malus before run) -->
+  <div id="mf-pacte-modal" class="mf-hidden">
+    <div class="mf-mod-card">
+      <h3>🤝 Pacte (optionnel)</h3>
+      <p style="text-align:center;font-size:.82rem;color:rgba(220,200,255,.85)">Accepte un malus pour gagner ×1.8 à ×2.5 fragments. Tu peux passer.</p>
+      <div class="mf-mod-row" id="mf-pacte-options"></div>
+      <button class="mf-btn" id="mf-pacte-skip" style="margin-top:8px;width:100%">Passer (pas de pacte)</button>
+    </div>
+  </div>
+
+  <!-- Chaos: tutorial overlay (first run) -->
+  <div id="mf-chaos-tutorial" class="mf-hidden">
+    <div class="mf-tut-card">
+      <div class="mf-tut-step">Étape <b id="mf-tut-step-i">1</b>/<span id="mf-tut-step-n">6</span></div>
+      <div class="mf-tut-icon" id="mf-tut-icon">🌪️</div>
+      <h3 id="mf-tut-title">Bienvenue en Chaos</h3>
+      <p id="mf-tut-text">Survis le plus longtemps possible.</p>
+      <div class="mf-tut-actions">
+        <button class="mf-btn" id="mf-tut-skip">Passer</button>
+        <button class="mf-btn mf-btn-primary" id="mf-tut-next">Suivant ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chaos HUD overlay (during play) -->
+  <div id="mf-chaos-hud" class="mf-hidden">
+    <div id="mf-chaos-time">00:00</div>
+    <div id="mf-chaos-kills">💀 <b>0</b></div>
+    <div id="mf-chaos-combo" class="mf-hidden">🔥 <b>x0</b></div>
+    <button id="mf-chaos-ult-btn" class="mf-btn">
+      <span class="mf-ult-ico">☄️</span>
+      <span class="mf-ult-pct">0%</span>
+    </button>
+  </div>
+
+  <!-- Intro narrative (first launch) -->
+  <div id="mf-intro" class="mf-screen mf-hidden">
+    <div class="mf-intro-bg"></div>
+    <div class="mf-intro-content">
+      <div class="mf-intro-line" id="mf-intro-line">…</div>
+      <div class="mf-intro-actions">
+        <button class="mf-btn" id="mf-intro-skip">Passer</button>
+        <button class="mf-btn mf-btn-primary mf-hidden" id="mf-intro-continue">Continuer ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hybrid memory card modal -->
+  <div id="mf-hybrid-modal" class="mf-screen mf-hidden">
+    <div class="mf-hcard-inner">
+      <div class="mf-hcard-rays"></div>
+      <div class="mf-hcard-title">🌟 NOUVELLE FUSION</div>
+      <div class="mf-hcard-name" id="mf-hcard-name">—</div>
+      <canvas id="mf-hcard-preview"></canvas>
+      <div class="mf-hcard-flavor" id="mf-hcard-flavor">—</div>
+      <button class="mf-btn mf-btn-primary" id="mf-hcard-close">✓ Continuer</button>
+    </div>
+  </div>
+
+  <!-- Wheel of fortune modal -->
+  <div id="mf-wheel-modal" class="mf-screen mf-hidden">
+    <div class="mf-wheel-inner">
+      <button class="mf-btn mf-btn-icon" id="mf-wheel-close" style="position:absolute;top:8px;right:8px">×</button>
+      <h2>🎰 Roue du Jour</h2>
+      <p class="mf-chaos-intro">1 spin gratuit par jour. Reset à minuit.</p>
+      <div class="mf-wheel-stage">
+        <canvas id="mf-wheel-canvas" width="280" height="280"></canvas>
+        <div class="mf-wheel-pointer">▼</div>
+      </div>
+      <div class="mf-wheel-result" id="mf-wheel-result"></div>
+      <button class="mf-btn mf-btn-primary" id="mf-wheel-spin">🎲 Tourner !</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="mf-loading" class="mf-screen">
+    <div class="mf-loading-inner">
+      <div class="mf-loading-spin"></div>
+      <div>Chargement…</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Three.js (offline-bundled). Run once:  curl -L -o lib/three.min.js https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js -->
+<script src="lib/three.min.js"></script>
+
+<!-- Game modules (order matters: data → state → engine → systems → ui → game) -->
+<script src="js/mergefortress/data-units.js"></script>
+<script src="js/mergefortress/data-worlds.js"></script>
+<script src="js/mergefortress/data-roguelite.js"></script>
+<script src="js/mergefortress/data-chaos.js"></script>
+<script src="js/mergefortress/state.js"></script>
+<script src="js/mergefortress/audio.js"></script>
+<script src="js/mergefortress/roguelite.js"></script>
+<script src="js/mergefortress/three-setup.js"></script>
+<script src="js/mergefortress/grid.js"></script>
+<script src="js/mergefortress/fx.js"></script>
+<script src="js/mergefortress/units.js"></script>
+<script src="js/mergefortress/enemies.js"></script>
+<script src="js/mergefortress/combat.js"></script>
+<script src="js/mergefortress/merge.js"></script>
+<script src="js/mergefortress/waves.js"></script>
+<script src="js/mergefortress/chaos.js"></script>
+<script src="js/mergefortress/achievements.js"></script>
+<script src="js/mergefortress/daily.js"></script>
+<script src="js/mergefortress/ladder.js"></script>
+<script src="js/mergefortress/extras.js"></script>
+<script src="js/mergefortress/deck.js"></script>
+<script src="js/mergefortress/phase10.js"></script>
+<script src="js/mergefortress/phase11.js"></script>
+<script src="js/mergefortress/phase12.js"></script>
+<script src="js/mergefortress/abilities.js"></script>
+<script src="js/mergefortress/phase14.js"></script>
+<script src="js/mergefortress/phase14b.js"></script>
+<script src="js/mergefortress/ui.js"></script>
+<script src="js/mergefortress/input.js"></script>
+<script src="js/mergefortress/game.js"></script>
+
+</body>
+</html>
